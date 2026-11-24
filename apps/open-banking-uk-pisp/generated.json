@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
+    "generated": true,
+    "config": "93f94d87763720a4553dafa5b100c1b6e9710819b89a7defb8b50eaa1562be35",
+    "sources": {
+      "https://raw.githubusercontent.com/OpenBankingUK/read-write-api-specs/master/dist/openapi/payment-initiation-openapi.yaml": {
+        "etag": "W/\"02a1a4661ee9bc4bc70c98461c593ff99b6b3c6cd5951a2ceb36f2156de45e29\"",
+        "sha256": "01d3ec5eb7034d270b1f67085b0e870e10604b3e642383f5635f71062f0ce718"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

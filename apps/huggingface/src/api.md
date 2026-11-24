@@ -19351,6 +19351,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|aadya-neural|
 |» » *anyOf*|acestep|
 |» » *anyOf*|adapter-transformers|
+|» » *anyOf*|akeratos|
 |» » *anyOf*|alkove|
 |» » *anyOf*|allennlp|
 |» » *anyOf*|aneforge|
@@ -19362,6 +19363,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|audiocraft|
 |» » *anyOf*|audioseal|
 |» » *anyOf*|bagel-mot|
+|» » *anyOf*|basalt|
 |» » *anyOf*|basedecision|
 |» » *anyOf*|bboxmaskpose|
 |» » *anyOf*|ben2|
@@ -19413,6 +19415,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|docking-at-home|
 |» » *anyOf*|doctr|
 |» » *anyOf*|drinkme|
+|» » *anyOf*|duo-world-model|
 |» » *anyOf*|edsnlp|
 |» » *anyOf*|egohand|
 |» » *anyOf*|elm|
@@ -19461,6 +19464,8 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|infinitetalk|
 |» » *anyOf*|infinite-you|
 |» » *anyOf*|intellifold|
+|» » *anyOf*|inworld-sava|
+|» » *anyOf*|inworld-voice-isolation|
 |» » *anyOf*|ising-decoding|
 |» » *anyOf*|jev-style|
 |» » *anyOf*|keras|
@@ -19498,6 +19503,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|manas-1|
 |» » *anyOf*|mars5-tts|
 |» » *anyOf*|matanyone|
+|» » *anyOf*|mediapipe|
 |» » *anyOf*|memra|
 |» » *anyOf*|mesh-anything|
 |» » *anyOf*|merlin|
@@ -19519,6 +19525,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|mtvcraft|
 |» » *anyOf*|multimolecule|
 |» » *anyOf*|nemo|
+|» » *anyOf*|neurobrix|
 |» » *anyOf*|ninfer|
 |» » *anyOf*|nobg|
 |» » *anyOf*|nv-medtech|
@@ -19550,6 +19557,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|quantumpeer|
 |» » *anyOf*|qwen3_tts|
 |» » *anyOf*|recurrentgemma|
+|» » *anyOf*|redefiner|
 |» » *anyOf*|relik|
 |» » *anyOf*|refiners|
 |» » *anyOf*|renderformer|
@@ -19559,6 +19567,7 @@ Quick search for models, datasets, spaces, orgs, users, papers, collections, and
 |» » *anyOf*|routee-powertrain|
 |» » *anyOf*|rt-detr-hand-detector-v1|
 |» » *anyOf*|rwkv|
+|» » *anyOf*|s1s2|
 |» » *anyOf*|saelens|
 |» » *anyOf*|sage-music|
 |» » *anyOf*|scail-2|
@@ -23146,6 +23155,7 @@ Status Code **200**
 |» type|org.service_account.trusted_publisher.create|
 |» type|org.service_account.trusted_publisher.delete|
 |» type|oauth.token|
+|» type|oauth.token.revoke|
 |» type|oauth.app.create|
 |» type|oauth.app.update|
 |» type|oauth.app.secret.rotate|
@@ -44327,7 +44337,9 @@ curl https://huggingface.co/api/notifications/mark-as-read \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "discussionIds": [],
+    "discussionIds": [
+      "stringstringstringstring"
+    ],
     "read": true
   }'
 ```
@@ -44340,7 +44352,9 @@ Mark discussions as read or unread. If `applyToAll` is true, all notifications f
 
 ```json
 {
-  "discussionIds": [],
+  "discussionIds": [
+    "stringstringstringstring"
+  ],
   "read": true
 }
 ```
@@ -50826,6 +50840,8 @@ curl https://huggingface.co/api/credentials/revoke \
   -d '{
     "credentials": [
       "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "hf_oauth_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "hf_oauth__refresh_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       {
         "accessKeyId": "HFAKXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "secretAccessKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -50836,7 +50852,7 @@ curl https://huggingface.co/api/credentials/revoke \
 
 `POST /api/credentials/revoke`
 
-Publicly invalidate leaked Hugging Face access tokens or S3 credentials. Possession of the raw token value, or of the S3 access key ID and secret, is the only proof required: no authentication is needed, and no rights over the owning account or org are necessary. Each raw token is fully invalidated. A leaked S3 credential is deleted and its paired token invalidated. The owning user is notified by email. Always returns 202, whether or not any of the provided tokens existed, so the response cannot be used to probe token validity.
+Publicly invalidate leaked Hugging Face access tokens, OAuth access or refresh tokens, or S3 credentials. Possession of the raw token value, or of the S3 access key ID and secret, is the only proof required: no authentication is needed, and no rights over the owning account or org are necessary. Each raw token is fully invalidated. A leaked S3 credential is deleted and its paired token invalidated. The owning user is notified by email. Always returns 202, whether or not any of the provided tokens existed, so the response cannot be used to probe token validity.
 
 > Body parameter
 
@@ -50844,6 +50860,8 @@ Publicly invalidate leaked Hugging Face access tokens or S3 credentials. Possess
 {
   "credentials": [
     "hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "hf_oauth_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "hf_oauth__refresh_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     {
       "accessKeyId": "HFAKXXXXXXXXXXXXXXXXXXXXXXXXXXX",
       "secretAccessKey": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -50857,7 +50875,7 @@ Publicly invalidate leaked Hugging Face access tokens or S3 credentials. Possess
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|none|
-|» credentials|body|[string \| object]|true|Raw access token values or S3 credentials (access key ID and secret) to invalidate, at most 1000.|
+|» credentials|body|[string \| object]|true|Raw access token values, OAuth access or refresh tokens, or S3 credentials (access key ID and secret) to invalidate, at most 1000.|
 |» » *anyOf*|body|string|false|none|
 |» » *anyOf*|body|object|false|none|
 |» » accessKeyId|body|string|true|none|

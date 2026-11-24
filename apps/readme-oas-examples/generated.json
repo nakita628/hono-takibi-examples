@@ -573,8 +573,8 @@
     }
   },
   "configs/3-1-parameters-style.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "b4bd3f4c68c558c8e178d9538b2e3cf5dc51b7c995a39ca315c565cf40ce3a54",
     "sources": {
@@ -584,10 +584,7 @@
       }
     },
     "typecheck": {
-      "errors": 50,
-      "where": "`index.ts`",
-      "codes": "TS2305 ×50",
-      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   },
   "configs/3-1-petstore-simple.config.ts": {
@@ -621,8 +618,8 @@
     }
   },
   "configs/3-1-readme-extensions.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "b58d386f7645dcdd83d4ece9c3fbf7201ec810a9609961a6fedf032266e52b83",
     "sources": {
@@ -632,15 +629,12 @@
       }
     },
     "typecheck": {
-      "errors": 20,
-      "where": "`index.ts`",
-      "codes": "TS2305 ×20",
-      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   },
   "configs/3-1-schema-encoding-style.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "4a1cbf1469b0737fa85c8bc82a44c3444aa217ab0dfb970c8f00dbe3660f8ed0",
     "sources": {
@@ -650,15 +644,12 @@
       }
     },
     "typecheck": {
-      "errors": 2,
-      "where": "`index.ts`",
-      "codes": "TS2305 ×2",
-      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   },
   "configs/3-1-schema-types.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "a258e964ba5bed6957d5c5085ff44f7eac3174d4b767326f927c0ebddf863c41",
     "sources": {
@@ -668,10 +659,7 @@
       }
     },
     "typecheck": {
-      "errors": 46,
-      "where": "`index.ts`",
-      "codes": "TS2305 ×46",
-      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   },
   "configs/3-1-schema-validation-local.config.ts": {

@@ -8,7 +8,7 @@
 
 Base URLs:
 
-* <a href="/api/v2">/api/v2</a>
+* <a href="https://api.apis.guru/api/v2">https://api.apis.guru/api/v2</a>
 
 # Authentication
 

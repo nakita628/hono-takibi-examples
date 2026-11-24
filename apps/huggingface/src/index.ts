@@ -1,20 +1,5 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  deleteApiBucketsNamespaceRepoRoute,
-  deleteApiCollectionsNamespaceSlugIdItemsItemIdRoute,
-  deleteApiCollectionsNamespaceSlugIdRoute,
-  deleteApiCollectionsNamespaceSlugItemsSlugRoute,
-  deleteApiCollectionsNamespaceSlugRoute,
-  deleteApiContainersNamespaceRepoRoute,
-  deleteApiContainersNamespaceRepoTagsTagRoute,
-  deleteApiDatasetsNamespaceRepoBranchRevRoute,
-  deleteApiDatasetsNamespaceRepoLfsFilesShaRoute,
-  deleteApiDatasetsNamespaceRepoTagRevRoute,
-  deleteApiModelsNamespaceRepoBranchRevRoute,
-  deleteApiModelsNamespaceRepoLfsFilesShaRoute,
-  deleteApiModelsNamespaceRepoTagRevRoute,
-  deleteApiNotificationsRoute,
-  deleteApiOrganizationsNameResourceGroupsResourceGroupIdInvitationIdRoute,
   deleteApiOrganizationsNameResourceGroupsResourceGroupIdRoute,
   deleteApiOrganizationsNameResourceGroupsResourceGroupIdUsersUsernameRoute,
   deleteApiOrganizationsNameScimProvisioningV2GroupsGroupIdRoute,
@@ -23,24 +8,10 @@ import {
   deleteApiOrganizationsNameScimV2UsersUserIdRoute,
   deleteApiOrganizationsNameServiceAccountsServiceAccountIdRoute,
   deleteApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdRoute,
-  deleteApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersPublisherIdRoute,
-  deleteApiPostsUsernamePostSlugRoute,
-  deleteApiRepoTypeNamespaceRepoDiscussionsNumRefRoute,
-  deleteApiRepoTypeNamespaceRepoDiscussionsNumRoute,
-  deleteApiRepoTypeNamespaceRepoSettingsTrustedPublishersPublisherIdRoute,
   deleteApiRepoTypeNamespaceRepoSqlConsoleEmbedIdRoute,
-  deleteApiScheduledJobsNamespaceJobIdRoute,
   deleteApiSettingsWebhooksWebhookIdRoute,
-  deleteApiSpacesNamespaceRepoBranchRevRoute,
-  deleteApiSpacesNamespaceRepoLfsFilesShaRoute,
-  deleteApiSpacesNamespaceRepoSecretsRoute,
-  deleteApiSpacesNamespaceRepoTagRevRoute,
-  deleteApiSpacesNamespaceRepoVariablesRoute,
-  deleteApiSpacesNamespaceRepoVolumesRoute,
   getApiAgentHarnessesRoute,
-  getApiAvatarsNamespaceRoute,
   getApiBlogNamespaceSlugResourceGroupRoute,
-  getApiBlogZhRoute,
   getApiBucketsNamespaceRepoEventsRoute,
   getApiBucketsNamespaceRepoResourceGroupRoute,
   getApiBucketsNamespaceRepoRoute,
@@ -65,7 +36,6 @@ import {
   getApiDatasetsNamespaceRepoJwtRoute,
   getApiDatasetsNamespaceRepoLeaderboardRoute,
   getApiDatasetsNamespaceRepoLfsFilesRoute,
-  getApiDatasetsNamespaceRepoLikersRoute,
   getApiDatasetsNamespaceRepoNotebookRevPathRoute,
   getApiDatasetsNamespaceRepoRefsRoute,
   getApiDatasetsNamespaceRepoResourceGroupRoute,
@@ -81,12 +51,8 @@ import {
   getApiDocsSearchRoute,
   getApiJobsHardwareRoute,
   getApiJobsNamespaceCountRoute,
-  getApiJobsNamespaceJobIdEventsRoute,
-  getApiJobsNamespaceJobIdLogsRoute,
-  getApiJobsNamespaceJobIdMetricsRoute,
   getApiJobsNamespaceJobIdRoute,
   getApiJobsNamespaceRoute,
-  getApiKernelsNamespaceRepoLikersRoute,
   getApiKernelsNamespaceRepoRevisionRevRoute,
   getApiKernelsNamespaceRepoRoute,
   getApiKernelsNamespaceRepoScanRoute,
@@ -95,7 +61,6 @@ import {
   getApiModelsNamespaceRepoCompareCompareRoute,
   getApiModelsNamespaceRepoJwtRoute,
   getApiModelsNamespaceRepoLfsFilesRoute,
-  getApiModelsNamespaceRepoLikersRoute,
   getApiModelsNamespaceRepoNotebookRevPathRoute,
   getApiModelsNamespaceRepoRefsRoute,
   getApiModelsNamespaceRepoResourceGroupRoute,
@@ -114,8 +79,6 @@ import {
   getApiOrganizationsNameBillingUsageByInferenceSessionRoute,
   getApiOrganizationsNameBillingUsageByResourceGroupRoute,
   getApiOrganizationsNameBillingUsageInferenceRoute,
-  getApiOrganizationsNameBillingUsageLiveRoute,
-  getApiOrganizationsNameBillingUsageV2Route,
   getApiOrganizationsNameMembersRoute,
   getApiOrganizationsNameResourceGroupsResourceGroupIdInvitationsRoute,
   getApiOrganizationsNameResourceGroupsResourceGroupIdRoute,
@@ -142,8 +105,6 @@ import {
   getApiOrganizationsNameSocialsRoute,
   getApiPapersPaperIdRoute,
   getApiPapersRoute,
-  getApiPapersSearchRoute,
-  getApiPartnersProviderModelsRoute,
   getApiQuicksearchRoute,
   getApiRegistryTokenRoute,
   getApiRepoTypeNamespaceRepoDiscussionsNumRoute,
@@ -156,27 +117,18 @@ import {
   getApiResolveCacheSpacesNamespaceRepoRevPathRoute,
   getApiScheduledJobsNamespaceJobIdRoute,
   getApiScheduledJobsNamespaceRoute,
-  getApiSearchFullTextRoute,
   getApiSettingsBillingCreditsRoute,
   getApiSettingsBillingUsageByInferenceSessionRoute,
   getApiSettingsBillingUsageJobsRoute,
-  getApiSettingsBillingUsageLiveRoute,
-  getApiSettingsBillingUsageV2Route,
   getApiSettingsMcpRoute,
-  getApiSettingsMetricsLiveRoute,
   getApiSettingsRepositoriesRoute,
   getApiSettingsWebhooksRoute,
   getApiSettingsWebhooksWebhookIdRoute,
-  getApiSpacesFeaturedRoute,
   getApiSpacesHardwareRoute,
   getApiSpacesNamespaceRepoCommitsRevRoute,
   getApiSpacesNamespaceRepoCompareCompareRoute,
-  getApiSpacesNamespaceRepoEventsRoute,
   getApiSpacesNamespaceRepoJwtRoute,
   getApiSpacesNamespaceRepoLfsFilesRoute,
-  getApiSpacesNamespaceRepoLikersRoute,
-  getApiSpacesNamespaceRepoLogsLogTypeRoute,
-  getApiSpacesNamespaceRepoMetricsRoute,
   getApiSpacesNamespaceRepoNotebookRevPathRoute,
   getApiSpacesNamespaceRepoRefsRoute,
   getApiSpacesNamespaceRepoResourceGroupRoute,
@@ -187,12 +139,10 @@ import {
   getApiSpacesNamespaceRepoVariablesRoute,
   getApiSpacesNamespaceRepoXetReadTokenRevRoute,
   getApiSpacesNamespaceRepoXetWriteTokenRevRoute,
-  getApiSpacesSemanticSearchRoute,
   getApiSpacesTemplatesRoute,
   getApiSpacesZeroGpuQuotaRoute,
   getApiTrendingRoute,
   getApiUsersUsernameAvatarRoute,
-  getApiUsersUsernameBillingUsageLiveRoute,
   getApiUsersUsernameFollowersRoute,
   getApiUsersUsernameFollowingOrgsRoute,
   getApiUsersUsernameFollowingRoute,
@@ -208,9 +158,7 @@ import {
   getNamespaceRepoUserAccessReportRoute,
   getOauthUserinfoRoute,
   getSpacesNamespaceRepoResolveRevPathRoute,
-  patchApiCollectionsNamespaceSlugIdItemsItemIdRoute,
   patchApiCollectionsNamespaceSlugIdRoute,
-  patchApiCollectionsNamespaceSlugItemsSlugRoute,
   patchApiCollectionsNamespaceSlugRoute,
   patchApiOrganizationsNameResourceGroupsResourceGroupIdRoute,
   patchApiOrganizationsNameResourceGroupsResourceGroupIdUsersUsernameRoute,
@@ -221,17 +169,9 @@ import {
   patchApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdRoute,
   patchApiOrganizationsNameSettingsNetworkSecurityRoute,
   patchApiRepoTypeNamespaceRepoSqlConsoleEmbedIdRoute,
-  patchApiSettingsNotificationsRoute,
-  patchApiSettingsWatchRoute,
-  postApiBlogNamespaceSlugCommentCommentIdEditRoute,
-  postApiBlogNamespaceSlugCommentCommentIdHideRoute,
-  postApiBlogNamespaceSlugCommentCommentIdReactionRoute,
   postApiBlogNamespaceSlugCommentCommentIdReplyRoute,
   postApiBlogNamespaceSlugCommentRoute,
   postApiBlogNamespaceSlugResourceGroupRoute,
-  postApiBlogSlugCommentCommentIdEditRoute,
-  postApiBlogSlugCommentCommentIdHideRoute,
-  postApiBlogSlugCommentCommentIdReactionRoute,
   postApiBlogSlugCommentCommentIdReplyRoute,
   postApiBlogSlugCommentRoute,
   postApiBucketsNamespaceRepoBatchRoute,
@@ -239,10 +179,8 @@ import {
   postApiBucketsNamespaceRepoPathsInfoRoute,
   postApiBucketsNamespaceRepoResourceGroupRoute,
   postApiBucketsNamespaceRepoRoute,
-  postApiCollectionsNamespaceSlugIdItemsBatchRoute,
   postApiCollectionsNamespaceSlugIdItemsRoute,
   postApiCollectionsNamespaceSlugIdResourceGroupRoute,
-  postApiCollectionsNamespaceSlugItemsBatchRoute,
   postApiCollectionsNamespaceSlugItemsRoute,
   postApiCollectionsNamespaceSlugResourceGroupRoute,
   postApiCollectionsRoute,
@@ -250,20 +188,13 @@ import {
   postApiContainersNamespaceRepoPathsInfoRoute,
   postApiContainersNamespaceRepoResourceGroupRoute,
   postApiContainersNamespaceRepoRoute,
-  postApiCredentialsRevokeRoute,
-  postApiDatasetsNamespaceRepoBranchRevRoute,
   postApiDatasetsNamespaceRepoCommitRevRoute,
-  postApiDatasetsNamespaceRepoLfsFilesBatchRoute,
   postApiDatasetsNamespaceRepoLfsFilesDuplicateRoute,
   postApiDatasetsNamespaceRepoPathsInfoRevRoute,
   postApiDatasetsNamespaceRepoPreuploadRevRoute,
   postApiDatasetsNamespaceRepoResourceGroupRoute,
   postApiDatasetsNamespaceRepoSuperSquashRevRoute,
-  postApiDatasetsNamespaceRepoTagRevRoute,
   postApiDatasetsNamespaceRepoUserAccessRequestBatchRoute,
-  postApiDatasetsNamespaceRepoUserAccessRequestCancelRoute,
-  postApiDatasetsNamespaceRepoUserAccessRequestGrantRoute,
-  postApiDatasetsNamespaceRepoUserAccessRequestHandleRoute,
   postApiInferenceEndpointsNamespaceAuthCheckPermsRoute,
   postApiInferenceEndpointsNamespaceEndpointAuthCheckPermsRoute,
   postApiJobsNamespaceAuthCheckPermsRoute,
@@ -271,22 +202,14 @@ import {
   postApiJobsNamespaceJobIdCancelRoute,
   postApiJobsNamespaceJobIdDuplicateRoute,
   postApiJobsNamespaceRoute,
-  postApiKernelsAccessRequestApproveRoute,
   postApiKernelsNamespaceRepoLfsFilesDuplicateRoute,
-  postApiModelsNamespaceRepoBranchRevRoute,
   postApiModelsNamespaceRepoCommitRevRoute,
-  postApiModelsNamespaceRepoLfsFilesBatchRoute,
   postApiModelsNamespaceRepoLfsFilesDuplicateRoute,
   postApiModelsNamespaceRepoPathsInfoRevRoute,
   postApiModelsNamespaceRepoPreuploadRevRoute,
   postApiModelsNamespaceRepoResourceGroupRoute,
   postApiModelsNamespaceRepoSuperSquashRevRoute,
-  postApiModelsNamespaceRepoTagRevRoute,
   postApiModelsNamespaceRepoUserAccessRequestBatchRoute,
-  postApiModelsNamespaceRepoUserAccessRequestCancelRoute,
-  postApiModelsNamespaceRepoUserAccessRequestGrantRoute,
-  postApiModelsNamespaceRepoUserAccessRequestHandleRoute,
-  postApiNotificationsMarkAsReadRoute,
   postApiOrganizationsNameBillingPrepaidCreditsPurchaseLinkRoute,
   postApiOrganizationsNameResourceGroupsResourceGroupIdInvitationIdResendRoute,
   postApiOrganizationsNameResourceGroupsResourceGroupIdInviteRoute,
@@ -302,31 +225,16 @@ import {
   postApiOrganizationsNameServiceAccountsServiceAccountIdTokensRoute,
   postApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdRotateRoute,
   postApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersRoute,
-  postApiOrganizationsNameSettingsTokensTokenIdRevokeRoute,
   postApiPapersIndexRoute,
-  postApiPapersPaperIdCommentCommentIdEditRoute,
-  postApiPapersPaperIdCommentCommentIdHideRoute,
-  postApiPapersPaperIdCommentCommentIdReactionRoute,
   postApiPapersPaperIdCommentCommentIdReplyRoute,
   postApiPapersPaperIdCommentRoute,
   postApiPapersPaperIdLinksRoute,
   postApiPapersPaperIdMediaRoute,
-  postApiPartnersProviderModelsRoute,
-  postApiPostsUsernamePostSlugCommentCommentIdEditRoute,
-  postApiPostsUsernamePostSlugCommentCommentIdHideRoute,
-  postApiPostsUsernamePostSlugCommentCommentIdReactionRoute,
   postApiPostsUsernamePostSlugCommentCommentIdReplyRoute,
   postApiPostsUsernamePostSlugCommentRoute,
   postApiQuicksearchRoute,
   postApiReposCreateRoute,
-  postApiReposMoveRoute,
-  postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdEditRoute,
-  postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdHideRoute,
-  postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdReactionRoute,
   postApiRepoTypeNamespaceRepoDiscussionsNumCommentRoute,
-  postApiRepoTypeNamespaceRepoDiscussionsNumIgnoreRoute,
-  postApiRepoTypeNamespaceRepoDiscussionsNumMergeRoute,
-  postApiRepoTypeNamespaceRepoDiscussionsNumPinRoute,
   postApiRepoTypeNamespaceRepoDiscussionsNumStatusRoute,
   postApiRepoTypeNamespaceRepoDiscussionsNumTitleRoute,
   postApiRepoTypeNamespaceRepoDiscussionsRoute,
@@ -334,34 +242,21 @@ import {
   postApiRepoTypeNamespaceRepoSettingsTrustedPublishersRoute,
   postApiRepoTypeNamespaceRepoSqlConsoleEmbedIdHideRoute,
   postApiRepoTypeNamespaceRepoSqlConsoleEmbedRoute,
-  postApiScheduledJobsNamespaceJobIdResumeRoute,
   postApiScheduledJobsNamespaceJobIdRunRoute,
   postApiScheduledJobsNamespaceJobIdScheduleRoute,
-  postApiScheduledJobsNamespaceJobIdSuspendRoute,
   postApiScheduledJobsNamespaceRoute,
   postApiSettingsBillingPrepaidCreditsPurchaseLinkRoute,
-  postApiSettingsInferenceProvidersApiKeyRoute,
-  postApiSettingsInferenceProvidersRoute,
   postApiSettingsPapersClaimRoute,
   postApiSettingsWebhooksRoute,
   postApiSettingsWebhooksWebhookIdActionRoute,
   postApiSettingsWebhooksWebhookIdReplayLogIdRoute,
   postApiSettingsWebhooksWebhookIdRoute,
-  postApiSpacesNamespaceRepoBranchRevRoute,
   postApiSpacesNamespaceRepoCommitRevRoute,
-  postApiSpacesNamespaceRepoCustomDomainRoute,
-  postApiSpacesNamespaceRepoDevModeRoute,
-  postApiSpacesNamespaceRepoHardwareRoute,
-  postApiSpacesNamespaceRepoLfsFilesBatchRoute,
   postApiSpacesNamespaceRepoLfsFilesDuplicateRoute,
   postApiSpacesNamespaceRepoPathsInfoRevRoute,
   postApiSpacesNamespaceRepoPreuploadRevRoute,
   postApiSpacesNamespaceRepoResourceGroupRoute,
-  postApiSpacesNamespaceRepoSecretsRoute,
-  postApiSpacesNamespaceRepoSleeptimeRoute,
   postApiSpacesNamespaceRepoSuperSquashRevRoute,
-  postApiSpacesNamespaceRepoTagRevRoute,
-  postApiSpacesNamespaceRepoVariablesRoute,
   postDatasetsNamespaceRepoAskAccessRoute,
   postNamespaceRepoAskAccessRoute,
   postOauthDeviceRoute,
@@ -373,36 +268,15 @@ import {
   putApiJobsNamespaceJobIdExposeRoute,
   putApiJobsNamespaceJobIdLabelsRoute,
   putApiModelsNamespaceRepoSettingsRoute,
-  putApiOrganizationsNameMembersUsernameAccountTypeRoute,
-  putApiOrganizationsNameMembersUsernameRoleRoute,
   putApiOrganizationsNameScimProvisioningV2GroupsGroupIdRoute,
   putApiOrganizationsNameScimProvisioningV2UsersUserIdRoute,
   putApiOrganizationsNameScimV2GroupsGroupIdRoute,
   putApiOrganizationsNameScimV2UsersUserIdRoute,
   putApiOrganizationsNameSettingsSsoCredentialsRoute,
-  putApiPartnersProviderModelsMappingIdStatusRoute,
   putApiScheduledJobsNamespaceJobIdLabelsRoute,
-  putApiSettingsInferenceProvidersDefaultBillingEntityRoute,
-  putApiSettingsInferenceProvidersUsageLimitsRoute,
   putApiSpacesNamespaceRepoSettingsRoute,
-  putApiSpacesNamespaceRepoVolumesRoute,
 } from './routes'
 import {
-  deleteApiBucketsNamespaceRepoRouteHandler,
-  deleteApiCollectionsNamespaceSlugIdItemsItemIdRouteHandler,
-  deleteApiCollectionsNamespaceSlugIdRouteHandler,
-  deleteApiCollectionsNamespaceSlugItemsSlugRouteHandler,
-  deleteApiCollectionsNamespaceSlugRouteHandler,
-  deleteApiContainersNamespaceRepoRouteHandler,
-  deleteApiContainersNamespaceRepoTagsTagRouteHandler,
-  deleteApiDatasetsNamespaceRepoBranchRevRouteHandler,
-  deleteApiDatasetsNamespaceRepoLfsFilesShaRouteHandler,
-  deleteApiDatasetsNamespaceRepoTagRevRouteHandler,
-  deleteApiModelsNamespaceRepoBranchRevRouteHandler,
-  deleteApiModelsNamespaceRepoLfsFilesShaRouteHandler,
-  deleteApiModelsNamespaceRepoTagRevRouteHandler,
-  deleteApiNotificationsRouteHandler,
-  deleteApiOrganizationsNameResourceGroupsResourceGroupIdInvitationIdRouteHandler,
   deleteApiOrganizationsNameResourceGroupsResourceGroupIdRouteHandler,
   deleteApiOrganizationsNameResourceGroupsResourceGroupIdUsersUsernameRouteHandler,
   deleteApiOrganizationsNameScimProvisioningV2GroupsGroupIdRouteHandler,
@@ -411,24 +285,10 @@ import {
   deleteApiOrganizationsNameScimV2UsersUserIdRouteHandler,
   deleteApiOrganizationsNameServiceAccountsServiceAccountIdRouteHandler,
   deleteApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdRouteHandler,
-  deleteApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersPublisherIdRouteHandler,
-  deleteApiPostsUsernamePostSlugRouteHandler,
-  deleteApiRepoTypeNamespaceRepoDiscussionsNumRefRouteHandler,
-  deleteApiRepoTypeNamespaceRepoDiscussionsNumRouteHandler,
-  deleteApiRepoTypeNamespaceRepoSettingsTrustedPublishersPublisherIdRouteHandler,
   deleteApiRepoTypeNamespaceRepoSqlConsoleEmbedIdRouteHandler,
-  deleteApiScheduledJobsNamespaceJobIdRouteHandler,
   deleteApiSettingsWebhooksWebhookIdRouteHandler,
-  deleteApiSpacesNamespaceRepoBranchRevRouteHandler,
-  deleteApiSpacesNamespaceRepoLfsFilesShaRouteHandler,
-  deleteApiSpacesNamespaceRepoSecretsRouteHandler,
-  deleteApiSpacesNamespaceRepoTagRevRouteHandler,
-  deleteApiSpacesNamespaceRepoVariablesRouteHandler,
-  deleteApiSpacesNamespaceRepoVolumesRouteHandler,
   getApiAgentHarnessesRouteHandler,
-  getApiAvatarsNamespaceRouteHandler,
   getApiBlogNamespaceSlugResourceGroupRouteHandler,
-  getApiBlogZhRouteHandler,
   getApiBucketsNamespaceRepoEventsRouteHandler,
   getApiBucketsNamespaceRepoResourceGroupRouteHandler,
   getApiBucketsNamespaceRepoRouteHandler,
@@ -453,7 +313,6 @@ import {
   getApiDatasetsNamespaceRepoJwtRouteHandler,
   getApiDatasetsNamespaceRepoLeaderboardRouteHandler,
   getApiDatasetsNamespaceRepoLfsFilesRouteHandler,
-  getApiDatasetsNamespaceRepoLikersRouteHandler,
   getApiDatasetsNamespaceRepoNotebookRevPathRouteHandler,
   getApiDatasetsNamespaceRepoRefsRouteHandler,
   getApiDatasetsNamespaceRepoResourceGroupRouteHandler,
@@ -469,12 +328,8 @@ import {
   getApiDocsSearchRouteHandler,
   getApiJobsHardwareRouteHandler,
   getApiJobsNamespaceCountRouteHandler,
-  getApiJobsNamespaceJobIdEventsRouteHandler,
-  getApiJobsNamespaceJobIdLogsRouteHandler,
-  getApiJobsNamespaceJobIdMetricsRouteHandler,
   getApiJobsNamespaceJobIdRouteHandler,
   getApiJobsNamespaceRouteHandler,
-  getApiKernelsNamespaceRepoLikersRouteHandler,
   getApiKernelsNamespaceRepoRevisionRevRouteHandler,
   getApiKernelsNamespaceRepoRouteHandler,
   getApiKernelsNamespaceRepoScanRouteHandler,
@@ -483,7 +338,6 @@ import {
   getApiModelsNamespaceRepoCompareCompareRouteHandler,
   getApiModelsNamespaceRepoJwtRouteHandler,
   getApiModelsNamespaceRepoLfsFilesRouteHandler,
-  getApiModelsNamespaceRepoLikersRouteHandler,
   getApiModelsNamespaceRepoNotebookRevPathRouteHandler,
   getApiModelsNamespaceRepoRefsRouteHandler,
   getApiModelsNamespaceRepoResourceGroupRouteHandler,
@@ -502,8 +356,6 @@ import {
   getApiOrganizationsNameBillingUsageByInferenceSessionRouteHandler,
   getApiOrganizationsNameBillingUsageByResourceGroupRouteHandler,
   getApiOrganizationsNameBillingUsageInferenceRouteHandler,
-  getApiOrganizationsNameBillingUsageLiveRouteHandler,
-  getApiOrganizationsNameBillingUsageV2RouteHandler,
   getApiOrganizationsNameMembersRouteHandler,
   getApiOrganizationsNameResourceGroupsResourceGroupIdInvitationsRouteHandler,
   getApiOrganizationsNameResourceGroupsResourceGroupIdRouteHandler,
@@ -530,8 +382,6 @@ import {
   getApiOrganizationsNameSocialsRouteHandler,
   getApiPapersPaperIdRouteHandler,
   getApiPapersRouteHandler,
-  getApiPapersSearchRouteHandler,
-  getApiPartnersProviderModelsRouteHandler,
   getApiQuicksearchRouteHandler,
   getApiRegistryTokenRouteHandler,
   getApiRepoTypeNamespaceRepoDiscussionsNumRouteHandler,
@@ -544,27 +394,18 @@ import {
   getApiResolveCacheSpacesNamespaceRepoRevPathRouteHandler,
   getApiScheduledJobsNamespaceJobIdRouteHandler,
   getApiScheduledJobsNamespaceRouteHandler,
-  getApiSearchFullTextRouteHandler,
   getApiSettingsBillingCreditsRouteHandler,
   getApiSettingsBillingUsageByInferenceSessionRouteHandler,
   getApiSettingsBillingUsageJobsRouteHandler,
-  getApiSettingsBillingUsageLiveRouteHandler,
-  getApiSettingsBillingUsageV2RouteHandler,
   getApiSettingsMcpRouteHandler,
-  getApiSettingsMetricsLiveRouteHandler,
   getApiSettingsRepositoriesRouteHandler,
   getApiSettingsWebhooksRouteHandler,
   getApiSettingsWebhooksWebhookIdRouteHandler,
-  getApiSpacesFeaturedRouteHandler,
   getApiSpacesHardwareRouteHandler,
   getApiSpacesNamespaceRepoCommitsRevRouteHandler,
   getApiSpacesNamespaceRepoCompareCompareRouteHandler,
-  getApiSpacesNamespaceRepoEventsRouteHandler,
   getApiSpacesNamespaceRepoJwtRouteHandler,
   getApiSpacesNamespaceRepoLfsFilesRouteHandler,
-  getApiSpacesNamespaceRepoLikersRouteHandler,
-  getApiSpacesNamespaceRepoLogsLogTypeRouteHandler,
-  getApiSpacesNamespaceRepoMetricsRouteHandler,
   getApiSpacesNamespaceRepoNotebookRevPathRouteHandler,
   getApiSpacesNamespaceRepoRefsRouteHandler,
   getApiSpacesNamespaceRepoResourceGroupRouteHandler,
@@ -575,12 +416,10 @@ import {
   getApiSpacesNamespaceRepoVariablesRouteHandler,
   getApiSpacesNamespaceRepoXetReadTokenRevRouteHandler,
   getApiSpacesNamespaceRepoXetWriteTokenRevRouteHandler,
-  getApiSpacesSemanticSearchRouteHandler,
   getApiSpacesTemplatesRouteHandler,
   getApiSpacesZeroGpuQuotaRouteHandler,
   getApiTrendingRouteHandler,
   getApiUsersUsernameAvatarRouteHandler,
-  getApiUsersUsernameBillingUsageLiveRouteHandler,
   getApiUsersUsernameFollowersRouteHandler,
   getApiUsersUsernameFollowingOrgsRouteHandler,
   getApiUsersUsernameFollowingRouteHandler,
@@ -596,9 +435,7 @@ import {
   getNamespaceRepoUserAccessReportRouteHandler,
   getOauthUserinfoRouteHandler,
   getSpacesNamespaceRepoResolveRevPathRouteHandler,
-  patchApiCollectionsNamespaceSlugIdItemsItemIdRouteHandler,
   patchApiCollectionsNamespaceSlugIdRouteHandler,
-  patchApiCollectionsNamespaceSlugItemsSlugRouteHandler,
   patchApiCollectionsNamespaceSlugRouteHandler,
   patchApiOrganizationsNameResourceGroupsResourceGroupIdRouteHandler,
   patchApiOrganizationsNameResourceGroupsResourceGroupIdUsersUsernameRouteHandler,
@@ -609,17 +446,9 @@ import {
   patchApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdRouteHandler,
   patchApiOrganizationsNameSettingsNetworkSecurityRouteHandler,
   patchApiRepoTypeNamespaceRepoSqlConsoleEmbedIdRouteHandler,
-  patchApiSettingsNotificationsRouteHandler,
-  patchApiSettingsWatchRouteHandler,
-  postApiBlogNamespaceSlugCommentCommentIdEditRouteHandler,
-  postApiBlogNamespaceSlugCommentCommentIdHideRouteHandler,
-  postApiBlogNamespaceSlugCommentCommentIdReactionRouteHandler,
   postApiBlogNamespaceSlugCommentCommentIdReplyRouteHandler,
   postApiBlogNamespaceSlugCommentRouteHandler,
   postApiBlogNamespaceSlugResourceGroupRouteHandler,
-  postApiBlogSlugCommentCommentIdEditRouteHandler,
-  postApiBlogSlugCommentCommentIdHideRouteHandler,
-  postApiBlogSlugCommentCommentIdReactionRouteHandler,
   postApiBlogSlugCommentCommentIdReplyRouteHandler,
   postApiBlogSlugCommentRouteHandler,
   postApiBucketsNamespaceRepoBatchRouteHandler,
@@ -627,10 +456,8 @@ import {
   postApiBucketsNamespaceRepoPathsInfoRouteHandler,
   postApiBucketsNamespaceRepoResourceGroupRouteHandler,
   postApiBucketsNamespaceRepoRouteHandler,
-  postApiCollectionsNamespaceSlugIdItemsBatchRouteHandler,
   postApiCollectionsNamespaceSlugIdItemsRouteHandler,
   postApiCollectionsNamespaceSlugIdResourceGroupRouteHandler,
-  postApiCollectionsNamespaceSlugItemsBatchRouteHandler,
   postApiCollectionsNamespaceSlugItemsRouteHandler,
   postApiCollectionsNamespaceSlugResourceGroupRouteHandler,
   postApiCollectionsRouteHandler,
@@ -638,20 +465,13 @@ import {
   postApiContainersNamespaceRepoPathsInfoRouteHandler,
   postApiContainersNamespaceRepoResourceGroupRouteHandler,
   postApiContainersNamespaceRepoRouteHandler,
-  postApiCredentialsRevokeRouteHandler,
-  postApiDatasetsNamespaceRepoBranchRevRouteHandler,
   postApiDatasetsNamespaceRepoCommitRevRouteHandler,
-  postApiDatasetsNamespaceRepoLfsFilesBatchRouteHandler,
   postApiDatasetsNamespaceRepoLfsFilesDuplicateRouteHandler,
   postApiDatasetsNamespaceRepoPathsInfoRevRouteHandler,
   postApiDatasetsNamespaceRepoPreuploadRevRouteHandler,
   postApiDatasetsNamespaceRepoResourceGroupRouteHandler,
   postApiDatasetsNamespaceRepoSuperSquashRevRouteHandler,
-  postApiDatasetsNamespaceRepoTagRevRouteHandler,
   postApiDatasetsNamespaceRepoUserAccessRequestBatchRouteHandler,
-  postApiDatasetsNamespaceRepoUserAccessRequestCancelRouteHandler,
-  postApiDatasetsNamespaceRepoUserAccessRequestGrantRouteHandler,
-  postApiDatasetsNamespaceRepoUserAccessRequestHandleRouteHandler,
   postApiInferenceEndpointsNamespaceAuthCheckPermsRouteHandler,
   postApiInferenceEndpointsNamespaceEndpointAuthCheckPermsRouteHandler,
   postApiJobsNamespaceAuthCheckPermsRouteHandler,
@@ -659,22 +479,14 @@ import {
   postApiJobsNamespaceJobIdCancelRouteHandler,
   postApiJobsNamespaceJobIdDuplicateRouteHandler,
   postApiJobsNamespaceRouteHandler,
-  postApiKernelsAccessRequestApproveRouteHandler,
   postApiKernelsNamespaceRepoLfsFilesDuplicateRouteHandler,
-  postApiModelsNamespaceRepoBranchRevRouteHandler,
   postApiModelsNamespaceRepoCommitRevRouteHandler,
-  postApiModelsNamespaceRepoLfsFilesBatchRouteHandler,
   postApiModelsNamespaceRepoLfsFilesDuplicateRouteHandler,
   postApiModelsNamespaceRepoPathsInfoRevRouteHandler,
   postApiModelsNamespaceRepoPreuploadRevRouteHandler,
   postApiModelsNamespaceRepoResourceGroupRouteHandler,
   postApiModelsNamespaceRepoSuperSquashRevRouteHandler,
-  postApiModelsNamespaceRepoTagRevRouteHandler,
   postApiModelsNamespaceRepoUserAccessRequestBatchRouteHandler,
-  postApiModelsNamespaceRepoUserAccessRequestCancelRouteHandler,
-  postApiModelsNamespaceRepoUserAccessRequestGrantRouteHandler,
-  postApiModelsNamespaceRepoUserAccessRequestHandleRouteHandler,
-  postApiNotificationsMarkAsReadRouteHandler,
   postApiOrganizationsNameBillingPrepaidCreditsPurchaseLinkRouteHandler,
   postApiOrganizationsNameResourceGroupsResourceGroupIdInvitationIdResendRouteHandler,
   postApiOrganizationsNameResourceGroupsResourceGroupIdInviteRouteHandler,
@@ -690,31 +502,16 @@ import {
   postApiOrganizationsNameServiceAccountsServiceAccountIdTokensRouteHandler,
   postApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdRotateRouteHandler,
   postApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersRouteHandler,
-  postApiOrganizationsNameSettingsTokensTokenIdRevokeRouteHandler,
   postApiPapersIndexRouteHandler,
-  postApiPapersPaperIdCommentCommentIdEditRouteHandler,
-  postApiPapersPaperIdCommentCommentIdHideRouteHandler,
-  postApiPapersPaperIdCommentCommentIdReactionRouteHandler,
   postApiPapersPaperIdCommentCommentIdReplyRouteHandler,
   postApiPapersPaperIdCommentRouteHandler,
   postApiPapersPaperIdLinksRouteHandler,
   postApiPapersPaperIdMediaRouteHandler,
-  postApiPartnersProviderModelsRouteHandler,
-  postApiPostsUsernamePostSlugCommentCommentIdEditRouteHandler,
-  postApiPostsUsernamePostSlugCommentCommentIdHideRouteHandler,
-  postApiPostsUsernamePostSlugCommentCommentIdReactionRouteHandler,
   postApiPostsUsernamePostSlugCommentCommentIdReplyRouteHandler,
   postApiPostsUsernamePostSlugCommentRouteHandler,
   postApiQuicksearchRouteHandler,
   postApiReposCreateRouteHandler,
-  postApiReposMoveRouteHandler,
-  postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdEditRouteHandler,
-  postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdHideRouteHandler,
-  postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdReactionRouteHandler,
   postApiRepoTypeNamespaceRepoDiscussionsNumCommentRouteHandler,
-  postApiRepoTypeNamespaceRepoDiscussionsNumIgnoreRouteHandler,
-  postApiRepoTypeNamespaceRepoDiscussionsNumMergeRouteHandler,
-  postApiRepoTypeNamespaceRepoDiscussionsNumPinRouteHandler,
   postApiRepoTypeNamespaceRepoDiscussionsNumStatusRouteHandler,
   postApiRepoTypeNamespaceRepoDiscussionsNumTitleRouteHandler,
   postApiRepoTypeNamespaceRepoDiscussionsRouteHandler,
@@ -722,34 +519,21 @@ import {
   postApiRepoTypeNamespaceRepoSettingsTrustedPublishersRouteHandler,
   postApiRepoTypeNamespaceRepoSqlConsoleEmbedIdHideRouteHandler,
   postApiRepoTypeNamespaceRepoSqlConsoleEmbedRouteHandler,
-  postApiScheduledJobsNamespaceJobIdResumeRouteHandler,
   postApiScheduledJobsNamespaceJobIdRunRouteHandler,
   postApiScheduledJobsNamespaceJobIdScheduleRouteHandler,
-  postApiScheduledJobsNamespaceJobIdSuspendRouteHandler,
   postApiScheduledJobsNamespaceRouteHandler,
   postApiSettingsBillingPrepaidCreditsPurchaseLinkRouteHandler,
-  postApiSettingsInferenceProvidersApiKeyRouteHandler,
-  postApiSettingsInferenceProvidersRouteHandler,
   postApiSettingsPapersClaimRouteHandler,
   postApiSettingsWebhooksRouteHandler,
   postApiSettingsWebhooksWebhookIdActionRouteHandler,
   postApiSettingsWebhooksWebhookIdReplayLogIdRouteHandler,
   postApiSettingsWebhooksWebhookIdRouteHandler,
-  postApiSpacesNamespaceRepoBranchRevRouteHandler,
   postApiSpacesNamespaceRepoCommitRevRouteHandler,
-  postApiSpacesNamespaceRepoCustomDomainRouteHandler,
-  postApiSpacesNamespaceRepoDevModeRouteHandler,
-  postApiSpacesNamespaceRepoHardwareRouteHandler,
-  postApiSpacesNamespaceRepoLfsFilesBatchRouteHandler,
   postApiSpacesNamespaceRepoLfsFilesDuplicateRouteHandler,
   postApiSpacesNamespaceRepoPathsInfoRevRouteHandler,
   postApiSpacesNamespaceRepoPreuploadRevRouteHandler,
   postApiSpacesNamespaceRepoResourceGroupRouteHandler,
-  postApiSpacesNamespaceRepoSecretsRouteHandler,
-  postApiSpacesNamespaceRepoSleeptimeRouteHandler,
   postApiSpacesNamespaceRepoSuperSquashRevRouteHandler,
-  postApiSpacesNamespaceRepoTagRevRouteHandler,
-  postApiSpacesNamespaceRepoVariablesRouteHandler,
   postDatasetsNamespaceRepoAskAccessRouteHandler,
   postNamespaceRepoAskAccessRouteHandler,
   postOauthDeviceRouteHandler,
@@ -761,31 +545,20 @@ import {
   putApiJobsNamespaceJobIdExposeRouteHandler,
   putApiJobsNamespaceJobIdLabelsRouteHandler,
   putApiModelsNamespaceRepoSettingsRouteHandler,
-  putApiOrganizationsNameMembersUsernameAccountTypeRouteHandler,
-  putApiOrganizationsNameMembersUsernameRoleRouteHandler,
   putApiOrganizationsNameScimProvisioningV2GroupsGroupIdRouteHandler,
   putApiOrganizationsNameScimProvisioningV2UsersUserIdRouteHandler,
   putApiOrganizationsNameScimV2GroupsGroupIdRouteHandler,
   putApiOrganizationsNameScimV2UsersUserIdRouteHandler,
   putApiOrganizationsNameSettingsSsoCredentialsRouteHandler,
-  putApiPartnersProviderModelsMappingIdStatusRouteHandler,
   putApiScheduledJobsNamespaceJobIdLabelsRouteHandler,
-  putApiSettingsInferenceProvidersDefaultBillingEntityRouteHandler,
-  putApiSettingsInferenceProvidersUsageLimitsRouteHandler,
   putApiSpacesNamespaceRepoSettingsRouteHandler,
-  putApiSpacesNamespaceRepoVolumesRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
   .openapi(getApiNotificationsRoute, getApiNotificationsRouteHandler)
-  .openapi(deleteApiNotificationsRoute, deleteApiNotificationsRouteHandler)
-  .openapi(postApiNotificationsMarkAsReadRoute, postApiNotificationsMarkAsReadRouteHandler)
-  .openapi(postApiCredentialsRevokeRoute, postApiCredentialsRevokeRouteHandler)
   .openapi(getApiSettingsMcpRoute, getApiSettingsMcpRouteHandler)
-  .openapi(patchApiSettingsNotificationsRoute, patchApiSettingsNotificationsRouteHandler)
-  .openapi(patchApiSettingsWatchRoute, patchApiSettingsWatchRouteHandler)
   .openapi(getApiSettingsWebhooksRoute, getApiSettingsWebhooksRouteHandler)
   .openapi(postApiSettingsWebhooksRoute, postApiSettingsWebhooksRouteHandler)
   .openapi(getApiSettingsWebhooksWebhookIdRoute, getApiSettingsWebhooksWebhookIdRouteHandler)
@@ -800,27 +573,10 @@ export const api = app
     postApiSettingsWebhooksWebhookIdReplayLogIdRouteHandler,
   )
   .openapi(postApiSettingsPapersClaimRoute, postApiSettingsPapersClaimRouteHandler)
-  .openapi(postApiSettingsInferenceProvidersRoute, postApiSettingsInferenceProvidersRouteHandler)
-  .openapi(
-    postApiSettingsInferenceProvidersApiKeyRoute,
-    postApiSettingsInferenceProvidersApiKeyRouteHandler,
-  )
-  .openapi(
-    putApiSettingsInferenceProvidersDefaultBillingEntityRoute,
-    putApiSettingsInferenceProvidersDefaultBillingEntityRouteHandler,
-  )
-  .openapi(
-    putApiSettingsInferenceProvidersUsageLimitsRoute,
-    putApiSettingsInferenceProvidersUsageLimitsRouteHandler,
-  )
   .openapi(getApiSettingsRepositoriesRoute, getApiSettingsRepositoriesRouteHandler)
   .openapi(
     getApiOrganizationsNameSettingsTokensRoute,
     getApiOrganizationsNameSettingsTokensRouteHandler,
-  )
-  .openapi(
-    postApiOrganizationsNameSettingsTokensTokenIdRevokeRoute,
-    postApiOrganizationsNameSettingsTokensTokenIdRevokeRouteHandler,
   )
   .openapi(
     getApiOrganizationsNameSettingsRepositoriesRoute,
@@ -861,10 +617,6 @@ export const api = app
   .openapi(
     getApiOrganizationsNameResourceGroupsResourceGroupIdInvitationsRoute,
     getApiOrganizationsNameResourceGroupsResourceGroupIdInvitationsRouteHandler,
-  )
-  .openapi(
-    deleteApiOrganizationsNameResourceGroupsResourceGroupIdInvitationIdRoute,
-    deleteApiOrganizationsNameResourceGroupsResourceGroupIdInvitationIdRouteHandler,
   )
   .openapi(
     postApiOrganizationsNameResourceGroupsResourceGroupIdInvitationIdResendRoute,
@@ -942,20 +694,8 @@ export const api = app
     postApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersRoute,
     postApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersRouteHandler,
   )
-  .openapi(
-    deleteApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersPublisherIdRoute,
-    deleteApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersPublisherIdRouteHandler,
-  )
   .openapi(getApiOrganizationsNameAvatarRoute, getApiOrganizationsNameAvatarRouteHandler)
   .openapi(getApiOrganizationsNameMembersRoute, getApiOrganizationsNameMembersRouteHandler)
-  .openapi(
-    putApiOrganizationsNameMembersUsernameRoleRoute,
-    putApiOrganizationsNameMembersUsernameRoleRouteHandler,
-  )
-  .openapi(
-    putApiOrganizationsNameMembersUsernameAccountTypeRoute,
-    putApiOrganizationsNameMembersUsernameAccountTypeRouteHandler,
-  )
   .openapi(
     getApiOrganizationsNameScimV2ServiceProviderConfigRoute,
     getApiOrganizationsNameScimV2ServiceProviderConfigRouteHandler,
@@ -1075,34 +815,10 @@ export const api = app
     postApiBlogSlugCommentCommentIdReplyRoute,
     postApiBlogSlugCommentCommentIdReplyRouteHandler,
   )
-  .openapi(
-    postApiBlogSlugCommentCommentIdReactionRoute,
-    postApiBlogSlugCommentCommentIdReactionRouteHandler,
-  )
-  .openapi(
-    postApiBlogSlugCommentCommentIdHideRoute,
-    postApiBlogSlugCommentCommentIdHideRouteHandler,
-  )
-  .openapi(
-    postApiBlogSlugCommentCommentIdEditRoute,
-    postApiBlogSlugCommentCommentIdEditRouteHandler,
-  )
   .openapi(postApiBlogNamespaceSlugCommentRoute, postApiBlogNamespaceSlugCommentRouteHandler)
   .openapi(
     postApiBlogNamespaceSlugCommentCommentIdReplyRoute,
     postApiBlogNamespaceSlugCommentCommentIdReplyRouteHandler,
-  )
-  .openapi(
-    postApiBlogNamespaceSlugCommentCommentIdReactionRoute,
-    postApiBlogNamespaceSlugCommentCommentIdReactionRouteHandler,
-  )
-  .openapi(
-    postApiBlogNamespaceSlugCommentCommentIdHideRoute,
-    postApiBlogNamespaceSlugCommentCommentIdHideRouteHandler,
-  )
-  .openapi(
-    postApiBlogNamespaceSlugCommentCommentIdEditRoute,
-    postApiBlogNamespaceSlugCommentCommentIdEditRouteHandler,
   )
   .openapi(
     getApiBlogNamespaceSlugResourceGroupRoute,
@@ -1112,15 +828,10 @@ export const api = app
     postApiBlogNamespaceSlugResourceGroupRoute,
     postApiBlogNamespaceSlugResourceGroupRouteHandler,
   )
-  .openapi(getApiBlogZhRoute, getApiBlogZhRouteHandler)
   .openapi(getApiDocsRoute, getApiDocsRouteHandler)
   .openapi(getApiDocsSearchRoute, getApiDocsSearchRouteHandler)
   .openapi(getApiDocsSearchFullTextRoute, getApiDocsSearchFullTextRouteHandler)
   .openapi(getApiWhoamiV2Route, getApiWhoamiV2RouteHandler)
-  .openapi(
-    getApiOrganizationsNameBillingUsageV2Route,
-    getApiOrganizationsNameBillingUsageV2RouteHandler,
-  )
   .openapi(
     getApiOrganizationsNameBillingUsageByResourceGroupRoute,
     getApiOrganizationsNameBillingUsageByResourceGroupRouteHandler,
@@ -1132,10 +843,6 @@ export const api = app
   .openapi(
     getApiOrganizationsNameBillingUsageInferenceRoute,
     getApiOrganizationsNameBillingUsageInferenceRouteHandler,
-  )
-  .openapi(
-    getApiOrganizationsNameBillingUsageLiveRoute,
-    getApiOrganizationsNameBillingUsageLiveRouteHandler,
   )
   .openapi(
     getApiOrganizationsNameBillingCreditsRoute,
@@ -1150,18 +857,11 @@ export const api = app
     postApiSettingsBillingPrepaidCreditsPurchaseLinkRoute,
     postApiSettingsBillingPrepaidCreditsPurchaseLinkRouteHandler,
   )
-  .openapi(getApiSettingsBillingUsageV2Route, getApiSettingsBillingUsageV2RouteHandler)
   .openapi(
     getApiSettingsBillingUsageByInferenceSessionRoute,
     getApiSettingsBillingUsageByInferenceSessionRouteHandler,
   )
   .openapi(getApiSettingsBillingUsageJobsRoute, getApiSettingsBillingUsageJobsRouteHandler)
-  .openapi(getApiSettingsBillingUsageLiveRoute, getApiSettingsBillingUsageLiveRouteHandler)
-  .openapi(getApiSettingsMetricsLiveRoute, getApiSettingsMetricsLiveRouteHandler)
-  .openapi(
-    getApiUsersUsernameBillingUsageLiveRoute,
-    getApiUsersUsernameBillingUsageLiveRouteHandler,
-  )
   .openapi(getApiUsersUsernameOverviewRoute, getApiUsersUsernameOverviewRouteHandler)
   .openapi(getApiUsersUsernameSocialsRoute, getApiUsersUsernameSocialsRouteHandler)
   .openapi(getApiUsersUsernameAvatarRoute, getApiUsersUsernameAvatarRouteHandler)
@@ -1170,7 +870,6 @@ export const api = app
   .openapi(getApiUsersUsernameFollowingRoute, getApiUsersUsernameFollowingRouteHandler)
   .openapi(getApiUsersUsernameFollowingOrgsRoute, getApiUsersUsernameFollowingOrgsRouteHandler)
   .openapi(getApiOrganizationsNameSocialsRoute, getApiOrganizationsNameSocialsRouteHandler)
-  .openapi(getApiAvatarsNamespaceRoute, getApiAvatarsNamespaceRouteHandler)
   .openapi(
     postApiInferenceEndpointsNamespaceAuthCheckPermsRoute,
     postApiInferenceEndpointsNamespaceAuthCheckPermsRouteHandler,
@@ -1184,10 +883,6 @@ export const api = app
     postApiJobsNamespaceJobIdAuthCheckPermsRoute,
     postApiJobsNamespaceJobIdAuthCheckPermsRouteHandler,
   )
-  .openapi(getApiModelsNamespaceRepoLikersRoute, getApiModelsNamespaceRepoLikersRouteHandler)
-  .openapi(getApiDatasetsNamespaceRepoLikersRoute, getApiDatasetsNamespaceRepoLikersRouteHandler)
-  .openapi(getApiSpacesNamespaceRepoLikersRoute, getApiSpacesNamespaceRepoLikersRouteHandler)
-  .openapi(getApiKernelsNamespaceRepoLikersRoute, getApiKernelsNamespaceRepoLikersRouteHandler)
   .openapi(
     getApiModelsNamespaceRepoTreesizeRevPathRoute,
     getApiModelsNamespaceRepoTreesizeRevPathRouteHandler,
@@ -1210,30 +905,6 @@ export const api = app
     getApiDatasetsNamespaceRepoLfsFilesRouteHandler,
   )
   .openapi(getApiSpacesNamespaceRepoLfsFilesRoute, getApiSpacesNamespaceRepoLfsFilesRouteHandler)
-  .openapi(
-    postApiModelsNamespaceRepoLfsFilesBatchRoute,
-    postApiModelsNamespaceRepoLfsFilesBatchRouteHandler,
-  )
-  .openapi(
-    postApiDatasetsNamespaceRepoLfsFilesBatchRoute,
-    postApiDatasetsNamespaceRepoLfsFilesBatchRouteHandler,
-  )
-  .openapi(
-    postApiSpacesNamespaceRepoLfsFilesBatchRoute,
-    postApiSpacesNamespaceRepoLfsFilesBatchRouteHandler,
-  )
-  .openapi(
-    deleteApiModelsNamespaceRepoLfsFilesShaRoute,
-    deleteApiModelsNamespaceRepoLfsFilesShaRouteHandler,
-  )
-  .openapi(
-    deleteApiDatasetsNamespaceRepoLfsFilesShaRoute,
-    deleteApiDatasetsNamespaceRepoLfsFilesShaRouteHandler,
-  )
-  .openapi(
-    deleteApiSpacesNamespaceRepoLfsFilesShaRoute,
-    deleteApiSpacesNamespaceRepoLfsFilesShaRouteHandler,
-  )
   .openapi(
     postApiModelsNamespaceRepoLfsFilesDuplicateRoute,
     postApiModelsNamespaceRepoLfsFilesDuplicateRouteHandler,
@@ -1357,39 +1028,6 @@ export const api = app
     postApiSpacesNamespaceRepoCommitRevRoute,
     postApiSpacesNamespaceRepoCommitRevRouteHandler,
   )
-  .openapi(postApiModelsNamespaceRepoTagRevRoute, postApiModelsNamespaceRepoTagRevRouteHandler)
-  .openapi(deleteApiModelsNamespaceRepoTagRevRoute, deleteApiModelsNamespaceRepoTagRevRouteHandler)
-  .openapi(postApiSpacesNamespaceRepoTagRevRoute, postApiSpacesNamespaceRepoTagRevRouteHandler)
-  .openapi(deleteApiSpacesNamespaceRepoTagRevRoute, deleteApiSpacesNamespaceRepoTagRevRouteHandler)
-  .openapi(postApiDatasetsNamespaceRepoTagRevRoute, postApiDatasetsNamespaceRepoTagRevRouteHandler)
-  .openapi(
-    deleteApiDatasetsNamespaceRepoTagRevRoute,
-    deleteApiDatasetsNamespaceRepoTagRevRouteHandler,
-  )
-  .openapi(
-    postApiModelsNamespaceRepoBranchRevRoute,
-    postApiModelsNamespaceRepoBranchRevRouteHandler,
-  )
-  .openapi(
-    deleteApiModelsNamespaceRepoBranchRevRoute,
-    deleteApiModelsNamespaceRepoBranchRevRouteHandler,
-  )
-  .openapi(
-    postApiSpacesNamespaceRepoBranchRevRoute,
-    postApiSpacesNamespaceRepoBranchRevRouteHandler,
-  )
-  .openapi(
-    deleteApiSpacesNamespaceRepoBranchRevRoute,
-    deleteApiSpacesNamespaceRepoBranchRevRouteHandler,
-  )
-  .openapi(
-    postApiDatasetsNamespaceRepoBranchRevRoute,
-    postApiDatasetsNamespaceRepoBranchRevRouteHandler,
-  )
-  .openapi(
-    deleteApiDatasetsNamespaceRepoBranchRevRoute,
-    deleteApiDatasetsNamespaceRepoBranchRevRouteHandler,
-  )
   .openapi(
     postApiModelsNamespaceRepoResourceGroupRoute,
     postApiModelsNamespaceRepoResourceGroupRouteHandler,
@@ -1457,10 +1095,6 @@ export const api = app
     postApiRepoTypeNamespaceRepoSettingsTrustedPublishersRouteHandler,
   )
   .openapi(
-    deleteApiRepoTypeNamespaceRepoSettingsTrustedPublishersPublisherIdRoute,
-    deleteApiRepoTypeNamespaceRepoSettingsTrustedPublishersPublisherIdRouteHandler,
-  )
-  .openapi(
     getApiModelsNamespaceRepoTreeRevPathRoute,
     getApiModelsNamespaceRepoTreeRevPathRouteHandler,
   )
@@ -1501,10 +1135,6 @@ export const api = app
     getApiRepoTypeNamespaceRepoDiscussionsNumRouteHandler,
   )
   .openapi(
-    deleteApiRepoTypeNamespaceRepoDiscussionsNumRoute,
-    deleteApiRepoTypeNamespaceRepoDiscussionsNumRouteHandler,
-  )
-  .openapi(
     postApiRepoTypeNamespaceRepoDiscussionsNumCommentRoute,
     postApiRepoTypeNamespaceRepoDiscussionsNumCommentRouteHandler,
   )
@@ -1517,36 +1147,8 @@ export const api = app
     postApiRepoTypeNamespaceRepoDiscussionsNumTitleRouteHandler,
   )
   .openapi(
-    postApiRepoTypeNamespaceRepoDiscussionsNumPinRoute,
-    postApiRepoTypeNamespaceRepoDiscussionsNumPinRouteHandler,
-  )
-  .openapi(
-    postApiRepoTypeNamespaceRepoDiscussionsNumMergeRoute,
-    postApiRepoTypeNamespaceRepoDiscussionsNumMergeRouteHandler,
-  )
-  .openapi(
-    deleteApiRepoTypeNamespaceRepoDiscussionsNumRefRoute,
-    deleteApiRepoTypeNamespaceRepoDiscussionsNumRefRouteHandler,
-  )
-  .openapi(
     getApiRepoTypeNamespaceRepoDiscussionsNumStorageRoute,
     getApiRepoTypeNamespaceRepoDiscussionsNumStorageRouteHandler,
-  )
-  .openapi(
-    postApiRepoTypeNamespaceRepoDiscussionsNumIgnoreRoute,
-    postApiRepoTypeNamespaceRepoDiscussionsNumIgnoreRouteHandler,
-  )
-  .openapi(
-    postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdEditRoute,
-    postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdEditRouteHandler,
-  )
-  .openapi(
-    postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdHideRoute,
-    postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdHideRouteHandler,
-  )
-  .openapi(
-    postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdReactionRoute,
-    postApiRepoTypeNamespaceRepoDiscussionsNumCommentCommentIdReactionRouteHandler,
   )
   .openapi(getApiKernelsRoute, getApiKernelsRouteHandler)
   .openapi(getApiKernelsNamespaceRepoRoute, getApiKernelsNamespaceRepoRouteHandler)
@@ -1554,7 +1156,6 @@ export const api = app
     getApiKernelsNamespaceRepoRevisionRevRoute,
     getApiKernelsNamespaceRepoRevisionRevRouteHandler,
   )
-  .openapi(postApiKernelsAccessRequestApproveRoute, postApiKernelsAccessRequestApproveRouteHandler)
   .openapi(
     getApiDatasetsNamespaceRepoLeaderboardRoute,
     getApiDatasetsNamespaceRepoLeaderboardRouteHandler,
@@ -1568,24 +1169,10 @@ export const api = app
   .openapi(getApiTrendingRoute, getApiTrendingRouteHandler)
   .openapi(getApiQuicksearchRoute, getApiQuicksearchRouteHandler)
   .openapi(postApiQuicksearchRoute, postApiQuicksearchRouteHandler)
-  .openapi(getApiSearchFullTextRoute, getApiSearchFullTextRouteHandler)
   .openapi(getApiSpacesHardwareRoute, getApiSpacesHardwareRouteHandler)
   .openapi(getApiSpacesTemplatesRoute, getApiSpacesTemplatesRouteHandler)
   .openapi(getApiSpacesZeroGpuQuotaRoute, getApiSpacesZeroGpuQuotaRouteHandler)
-  .openapi(postApiSpacesNamespaceRepoSecretsRoute, postApiSpacesNamespaceRepoSecretsRouteHandler)
-  .openapi(
-    deleteApiSpacesNamespaceRepoSecretsRoute,
-    deleteApiSpacesNamespaceRepoSecretsRouteHandler,
-  )
   .openapi(getApiSpacesNamespaceRepoSecretsRoute, getApiSpacesNamespaceRepoSecretsRouteHandler)
-  .openapi(
-    postApiSpacesNamespaceRepoVariablesRoute,
-    postApiSpacesNamespaceRepoVariablesRouteHandler,
-  )
-  .openapi(
-    deleteApiSpacesNamespaceRepoVariablesRoute,
-    deleteApiSpacesNamespaceRepoVariablesRouteHandler,
-  )
   .openapi(getApiSpacesNamespaceRepoVariablesRoute, getApiSpacesNamespaceRepoVariablesRouteHandler)
   .openapi(
     postApiRepoTypeNamespaceRepoDuplicateRoute,
@@ -1596,7 +1183,6 @@ export const api = app
     getApiRepoTypeNamespaceRepoDuplicateStatusRouteHandler,
   )
   .openapi(postApiReposCreateRoute, postApiReposCreateRouteHandler)
-  .openapi(postApiReposMoveRoute, postApiReposMoveRouteHandler)
   .openapi(
     patchApiRepoTypeNamespaceRepoSqlConsoleEmbedIdRoute,
     patchApiRepoTypeNamespaceRepoSqlConsoleEmbedIdRouteHandler,
@@ -1642,28 +1228,12 @@ export const api = app
     getDatasetsNamespaceRepoUserAccessReportRouteHandler,
   )
   .openapi(
-    postApiModelsNamespaceRepoUserAccessRequestCancelRoute,
-    postApiModelsNamespaceRepoUserAccessRequestCancelRouteHandler,
-  )
-  .openapi(
-    postApiDatasetsNamespaceRepoUserAccessRequestCancelRoute,
-    postApiDatasetsNamespaceRepoUserAccessRequestCancelRouteHandler,
-  )
-  .openapi(
     getApiModelsNamespaceRepoUserAccessRequestStatusRoute,
     getApiModelsNamespaceRepoUserAccessRequestStatusRouteHandler,
   )
   .openapi(
     getApiDatasetsNamespaceRepoUserAccessRequestStatusRoute,
     getApiDatasetsNamespaceRepoUserAccessRequestStatusRouteHandler,
-  )
-  .openapi(
-    postApiModelsNamespaceRepoUserAccessRequestHandleRoute,
-    postApiModelsNamespaceRepoUserAccessRequestHandleRouteHandler,
-  )
-  .openapi(
-    postApiDatasetsNamespaceRepoUserAccessRequestHandleRoute,
-    postApiDatasetsNamespaceRepoUserAccessRequestHandleRouteHandler,
   )
   .openapi(
     postApiModelsNamespaceRepoUserAccessRequestBatchRoute,
@@ -1673,40 +1243,8 @@ export const api = app
     postApiDatasetsNamespaceRepoUserAccessRequestBatchRoute,
     postApiDatasetsNamespaceRepoUserAccessRequestBatchRouteHandler,
   )
-  .openapi(
-    postApiModelsNamespaceRepoUserAccessRequestGrantRoute,
-    postApiModelsNamespaceRepoUserAccessRequestGrantRouteHandler,
-  )
-  .openapi(
-    postApiDatasetsNamespaceRepoUserAccessRequestGrantRoute,
-    postApiDatasetsNamespaceRepoUserAccessRequestGrantRouteHandler,
-  )
-  .openapi(putApiSpacesNamespaceRepoVolumesRoute, putApiSpacesNamespaceRepoVolumesRouteHandler)
-  .openapi(
-    deleteApiSpacesNamespaceRepoVolumesRoute,
-    deleteApiSpacesNamespaceRepoVolumesRouteHandler,
-  )
-  .openapi(postApiSpacesNamespaceRepoHardwareRoute, postApiSpacesNamespaceRepoHardwareRouteHandler)
-  .openapi(
-    postApiSpacesNamespaceRepoSleeptimeRoute,
-    postApiSpacesNamespaceRepoSleeptimeRouteHandler,
-  )
-  .openapi(
-    getApiSpacesNamespaceRepoLogsLogTypeRoute,
-    getApiSpacesNamespaceRepoLogsLogTypeRouteHandler,
-  )
-  .openapi(getApiSpacesNamespaceRepoEventsRoute, getApiSpacesNamespaceRepoEventsRouteHandler)
-  .openapi(getApiSpacesNamespaceRepoMetricsRoute, getApiSpacesNamespaceRepoMetricsRouteHandler)
-  .openapi(postApiSpacesNamespaceRepoDevModeRoute, postApiSpacesNamespaceRepoDevModeRouteHandler)
-  .openapi(
-    postApiSpacesNamespaceRepoCustomDomainRoute,
-    postApiSpacesNamespaceRepoCustomDomainRouteHandler,
-  )
-  .openapi(getApiSpacesSemanticSearchRoute, getApiSpacesSemanticSearchRouteHandler)
-  .openapi(getApiSpacesFeaturedRoute, getApiSpacesFeaturedRouteHandler)
   .openapi(getApiDailyPapersRoute, getApiDailyPapersRouteHandler)
   .openapi(getApiPapersRoute, getApiPapersRouteHandler)
-  .openapi(getApiPapersSearchRoute, getApiPapersSearchRouteHandler)
   .openapi(postApiPapersIndexRoute, postApiPapersIndexRouteHandler)
   .openapi(getApiPapersPaperIdRoute, getApiPapersPaperIdRouteHandler)
   .openapi(postApiPapersPaperIdCommentRoute, postApiPapersPaperIdCommentRouteHandler)
@@ -1714,21 +1252,8 @@ export const api = app
     postApiPapersPaperIdCommentCommentIdReplyRoute,
     postApiPapersPaperIdCommentCommentIdReplyRouteHandler,
   )
-  .openapi(
-    postApiPapersPaperIdCommentCommentIdEditRoute,
-    postApiPapersPaperIdCommentCommentIdEditRouteHandler,
-  )
-  .openapi(
-    postApiPapersPaperIdCommentCommentIdHideRoute,
-    postApiPapersPaperIdCommentCommentIdHideRouteHandler,
-  )
-  .openapi(
-    postApiPapersPaperIdCommentCommentIdReactionRoute,
-    postApiPapersPaperIdCommentCommentIdReactionRouteHandler,
-  )
   .openapi(postApiPapersPaperIdLinksRoute, postApiPapersPaperIdLinksRouteHandler)
   .openapi(postApiPapersPaperIdMediaRoute, postApiPapersPaperIdMediaRouteHandler)
-  .openapi(deleteApiPostsUsernamePostSlugRoute, deleteApiPostsUsernamePostSlugRouteHandler)
   .openapi(
     postApiPostsUsernamePostSlugCommentRoute,
     postApiPostsUsernamePostSlugCommentRouteHandler,
@@ -1737,27 +1262,10 @@ export const api = app
     postApiPostsUsernamePostSlugCommentCommentIdReplyRoute,
     postApiPostsUsernamePostSlugCommentCommentIdReplyRouteHandler,
   )
-  .openapi(
-    postApiPostsUsernamePostSlugCommentCommentIdReactionRoute,
-    postApiPostsUsernamePostSlugCommentCommentIdReactionRouteHandler,
-  )
-  .openapi(
-    postApiPostsUsernamePostSlugCommentCommentIdHideRoute,
-    postApiPostsUsernamePostSlugCommentCommentIdHideRouteHandler,
-  )
-  .openapi(
-    postApiPostsUsernamePostSlugCommentCommentIdEditRoute,
-    postApiPostsUsernamePostSlugCommentCommentIdEditRouteHandler,
-  )
   .openapi(getApiCollectionsNamespaceSlugIdRoute, getApiCollectionsNamespaceSlugIdRouteHandler)
   .openapi(patchApiCollectionsNamespaceSlugIdRoute, patchApiCollectionsNamespaceSlugIdRouteHandler)
-  .openapi(
-    deleteApiCollectionsNamespaceSlugIdRoute,
-    deleteApiCollectionsNamespaceSlugIdRouteHandler,
-  )
   .openapi(getApiCollectionsNamespaceSlugRoute, getApiCollectionsNamespaceSlugRouteHandler)
   .openapi(patchApiCollectionsNamespaceSlugRoute, patchApiCollectionsNamespaceSlugRouteHandler)
-  .openapi(deleteApiCollectionsNamespaceSlugRoute, deleteApiCollectionsNamespaceSlugRouteHandler)
   .openapi(
     postApiCollectionsNamespaceSlugIdItemsRoute,
     postApiCollectionsNamespaceSlugIdItemsRouteHandler,
@@ -1765,30 +1273,6 @@ export const api = app
   .openapi(
     postApiCollectionsNamespaceSlugItemsRoute,
     postApiCollectionsNamespaceSlugItemsRouteHandler,
-  )
-  .openapi(
-    postApiCollectionsNamespaceSlugIdItemsBatchRoute,
-    postApiCollectionsNamespaceSlugIdItemsBatchRouteHandler,
-  )
-  .openapi(
-    postApiCollectionsNamespaceSlugItemsBatchRoute,
-    postApiCollectionsNamespaceSlugItemsBatchRouteHandler,
-  )
-  .openapi(
-    patchApiCollectionsNamespaceSlugIdItemsItemIdRoute,
-    patchApiCollectionsNamespaceSlugIdItemsItemIdRouteHandler,
-  )
-  .openapi(
-    deleteApiCollectionsNamespaceSlugIdItemsItemIdRoute,
-    deleteApiCollectionsNamespaceSlugIdItemsItemIdRouteHandler,
-  )
-  .openapi(
-    patchApiCollectionsNamespaceSlugItemsSlugRoute,
-    patchApiCollectionsNamespaceSlugItemsSlugRouteHandler,
-  )
-  .openapi(
-    deleteApiCollectionsNamespaceSlugItemsSlugRoute,
-    deleteApiCollectionsNamespaceSlugItemsSlugRouteHandler,
   )
   .openapi(postApiCollectionsRoute, postApiCollectionsRouteHandler)
   .openapi(getApiCollectionsRoute, getApiCollectionsRouteHandler)
@@ -1809,19 +1293,13 @@ export const api = app
     postApiCollectionsNamespaceSlugResourceGroupRouteHandler,
   )
   .openapi(postApiBucketsNamespaceRepoRoute, postApiBucketsNamespaceRepoRouteHandler)
-  .openapi(deleteApiBucketsNamespaceRepoRoute, deleteApiBucketsNamespaceRepoRouteHandler)
   .openapi(getApiBucketsNamespaceRepoRoute, getApiBucketsNamespaceRepoRouteHandler)
   .openapi(postApiContainersNamespaceRepoRoute, postApiContainersNamespaceRepoRouteHandler)
-  .openapi(deleteApiContainersNamespaceRepoRoute, deleteApiContainersNamespaceRepoRouteHandler)
   .openapi(getApiContainersNamespaceRepoRoute, getApiContainersNamespaceRepoRouteHandler)
   .openapi(putApiBucketsNamespaceRepoSettingsRoute, putApiBucketsNamespaceRepoSettingsRouteHandler)
   .openapi(
     putApiContainersNamespaceRepoSettingsRoute,
     putApiContainersNamespaceRepoSettingsRouteHandler,
-  )
-  .openapi(
-    deleteApiContainersNamespaceRepoTagsTagRoute,
-    deleteApiContainersNamespaceRepoTagsTagRouteHandler,
   )
   .openapi(getApiBucketsNamespaceRoute, getApiBucketsNamespaceRouteHandler)
   .openapi(getApiContainersNamespaceRoute, getApiContainersNamespaceRouteHandler)
@@ -1854,9 +1332,6 @@ export const api = app
   .openapi(postApiJobsNamespaceRoute, postApiJobsNamespaceRouteHandler)
   .openapi(getApiJobsNamespaceCountRoute, getApiJobsNamespaceCountRouteHandler)
   .openapi(getApiJobsNamespaceJobIdRoute, getApiJobsNamespaceJobIdRouteHandler)
-  .openapi(getApiJobsNamespaceJobIdLogsRoute, getApiJobsNamespaceJobIdLogsRouteHandler)
-  .openapi(getApiJobsNamespaceJobIdMetricsRoute, getApiJobsNamespaceJobIdMetricsRouteHandler)
-  .openapi(getApiJobsNamespaceJobIdEventsRoute, getApiJobsNamespaceJobIdEventsRouteHandler)
   .openapi(postApiJobsNamespaceJobIdCancelRoute, postApiJobsNamespaceJobIdCancelRouteHandler)
   .openapi(postApiJobsNamespaceJobIdDuplicateRoute, postApiJobsNamespaceJobIdDuplicateRouteHandler)
   .openapi(putApiJobsNamespaceJobIdLabelsRoute, putApiJobsNamespaceJobIdLabelsRouteHandler)
@@ -1864,18 +1339,6 @@ export const api = app
   .openapi(postApiScheduledJobsNamespaceRoute, postApiScheduledJobsNamespaceRouteHandler)
   .openapi(getApiScheduledJobsNamespaceRoute, getApiScheduledJobsNamespaceRouteHandler)
   .openapi(getApiScheduledJobsNamespaceJobIdRoute, getApiScheduledJobsNamespaceJobIdRouteHandler)
-  .openapi(
-    deleteApiScheduledJobsNamespaceJobIdRoute,
-    deleteApiScheduledJobsNamespaceJobIdRouteHandler,
-  )
-  .openapi(
-    postApiScheduledJobsNamespaceJobIdSuspendRoute,
-    postApiScheduledJobsNamespaceJobIdSuspendRouteHandler,
-  )
-  .openapi(
-    postApiScheduledJobsNamespaceJobIdResumeRoute,
-    postApiScheduledJobsNamespaceJobIdResumeRouteHandler,
-  )
   .openapi(
     postApiScheduledJobsNamespaceJobIdRunRoute,
     postApiScheduledJobsNamespaceJobIdRunRouteHandler,
@@ -1887,12 +1350,6 @@ export const api = app
   .openapi(
     putApiScheduledJobsNamespaceJobIdLabelsRoute,
     putApiScheduledJobsNamespaceJobIdLabelsRouteHandler,
-  )
-  .openapi(getApiPartnersProviderModelsRoute, getApiPartnersProviderModelsRouteHandler)
-  .openapi(postApiPartnersProviderModelsRoute, postApiPartnersProviderModelsRouteHandler)
-  .openapi(
-    putApiPartnersProviderModelsMappingIdStatusRoute,
-    putApiPartnersProviderModelsMappingIdStatusRouteHandler,
   )
 
 export default app

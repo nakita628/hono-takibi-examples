@@ -181,7 +181,7 @@ export function getPrometheusKey() {
   return ['_prometheus'] as const
 }
 
-export function getQueryKey() {
+export function getQueryKey2() {
   return ['_query'] as const
 }
 
@@ -321,7 +321,7 @@ export function getXpackKey() {
   return ['_xpack'] as const
 }
 
-export function getAliasKey() {
+export function getAliasKey2() {
   return ['{alias}'] as const
 }
 

@@ -1,20 +1,18 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "659b6e6d2291a82669021d49be7f1b1b7c984fd598cd622a92869f338523d306",
     "sources": {
       "https://raw.githubusercontent.com/elastic/elasticsearch-specification/main/output/openapi/elasticsearch-openapi.json": {
-        "etag": "W/\"d9ef41e76a18d74be68ed78f62c08b7ca71dcc0acd4e26492b73eec1297bd82a\"",
-        "sha256": "643cac59e2b0d7bc498bf0d5e3bc381af073f7c45fd79b4f75d25152e913ad50"
+        "etag": "W/\"211abd37f74c29419133b453e3ffb61609afb4c039ed75b65e51189227d116cd\"",
+        "sha256": "2b33de5926e0e59f3d3f623df8601734ff2581630fea27d1dd2e1723093d546d",
+        "canonical": "18806ef80c61418ac397a227c90d1b5875e982934a5c0663859901cf9af06e8e"
       }
     },
     "typecheck": {
-      "errors": 1,
-      "where": "`handlers/*`",
-      "codes": "TS1434 ×1",
-      "issue": "[#546](https://github.com/nakita628/hono-takibi/issues/546) (the two writes interleave, so handlers/index.ts does not parse)"
+      "errors": 0
     }
   }
 }

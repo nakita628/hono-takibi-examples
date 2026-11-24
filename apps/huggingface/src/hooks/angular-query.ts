@@ -1,17 +1,9 @@
-import {
-  injectQuery,
-  injectMutation,
-  queryOptions,
-  mutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, injectMutation, queryOptions, mutationOptions } from '@tanstack/angular-query'
 import type {
   CreateQueryOptions,
   CreateMutationOptions,
   DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+} from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -96,12 +88,11 @@ export function injectApiNotifications<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiNotificationsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiSettingsMcpQueryKey() {
@@ -151,12 +142,11 @@ export function injectApiSettingsMcp<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiSettingsMcpQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiSettingsWebhooksQueryKey() {
@@ -213,12 +203,11 @@ export function injectApiSettingsWebhooks<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiSettingsWebhooksQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSettingsWebhooksMutationKey() {
@@ -263,7 +252,6 @@ export function injectPostApiSettingsWebhooks<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -275,7 +263,7 @@ export function injectPostApiSettingsWebhooks<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSettingsWebhooksWebhookIdQueryKey(
@@ -350,7 +338,6 @@ export function injectApiSettingsWebhooksWebhookId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -358,7 +345,7 @@ export function injectApiSettingsWebhooksWebhookId<
       ...getApiSettingsWebhooksWebhookIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSettingsWebhooksWebhookIdMutationKey() {
@@ -412,7 +399,6 @@ export function injectPostApiSettingsWebhooksWebhookId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -425,7 +411,7 @@ export function injectPostApiSettingsWebhooksWebhookId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiSettingsWebhooksWebhookIdMutationKey() {
@@ -479,7 +465,6 @@ export function injectDeleteApiSettingsWebhooksWebhookId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -492,7 +477,7 @@ export function injectDeleteApiSettingsWebhooksWebhookId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSettingsWebhooksWebhookIdActionMutationKey() {
@@ -554,7 +539,6 @@ export function injectPostApiSettingsWebhooksWebhookIdAction<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -567,7 +551,7 @@ export function injectPostApiSettingsWebhooksWebhookIdAction<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSettingsWebhooksWebhookIdReplayLogIdMutationKey() {
@@ -637,7 +621,6 @@ export function injectPostApiSettingsWebhooksWebhookIdReplayLogId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -650,7 +633,7 @@ export function injectPostApiSettingsWebhooksWebhookIdReplayLogId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSettingsPapersClaimMutationKey() {
@@ -695,7 +678,6 @@ export function injectPostApiSettingsPapersClaim<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -707,7 +689,7 @@ export function injectPostApiSettingsPapersClaim<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSettingsRepositoriesQueryKey(
@@ -774,7 +756,6 @@ export function injectApiSettingsRepositories<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -782,7 +763,7 @@ export function injectApiSettingsRepositories<
       ...getApiSettingsRepositoriesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameSettingsTokensQueryKey(
@@ -867,7 +848,6 @@ export function injectApiOrganizationsNameSettingsTokens<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -875,7 +855,7 @@ export function injectApiOrganizationsNameSettingsTokens<
       ...getApiOrganizationsNameSettingsTokensQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameSettingsRepositoriesQueryKey(
@@ -968,7 +948,6 @@ export function injectApiOrganizationsNameSettingsRepositories<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -979,7 +958,7 @@ export function injectApiOrganizationsNameSettingsRepositories<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiOrganizationsNameSettingsSsoCredentialsMutationKey() {
@@ -1049,7 +1028,6 @@ export function injectPutApiOrganizationsNameSettingsSsoCredentials<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1062,7 +1040,7 @@ export function injectPutApiOrganizationsNameSettingsSsoCredentials<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameAuditLogExportQueryKey(
@@ -1149,7 +1127,6 @@ export function injectApiOrganizationsNameAuditLogExport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1157,7 +1134,7 @@ export function injectApiOrganizationsNameAuditLogExport<
       ...getApiOrganizationsNameAuditLogExportQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameResourceGroupsResourceGroupIdQueryKey(
@@ -1254,7 +1231,6 @@ export function injectApiOrganizationsNameResourceGroupsResourceGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1265,7 +1241,7 @@ export function injectApiOrganizationsNameResourceGroupsResourceGroupId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiOrganizationsNameResourceGroupsResourceGroupIdMutationKey() {
@@ -1338,7 +1314,6 @@ export function injectDeleteApiOrganizationsNameResourceGroupsResourceGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1352,7 +1327,7 @@ export function injectDeleteApiOrganizationsNameResourceGroupsResourceGroupId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiOrganizationsNameResourceGroupsResourceGroupIdMutationKey() {
@@ -1425,7 +1400,6 @@ export function injectPatchApiOrganizationsNameResourceGroupsResourceGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1439,7 +1413,7 @@ export function injectPatchApiOrganizationsNameResourceGroupsResourceGroupId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameResourceGroupsResourceGroupIdSettingsMutationKey() {
@@ -1516,7 +1490,6 @@ export function injectPostApiOrganizationsNameResourceGroupsResourceGroupIdSetti
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1530,7 +1503,7 @@ export function injectPostApiOrganizationsNameResourceGroupsResourceGroupIdSetti
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameResourceGroupsResourceGroupIdUsersMutationKey() {
@@ -1603,7 +1576,6 @@ export function injectPostApiOrganizationsNameResourceGroupsResourceGroupIdUsers
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1617,7 +1589,7 @@ export function injectPostApiOrganizationsNameResourceGroupsResourceGroupIdUsers
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameResourceGroupsResourceGroupIdInviteMutationKey() {
@@ -1694,7 +1666,6 @@ export function injectPostApiOrganizationsNameResourceGroupsResourceGroupIdInvit
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1708,7 +1679,7 @@ export function injectPostApiOrganizationsNameResourceGroupsResourceGroupIdInvit
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameResourceGroupsResourceGroupIdInvitationsQueryKey(
@@ -1809,7 +1780,6 @@ export function injectApiOrganizationsNameResourceGroupsResourceGroupIdInvitatio
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1820,7 +1790,7 @@ export function injectApiOrganizationsNameResourceGroupsResourceGroupIdInvitatio
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameResourceGroupsResourceGroupIdInvitationIdResendMutationKey() {
@@ -1897,7 +1867,6 @@ export function injectPostApiOrganizationsNameResourceGroupsResourceGroupIdInvit
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1911,7 +1880,7 @@ export function injectPostApiOrganizationsNameResourceGroupsResourceGroupIdInvit
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiOrganizationsNameResourceGroupsResourceGroupIdUsersUsernameMutationKey() {
@@ -1988,7 +1957,6 @@ export function injectDeleteApiOrganizationsNameResourceGroupsResourceGroupIdUse
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2002,7 +1970,7 @@ export function injectDeleteApiOrganizationsNameResourceGroupsResourceGroupIdUse
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiOrganizationsNameResourceGroupsResourceGroupIdUsersUsernameMutationKey() {
@@ -2079,7 +2047,6 @@ export function injectPatchApiOrganizationsNameResourceGroupsResourceGroupIdUser
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2093,7 +2060,7 @@ export function injectPatchApiOrganizationsNameResourceGroupsResourceGroupIdUser
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameResourceGroupsQueryKey(
@@ -2172,7 +2139,6 @@ export function injectApiOrganizationsNameResourceGroups<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2180,7 +2146,7 @@ export function injectApiOrganizationsNameResourceGroups<
       ...getApiOrganizationsNameResourceGroupsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameResourceGroupsMutationKey() {
@@ -2242,7 +2208,6 @@ export function injectPostApiOrganizationsNameResourceGroups<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2255,7 +2220,7 @@ export function injectPostApiOrganizationsNameResourceGroups<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameResourceGroupsSettingsQueryKey(
@@ -2352,7 +2317,6 @@ export function injectApiOrganizationsNameResourceGroupsSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2363,7 +2327,7 @@ export function injectApiOrganizationsNameResourceGroupsSettings<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameResourceGroupsSettingsMutationKey() {
@@ -2433,7 +2397,6 @@ export function injectPostApiOrganizationsNameResourceGroupsSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2446,7 +2409,7 @@ export function injectPostApiOrganizationsNameResourceGroupsSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameSettingsNetworkSecurityQueryKey(
@@ -2543,7 +2506,6 @@ export function injectApiOrganizationsNameSettingsNetworkSecurity<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2554,7 +2516,7 @@ export function injectApiOrganizationsNameSettingsNetworkSecurity<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiOrganizationsNameSettingsNetworkSecurityMutationKey() {
@@ -2624,7 +2586,6 @@ export function injectPatchApiOrganizationsNameSettingsNetworkSecurity<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2637,7 +2598,7 @@ export function injectPatchApiOrganizationsNameSettingsNetworkSecurity<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameServiceAccountsQueryKey(
@@ -2718,7 +2679,6 @@ export function injectApiOrganizationsNameServiceAccounts<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2726,7 +2686,7 @@ export function injectApiOrganizationsNameServiceAccounts<
       ...getApiOrganizationsNameServiceAccountsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameServiceAccountsMutationKey() {
@@ -2788,7 +2748,6 @@ export function injectPostApiOrganizationsNameServiceAccounts<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2801,7 +2760,7 @@ export function injectPostApiOrganizationsNameServiceAccounts<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameServiceAccountsServiceAccountIdQueryKey(
@@ -2898,7 +2857,6 @@ export function injectApiOrganizationsNameServiceAccountsServiceAccountId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2909,7 +2867,7 @@ export function injectApiOrganizationsNameServiceAccountsServiceAccountId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiOrganizationsNameServiceAccountsServiceAccountIdMutationKey() {
@@ -2984,7 +2942,6 @@ export function injectDeleteApiOrganizationsNameServiceAccountsServiceAccountId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2998,7 +2955,7 @@ export function injectDeleteApiOrganizationsNameServiceAccountsServiceAccountId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameServiceAccountsServiceAccountIdTokensMutationKey() {
@@ -3075,7 +3032,6 @@ export function injectPostApiOrganizationsNameServiceAccountsServiceAccountIdTok
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3089,7 +3045,7 @@ export function injectPostApiOrganizationsNameServiceAccountsServiceAccountIdTok
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdMutationKey() {
@@ -3168,7 +3124,6 @@ export function injectDeleteApiOrganizationsNameServiceAccountsServiceAccountIdT
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3182,7 +3137,7 @@ export function injectDeleteApiOrganizationsNameServiceAccountsServiceAccountIdT
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdMutationKey() {
@@ -3259,7 +3214,6 @@ export function injectPatchApiOrganizationsNameServiceAccountsServiceAccountIdTo
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3273,7 +3227,7 @@ export function injectPatchApiOrganizationsNameServiceAccountsServiceAccountIdTo
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameServiceAccountsServiceAccountIdTokensTokenIdRotateMutationKey() {
@@ -3350,7 +3304,6 @@ export function injectPostApiOrganizationsNameServiceAccountsServiceAccountIdTok
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3364,7 +3317,7 @@ export function injectPostApiOrganizationsNameServiceAccountsServiceAccountIdTok
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersQueryKey(
@@ -3468,7 +3421,6 @@ export function injectApiOrganizationsNameServiceAccountsServiceAccountIdTrusted
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3479,7 +3431,7 @@ export function injectApiOrganizationsNameServiceAccountsServiceAccountIdTrusted
       >(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameServiceAccountsServiceAccountIdTrustedPublishersMutationKey() {
@@ -3556,7 +3508,6 @@ export function injectPostApiOrganizationsNameServiceAccountsServiceAccountIdTru
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3570,7 +3521,7 @@ export function injectPostApiOrganizationsNameServiceAccountsServiceAccountIdTru
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameAvatarQueryKey(
@@ -3645,7 +3596,6 @@ export function injectApiOrganizationsNameAvatar<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3653,7 +3603,7 @@ export function injectApiOrganizationsNameAvatar<
       ...getApiOrganizationsNameAvatarQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameMembersQueryKey(
@@ -3728,7 +3678,6 @@ export function injectApiOrganizationsNameMembers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3736,7 +3685,7 @@ export function injectApiOrganizationsNameMembers<
       ...getApiOrganizationsNameMembersQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimV2ServiceProviderConfigQueryKey(
@@ -3833,7 +3782,6 @@ export function injectApiOrganizationsNameScimV2ServiceProviderConfig<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3844,7 +3792,7 @@ export function injectApiOrganizationsNameScimV2ServiceProviderConfig<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimV2ResourceTypesQueryKey(
@@ -3941,7 +3889,6 @@ export function injectApiOrganizationsNameScimV2ResourceTypes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3952,7 +3899,7 @@ export function injectApiOrganizationsNameScimV2ResourceTypes<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimV2SchemasQueryKey(
@@ -4043,7 +3990,6 @@ export function injectApiOrganizationsNameScimV2Schemas<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4051,7 +3997,7 @@ export function injectApiOrganizationsNameScimV2Schemas<
       ...getApiOrganizationsNameScimV2SchemasQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimV2SchemasSchemaIdQueryKey(
@@ -4148,7 +4094,6 @@ export function injectApiOrganizationsNameScimV2SchemasSchemaId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4159,7 +4104,7 @@ export function injectApiOrganizationsNameScimV2SchemasSchemaId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimV2UsersQueryKey(
@@ -4246,7 +4191,6 @@ export function injectApiOrganizationsNameScimV2Users<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4254,7 +4198,7 @@ export function injectApiOrganizationsNameScimV2Users<
       ...getApiOrganizationsNameScimV2UsersQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameScimV2UsersMutationKey() {
@@ -4318,7 +4262,6 @@ export function injectPostApiOrganizationsNameScimV2Users<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4331,7 +4274,7 @@ export function injectPostApiOrganizationsNameScimV2Users<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimV2UsersUserIdQueryKey(
@@ -4428,7 +4371,6 @@ export function injectApiOrganizationsNameScimV2UsersUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4436,7 +4378,7 @@ export function injectApiOrganizationsNameScimV2UsersUserId<
       ...getApiOrganizationsNameScimV2UsersUserIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiOrganizationsNameScimV2UsersUserIdMutationKey() {
@@ -4506,7 +4448,6 @@ export function injectPutApiOrganizationsNameScimV2UsersUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4519,7 +4460,7 @@ export function injectPutApiOrganizationsNameScimV2UsersUserId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiOrganizationsNameScimV2UsersUserIdMutationKey() {
@@ -4591,7 +4532,6 @@ export function injectDeleteApiOrganizationsNameScimV2UsersUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4604,7 +4544,7 @@ export function injectDeleteApiOrganizationsNameScimV2UsersUserId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiOrganizationsNameScimV2UsersUserIdMutationKey() {
@@ -4674,7 +4614,6 @@ export function injectPatchApiOrganizationsNameScimV2UsersUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4687,7 +4626,7 @@ export function injectPatchApiOrganizationsNameScimV2UsersUserId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimV2GroupsQueryKey(
@@ -4778,7 +4717,6 @@ export function injectApiOrganizationsNameScimV2Groups<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4786,7 +4724,7 @@ export function injectApiOrganizationsNameScimV2Groups<
       ...getApiOrganizationsNameScimV2GroupsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameScimV2GroupsMutationKey() {
@@ -4850,7 +4788,6 @@ export function injectPostApiOrganizationsNameScimV2Groups<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4863,7 +4800,7 @@ export function injectPostApiOrganizationsNameScimV2Groups<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimV2GroupsGroupIdQueryKey(
@@ -4960,7 +4897,6 @@ export function injectApiOrganizationsNameScimV2GroupsGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4971,7 +4907,7 @@ export function injectApiOrganizationsNameScimV2GroupsGroupId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiOrganizationsNameScimV2GroupsGroupIdMutationKey() {
@@ -5041,7 +4977,6 @@ export function injectPutApiOrganizationsNameScimV2GroupsGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5054,7 +4989,7 @@ export function injectPutApiOrganizationsNameScimV2GroupsGroupId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiOrganizationsNameScimV2GroupsGroupIdMutationKey() {
@@ -5126,7 +5061,6 @@ export function injectDeleteApiOrganizationsNameScimV2GroupsGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5139,7 +5073,7 @@ export function injectDeleteApiOrganizationsNameScimV2GroupsGroupId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiOrganizationsNameScimV2GroupsGroupIdMutationKey() {
@@ -5209,7 +5143,6 @@ export function injectPatchApiOrganizationsNameScimV2GroupsGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5222,7 +5155,7 @@ export function injectPatchApiOrganizationsNameScimV2GroupsGroupId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimProvisioningV2UsersQueryKey(
@@ -5319,7 +5252,6 @@ export function injectApiOrganizationsNameScimProvisioningV2Users<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5330,7 +5262,7 @@ export function injectApiOrganizationsNameScimProvisioningV2Users<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameScimProvisioningV2UsersMutationKey() {
@@ -5400,7 +5332,6 @@ export function injectPostApiOrganizationsNameScimProvisioningV2Users<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5413,7 +5344,7 @@ export function injectPostApiOrganizationsNameScimProvisioningV2Users<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimProvisioningV2UsersUserIdQueryKey(
@@ -5510,7 +5441,6 @@ export function injectApiOrganizationsNameScimProvisioningV2UsersUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5521,7 +5451,7 @@ export function injectApiOrganizationsNameScimProvisioningV2UsersUserId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiOrganizationsNameScimProvisioningV2UsersUserIdMutationKey() {
@@ -5594,7 +5524,6 @@ export function injectPutApiOrganizationsNameScimProvisioningV2UsersUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5607,7 +5536,7 @@ export function injectPutApiOrganizationsNameScimProvisioningV2UsersUserId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiOrganizationsNameScimProvisioningV2UsersUserIdMutationKey() {
@@ -5682,7 +5611,6 @@ export function injectDeleteApiOrganizationsNameScimProvisioningV2UsersUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5696,7 +5624,7 @@ export function injectDeleteApiOrganizationsNameScimProvisioningV2UsersUserId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiOrganizationsNameScimProvisioningV2UsersUserIdMutationKey() {
@@ -5769,7 +5697,6 @@ export function injectPatchApiOrganizationsNameScimProvisioningV2UsersUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5783,7 +5710,7 @@ export function injectPatchApiOrganizationsNameScimProvisioningV2UsersUserId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimProvisioningV2GroupsQueryKey(
@@ -5880,7 +5807,6 @@ export function injectApiOrganizationsNameScimProvisioningV2Groups<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5891,7 +5817,7 @@ export function injectApiOrganizationsNameScimProvisioningV2Groups<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameScimProvisioningV2GroupsMutationKey() {
@@ -5961,7 +5887,6 @@ export function injectPostApiOrganizationsNameScimProvisioningV2Groups<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5974,7 +5899,7 @@ export function injectPostApiOrganizationsNameScimProvisioningV2Groups<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameScimProvisioningV2GroupsGroupIdQueryKey(
@@ -6071,7 +5996,6 @@ export function injectApiOrganizationsNameScimProvisioningV2GroupsGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6082,7 +6006,7 @@ export function injectApiOrganizationsNameScimProvisioningV2GroupsGroupId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiOrganizationsNameScimProvisioningV2GroupsGroupIdMutationKey() {
@@ -6155,7 +6079,6 @@ export function injectPutApiOrganizationsNameScimProvisioningV2GroupsGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6169,7 +6092,7 @@ export function injectPutApiOrganizationsNameScimProvisioningV2GroupsGroupId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiOrganizationsNameScimProvisioningV2GroupsGroupIdMutationKey() {
@@ -6244,7 +6167,6 @@ export function injectDeleteApiOrganizationsNameScimProvisioningV2GroupsGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6258,7 +6180,7 @@ export function injectDeleteApiOrganizationsNameScimProvisioningV2GroupsGroupId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiOrganizationsNameScimProvisioningV2GroupsGroupIdMutationKey() {
@@ -6331,7 +6253,6 @@ export function injectPatchApiOrganizationsNameScimProvisioningV2GroupsGroupId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6345,7 +6266,7 @@ export function injectPatchApiOrganizationsNameScimProvisioningV2GroupsGroupId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostOauthRegisterMutationKey() {
@@ -6386,7 +6307,6 @@ export function injectPostOauthRegister<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6398,7 +6318,7 @@ export function injectPostOauthRegister<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostOauthDeviceMutationKey() {
@@ -6438,7 +6358,6 @@ export function injectPostOauthDevice<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6450,7 +6369,7 @@ export function injectPostOauthDevice<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOauthUserinfoQueryKey() {
@@ -6500,12 +6419,11 @@ export function injectOauthUserinfo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getOauthUserinfoQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostOauthUserinfoMutationKey() {
@@ -6546,7 +6464,6 @@ export function injectPostOauthUserinfo<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6558,7 +6475,7 @@ export function injectPostOauthUserinfo<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiRegistryTokenQueryKey(
@@ -6613,12 +6530,11 @@ export function injectApiRegistryToken<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiRegistryTokenQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBlogSlugCommentMutationKey() {
@@ -6669,7 +6585,6 @@ export function injectPostApiBlogSlugComment<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6681,7 +6596,7 @@ export function injectPostApiBlogSlugComment<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBlogSlugCommentCommentIdReplyMutationKey() {
@@ -6747,7 +6662,6 @@ export function injectPostApiBlogSlugCommentCommentIdReply<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6760,7 +6674,7 @@ export function injectPostApiBlogSlugCommentCommentIdReply<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBlogNamespaceSlugCommentMutationKey() {
@@ -6816,7 +6730,6 @@ export function injectPostApiBlogNamespaceSlugComment<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6829,7 +6742,7 @@ export function injectPostApiBlogNamespaceSlugComment<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBlogNamespaceSlugCommentCommentIdReplyMutationKey() {
@@ -6899,7 +6812,6 @@ export function injectPostApiBlogNamespaceSlugCommentCommentIdReply<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6912,7 +6824,7 @@ export function injectPostApiBlogNamespaceSlugCommentCommentIdReply<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiBlogNamespaceSlugResourceGroupQueryKey(
@@ -6999,7 +6911,6 @@ export function injectApiBlogNamespaceSlugResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -7007,7 +6918,7 @@ export function injectApiBlogNamespaceSlugResourceGroup<
       ...getApiBlogNamespaceSlugResourceGroupQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBlogNamespaceSlugResourceGroupMutationKey() {
@@ -7073,7 +6984,6 @@ export function injectPostApiBlogNamespaceSlugResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7086,7 +6996,7 @@ export function injectPostApiBlogNamespaceSlugResourceGroup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDocsQueryKey() {
@@ -7132,12 +7042,11 @@ export function injectApiDocs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiDocsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiDocsSearchQueryKey(
@@ -7190,12 +7099,11 @@ export function injectApiDocsSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiDocsSearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiDocsSearchFullTextQueryKey(
@@ -7270,7 +7178,6 @@ export function injectApiDocsSearchFullText<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -7278,7 +7185,7 @@ export function injectApiDocsSearchFullText<
       ...getApiDocsSearchFullTextQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiWhoamiV2QueryKey() {
@@ -7332,12 +7239,11 @@ export function injectApiWhoamiV2<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiWhoamiV2QueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameBillingUsageByResourceGroupQueryKey(
@@ -7434,7 +7340,6 @@ export function injectApiOrganizationsNameBillingUsageByResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -7445,7 +7350,7 @@ export function injectApiOrganizationsNameBillingUsageByResourceGroup<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameBillingUsageByInferenceSessionQueryKey(
@@ -7542,7 +7447,6 @@ export function injectApiOrganizationsNameBillingUsageByInferenceSession<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -7553,7 +7457,7 @@ export function injectApiOrganizationsNameBillingUsageByInferenceSession<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameBillingUsageInferenceQueryKey(
@@ -7650,7 +7554,6 @@ export function injectApiOrganizationsNameBillingUsageInference<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -7661,7 +7564,7 @@ export function injectApiOrganizationsNameBillingUsageInference<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameBillingCreditsQueryKey(
@@ -7746,7 +7649,6 @@ export function injectApiOrganizationsNameBillingCredits<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -7754,7 +7656,7 @@ export function injectApiOrganizationsNameBillingCredits<
       ...getApiOrganizationsNameBillingCreditsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiOrganizationsNameBillingPrepaidCreditsPurchaseLinkMutationKey() {
@@ -7827,7 +7729,6 @@ export function injectPostApiOrganizationsNameBillingPrepaidCreditsPurchaseLink<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7841,7 +7742,7 @@ export function injectPostApiOrganizationsNameBillingPrepaidCreditsPurchaseLink<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSettingsBillingCreditsQueryKey() {
@@ -7904,12 +7805,11 @@ export function injectApiSettingsBillingCredits<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiSettingsBillingCreditsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSettingsBillingPrepaidCreditsPurchaseLinkMutationKey() {
@@ -7979,7 +7879,6 @@ export function injectPostApiSettingsBillingPrepaidCreditsPurchaseLink<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7992,7 +7891,7 @@ export function injectPostApiSettingsBillingPrepaidCreditsPurchaseLink<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSettingsBillingUsageByInferenceSessionQueryKey(
@@ -8083,7 +7982,6 @@ export function injectApiSettingsBillingUsageByInferenceSession<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8094,7 +7992,7 @@ export function injectApiSettingsBillingUsageByInferenceSession<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSettingsBillingUsageJobsQueryKey() {
@@ -8159,12 +8057,11 @@ export function injectApiSettingsBillingUsageJobs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiSettingsBillingUsageJobsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiUsersUsernameOverviewQueryKey(
@@ -8239,7 +8136,6 @@ export function injectApiUsersUsernameOverview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8247,7 +8143,7 @@ export function injectApiUsersUsernameOverview<
       ...getApiUsersUsernameOverviewQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiUsersUsernameSocialsQueryKey(
@@ -8322,7 +8218,6 @@ export function injectApiUsersUsernameSocials<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8330,7 +8225,7 @@ export function injectApiUsersUsernameSocials<
       ...getApiUsersUsernameSocialsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiUsersUsernameAvatarQueryKey(
@@ -8405,7 +8300,6 @@ export function injectApiUsersUsernameAvatar<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8413,7 +8307,7 @@ export function injectApiUsersUsernameAvatar<
       ...getApiUsersUsernameAvatarQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiUsersUsernameLikesQueryKey(
@@ -8488,7 +8382,6 @@ export function injectApiUsersUsernameLikes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8496,7 +8389,7 @@ export function injectApiUsersUsernameLikes<
       ...getApiUsersUsernameLikesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiUsersUsernameFollowersQueryKey(
@@ -8571,7 +8464,6 @@ export function injectApiUsersUsernameFollowers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8579,7 +8471,7 @@ export function injectApiUsersUsernameFollowers<
       ...getApiUsersUsernameFollowersQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiUsersUsernameFollowingQueryKey(
@@ -8654,7 +8546,6 @@ export function injectApiUsersUsernameFollowing<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8662,7 +8553,7 @@ export function injectApiUsersUsernameFollowing<
       ...getApiUsersUsernameFollowingQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiUsersUsernameFollowingOrgsQueryKey(
@@ -8739,7 +8630,6 @@ export function injectApiUsersUsernameFollowingOrgs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8747,7 +8637,7 @@ export function injectApiUsersUsernameFollowingOrgs<
       ...getApiUsersUsernameFollowingOrgsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiOrganizationsNameSocialsQueryKey(
@@ -8822,7 +8712,6 @@ export function injectApiOrganizationsNameSocials<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -8830,7 +8719,7 @@ export function injectApiOrganizationsNameSocials<
       ...getApiOrganizationsNameSocialsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiInferenceEndpointsNamespaceAuthCheckPermsMutationKey() {
@@ -8903,7 +8792,6 @@ export function injectPostApiInferenceEndpointsNamespaceAuthCheckPerms<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8916,7 +8804,7 @@ export function injectPostApiInferenceEndpointsNamespaceAuthCheckPerms<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiInferenceEndpointsNamespaceEndpointAuthCheckPermsMutationKey() {
@@ -8989,7 +8877,6 @@ export function injectPostApiInferenceEndpointsNamespaceEndpointAuthCheckPerms<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9003,7 +8890,7 @@ export function injectPostApiInferenceEndpointsNamespaceEndpointAuthCheckPerms<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiJobsNamespaceAuthCheckPermsMutationKey() {
@@ -9065,7 +8952,6 @@ export function injectPostApiJobsNamespaceAuthCheckPerms<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9078,7 +8964,7 @@ export function injectPostApiJobsNamespaceAuthCheckPerms<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiJobsNamespaceJobIdAuthCheckPermsMutationKey() {
@@ -9148,7 +9034,6 @@ export function injectPostApiJobsNamespaceJobIdAuthCheckPerms<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9161,7 +9046,7 @@ export function injectPostApiJobsNamespaceJobIdAuthCheckPerms<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoTreesizeRevPathQueryKey(
@@ -9258,7 +9143,6 @@ export function injectApiModelsNamespaceRepoTreesizeRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -9266,7 +9150,7 @@ export function injectApiModelsNamespaceRepoTreesizeRevPath<
       ...getApiModelsNamespaceRepoTreesizeRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoTreesizeRevPathQueryKey(
@@ -9363,7 +9247,6 @@ export function injectApiSpacesNamespaceRepoTreesizeRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -9371,7 +9254,7 @@ export function injectApiSpacesNamespaceRepoTreesizeRevPath<
       ...getApiSpacesNamespaceRepoTreesizeRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoTreesizeRevPathQueryKey(
@@ -9468,7 +9351,6 @@ export function injectApiDatasetsNamespaceRepoTreesizeRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -9479,7 +9361,7 @@ export function injectApiDatasetsNamespaceRepoTreesizeRevPath<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoSafetensorsMetadataPathQueryKey(
@@ -9576,7 +9458,6 @@ export function injectApiModelsNamespaceRepoSafetensorsMetadataPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -9587,7 +9468,7 @@ export function injectApiModelsNamespaceRepoSafetensorsMetadataPath<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoLfsFilesQueryKey(
@@ -9668,7 +9549,6 @@ export function injectApiModelsNamespaceRepoLfsFiles<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -9676,7 +9556,7 @@ export function injectApiModelsNamespaceRepoLfsFiles<
       ...getApiModelsNamespaceRepoLfsFilesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoLfsFilesQueryKey(
@@ -9761,7 +9641,6 @@ export function injectApiDatasetsNamespaceRepoLfsFiles<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -9769,7 +9648,7 @@ export function injectApiDatasetsNamespaceRepoLfsFiles<
       ...getApiDatasetsNamespaceRepoLfsFilesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoLfsFilesQueryKey(
@@ -9850,7 +9729,6 @@ export function injectApiSpacesNamespaceRepoLfsFiles<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -9858,7 +9736,7 @@ export function injectApiSpacesNamespaceRepoLfsFiles<
       ...getApiSpacesNamespaceRepoLfsFilesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiModelsNamespaceRepoLfsFilesDuplicateMutationKey() {
@@ -9928,7 +9806,6 @@ export function injectPostApiModelsNamespaceRepoLfsFilesDuplicate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9941,7 +9818,7 @@ export function injectPostApiModelsNamespaceRepoLfsFilesDuplicate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiKernelsNamespaceRepoLfsFilesDuplicateMutationKey() {
@@ -10011,7 +9888,6 @@ export function injectPostApiKernelsNamespaceRepoLfsFilesDuplicate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10024,7 +9900,7 @@ export function injectPostApiKernelsNamespaceRepoLfsFilesDuplicate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiDatasetsNamespaceRepoLfsFilesDuplicateMutationKey() {
@@ -10094,7 +9970,6 @@ export function injectPostApiDatasetsNamespaceRepoLfsFilesDuplicate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10107,7 +9982,7 @@ export function injectPostApiDatasetsNamespaceRepoLfsFilesDuplicate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSpacesNamespaceRepoLfsFilesDuplicateMutationKey() {
@@ -10177,7 +10052,6 @@ export function injectPostApiSpacesNamespaceRepoLfsFilesDuplicate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10190,7 +10064,7 @@ export function injectPostApiSpacesNamespaceRepoLfsFilesDuplicate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBucketsNamespaceRepoLfsFilesDuplicateMutationKey() {
@@ -10260,7 +10134,6 @@ export function injectPostApiBucketsNamespaceRepoLfsFilesDuplicate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10273,7 +10146,7 @@ export function injectPostApiBucketsNamespaceRepoLfsFilesDuplicate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoCommitsRevQueryKey(
@@ -10364,7 +10237,6 @@ export function injectApiModelsNamespaceRepoCommitsRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -10372,7 +10244,7 @@ export function injectApiModelsNamespaceRepoCommitsRev<
       ...getApiModelsNamespaceRepoCommitsRevQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoCommitsRevQueryKey(
@@ -10463,7 +10335,6 @@ export function injectApiSpacesNamespaceRepoCommitsRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -10471,7 +10342,7 @@ export function injectApiSpacesNamespaceRepoCommitsRev<
       ...getApiSpacesNamespaceRepoCommitsRevQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoCommitsRevQueryKey(
@@ -10564,7 +10435,6 @@ export function injectApiDatasetsNamespaceRepoCommitsRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -10572,7 +10442,7 @@ export function injectApiDatasetsNamespaceRepoCommitsRev<
       ...getApiDatasetsNamespaceRepoCommitsRevQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoRefsQueryKey(
@@ -10647,7 +10517,6 @@ export function injectApiModelsNamespaceRepoRefs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -10655,7 +10524,7 @@ export function injectApiModelsNamespaceRepoRefs<
       ...getApiModelsNamespaceRepoRefsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoRefsQueryKey(
@@ -10732,7 +10601,6 @@ export function injectApiDatasetsNamespaceRepoRefs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -10740,7 +10608,7 @@ export function injectApiDatasetsNamespaceRepoRefs<
       ...getApiDatasetsNamespaceRepoRefsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoRefsQueryKey(
@@ -10815,7 +10683,6 @@ export function injectApiSpacesNamespaceRepoRefs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -10823,7 +10690,7 @@ export function injectApiSpacesNamespaceRepoRefs<
       ...getApiSpacesNamespaceRepoRefsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoCompareCompareQueryKey(
@@ -10920,7 +10787,6 @@ export function injectApiModelsNamespaceRepoCompareCompare<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -10928,7 +10794,7 @@ export function injectApiModelsNamespaceRepoCompareCompare<
       ...getApiModelsNamespaceRepoCompareCompareQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoCompareCompareQueryKey(
@@ -11025,7 +10891,6 @@ export function injectApiDatasetsNamespaceRepoCompareCompare<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -11036,7 +10901,7 @@ export function injectApiDatasetsNamespaceRepoCompareCompare<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoCompareCompareQueryKey(
@@ -11133,7 +10998,6 @@ export function injectApiSpacesNamespaceRepoCompareCompare<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -11141,7 +11005,7 @@ export function injectApiSpacesNamespaceRepoCompareCompare<
       ...getApiSpacesNamespaceRepoCompareCompareQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiModelsNamespaceRepoPathsInfoRevMutationKey() {
@@ -11211,7 +11075,6 @@ export function injectPostApiModelsNamespaceRepoPathsInfoRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11224,7 +11087,7 @@ export function injectPostApiModelsNamespaceRepoPathsInfoRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiDatasetsNamespaceRepoPathsInfoRevMutationKey() {
@@ -11294,7 +11157,6 @@ export function injectPostApiDatasetsNamespaceRepoPathsInfoRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11307,7 +11169,7 @@ export function injectPostApiDatasetsNamespaceRepoPathsInfoRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSpacesNamespaceRepoPathsInfoRevMutationKey() {
@@ -11377,7 +11239,6 @@ export function injectPostApiSpacesNamespaceRepoPathsInfoRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11390,7 +11251,7 @@ export function injectPostApiSpacesNamespaceRepoPathsInfoRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiModelsNamespaceRepoPreuploadRevMutationKey() {
@@ -11460,7 +11321,6 @@ export function injectPostApiModelsNamespaceRepoPreuploadRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11473,7 +11333,7 @@ export function injectPostApiModelsNamespaceRepoPreuploadRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSpacesNamespaceRepoPreuploadRevMutationKey() {
@@ -11543,7 +11403,6 @@ export function injectPostApiSpacesNamespaceRepoPreuploadRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11556,7 +11415,7 @@ export function injectPostApiSpacesNamespaceRepoPreuploadRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiDatasetsNamespaceRepoPreuploadRevMutationKey() {
@@ -11626,7 +11485,6 @@ export function injectPostApiDatasetsNamespaceRepoPreuploadRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11639,7 +11497,7 @@ export function injectPostApiDatasetsNamespaceRepoPreuploadRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoXetWriteTokenRevQueryKey(
@@ -11736,7 +11594,6 @@ export function injectApiModelsNamespaceRepoXetWriteTokenRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -11747,7 +11604,7 @@ export function injectApiModelsNamespaceRepoXetWriteTokenRev<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoXetWriteTokenRevQueryKey(
@@ -11844,7 +11701,6 @@ export function injectApiSpacesNamespaceRepoXetWriteTokenRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -11855,7 +11711,7 @@ export function injectApiSpacesNamespaceRepoXetWriteTokenRev<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoXetWriteTokenRevQueryKey(
@@ -11952,7 +11808,6 @@ export function injectApiDatasetsNamespaceRepoXetWriteTokenRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -11963,7 +11818,7 @@ export function injectApiDatasetsNamespaceRepoXetWriteTokenRev<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiBucketsNamespaceRepoXetWriteTokenQueryKey(
@@ -12056,7 +11911,6 @@ export function injectApiBucketsNamespaceRepoXetWriteToken<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12064,7 +11918,7 @@ export function injectApiBucketsNamespaceRepoXetWriteToken<
       ...getApiBucketsNamespaceRepoXetWriteTokenQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiContainersNamespaceRepoXetWriteTokenQueryKey(
@@ -12161,7 +12015,6 @@ export function injectApiContainersNamespaceRepoXetWriteToken<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12172,7 +12025,7 @@ export function injectApiContainersNamespaceRepoXetWriteToken<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoXetReadTokenRevQueryKey(
@@ -12269,7 +12122,6 @@ export function injectApiModelsNamespaceRepoXetReadTokenRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12277,7 +12129,7 @@ export function injectApiModelsNamespaceRepoXetReadTokenRev<
       ...getApiModelsNamespaceRepoXetReadTokenRevQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoXetReadTokenRevQueryKey(
@@ -12374,7 +12226,6 @@ export function injectApiSpacesNamespaceRepoXetReadTokenRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12382,7 +12233,7 @@ export function injectApiSpacesNamespaceRepoXetReadTokenRev<
       ...getApiSpacesNamespaceRepoXetReadTokenRevQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoXetReadTokenRevQueryKey(
@@ -12479,7 +12330,6 @@ export function injectApiDatasetsNamespaceRepoXetReadTokenRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12490,7 +12340,7 @@ export function injectApiDatasetsNamespaceRepoXetReadTokenRev<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiBucketsNamespaceRepoXetReadTokenQueryKey(
@@ -12581,7 +12431,6 @@ export function injectApiBucketsNamespaceRepoXetReadToken<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12589,7 +12438,7 @@ export function injectApiBucketsNamespaceRepoXetReadToken<
       ...getApiBucketsNamespaceRepoXetReadTokenQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiContainersNamespaceRepoXetReadTokenQueryKey(
@@ -12686,7 +12535,6 @@ export function injectApiContainersNamespaceRepoXetReadToken<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12697,7 +12545,7 @@ export function injectApiContainersNamespaceRepoXetReadToken<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiModelsNamespaceRepoCommitRevMutationKey() {
@@ -12763,7 +12611,6 @@ export function injectPostApiModelsNamespaceRepoCommitRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12776,7 +12623,7 @@ export function injectPostApiModelsNamespaceRepoCommitRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiDatasetsNamespaceRepoCommitRevMutationKey() {
@@ -12846,7 +12693,6 @@ export function injectPostApiDatasetsNamespaceRepoCommitRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12859,7 +12705,7 @@ export function injectPostApiDatasetsNamespaceRepoCommitRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSpacesNamespaceRepoCommitRevMutationKey() {
@@ -12925,7 +12771,6 @@ export function injectPostApiSpacesNamespaceRepoCommitRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12938,7 +12783,7 @@ export function injectPostApiSpacesNamespaceRepoCommitRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoResourceGroupQueryKey(
@@ -13029,7 +12874,6 @@ export function injectApiModelsNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -13037,7 +12881,7 @@ export function injectApiModelsNamespaceRepoResourceGroup<
       ...getApiModelsNamespaceRepoResourceGroupQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiModelsNamespaceRepoResourceGroupMutationKey() {
@@ -13103,7 +12947,6 @@ export function injectPostApiModelsNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13116,7 +12959,7 @@ export function injectPostApiModelsNamespaceRepoResourceGroup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoResourceGroupQueryKey(
@@ -13207,7 +13050,6 @@ export function injectApiSpacesNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -13215,7 +13057,7 @@ export function injectApiSpacesNamespaceRepoResourceGroup<
       ...getApiSpacesNamespaceRepoResourceGroupQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSpacesNamespaceRepoResourceGroupMutationKey() {
@@ -13281,7 +13123,6 @@ export function injectPostApiSpacesNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13294,7 +13135,7 @@ export function injectPostApiSpacesNamespaceRepoResourceGroup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoResourceGroupQueryKey(
@@ -13387,7 +13228,6 @@ export function injectApiDatasetsNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -13395,7 +13235,7 @@ export function injectApiDatasetsNamespaceRepoResourceGroup<
       ...getApiDatasetsNamespaceRepoResourceGroupQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiDatasetsNamespaceRepoResourceGroupMutationKey() {
@@ -13465,7 +13305,6 @@ export function injectPostApiDatasetsNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13478,7 +13317,7 @@ export function injectPostApiDatasetsNamespaceRepoResourceGroup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiBucketsNamespaceRepoResourceGroupQueryKey(
@@ -13569,7 +13408,6 @@ export function injectApiBucketsNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -13577,7 +13415,7 @@ export function injectApiBucketsNamespaceRepoResourceGroup<
       ...getApiBucketsNamespaceRepoResourceGroupQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBucketsNamespaceRepoResourceGroupMutationKey() {
@@ -13645,7 +13483,6 @@ export function injectPostApiBucketsNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13658,7 +13495,7 @@ export function injectPostApiBucketsNamespaceRepoResourceGroup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiContainersNamespaceRepoResourceGroupQueryKey(
@@ -13755,7 +13592,6 @@ export function injectApiContainersNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -13766,7 +13602,7 @@ export function injectApiContainersNamespaceRepoResourceGroup<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiContainersNamespaceRepoResourceGroupMutationKey() {
@@ -13836,7 +13672,6 @@ export function injectPostApiContainersNamespaceRepoResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13849,7 +13684,7 @@ export function injectPostApiContainersNamespaceRepoResourceGroup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiModelsNamespaceRepoSuperSquashRevMutationKey() {
@@ -13919,7 +13754,6 @@ export function injectPostApiModelsNamespaceRepoSuperSquashRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13932,7 +13766,7 @@ export function injectPostApiModelsNamespaceRepoSuperSquashRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiDatasetsNamespaceRepoSuperSquashRevMutationKey() {
@@ -14002,7 +13836,6 @@ export function injectPostApiDatasetsNamespaceRepoSuperSquashRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14015,7 +13848,7 @@ export function injectPostApiDatasetsNamespaceRepoSuperSquashRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiSpacesNamespaceRepoSuperSquashRevMutationKey() {
@@ -14085,7 +13918,6 @@ export function injectPostApiSpacesNamespaceRepoSuperSquashRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14098,7 +13930,7 @@ export function injectPostApiSpacesNamespaceRepoSuperSquashRev<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiModelsNamespaceRepoSettingsMutationKey() {
@@ -14154,7 +13986,6 @@ export function injectPutApiModelsNamespaceRepoSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14167,7 +13998,7 @@ export function injectPutApiModelsNamespaceRepoSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiSpacesNamespaceRepoSettingsMutationKey() {
@@ -14223,7 +14054,6 @@ export function injectPutApiSpacesNamespaceRepoSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14236,7 +14066,7 @@ export function injectPutApiSpacesNamespaceRepoSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiDatasetsNamespaceRepoSettingsMutationKey() {
@@ -14296,7 +14126,6 @@ export function injectPutApiDatasetsNamespaceRepoSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14309,7 +14138,7 @@ export function injectPutApiDatasetsNamespaceRepoSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiRepoTypeNamespaceRepoSettingsTrustedPublishersQueryKey(
@@ -14406,7 +14235,6 @@ export function injectApiRepoTypeNamespaceRepoSettingsTrustedPublishers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14417,7 +14245,7 @@ export function injectApiRepoTypeNamespaceRepoSettingsTrustedPublishers<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiRepoTypeNamespaceRepoSettingsTrustedPublishersMutationKey() {
@@ -14490,7 +14318,6 @@ export function injectPostApiRepoTypeNamespaceRepoSettingsTrustedPublishers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14504,7 +14331,7 @@ export function injectPostApiRepoTypeNamespaceRepoSettingsTrustedPublishers<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoTreeRevPathQueryKey(
@@ -14601,7 +14428,6 @@ export function injectApiModelsNamespaceRepoTreeRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14609,7 +14435,7 @@ export function injectApiModelsNamespaceRepoTreeRevPath<
       ...getApiModelsNamespaceRepoTreeRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoTreeRevPathQueryKey(
@@ -14706,7 +14532,6 @@ export function injectApiSpacesNamespaceRepoTreeRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14714,7 +14539,7 @@ export function injectApiSpacesNamespaceRepoTreeRevPath<
       ...getApiSpacesNamespaceRepoTreeRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoTreeRevPathQueryKey(
@@ -14811,7 +14636,6 @@ export function injectApiDatasetsNamespaceRepoTreeRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14819,7 +14643,7 @@ export function injectApiDatasetsNamespaceRepoTreeRevPath<
       ...getApiDatasetsNamespaceRepoTreeRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoNotebookRevPathQueryKey(
@@ -14916,7 +14740,6 @@ export function injectApiModelsNamespaceRepoNotebookRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14924,7 +14747,7 @@ export function injectApiModelsNamespaceRepoNotebookRevPath<
       ...getApiModelsNamespaceRepoNotebookRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoNotebookRevPathQueryKey(
@@ -15021,7 +14844,6 @@ export function injectApiDatasetsNamespaceRepoNotebookRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -15032,7 +14854,7 @@ export function injectApiDatasetsNamespaceRepoNotebookRevPath<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoNotebookRevPathQueryKey(
@@ -15129,7 +14951,6 @@ export function injectApiSpacesNamespaceRepoNotebookRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -15137,7 +14958,7 @@ export function injectApiSpacesNamespaceRepoNotebookRevPath<
       ...getApiSpacesNamespaceRepoNotebookRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoScanQueryKey(
@@ -15212,7 +15033,6 @@ export function injectApiModelsNamespaceRepoScan<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -15220,7 +15040,7 @@ export function injectApiModelsNamespaceRepoScan<
       ...getApiModelsNamespaceRepoScanQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoScanQueryKey(
@@ -15297,7 +15117,6 @@ export function injectApiDatasetsNamespaceRepoScan<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -15305,7 +15124,7 @@ export function injectApiDatasetsNamespaceRepoScan<
       ...getApiDatasetsNamespaceRepoScanQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoScanQueryKey(
@@ -15380,7 +15199,6 @@ export function injectApiSpacesNamespaceRepoScan<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -15388,7 +15206,7 @@ export function injectApiSpacesNamespaceRepoScan<
       ...getApiSpacesNamespaceRepoScanQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiKernelsNamespaceRepoScanQueryKey(
@@ -15465,7 +15283,6 @@ export function injectApiKernelsNamespaceRepoScan<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -15473,7 +15290,7 @@ export function injectApiKernelsNamespaceRepoScan<
       ...getApiKernelsNamespaceRepoScanQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiRepoTypeNamespaceRepoDiscussionsQueryKey(
@@ -15566,7 +15383,6 @@ export function injectApiRepoTypeNamespaceRepoDiscussions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -15574,7 +15390,7 @@ export function injectApiRepoTypeNamespaceRepoDiscussions<
       ...getApiRepoTypeNamespaceRepoDiscussionsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiRepoTypeNamespaceRepoDiscussionsMutationKey() {
@@ -15644,7 +15460,6 @@ export function injectPostApiRepoTypeNamespaceRepoDiscussions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15657,7 +15472,7 @@ export function injectPostApiRepoTypeNamespaceRepoDiscussions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiRepoTypeNamespaceRepoDiscussionsNumQueryKey(
@@ -15754,7 +15569,6 @@ export function injectApiRepoTypeNamespaceRepoDiscussionsNum<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -15765,7 +15579,7 @@ export function injectApiRepoTypeNamespaceRepoDiscussionsNum<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiRepoTypeNamespaceRepoDiscussionsNumCommentMutationKey() {
@@ -15838,7 +15652,6 @@ export function injectPostApiRepoTypeNamespaceRepoDiscussionsNumComment<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15851,7 +15664,7 @@ export function injectPostApiRepoTypeNamespaceRepoDiscussionsNumComment<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiRepoTypeNamespaceRepoDiscussionsNumStatusMutationKey() {
@@ -15924,7 +15737,6 @@ export function injectPostApiRepoTypeNamespaceRepoDiscussionsNumStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15937,7 +15749,7 @@ export function injectPostApiRepoTypeNamespaceRepoDiscussionsNumStatus<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiRepoTypeNamespaceRepoDiscussionsNumTitleMutationKey() {
@@ -16010,7 +15822,6 @@ export function injectPostApiRepoTypeNamespaceRepoDiscussionsNumTitle<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16023,7 +15834,7 @@ export function injectPostApiRepoTypeNamespaceRepoDiscussionsNumTitle<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiRepoTypeNamespaceRepoDiscussionsNumStorageQueryKey(
@@ -16120,7 +15931,6 @@ export function injectApiRepoTypeNamespaceRepoDiscussionsNumStorage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16131,7 +15941,7 @@ export function injectApiRepoTypeNamespaceRepoDiscussionsNumStorage<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiKernelsQueryKey(args: InferRequestType<typeof client.api.kernels.$get>) {
@@ -16180,12 +15990,11 @@ export function injectApiKernels<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiKernelsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiKernelsNamespaceRepoQueryKey(
@@ -16260,7 +16069,6 @@ export function injectApiKernelsNamespaceRepo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16268,7 +16076,7 @@ export function injectApiKernelsNamespaceRepo<
       ...getApiKernelsNamespaceRepoQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiKernelsNamespaceRepoRevisionRevQueryKey(
@@ -16361,7 +16169,6 @@ export function injectApiKernelsNamespaceRepoRevisionRev<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16369,7 +16176,7 @@ export function injectApiKernelsNamespaceRepoRevisionRev<
       ...getApiKernelsNamespaceRepoRevisionRevQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoLeaderboardQueryKey(
@@ -16460,7 +16267,6 @@ export function injectApiDatasetsNamespaceRepoLeaderboard<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16468,7 +16274,7 @@ export function injectApiDatasetsNamespaceRepoLeaderboard<
       ...getApiDatasetsNamespaceRepoLeaderboardQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoJwtQueryKey(
@@ -16543,7 +16349,6 @@ export function injectApiModelsNamespaceRepoJwt<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16551,7 +16356,7 @@ export function injectApiModelsNamespaceRepoJwt<
       ...getApiModelsNamespaceRepoJwtQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoJwtQueryKey(
@@ -16626,7 +16431,6 @@ export function injectApiSpacesNamespaceRepoJwt<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16634,7 +16438,7 @@ export function injectApiSpacesNamespaceRepoJwt<
       ...getApiSpacesNamespaceRepoJwtQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoJwtQueryKey(
@@ -16711,7 +16515,6 @@ export function injectApiDatasetsNamespaceRepoJwt<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16719,7 +16522,7 @@ export function injectApiDatasetsNamespaceRepoJwt<
       ...getApiDatasetsNamespaceRepoJwtQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiAgentHarnessesQueryKey() {
@@ -16782,12 +16585,11 @@ export function injectApiAgentHarnesses<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiAgentHarnessesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsTagsByTypeQueryKey(
@@ -16858,12 +16660,11 @@ export function injectApiModelsTagsByType<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiModelsTagsByTypeQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsTagsByTypeQueryKey(
@@ -16938,7 +16739,6 @@ export function injectApiDatasetsTagsByType<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16946,7 +16746,7 @@ export function injectApiDatasetsTagsByType<
       ...getApiDatasetsTagsByTypeQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiTrendingQueryKey(args: InferRequestType<typeof client.api.trending.$get>) {
@@ -16995,12 +16795,11 @@ export function injectApiTrending<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiTrendingQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiQuicksearchQueryKey(
@@ -17053,12 +16852,11 @@ export function injectApiQuicksearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiQuicksearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiQuicksearchMutationKey() {
@@ -17099,7 +16897,6 @@ export function injectPostApiQuicksearch<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17111,7 +16908,7 @@ export function injectPostApiQuicksearch<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesHardwareQueryKey() {
@@ -17166,12 +16963,11 @@ export function injectApiSpacesHardware<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiSpacesHardwareQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesTemplatesQueryKey() {
@@ -17226,12 +17022,11 @@ export function injectApiSpacesTemplates<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiSpacesTemplatesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesZeroGpuQuotaQueryKey() {
@@ -17300,12 +17095,11 @@ export function injectApiSpacesZeroGpuQuota<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiSpacesZeroGpuQuotaQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoSecretsQueryKey(
@@ -17384,7 +17178,6 @@ export function injectApiSpacesNamespaceRepoSecrets<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -17392,7 +17185,7 @@ export function injectApiSpacesNamespaceRepoSecrets<
       ...getApiSpacesNamespaceRepoSecretsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiSpacesNamespaceRepoVariablesQueryKey(
@@ -17473,7 +17266,6 @@ export function injectApiSpacesNamespaceRepoVariables<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -17481,7 +17273,7 @@ export function injectApiSpacesNamespaceRepoVariables<
       ...getApiSpacesNamespaceRepoVariablesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiRepoTypeNamespaceRepoDuplicateMutationKey() {
@@ -17549,7 +17341,6 @@ export function injectPostApiRepoTypeNamespaceRepoDuplicate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17562,7 +17353,7 @@ export function injectPostApiRepoTypeNamespaceRepoDuplicate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiRepoTypeNamespaceRepoDuplicateStatusQueryKey(
@@ -17659,7 +17450,6 @@ export function injectApiRepoTypeNamespaceRepoDuplicateStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -17670,7 +17460,7 @@ export function injectApiRepoTypeNamespaceRepoDuplicateStatus<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiReposCreateMutationKey() {
@@ -17713,7 +17503,6 @@ export function injectPostApiReposCreate<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17725,7 +17514,7 @@ export function injectPostApiReposCreate<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApiRepoTypeNamespaceRepoSqlConsoleEmbedIdMutationKey() {
@@ -17800,7 +17589,6 @@ export function injectDeleteApiRepoTypeNamespaceRepoSqlConsoleEmbedId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17813,7 +17601,7 @@ export function injectDeleteApiRepoTypeNamespaceRepoSqlConsoleEmbedId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiRepoTypeNamespaceRepoSqlConsoleEmbedIdMutationKey() {
@@ -17886,7 +17674,6 @@ export function injectPatchApiRepoTypeNamespaceRepoSqlConsoleEmbedId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17899,7 +17686,7 @@ export function injectPatchApiRepoTypeNamespaceRepoSqlConsoleEmbedId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiRepoTypeNamespaceRepoSqlConsoleEmbedIdHideMutationKey() {
@@ -17974,7 +17761,6 @@ export function injectPostApiRepoTypeNamespaceRepoSqlConsoleEmbedIdHide<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17987,7 +17773,7 @@ export function injectPostApiRepoTypeNamespaceRepoSqlConsoleEmbedIdHide<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiRepoTypeNamespaceRepoSqlConsoleEmbedMutationKey() {
@@ -18057,7 +17843,6 @@ export function injectPostApiRepoTypeNamespaceRepoSqlConsoleEmbed<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -18070,7 +17855,7 @@ export function injectPostApiRepoTypeNamespaceRepoSqlConsoleEmbed<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSpacesNamespaceRepoResolveRevPathQueryKey(
@@ -18168,7 +17953,6 @@ export function injectSpacesNamespaceRepoResolveRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18176,7 +17960,7 @@ export function injectSpacesNamespaceRepoResolveRevPath<
       ...getSpacesNamespaceRepoResolveRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDatasetsNamespaceRepoResolveRevPathQueryKey(
@@ -18274,7 +18058,6 @@ export function injectDatasetsNamespaceRepoResolveRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18282,7 +18065,7 @@ export function injectDatasetsNamespaceRepoResolveRevPath<
       ...getDatasetsNamespaceRepoResolveRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNamespaceRepoResolveRevPathQueryKey(
@@ -18374,7 +18157,6 @@ export function injectNamespaceRepoResolveRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18382,7 +18164,7 @@ export function injectNamespaceRepoResolveRevPath<
       ...getNamespaceRepoResolveRevPathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiResolveCacheSpacesNamespaceRepoRevPathQueryKey(
@@ -18480,7 +18262,6 @@ export function injectApiResolveCacheSpacesNamespaceRepoRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18491,7 +18272,7 @@ export function injectApiResolveCacheSpacesNamespaceRepoRevPath<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiResolveCacheDatasetsNamespaceRepoRevPathQueryKey(
@@ -18589,7 +18370,6 @@ export function injectApiResolveCacheDatasetsNamespaceRepoRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18600,7 +18380,7 @@ export function injectApiResolveCacheDatasetsNamespaceRepoRevPath<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiResolveCacheModelsNamespaceRepoRevPathQueryKey(
@@ -18698,7 +18478,6 @@ export function injectApiResolveCacheModelsNamespaceRepoRevPath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18709,7 +18488,7 @@ export function injectApiResolveCacheModelsNamespaceRepoRevPath<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostNamespaceRepoAskAccessMutationKey() {
@@ -18760,7 +18539,6 @@ export function injectPostNamespaceRepoAskAccess<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -18772,7 +18550,7 @@ export function injectPostNamespaceRepoAskAccess<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostDatasetsNamespaceRepoAskAccessMutationKey() {
@@ -18834,7 +18612,6 @@ export function injectPostDatasetsNamespaceRepoAskAccess<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -18847,7 +18624,7 @@ export function injectPostDatasetsNamespaceRepoAskAccess<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNamespaceRepoUserAccessReportQueryKey(
@@ -18926,7 +18703,6 @@ export function injectNamespaceRepoUserAccessReport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18934,7 +18710,7 @@ export function injectNamespaceRepoUserAccessReport<
       ...getNamespaceRepoUserAccessReportQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDatasetsNamespaceRepoUserAccessReportQueryKey(
@@ -19027,7 +18803,6 @@ export function injectDatasetsNamespaceRepoUserAccessReport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -19035,7 +18810,7 @@ export function injectDatasetsNamespaceRepoUserAccessReport<
       ...getDatasetsNamespaceRepoUserAccessReportQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiModelsNamespaceRepoUserAccessRequestStatusQueryKey(
@@ -19132,7 +18907,6 @@ export function injectApiModelsNamespaceRepoUserAccessRequestStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -19143,7 +18917,7 @@ export function injectApiModelsNamespaceRepoUserAccessRequestStatus<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDatasetsNamespaceRepoUserAccessRequestStatusQueryKey(
@@ -19240,7 +19014,6 @@ export function injectApiDatasetsNamespaceRepoUserAccessRequestStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -19251,7 +19024,7 @@ export function injectApiDatasetsNamespaceRepoUserAccessRequestStatus<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiModelsNamespaceRepoUserAccessRequestBatchMutationKey() {
@@ -19321,7 +19094,6 @@ export function injectPostApiModelsNamespaceRepoUserAccessRequestBatch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19334,7 +19106,7 @@ export function injectPostApiModelsNamespaceRepoUserAccessRequestBatch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiDatasetsNamespaceRepoUserAccessRequestBatchMutationKey() {
@@ -19407,7 +19179,6 @@ export function injectPostApiDatasetsNamespaceRepoUserAccessRequestBatch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19420,7 +19191,7 @@ export function injectPostApiDatasetsNamespaceRepoUserAccessRequestBatch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiDailyPapersQueryKey(
@@ -19473,12 +19244,11 @@ export function injectApiDailyPapers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiDailyPapersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiPapersQueryKey(args: InferRequestType<typeof client.api.papers.$get>) {
@@ -19527,12 +19297,11 @@ export function injectApiPapers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiPapersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiPapersIndexMutationKey() {
@@ -19575,7 +19344,6 @@ export function injectPostApiPapersIndex<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19587,7 +19355,7 @@ export function injectPostApiPapersIndex<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiPapersPaperIdQueryKey(
@@ -19656,12 +19424,11 @@ export function injectApiPapersPaperId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiPapersPaperIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiPapersPaperIdCommentMutationKey() {
@@ -19712,7 +19479,6 @@ export function injectPostApiPapersPaperIdComment<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19724,7 +19490,7 @@ export function injectPostApiPapersPaperIdComment<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiPapersPaperIdCommentCommentIdReplyMutationKey() {
@@ -19794,7 +19560,6 @@ export function injectPostApiPapersPaperIdCommentCommentIdReply<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19807,7 +19572,7 @@ export function injectPostApiPapersPaperIdCommentCommentIdReply<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiPapersPaperIdLinksMutationKey() {
@@ -19858,7 +19623,6 @@ export function injectPostApiPapersPaperIdLinks<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19870,7 +19634,7 @@ export function injectPostApiPapersPaperIdLinks<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiPapersPaperIdMediaMutationKey() {
@@ -19921,7 +19685,6 @@ export function injectPostApiPapersPaperIdMedia<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19933,7 +19696,7 @@ export function injectPostApiPapersPaperIdMedia<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiPostsUsernamePostSlugCommentMutationKey() {
@@ -19993,7 +19756,6 @@ export function injectPostApiPostsUsernamePostSlugComment<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20006,7 +19768,7 @@ export function injectPostApiPostsUsernamePostSlugComment<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiPostsUsernamePostSlugCommentCommentIdReplyMutationKey() {
@@ -20076,7 +19838,6 @@ export function injectPostApiPostsUsernamePostSlugCommentCommentIdReply<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20089,7 +19850,7 @@ export function injectPostApiPostsUsernamePostSlugCommentCommentIdReply<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiCollectionsNamespaceSlugIdQueryKey(
@@ -20166,7 +19927,6 @@ export function injectApiCollectionsNamespaceSlugId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -20174,7 +19934,7 @@ export function injectApiCollectionsNamespaceSlugId<
       ...getApiCollectionsNamespaceSlugIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiCollectionsNamespaceSlugIdMutationKey() {
@@ -20230,7 +19990,6 @@ export function injectPatchApiCollectionsNamespaceSlugId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20243,7 +20002,7 @@ export function injectPatchApiCollectionsNamespaceSlugId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiCollectionsNamespaceSlugQueryKey(
@@ -20318,7 +20077,6 @@ export function injectApiCollectionsNamespaceSlug<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -20326,7 +20084,7 @@ export function injectApiCollectionsNamespaceSlug<
       ...getApiCollectionsNamespaceSlugQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchApiCollectionsNamespaceSlugMutationKey() {
@@ -20380,7 +20138,6 @@ export function injectPatchApiCollectionsNamespaceSlug<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20393,7 +20150,7 @@ export function injectPatchApiCollectionsNamespaceSlug<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiCollectionsNamespaceSlugIdItemsMutationKey() {
@@ -20461,7 +20218,6 @@ export function injectPostApiCollectionsNamespaceSlugIdItems<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20474,7 +20230,7 @@ export function injectPostApiCollectionsNamespaceSlugIdItems<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiCollectionsNamespaceSlugItemsMutationKey() {
@@ -20534,7 +20290,6 @@ export function injectPostApiCollectionsNamespaceSlugItems<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20547,7 +20302,7 @@ export function injectPostApiCollectionsNamespaceSlugItems<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiCollectionsQueryKey(
@@ -20600,12 +20355,11 @@ export function injectApiCollections<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiCollectionsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiCollectionsMutationKey() {
@@ -20646,7 +20400,6 @@ export function injectPostApiCollections<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20658,7 +20411,7 @@ export function injectPostApiCollections<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiCollectionsNamespaceSlugIdResourceGroupQueryKey(
@@ -20755,7 +20508,6 @@ export function injectApiCollectionsNamespaceSlugIdResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -20766,7 +20518,7 @@ export function injectApiCollectionsNamespaceSlugIdResourceGroup<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiCollectionsNamespaceSlugIdResourceGroupMutationKey() {
@@ -20836,7 +20588,6 @@ export function injectPostApiCollectionsNamespaceSlugIdResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20849,7 +20600,7 @@ export function injectPostApiCollectionsNamespaceSlugIdResourceGroup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiCollectionsNamespaceSlugResourceGroupQueryKey(
@@ -20946,7 +20697,6 @@ export function injectApiCollectionsNamespaceSlugResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -20957,7 +20707,7 @@ export function injectApiCollectionsNamespaceSlugResourceGroup<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiCollectionsNamespaceSlugResourceGroupMutationKey() {
@@ -21027,7 +20777,6 @@ export function injectPostApiCollectionsNamespaceSlugResourceGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21040,7 +20789,7 @@ export function injectPostApiCollectionsNamespaceSlugResourceGroup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiBucketsNamespaceRepoQueryKey(
@@ -21115,7 +20864,6 @@ export function injectApiBucketsNamespaceRepo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -21123,7 +20871,7 @@ export function injectApiBucketsNamespaceRepo<
       ...getApiBucketsNamespaceRepoQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBucketsNamespaceRepoMutationKey() {
@@ -21174,7 +20922,6 @@ export function injectPostApiBucketsNamespaceRepo<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21186,7 +20933,7 @@ export function injectPostApiBucketsNamespaceRepo<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiContainersNamespaceRepoQueryKey(
@@ -21261,7 +21008,6 @@ export function injectApiContainersNamespaceRepo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -21269,7 +21015,7 @@ export function injectApiContainersNamespaceRepo<
       ...getApiContainersNamespaceRepoQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiContainersNamespaceRepoMutationKey() {
@@ -21323,7 +21069,6 @@ export function injectPostApiContainersNamespaceRepo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21336,7 +21081,7 @@ export function injectPostApiContainersNamespaceRepo<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiBucketsNamespaceRepoSettingsMutationKey() {
@@ -21396,7 +21141,6 @@ export function injectPutApiBucketsNamespaceRepoSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21409,7 +21153,7 @@ export function injectPutApiBucketsNamespaceRepoSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiContainersNamespaceRepoSettingsMutationKey() {
@@ -21473,7 +21217,6 @@ export function injectPutApiContainersNamespaceRepoSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21486,7 +21229,7 @@ export function injectPutApiContainersNamespaceRepoSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiBucketsNamespaceQueryKey(
@@ -21555,12 +21298,11 @@ export function injectApiBucketsNamespace<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiBucketsNamespaceQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiContainersNamespaceQueryKey(
@@ -21635,7 +21377,6 @@ export function injectApiContainersNamespace<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -21643,7 +21384,7 @@ export function injectApiContainersNamespace<
       ...getApiContainersNamespaceQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getBucketsNamespaceRepoResolvePathQueryKey(
@@ -21735,7 +21476,6 @@ export function injectBucketsNamespaceRepoResolvePath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -21743,7 +21483,7 @@ export function injectBucketsNamespaceRepoResolvePath<
       ...getBucketsNamespaceRepoResolvePathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getContainersNamespaceRepoResolvePathQueryKey(
@@ -21837,7 +21577,6 @@ export function injectContainersNamespaceRepoResolvePath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -21845,7 +21584,7 @@ export function injectContainersNamespaceRepoResolvePath<
       ...getContainersNamespaceRepoResolvePathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBucketsNamespaceRepoBatchMutationKey() {
@@ -21901,7 +21640,6 @@ export function injectPostApiBucketsNamespaceRepoBatch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21914,7 +21652,7 @@ export function injectPostApiBucketsNamespaceRepoBatch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiContainersNamespaceRepoBatchMutationKey() {
@@ -21974,7 +21712,6 @@ export function injectPostApiContainersNamespaceRepoBatch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21987,7 +21724,7 @@ export function injectPostApiContainersNamespaceRepoBatch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiBucketsNamespaceRepoTreePathQueryKey(
@@ -22078,7 +21815,6 @@ export function injectApiBucketsNamespaceRepoTreePath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -22086,7 +21822,7 @@ export function injectApiBucketsNamespaceRepoTreePath<
       ...getApiBucketsNamespaceRepoTreePathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiContainersNamespaceRepoTreePathQueryKey(
@@ -22179,7 +21915,6 @@ export function injectApiContainersNamespaceRepoTreePath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -22187,7 +21922,7 @@ export function injectApiContainersNamespaceRepoTreePath<
       ...getApiContainersNamespaceRepoTreePathQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiBucketsNamespaceRepoEventsQueryKey(
@@ -22266,7 +22001,6 @@ export function injectApiBucketsNamespaceRepoEvents<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -22274,7 +22008,7 @@ export function injectApiBucketsNamespaceRepoEvents<
       ...getApiBucketsNamespaceRepoEventsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiBucketsNamespaceRepoPathsInfoMutationKey() {
@@ -22338,7 +22072,6 @@ export function injectPostApiBucketsNamespaceRepoPathsInfo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22351,7 +22084,7 @@ export function injectPostApiBucketsNamespaceRepoPathsInfo<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiContainersNamespaceRepoPathsInfoMutationKey() {
@@ -22417,7 +22150,6 @@ export function injectPostApiContainersNamespaceRepoPathsInfo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22430,7 +22162,7 @@ export function injectPostApiContainersNamespaceRepoPathsInfo<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiJobsHardwareQueryKey() {
@@ -22485,12 +22217,11 @@ export function injectApiJobsHardware<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiJobsHardwareQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApiJobsNamespaceQueryKey(
@@ -22559,12 +22290,11 @@ export function injectApiJobsNamespace<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApiJobsNamespaceQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiJobsNamespaceMutationKey() {
@@ -22611,7 +22341,6 @@ export function injectPostApiJobsNamespace<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22623,7 +22352,7 @@ export function injectPostApiJobsNamespace<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiJobsNamespaceCountQueryKey(
@@ -22698,7 +22427,6 @@ export function injectApiJobsNamespaceCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -22706,7 +22434,7 @@ export function injectApiJobsNamespaceCount<
       ...getApiJobsNamespaceCountQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiJobsNamespaceJobIdQueryKey(
@@ -22781,7 +22509,6 @@ export function injectApiJobsNamespaceJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -22789,7 +22516,7 @@ export function injectApiJobsNamespaceJobId<
       ...getApiJobsNamespaceJobIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiJobsNamespaceJobIdCancelMutationKey() {
@@ -22845,7 +22572,6 @@ export function injectPostApiJobsNamespaceJobIdCancel<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22858,7 +22584,7 @@ export function injectPostApiJobsNamespaceJobIdCancel<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiJobsNamespaceJobIdDuplicateMutationKey() {
@@ -22918,7 +22644,6 @@ export function injectPostApiJobsNamespaceJobIdDuplicate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22931,7 +22656,7 @@ export function injectPostApiJobsNamespaceJobIdDuplicate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiJobsNamespaceJobIdLabelsMutationKey() {
@@ -22987,7 +22712,6 @@ export function injectPutApiJobsNamespaceJobIdLabels<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23000,7 +22724,7 @@ export function injectPutApiJobsNamespaceJobIdLabels<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiJobsNamespaceJobIdExposeMutationKey() {
@@ -23056,7 +22780,6 @@ export function injectPutApiJobsNamespaceJobIdExpose<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23069,7 +22792,7 @@ export function injectPutApiJobsNamespaceJobIdExpose<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiScheduledJobsNamespaceQueryKey(
@@ -23144,7 +22867,6 @@ export function injectApiScheduledJobsNamespace<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -23152,7 +22874,7 @@ export function injectApiScheduledJobsNamespace<
       ...getApiScheduledJobsNamespaceQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiScheduledJobsNamespaceMutationKey() {
@@ -23206,7 +22928,6 @@ export function injectPostApiScheduledJobsNamespace<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23219,7 +22940,7 @@ export function injectPostApiScheduledJobsNamespace<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApiScheduledJobsNamespaceJobIdQueryKey(
@@ -23298,7 +23019,6 @@ export function injectApiScheduledJobsNamespaceJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -23306,7 +23026,7 @@ export function injectApiScheduledJobsNamespaceJobId<
       ...getApiScheduledJobsNamespaceJobIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiScheduledJobsNamespaceJobIdRunMutationKey() {
@@ -23374,7 +23094,6 @@ export function injectPostApiScheduledJobsNamespaceJobIdRun<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23387,7 +23106,7 @@ export function injectPostApiScheduledJobsNamespaceJobIdRun<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApiScheduledJobsNamespaceJobIdScheduleMutationKey() {
@@ -23457,7 +23176,6 @@ export function injectPostApiScheduledJobsNamespaceJobIdSchedule<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23470,7 +23188,7 @@ export function injectPostApiScheduledJobsNamespaceJobIdSchedule<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApiScheduledJobsNamespaceJobIdLabelsMutationKey() {
@@ -23540,7 +23258,6 @@ export function injectPutApiScheduledJobsNamespaceJobIdLabels<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23553,5 +23270,5 @@ export function injectPutApiScheduledJobsNamespaceJobIdLabels<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }

@@ -755,8 +755,8 @@
     }
   },
   "configs/3-1-mega.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "1230161dcec41bee6c2b788bddfe3798ee4ea30dbb134e00ba301e268015acf6",
     "sources": {
@@ -766,10 +766,7 @@
       }
     },
     "typecheck": {
-      "errors": 2,
-      "where": "`index.ts`",
-      "codes": "TS2305 ×2",
-      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   },
   "configs/3-1-minimal-comp.config.ts": {
@@ -815,8 +812,8 @@
     }
   },
   "configs/3-1-path-no-response.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "88161c4d4b66bb63192cb064f4df47eea38a3ef7bcecce1aeaaac2c187c22e7a",
     "sources": {
@@ -826,10 +823,7 @@
       }
     },
     "typecheck": {
-      "errors": 2,
-      "where": "`index.ts`",
-      "codes": "TS2305 ×2",
-      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   },
   "configs/3-1-path-var-empty-pathitem.config.ts": {

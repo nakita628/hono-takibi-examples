@@ -10,6 +10,7 @@
     "@angular/common": "catalog:",
     "@angular/core": "catalog:",
     "@hono/zod-openapi": "catalog:",
+    "@tanstack/angular-query": "catalog:",
     "@tanstack/angular-query-experimental": "catalog:",
     "@tanstack/preact-query": "catalog:",
     "@tanstack/react-query": "catalog:",

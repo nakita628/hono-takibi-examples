@@ -1,17 +1,9 @@
-import {
-  injectQuery,
-  injectMutation,
-  queryOptions,
-  mutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, injectMutation, queryOptions, mutationOptions } from '@tanstack/angular-query'
 import type {
   CreateQueryOptions,
   CreateMutationOptions,
   DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+} from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -188,7 +180,7 @@ export function getPrometheusKey() {
   return ['_prometheus'] as const
 }
 
-export function getQueryKey() {
+export function getQueryKey2() {
   return ['_query'] as const
 }
 
@@ -328,7 +320,7 @@ export function getXpackKey() {
   return ['_xpack'] as const
 }
 
-export function getAliasKey() {
+export function getAliasKey2() {
   return ['{alias}'] as const
 }
 
@@ -397,12 +389,11 @@ export function injectAsyncSearchId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAsyncSearchIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteAsyncSearchIdMutationKey() {
@@ -449,7 +440,6 @@ export function injectDeleteAsyncSearchId<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -461,7 +451,7 @@ export function injectDeleteAsyncSearchId<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAsyncSearchStatusIdQueryKey(
@@ -532,12 +522,11 @@ export function injectAsyncSearchStatusId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAsyncSearchStatusIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostAsyncSearchMutationKey() {
@@ -577,7 +566,6 @@ export function injectPostAsyncSearch<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -589,7 +577,7 @@ export function injectPostAsyncSearch<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexAsyncSearchMutationKey() {
@@ -638,7 +626,6 @@ export function injectPostIndexAsyncSearch<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -650,7 +637,7 @@ export function injectPostIndexAsyncSearch<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutBulkMutationKey() {
@@ -686,7 +673,6 @@ export function injectPutBulk<TError = DefaultError, TOnMutateResult = unknown>(
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -696,7 +682,7 @@ export function injectPutBulk<TError = DefaultError, TOnMutateResult = unknown>(
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostBulkMutationKey() {
@@ -732,7 +718,6 @@ export function injectPostBulk<TError = DefaultError, TOnMutateResult = unknown>
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -742,7 +727,7 @@ export function injectPostBulk<TError = DefaultError, TOnMutateResult = unknown>
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexBulkMutationKey() {
@@ -786,7 +771,6 @@ export function injectPutIndexBulk<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -796,7 +780,7 @@ export function injectPutIndexBulk<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexBulkMutationKey() {
@@ -840,7 +824,6 @@ export function injectPostIndexBulk<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -850,7 +833,7 @@ export function injectPostIndexBulk<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostReindexTaskIdCancelMutationKey() {
@@ -901,7 +884,6 @@ export function injectPostReindexTaskIdCancel<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -913,7 +895,7 @@ export function injectPostReindexTaskIdCancel<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatAliasesQueryKey(args: InferRequestType<typeof client._cat.aliases.$get>) {
@@ -962,12 +944,11 @@ export function injectCatAliases<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatAliasesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatAliasesNameQueryKey(
@@ -1031,12 +1012,11 @@ export function injectCatAliasesName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatAliasesNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatAllocationQueryKey(
@@ -1089,12 +1069,11 @@ export function injectCatAllocation<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatAllocationQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatAllocationNodeIdQueryKey(
@@ -1165,12 +1144,11 @@ export function injectCatAllocationNodeId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatAllocationNodeIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatCircuitBreakerQueryKey(
@@ -1225,12 +1203,11 @@ export function injectCatCircuitBreaker<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatCircuitBreakerQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatCircuitBreakerCircuitBreakerPatternsQueryKey(
@@ -1317,7 +1294,6 @@ export function injectCatCircuitBreakerCircuitBreakerPatterns<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1328,7 +1304,7 @@ export function injectCatCircuitBreakerCircuitBreakerPatterns<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatComponentTemplatesQueryKey(
@@ -1395,7 +1371,6 @@ export function injectCatComponentTemplates<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1403,7 +1378,7 @@ export function injectCatComponentTemplates<
       ...getCatComponentTemplatesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatComponentTemplatesNameQueryKey(
@@ -1478,7 +1453,6 @@ export function injectCatComponentTemplatesName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1486,7 +1460,7 @@ export function injectCatComponentTemplatesName<
       ...getCatComponentTemplatesNameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatCountQueryKey(args: InferRequestType<typeof client._cat.count.$get>) {
@@ -1535,12 +1509,11 @@ export function injectCatCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatCountQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostCatCountMutationKey() {
@@ -1578,7 +1551,6 @@ export function injectPostCatCount<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1588,7 +1560,7 @@ export function injectPostCatCount<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatCountIndexQueryKey(
@@ -1652,12 +1624,11 @@ export function injectCatCountIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatCountIndexQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostCatCountIndexMutationKey() {
@@ -1702,7 +1673,6 @@ export function injectPostCatCountIndex<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1714,7 +1684,7 @@ export function injectPostCatCountIndex<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatFielddataQueryKey(args: InferRequestType<typeof client._cat.fielddata.$get>) {
@@ -1765,12 +1735,11 @@ export function injectCatFielddata<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatFielddataQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatFielddataFieldsQueryKey(
@@ -1839,12 +1808,11 @@ export function injectCatFielddataFields<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatFielddataFieldsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatHealthQueryKey(args: InferRequestType<typeof client._cat.health.$get>) {
@@ -1893,12 +1861,11 @@ export function injectCatHealth<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatHealthQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatQueryKey() {
@@ -1940,12 +1907,11 @@ export function injectCat<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatIndicesQueryKey(args: InferRequestType<typeof client._cat.indices.$get>) {
@@ -1994,12 +1960,11 @@ export function injectCatIndices<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatIndicesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatIndicesIndexQueryKey(
@@ -2068,12 +2033,11 @@ export function injectCatIndicesIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatIndicesIndexQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatMasterQueryKey(args: InferRequestType<typeof client._cat.master.$get>) {
@@ -2122,12 +2086,11 @@ export function injectCatMaster<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatMasterQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatMlDataFrameAnalyticsQueryKey(
@@ -2196,7 +2159,6 @@ export function injectCatMlDataFrameAnalytics<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2204,7 +2166,7 @@ export function injectCatMlDataFrameAnalytics<
       ...getCatMlDataFrameAnalyticsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatMlDataFrameAnalyticsIdQueryKey(
@@ -2279,7 +2241,6 @@ export function injectCatMlDataFrameAnalyticsId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2287,7 +2248,7 @@ export function injectCatMlDataFrameAnalyticsId<
       ...getCatMlDataFrameAnalyticsIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatMlDatafeedsQueryKey(
@@ -2342,12 +2303,11 @@ export function injectCatMlDatafeeds<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatMlDatafeedsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatMlDatafeedsDatafeedIdQueryKey(
@@ -2422,7 +2382,6 @@ export function injectCatMlDatafeedsDatafeedId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2430,7 +2389,7 @@ export function injectCatMlDatafeedsDatafeedId<
       ...getCatMlDatafeedsDatafeedIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatMlAnomalyDetectorsQueryKey(
@@ -2497,7 +2456,6 @@ export function injectCatMlAnomalyDetectors<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2505,7 +2463,7 @@ export function injectCatMlAnomalyDetectors<
       ...getCatMlAnomalyDetectorsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatMlAnomalyDetectorsJobIdQueryKey(
@@ -2580,7 +2538,6 @@ export function injectCatMlAnomalyDetectorsJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2588,7 +2545,7 @@ export function injectCatMlAnomalyDetectorsJobId<
       ...getCatMlAnomalyDetectorsJobIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatMlTrainedModelsQueryKey(
@@ -2651,12 +2608,11 @@ export function injectCatMlTrainedModels<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatMlTrainedModelsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatMlTrainedModelsModelIdQueryKey(
@@ -2731,7 +2687,6 @@ export function injectCatMlTrainedModelsModelId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2739,7 +2694,7 @@ export function injectCatMlTrainedModelsModelId<
       ...getCatMlTrainedModelsModelIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatNodeattrsQueryKey(args: InferRequestType<typeof client._cat.nodeattrs.$get>) {
@@ -2790,12 +2745,11 @@ export function injectCatNodeattrs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatNodeattrsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatNodesQueryKey(args: InferRequestType<typeof client._cat.nodes.$get>) {
@@ -2844,12 +2798,11 @@ export function injectCatNodes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatNodesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatPendingTasksQueryKey(
@@ -2904,12 +2857,11 @@ export function injectCatPendingTasks<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatPendingTasksQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatPluginsQueryKey(args: InferRequestType<typeof client._cat.plugins.$get>) {
@@ -2958,12 +2910,11 @@ export function injectCatPlugins<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatPluginsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatRecoveryQueryKey(args: InferRequestType<typeof client._cat.recovery.$get>) {
@@ -3014,12 +2965,11 @@ export function injectCatRecovery<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatRecoveryQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatRecoveryIndexQueryKey(
@@ -3088,12 +3038,11 @@ export function injectCatRecoveryIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatRecoveryIndexQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatRepositoriesQueryKey(
@@ -3148,12 +3097,11 @@ export function injectCatRepositories<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatRepositoriesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatSegmentsQueryKey(args: InferRequestType<typeof client._cat.segments.$get>) {
@@ -3204,12 +3152,11 @@ export function injectCatSegments<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatSegmentsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatSegmentsIndexQueryKey(
@@ -3278,12 +3225,11 @@ export function injectCatSegmentsIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatSegmentsIndexQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatShardsQueryKey(args: InferRequestType<typeof client._cat.shards.$get>) {
@@ -3332,12 +3278,11 @@ export function injectCatShards<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatShardsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatShardsIndexQueryKey(
@@ -3401,12 +3346,11 @@ export function injectCatShardsIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatShardsIndexQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatSnapshotsQueryKey(args: InferRequestType<typeof client._cat.snapshots.$get>) {
@@ -3457,12 +3401,11 @@ export function injectCatSnapshots<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatSnapshotsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatSnapshotsRepositoryQueryKey(
@@ -3537,7 +3480,6 @@ export function injectCatSnapshotsRepository<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3545,7 +3487,7 @@ export function injectCatSnapshotsRepository<
       ...getCatSnapshotsRepositoryQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatTasksQueryKey(args: InferRequestType<typeof client._cat.tasks.$get>) {
@@ -3594,12 +3536,11 @@ export function injectCatTasks<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatTasksQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatTemplatesQueryKey(args: InferRequestType<typeof client._cat.templates.$get>) {
@@ -3650,12 +3591,11 @@ export function injectCatTemplates<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatTemplatesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatTemplatesNameQueryKey(
@@ -3724,12 +3664,11 @@ export function injectCatTemplatesName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatTemplatesNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatThreadPoolQueryKey(
@@ -3782,12 +3721,11 @@ export function injectCatThreadPool<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatThreadPoolQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatThreadPoolThreadPoolPatternsQueryKey(
@@ -3862,7 +3800,6 @@ export function injectCatThreadPoolThreadPoolPatterns<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3870,7 +3807,7 @@ export function injectCatThreadPoolThreadPoolPatterns<
       ...getCatThreadPoolThreadPoolPatternsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCatTransformsQueryKey(
@@ -3923,12 +3860,11 @@ export function injectCatTransforms<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCatTransformsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getCatTransformsTransformIdQueryKey(
@@ -4003,7 +3939,6 @@ export function injectCatTransformsTransformId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4011,7 +3946,7 @@ export function injectCatTransformsTransformId<
       ...getCatTransformsTransformIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCcrAutoFollowNameQueryKey(
@@ -4080,12 +4015,11 @@ export function injectCcrAutoFollowName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCcrAutoFollowNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutCcrAutoFollowNameMutationKey() {
@@ -4132,7 +4066,6 @@ export function injectPutCcrAutoFollowName<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4144,7 +4077,7 @@ export function injectPutCcrAutoFollowName<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteCcrAutoFollowNameMutationKey() {
@@ -4193,7 +4126,6 @@ export function injectDeleteCcrAutoFollowName<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4205,7 +4137,7 @@ export function injectDeleteCcrAutoFollowName<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexCcrFollowMutationKey() {
@@ -4254,7 +4186,6 @@ export function injectPutIndexCcrFollow<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4266,7 +4197,7 @@ export function injectPutIndexCcrFollow<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexCcrInfoQueryKey(
@@ -4332,12 +4263,11 @@ export function injectIndexCcrInfo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexCcrInfoQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexCcrStatsQueryKey(
@@ -4405,12 +4335,11 @@ export function injectIndexCcrStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexCcrStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCcrForgetFollowerMutationKey() {
@@ -4461,7 +4390,6 @@ export function injectPostIndexCcrForgetFollower<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4473,7 +4401,7 @@ export function injectPostIndexCcrForgetFollower<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCcrAutoFollowQueryKey(
@@ -4526,12 +4454,11 @@ export function injectCcrAutoFollow<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCcrAutoFollowQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostCcrAutoFollowNamePauseMutationKey() {
@@ -4582,7 +4509,6 @@ export function injectPostCcrAutoFollowNamePause<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4594,7 +4520,7 @@ export function injectPostCcrAutoFollowNamePause<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCcrPauseFollowMutationKey() {
@@ -4645,7 +4571,6 @@ export function injectPostIndexCcrPauseFollow<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4657,7 +4582,7 @@ export function injectPostIndexCcrPauseFollow<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostCcrAutoFollowNameResumeMutationKey() {
@@ -4708,7 +4633,6 @@ export function injectPostCcrAutoFollowNameResume<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4720,7 +4644,7 @@ export function injectPostCcrAutoFollowNameResume<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCcrResumeFollowMutationKey() {
@@ -4771,7 +4695,6 @@ export function injectPostIndexCcrResumeFollow<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4783,7 +4706,7 @@ export function injectPostIndexCcrResumeFollow<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCcrStatsQueryKey(args: InferRequestType<typeof client._ccr.stats.$get>) {
@@ -4832,12 +4755,11 @@ export function injectCcrStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCcrStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCcrUnfollowMutationKey() {
@@ -4888,7 +4810,6 @@ export function injectPostIndexCcrUnfollow<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4900,7 +4821,7 @@ export function injectPostIndexCcrUnfollow<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSearchScrollQueryKey(args: InferRequestType<typeof client._search.scroll.$get>) {
@@ -4951,12 +4872,11 @@ export function injectSearchScroll<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSearchScrollQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSearchScrollMutationKey() {
@@ -4997,7 +4917,6 @@ export function injectPostSearchScroll<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5009,7 +4928,7 @@ export function injectPostSearchScroll<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSearchScrollMutationKey() {
@@ -5052,7 +4971,6 @@ export function injectDeleteSearchScroll<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5064,7 +4982,7 @@ export function injectDeleteSearchScroll<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSearchScrollScrollIdQueryKey(
@@ -5139,7 +5057,6 @@ export function injectSearchScrollScrollId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5147,7 +5064,7 @@ export function injectSearchScrollScrollId<
       ...getSearchScrollScrollIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSearchScrollScrollIdMutationKey() {
@@ -5198,7 +5115,6 @@ export function injectPostSearchScrollScrollId<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5210,7 +5126,7 @@ export function injectPostSearchScrollScrollId<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSearchScrollScrollIdMutationKey() {
@@ -5261,7 +5177,6 @@ export function injectDeleteSearchScrollScrollId<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5273,7 +5188,7 @@ export function injectDeleteSearchScrollScrollId<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeletePitMutationKey() {
@@ -5309,7 +5224,6 @@ export function injectDeletePit<TError = DefaultError, TOnMutateResult = unknown
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5319,7 +5233,7 @@ export function injectDeletePit<TError = DefaultError, TOnMutateResult = unknown
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getClusterAllocationExplainQueryKey(
@@ -5388,7 +5302,6 @@ export function injectClusterAllocationExplain<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5396,7 +5309,7 @@ export function injectClusterAllocationExplain<
       ...getClusterAllocationExplainQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostClusterAllocationExplainMutationKey() {
@@ -5446,7 +5359,6 @@ export function injectPostClusterAllocationExplain<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5459,7 +5371,7 @@ export function injectPostClusterAllocationExplain<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getComponentTemplateNameQueryKey(
@@ -5534,7 +5446,6 @@ export function injectComponentTemplateName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5542,7 +5453,7 @@ export function injectComponentTemplateName<
       ...getComponentTemplateNameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutComponentTemplateNameMutationKey() {
@@ -5591,7 +5502,6 @@ export function injectPutComponentTemplateName<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5603,7 +5513,7 @@ export function injectPutComponentTemplateName<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostComponentTemplateNameMutationKey() {
@@ -5654,7 +5564,6 @@ export function injectPostComponentTemplateName<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5666,7 +5575,7 @@ export function injectPostComponentTemplateName<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteComponentTemplateNameMutationKey() {
@@ -5717,7 +5626,6 @@ export function injectDeleteComponentTemplateName<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5729,7 +5637,7 @@ export function injectDeleteComponentTemplateName<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHeadComponentTemplateNameMutationKey() {
@@ -5780,7 +5688,6 @@ export function injectHeadComponentTemplateName<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5792,7 +5699,7 @@ export function injectHeadComponentTemplateName<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostClusterVotingConfigExclusionsMutationKey() {
@@ -5846,7 +5753,6 @@ export function injectPostClusterVotingConfigExclusions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5859,7 +5765,7 @@ export function injectPostClusterVotingConfigExclusions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteClusterVotingConfigExclusionsMutationKey() {
@@ -5913,7 +5819,6 @@ export function injectDeleteClusterVotingConfigExclusions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5926,7 +5831,7 @@ export function injectDeleteClusterVotingConfigExclusions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getComponentTemplateQueryKey(
@@ -5981,12 +5886,11 @@ export function injectComponentTemplate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getComponentTemplateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getClusterSettingsQueryKey(
@@ -6041,12 +5945,11 @@ export function injectClusterSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getClusterSettingsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutClusterSettingsMutationKey() {
@@ -6089,7 +5992,6 @@ export function injectPutClusterSettings<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6101,7 +6003,7 @@ export function injectPutClusterSettings<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getClusterHealthQueryKey(
@@ -6154,12 +6056,11 @@ export function injectClusterHealth<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getClusterHealthQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getClusterHealthIndexQueryKey(
@@ -6228,12 +6129,11 @@ export function injectClusterHealthIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getClusterHealthIndexQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getInfoTargetQueryKey(
@@ -6293,12 +6193,11 @@ export function injectInfoTarget<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getInfoTargetQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getClusterPendingTasksQueryKey(
@@ -6361,12 +6260,11 @@ export function injectClusterPendingTasks<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getClusterPendingTasksQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getRemoteInfoQueryKey() {
@@ -6414,12 +6312,11 @@ export function injectRemoteInfo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRemoteInfoQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostClusterRerouteMutationKey() {
@@ -6462,7 +6359,6 @@ export function injectPostClusterReroute<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6474,7 +6370,7 @@ export function injectPostClusterReroute<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getClusterStateQueryKey(args: InferRequestType<typeof client._cluster.state.$get>) {
@@ -6525,12 +6421,11 @@ export function injectClusterState<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getClusterStateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getClusterStateMetricQueryKey(
@@ -6599,12 +6494,11 @@ export function injectClusterStateMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getClusterStateMetricQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getClusterStateMetricIndexQueryKey(
@@ -6679,7 +6573,6 @@ export function injectClusterStateMetricIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6687,7 +6580,7 @@ export function injectClusterStateMetricIndex<
       ...getClusterStateMetricIndexQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getClusterStatsQueryKey(args: InferRequestType<typeof client._cluster.stats.$get>) {
@@ -6738,12 +6631,11 @@ export function injectClusterStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getClusterStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getClusterStatsNodesNodeIdQueryKey(
@@ -6818,7 +6710,6 @@ export function injectClusterStatsNodesNodeId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6826,7 +6717,7 @@ export function injectClusterStatsNodesNodeId<
       ...getClusterStatsNodesNodeIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdCheckInMutationKey() {
@@ -6880,7 +6771,6 @@ export function injectPutConnectorConnectorIdCheckIn<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6893,7 +6783,7 @@ export function injectPutConnectorConnectorIdCheckIn<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConnectorConnectorIdQueryKey(
@@ -6964,7 +6854,6 @@ export function injectConnectorConnectorId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6972,7 +6861,7 @@ export function injectConnectorConnectorId<
       ...getConnectorConnectorIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdMutationKey() {
@@ -7021,7 +6910,6 @@ export function injectPutConnectorConnectorId<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7033,7 +6921,7 @@ export function injectPutConnectorConnectorId<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteConnectorConnectorIdMutationKey() {
@@ -7084,7 +6972,6 @@ export function injectDeleteConnectorConnectorId<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7096,7 +6983,7 @@ export function injectDeleteConnectorConnectorId<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConnectorQueryKey(args: InferRequestType<typeof client._connector.$get>) {
@@ -7145,12 +7032,11 @@ export function injectConnector<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getConnectorQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorMutationKey() {
@@ -7188,7 +7074,6 @@ export function injectPutConnector<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7198,7 +7083,7 @@ export function injectPutConnector<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostConnectorMutationKey() {
@@ -7236,7 +7121,6 @@ export function injectPostConnector<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7246,7 +7130,7 @@ export function injectPostConnector<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorSyncJobConnectorSyncJobIdCancelMutationKey() {
@@ -7316,7 +7200,6 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdCancel<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7329,7 +7212,7 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdCancel<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorSyncJobConnectorSyncJobIdCheckInMutationKey() {
@@ -7399,7 +7282,6 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdCheckIn<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7412,7 +7294,7 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdCheckIn<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorSyncJobConnectorSyncJobIdClaimMutationKey() {
@@ -7482,7 +7364,6 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdClaim<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7495,7 +7376,7 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdClaim<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConnectorSyncJobConnectorSyncJobIdQueryKey(
@@ -7576,7 +7457,6 @@ export function injectConnectorSyncJobConnectorSyncJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -7584,7 +7464,7 @@ export function injectConnectorSyncJobConnectorSyncJobId<
       ...getConnectorSyncJobConnectorSyncJobIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteConnectorSyncJobConnectorSyncJobIdMutationKey() {
@@ -7648,7 +7528,6 @@ export function injectDeleteConnectorSyncJobConnectorSyncJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7661,7 +7540,7 @@ export function injectDeleteConnectorSyncJobConnectorSyncJobId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorSyncJobConnectorSyncJobIdErrorMutationKey() {
@@ -7731,7 +7610,6 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdError<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7744,7 +7622,7 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdError<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConnectorSyncJobQueryKey(
@@ -7799,12 +7677,11 @@ export function injectConnectorSyncJob<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getConnectorSyncJobQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostConnectorSyncJobMutationKey() {
@@ -7849,7 +7726,6 @@ export function injectPostConnectorSyncJob<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7861,7 +7737,7 @@ export function injectPostConnectorSyncJob<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorSyncJobConnectorSyncJobIdStatsMutationKey() {
@@ -7931,7 +7807,6 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7944,7 +7819,7 @@ export function injectPutConnectorSyncJobConnectorSyncJobIdStats<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdFilteringActivateMutationKey() {
@@ -8014,7 +7889,6 @@ export function injectPutConnectorConnectorIdFilteringActivate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8027,7 +7901,7 @@ export function injectPutConnectorConnectorIdFilteringActivate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdApiKeyIdMutationKey() {
@@ -8083,7 +7957,6 @@ export function injectPutConnectorConnectorIdApiKeyId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8096,7 +7969,7 @@ export function injectPutConnectorConnectorIdApiKeyId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdConfigurationMutationKey() {
@@ -8152,7 +8025,6 @@ export function injectPutConnectorConnectorIdConfiguration<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8165,7 +8037,7 @@ export function injectPutConnectorConnectorIdConfiguration<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdErrorMutationKey() {
@@ -8219,7 +8091,6 @@ export function injectPutConnectorConnectorIdError<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8232,7 +8103,7 @@ export function injectPutConnectorConnectorIdError<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdFeaturesMutationKey() {
@@ -8286,7 +8157,6 @@ export function injectPutConnectorConnectorIdFeatures<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8299,7 +8169,7 @@ export function injectPutConnectorConnectorIdFeatures<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdFilteringMutationKey() {
@@ -8353,7 +8223,6 @@ export function injectPutConnectorConnectorIdFiltering<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8366,7 +8235,7 @@ export function injectPutConnectorConnectorIdFiltering<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdFilteringValidationMutationKey() {
@@ -8436,7 +8305,6 @@ export function injectPutConnectorConnectorIdFilteringValidation<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8449,7 +8317,7 @@ export function injectPutConnectorConnectorIdFilteringValidation<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdIndexNameMutationKey() {
@@ -8505,7 +8373,6 @@ export function injectPutConnectorConnectorIdIndexName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8518,7 +8385,7 @@ export function injectPutConnectorConnectorIdIndexName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdNameMutationKey() {
@@ -8569,7 +8436,6 @@ export function injectPutConnectorConnectorIdName<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8581,7 +8447,7 @@ export function injectPutConnectorConnectorIdName<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdNativeMutationKey() {
@@ -8635,7 +8501,6 @@ export function injectPutConnectorConnectorIdNative<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8648,7 +8513,7 @@ export function injectPutConnectorConnectorIdNative<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdPipelineMutationKey() {
@@ -8702,7 +8567,6 @@ export function injectPutConnectorConnectorIdPipeline<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8715,7 +8579,7 @@ export function injectPutConnectorConnectorIdPipeline<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdSchedulingMutationKey() {
@@ -8771,7 +8635,6 @@ export function injectPutConnectorConnectorIdScheduling<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8784,7 +8647,7 @@ export function injectPutConnectorConnectorIdScheduling<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdServiceTypeMutationKey() {
@@ -8840,7 +8703,6 @@ export function injectPutConnectorConnectorIdServiceType<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8853,7 +8715,7 @@ export function injectPutConnectorConnectorIdServiceType<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutConnectorConnectorIdStatusMutationKey() {
@@ -8907,7 +8769,6 @@ export function injectPutConnectorConnectorIdStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8920,7 +8781,7 @@ export function injectPutConnectorConnectorIdStatus<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getCountQueryKey(args: InferRequestType<typeof client._count.$get>) {
@@ -8963,12 +8824,11 @@ export function injectCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getCountQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostCountMutationKey() {
@@ -9004,7 +8864,6 @@ export function injectPostCount<TError = DefaultError, TOnMutateResult = unknown
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9014,7 +8873,7 @@ export function injectPostCount<TError = DefaultError, TOnMutateResult = unknown
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexCountQueryKey(
@@ -9078,12 +8937,11 @@ export function injectIndexCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexCountQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCountMutationKey() {
@@ -9127,7 +8985,6 @@ export function injectPostIndexCount<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9139,7 +8996,7 @@ export function injectPostIndexCount<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexCreateIdMutationKey() {
@@ -9188,7 +9045,6 @@ export function injectPutIndexCreateId<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9200,7 +9056,7 @@ export function injectPutIndexCreateId<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCreateIdMutationKey() {
@@ -9249,7 +9105,6 @@ export function injectPostIndexCreateId<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9261,7 +9116,7 @@ export function injectPostIndexCreateId<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostDanglingIndexUuidMutationKey() {
@@ -9308,7 +9163,6 @@ export function injectPostDanglingIndexUuid<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9320,7 +9174,7 @@ export function injectPostDanglingIndexUuid<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteDanglingIndexUuidMutationKey() {
@@ -9369,7 +9223,6 @@ export function injectDeleteDanglingIndexUuid<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9381,7 +9234,7 @@ export function injectDeleteDanglingIndexUuid<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDanglingQueryKey() {
@@ -9429,12 +9282,11 @@ export function injectDangling<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getDanglingQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexDocIdQueryKey(
@@ -9500,12 +9352,11 @@ export function injectIndexDocId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexDocIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexDocIdMutationKey() {
@@ -9551,7 +9402,6 @@ export function injectPutIndexDocId<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9561,7 +9411,7 @@ export function injectPutIndexDocId<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexDocIdMutationKey() {
@@ -9607,7 +9457,6 @@ export function injectPostIndexDocId<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9619,7 +9468,7 @@ export function injectPostIndexDocId<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIndexDocIdMutationKey() {
@@ -9668,7 +9517,6 @@ export function injectDeleteIndexDocId<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9680,7 +9528,7 @@ export function injectDeleteIndexDocId<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHeadIndexDocIdMutationKey() {
@@ -9726,7 +9574,6 @@ export function injectHeadIndexDocId<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9738,7 +9585,7 @@ export function injectHeadIndexDocId<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexDeleteByQueryMutationKey() {
@@ -9789,7 +9636,6 @@ export function injectPostIndexDeleteByQuery<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9801,7 +9647,7 @@ export function injectPostIndexDeleteByQuery<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostDeleteByQueryTaskIdRethrottleMutationKey() {
@@ -9857,7 +9703,6 @@ export function injectPostDeleteByQueryTaskIdRethrottle<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9870,7 +9715,7 @@ export function injectPostDeleteByQueryTaskIdRethrottle<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getScriptsIdQueryKey(
@@ -9925,12 +9770,11 @@ export function injectScriptsId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getScriptsIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutScriptsIdMutationKey() {
@@ -9972,7 +9816,6 @@ export function injectPutScriptsId<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9982,7 +9825,7 @@ export function injectPutScriptsId<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostScriptsIdMutationKey() {
@@ -10026,7 +9869,6 @@ export function injectPostScriptsId<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10036,7 +9878,7 @@ export function injectPostScriptsId<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteScriptsIdMutationKey() {
@@ -10080,7 +9922,6 @@ export function injectDeleteScriptsId<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10092,7 +9933,7 @@ export function injectDeleteScriptsId<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEncryptionResetMutationKey() {
@@ -10135,7 +9976,6 @@ export function injectPostEncryptionReset<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10147,7 +9987,7 @@ export function injectPostEncryptionReset<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEnrichPolicyNameQueryKey(
@@ -10216,12 +10056,11 @@ export function injectEnrichPolicyName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEnrichPolicyNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutEnrichPolicyNameMutationKey() {
@@ -10268,7 +10107,6 @@ export function injectPutEnrichPolicyName<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10280,7 +10118,7 @@ export function injectPutEnrichPolicyName<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteEnrichPolicyNameMutationKey() {
@@ -10329,7 +10167,6 @@ export function injectDeleteEnrichPolicyName<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10341,7 +10178,7 @@ export function injectDeleteEnrichPolicyName<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutEnrichPolicyNameExecuteMutationKey() {
@@ -10392,7 +10229,6 @@ export function injectPutEnrichPolicyNameExecute<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10404,7 +10240,7 @@ export function injectPutEnrichPolicyNameExecute<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEnrichPolicyQueryKey(args: InferRequestType<typeof client._enrich.policy.$get>) {
@@ -10455,12 +10291,11 @@ export function injectEnrichPolicy<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEnrichPolicyQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEnrichStatsQueryKey(args: InferRequestType<typeof client._enrich._stats.$get>) {
@@ -10511,12 +10346,11 @@ export function injectEnrichStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEnrichStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEqlSearchIdQueryKey(
@@ -10580,12 +10414,11 @@ export function injectEqlSearchId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEqlSearchIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteEqlSearchIdMutationKey() {
@@ -10630,7 +10463,6 @@ export function injectDeleteEqlSearchId<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10642,7 +10474,7 @@ export function injectDeleteEqlSearchId<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEqlSearchStatusIdQueryKey(
@@ -10711,12 +10543,11 @@ export function injectEqlSearchStatusId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEqlSearchStatusIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexEqlSearchQueryKey(
@@ -10784,12 +10615,11 @@ export function injectIndexEqlSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexEqlSearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexEqlSearchMutationKey() {
@@ -10838,7 +10668,6 @@ export function injectPostIndexEqlSearch<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10850,7 +10679,7 @@ export function injectPostIndexEqlSearch<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostQueryAsyncMutationKey() {
@@ -10890,7 +10719,6 @@ export function injectPostQueryAsync<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10902,7 +10730,7 @@ export function injectPostQueryAsync<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryAsyncIdQueryKey(
@@ -10966,12 +10794,11 @@ export function injectQueryAsyncId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryAsyncIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteQueryAsyncIdMutationKey() {
@@ -11018,7 +10845,6 @@ export function injectDeleteQueryAsyncId<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11030,7 +10856,7 @@ export function injectDeleteQueryAsyncId<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostQueryAsyncIdStopMutationKey() {
@@ -11079,7 +10905,6 @@ export function injectPostQueryAsyncIdStop<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11091,7 +10916,7 @@ export function injectPostQueryAsyncIdStop<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryDataSourceNameQueryKey(
@@ -11162,12 +10987,11 @@ export function injectQueryDataSourceName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryDataSourceNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutQueryDataSourceNameMutationKey() {
@@ -11216,7 +11040,6 @@ export function injectPutQueryDataSourceName<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11228,7 +11051,7 @@ export function injectPutQueryDataSourceName<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteQueryDataSourceNameMutationKey() {
@@ -11279,7 +11102,6 @@ export function injectDeleteQueryDataSourceName<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11291,7 +11113,7 @@ export function injectDeleteQueryDataSourceName<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryDatasetNameQueryKey(
@@ -11360,12 +11182,11 @@ export function injectQueryDatasetName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryDatasetNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutQueryDatasetNameMutationKey() {
@@ -11412,7 +11233,6 @@ export function injectPutQueryDatasetName<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11424,7 +11244,7 @@ export function injectPutQueryDatasetName<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteQueryDatasetNameMutationKey() {
@@ -11473,7 +11293,6 @@ export function injectDeleteQueryDatasetName<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11485,7 +11304,7 @@ export function injectDeleteQueryDatasetName<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryViewNameQueryKey(
@@ -11549,12 +11368,11 @@ export function injectQueryViewName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryViewNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutQueryViewNameMutationKey() {
@@ -11599,7 +11417,6 @@ export function injectPutQueryViewName<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11611,7 +11428,7 @@ export function injectPutQueryViewName<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteQueryViewNameMutationKey() {
@@ -11658,7 +11475,6 @@ export function injectDeleteQueryViewName<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11670,7 +11486,7 @@ export function injectDeleteQueryViewName<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryDataSourceQueryKey(
@@ -11725,12 +11541,11 @@ export function injectQueryDataSource<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryDataSourceQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getQueryDatasetQueryKey(args: InferRequestType<typeof client._query.dataset.$get>) {
@@ -11781,12 +11596,11 @@ export function injectQueryDataset<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryDatasetQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getQueryQueriesIdQueryKey(
@@ -11850,12 +11664,11 @@ export function injectQueryQueriesId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryQueriesIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getQueryViewQueryKey() {
@@ -11903,12 +11716,11 @@ export function injectQueryView<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryViewQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getQueryQueriesQueryKey() {
@@ -11958,12 +11770,11 @@ export function injectQueryQueries<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryQueriesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostQueryMutationKey() {
@@ -11999,7 +11810,6 @@ export function injectPostQuery<TError = DefaultError, TOnMutateResult = unknown
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12009,7 +11819,7 @@ export function injectPostQuery<TError = DefaultError, TOnMutateResult = unknown
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexSourceIdQueryKey(
@@ -12080,12 +11890,11 @@ export function injectIndexSourceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexSourceIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHeadIndexSourceIdMutationKey() {
@@ -12134,7 +11943,6 @@ export function injectHeadIndexSourceId<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12146,7 +11954,7 @@ export function injectHeadIndexSourceId<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexExplainIdQueryKey(
@@ -12221,12 +12029,11 @@ export function injectIndexExplainId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexExplainIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexExplainIdMutationKey() {
@@ -12277,7 +12084,6 @@ export function injectPostIndexExplainId<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12289,7 +12095,7 @@ export function injectPostIndexExplainId<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getFeaturesQueryKey(args: InferRequestType<typeof client._features.$get>) {
@@ -12338,12 +12144,11 @@ export function injectFeatures<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getFeaturesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostFeaturesResetMutationKey() {
@@ -12386,7 +12191,6 @@ export function injectPostFeaturesReset<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12398,7 +12202,7 @@ export function injectPostFeaturesReset<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getFieldCapsQueryKey(args: InferRequestType<typeof client._field_caps.$get>) {
@@ -12447,12 +12251,11 @@ export function injectFieldCaps<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getFieldCapsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostFieldCapsMutationKey() {
@@ -12490,7 +12293,6 @@ export function injectPostFieldCaps<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12500,7 +12302,7 @@ export function injectPostFieldCaps<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexFieldCapsQueryKey(
@@ -12566,12 +12368,11 @@ export function injectIndexFieldCaps<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexFieldCapsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexFieldCapsMutationKey() {
@@ -12618,7 +12419,6 @@ export function injectPostIndexFieldCaps<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12630,7 +12430,7 @@ export function injectPostIndexFieldCaps<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexFleetGlobalCheckpointsQueryKey(
@@ -12705,7 +12505,6 @@ export function injectIndexFleetGlobalCheckpoints<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12713,7 +12512,7 @@ export function injectIndexFleetGlobalCheckpoints<
       ...getIndexFleetGlobalCheckpointsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getFleetFleetMsearchQueryKey(
@@ -12773,12 +12572,11 @@ export function injectFleetFleetMsearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getFleetFleetMsearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostFleetFleetMsearchMutationKey() {
@@ -12823,7 +12621,6 @@ export function injectPostFleetFleetMsearch<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12835,7 +12632,7 @@ export function injectPostFleetFleetMsearch<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexFleetFleetMsearchQueryKey(
@@ -12910,7 +12707,6 @@ export function injectIndexFleetFleetMsearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12918,7 +12714,7 @@ export function injectIndexFleetFleetMsearch<
       ...getIndexFleetFleetMsearchQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexFleetFleetMsearchMutationKey() {
@@ -12969,7 +12765,6 @@ export function injectPostIndexFleetFleetMsearch<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12981,7 +12776,7 @@ export function injectPostIndexFleetFleetMsearch<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexFleetFleetSearchQueryKey(
@@ -13056,7 +12851,6 @@ export function injectIndexFleetFleetSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -13064,7 +12858,7 @@ export function injectIndexFleetFleetSearch<
       ...getIndexFleetFleetSearchQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexFleetFleetSearchMutationKey() {
@@ -13115,7 +12909,6 @@ export function injectPostIndexFleetFleetSearch<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13127,7 +12920,7 @@ export function injectPostIndexFleetFleetSearch<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getReindexTaskIdQueryKey(
@@ -13191,12 +12984,11 @@ export function injectReindexTaskId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getReindexTaskIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getScriptContextQueryKey() {
@@ -13246,12 +13038,11 @@ export function injectScriptContext<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getScriptContextQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getScriptLanguageQueryKey() {
@@ -13301,12 +13092,11 @@ export function injectScriptLanguage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getScriptLanguageQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexGraphExploreQueryKey(
@@ -13381,12 +13171,11 @@ export function injectIndexGraphExplore<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexGraphExploreQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexGraphExploreMutationKey() {
@@ -13437,7 +13226,6 @@ export function injectPostIndexGraphExplore<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13449,7 +13237,7 @@ export function injectPostIndexGraphExplore<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHealthReportQueryKey(args: InferRequestType<typeof client._health_report.$get>) {
@@ -13500,12 +13288,11 @@ export function injectHealthReport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getHealthReportQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHealthReportFeatureQueryKey(
@@ -13576,12 +13363,11 @@ export function injectHealthReportFeature<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getHealthReportFeatureQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIlmPolicyPolicyQueryKey(
@@ -13650,12 +13436,11 @@ export function injectIlmPolicyPolicy<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIlmPolicyPolicyQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIlmPolicyPolicyMutationKey() {
@@ -13702,7 +13487,6 @@ export function injectPutIlmPolicyPolicy<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13714,7 +13498,7 @@ export function injectPutIlmPolicyPolicy<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIlmPolicyPolicyMutationKey() {
@@ -13761,7 +13545,6 @@ export function injectDeleteIlmPolicyPolicy<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13773,7 +13556,7 @@ export function injectDeleteIlmPolicyPolicy<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexIlmExplainQueryKey(
@@ -13848,12 +13631,11 @@ export function injectIndexIlmExplain<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexIlmExplainQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIlmPolicyQueryKey(args: InferRequestType<typeof client._ilm.policy.$get>) {
@@ -13902,12 +13684,11 @@ export function injectIlmPolicy<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIlmPolicyQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIlmStatusQueryKey() {
@@ -13955,12 +13736,11 @@ export function injectIlmStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIlmStatusQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIlmMigrateToDataTiersMutationKey() {
@@ -14007,7 +13787,6 @@ export function injectPostIlmMigrateToDataTiers<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14019,7 +13798,7 @@ export function injectPostIlmMigrateToDataTiers<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIlmMoveIndexMutationKey() {
@@ -14064,7 +13843,6 @@ export function injectPostIlmMoveIndex<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14076,7 +13854,7 @@ export function injectPostIlmMoveIndex<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexIlmRemoveMutationKey() {
@@ -14125,7 +13903,6 @@ export function injectPostIndexIlmRemove<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14137,7 +13914,7 @@ export function injectPostIndexIlmRemove<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexIlmRetryMutationKey() {
@@ -14186,7 +13963,6 @@ export function injectPostIndexIlmRetry<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14198,7 +13974,7 @@ export function injectPostIndexIlmRetry<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIlmStartMutationKey() {
@@ -14236,7 +14012,6 @@ export function injectPostIlmStart<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14246,7 +14021,7 @@ export function injectPostIlmStart<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIlmStopMutationKey() {
@@ -14284,7 +14059,6 @@ export function injectPostIlmStop<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14294,7 +14068,7 @@ export function injectPostIlmStop<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexDocMutationKey() {
@@ -14338,7 +14112,6 @@ export function injectPostIndexDoc<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14348,7 +14121,7 @@ export function injectPostIndexDoc<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexBlockBlockMutationKey() {
@@ -14399,7 +14172,6 @@ export function injectPutIndexBlockBlock<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14411,7 +14183,7 @@ export function injectPutIndexBlockBlock<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIndexBlockBlockMutationKey() {
@@ -14462,7 +14234,6 @@ export function injectDeleteIndexBlockBlock<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14474,7 +14245,7 @@ export function injectDeleteIndexBlockBlock<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAnalyzeQueryKey(args: InferRequestType<typeof client._analyze.$get>) {
@@ -14521,12 +14292,11 @@ export function injectAnalyze<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAnalyzeQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostAnalyzeMutationKey() {
@@ -14564,7 +14334,6 @@ export function injectPostAnalyze<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14574,7 +14343,7 @@ export function injectPostAnalyze<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexAnalyzeQueryKey(
@@ -14638,12 +14407,11 @@ export function injectIndexAnalyze<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexAnalyzeQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexAnalyzeMutationKey() {
@@ -14690,7 +14458,6 @@ export function injectPostIndexAnalyze<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14702,7 +14469,7 @@ export function injectPostIndexAnalyze<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMigrationReindexIndexCancelMutationKey() {
@@ -14756,7 +14523,6 @@ export function injectPostMigrationReindexIndexCancel<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14769,7 +14535,7 @@ export function injectPostMigrationReindexIndexCancel<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostCacheClearMutationKey() {
@@ -14809,7 +14575,6 @@ export function injectPostCacheClear<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14821,7 +14586,7 @@ export function injectPostCacheClear<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCacheClearMutationKey() {
@@ -14872,7 +14637,6 @@ export function injectPostIndexCacheClear<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14884,7 +14648,7 @@ export function injectPostIndexCacheClear<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexCloneTargetMutationKey() {
@@ -14935,7 +14699,6 @@ export function injectPutIndexCloneTarget<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14947,7 +14710,7 @@ export function injectPutIndexCloneTarget<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCloneTargetMutationKey() {
@@ -14998,7 +14761,6 @@ export function injectPostIndexCloneTarget<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15010,7 +14772,7 @@ export function injectPostIndexCloneTarget<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexCloseMutationKey() {
@@ -15054,7 +14816,6 @@ export function injectPostIndexClose<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15066,7 +14827,7 @@ export function injectPostIndexClose<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexQueryKey(args: InferRequestType<(typeof client)[':index']['$get']>) {
@@ -15117,12 +14878,11 @@ export function injectIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexMutationKey() {
@@ -15162,7 +14922,6 @@ export function injectPutIndex<TError = DefaultError, TOnMutateResult = unknown>
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15172,7 +14931,7 @@ export function injectPutIndex<TError = DefaultError, TOnMutateResult = unknown>
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIndexMutationKey() {
@@ -15214,7 +14973,6 @@ export function injectDeleteIndex<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15224,7 +14982,7 @@ export function injectDeleteIndex<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHeadIndexMutationKey() {
@@ -15264,7 +15022,6 @@ export function injectHeadIndex<TError = DefaultError, TOnMutateResult = unknown
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15274,7 +15031,7 @@ export function injectHeadIndex<TError = DefaultError, TOnMutateResult = unknown
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDataStreamNameQueryKey(
@@ -15338,12 +15095,11 @@ export function injectDataStreamName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getDataStreamNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutDataStreamNameMutationKey() {
@@ -15388,7 +15144,6 @@ export function injectPutDataStreamName<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15400,7 +15155,7 @@ export function injectPutDataStreamName<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteDataStreamNameMutationKey() {
@@ -15447,7 +15202,6 @@ export function injectDeleteDataStreamName<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15459,7 +15213,7 @@ export function injectDeleteDataStreamName<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutCreateFromSourceDestMutationKey() {
@@ -15510,7 +15264,6 @@ export function injectPutCreateFromSourceDest<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15522,7 +15275,7 @@ export function injectPutCreateFromSourceDest<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostCreateFromSourceDestMutationKey() {
@@ -15573,7 +15326,6 @@ export function injectPostCreateFromSourceDest<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15585,7 +15337,7 @@ export function injectPostCreateFromSourceDest<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDataStreamStatsQueryKey(
@@ -15640,12 +15392,11 @@ export function injectDataStreamStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getDataStreamStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getDataStreamNameStatsQueryKey(
@@ -15720,12 +15471,11 @@ export function injectDataStreamNameStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getDataStreamNameStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexAliasNameQueryKey(
@@ -15800,12 +15550,11 @@ export function injectIndexAliasName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexAliasNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexAliasNameMutationKey() {
@@ -15854,7 +15603,6 @@ export function injectPutIndexAliasName<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15866,7 +15614,7 @@ export function injectPutIndexAliasName<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexAliasNameMutationKey() {
@@ -15917,7 +15665,6 @@ export function injectPostIndexAliasName<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15929,7 +15676,7 @@ export function injectPostIndexAliasName<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIndexAliasNameMutationKey() {
@@ -15980,7 +15727,6 @@ export function injectDeleteIndexAliasName<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -15992,7 +15738,7 @@ export function injectDeleteIndexAliasName<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHeadIndexAliasNameMutationKey() {
@@ -16043,7 +15789,6 @@ export function injectHeadIndexAliasName<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16055,7 +15800,7 @@ export function injectHeadIndexAliasName<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexAliasesNameMutationKey() {
@@ -16106,7 +15851,6 @@ export function injectPutIndexAliasesName<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16118,7 +15862,7 @@ export function injectPutIndexAliasesName<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexAliasesNameMutationKey() {
@@ -16169,7 +15913,6 @@ export function injectPostIndexAliasesName<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16181,7 +15924,7 @@ export function injectPostIndexAliasesName<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIndexAliasesNameMutationKey() {
@@ -16232,7 +15975,6 @@ export function injectDeleteIndexAliasesName<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16244,7 +15986,7 @@ export function injectDeleteIndexAliasesName<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDataStreamNameLifecycleQueryKey(
@@ -16319,7 +16061,6 @@ export function injectDataStreamNameLifecycle<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16327,7 +16068,7 @@ export function injectDataStreamNameLifecycle<
       ...getDataStreamNameLifecycleQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutDataStreamNameLifecycleMutationKey() {
@@ -16378,7 +16119,6 @@ export function injectPutDataStreamNameLifecycle<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16390,7 +16130,7 @@ export function injectPutDataStreamNameLifecycle<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteDataStreamNameLifecycleMutationKey() {
@@ -16444,7 +16184,6 @@ export function injectDeleteDataStreamNameLifecycle<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16457,7 +16196,7 @@ export function injectDeleteDataStreamNameLifecycle<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDataStreamNameOptionsQueryKey(
@@ -16532,7 +16271,6 @@ export function injectDataStreamNameOptions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -16540,7 +16278,7 @@ export function injectDataStreamNameOptions<
       ...getDataStreamNameOptionsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutDataStreamNameOptionsMutationKey() {
@@ -16591,7 +16329,6 @@ export function injectPutDataStreamNameOptions<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16603,7 +16340,7 @@ export function injectPutDataStreamNameOptions<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteDataStreamNameOptionsMutationKey() {
@@ -16654,7 +16391,6 @@ export function injectDeleteDataStreamNameOptions<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16666,7 +16402,7 @@ export function injectDeleteDataStreamNameOptions<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexTemplateNameQueryKey(
@@ -16735,12 +16471,11 @@ export function injectIndexTemplateName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexTemplateNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexTemplateNameMutationKey() {
@@ -16787,7 +16522,6 @@ export function injectPutIndexTemplateName<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16799,7 +16533,7 @@ export function injectPutIndexTemplateName<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexTemplateNameMutationKey() {
@@ -16846,7 +16580,6 @@ export function injectPostIndexTemplateName<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16858,7 +16591,7 @@ export function injectPostIndexTemplateName<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIndexTemplateNameMutationKey() {
@@ -16907,7 +16640,6 @@ export function injectDeleteIndexTemplateName<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16919,7 +16651,7 @@ export function injectDeleteIndexTemplateName<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHeadIndexTemplateNameMutationKey() {
@@ -16966,7 +16698,6 @@ export function injectHeadIndexTemplateName<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -16978,7 +16709,7 @@ export function injectHeadIndexTemplateName<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTemplateNameQueryKey(
@@ -17042,12 +16773,11 @@ export function injectTemplateName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTemplateNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutTemplateNameMutationKey() {
@@ -17091,7 +16821,6 @@ export function injectPutTemplateName<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17103,7 +16832,7 @@ export function injectPutTemplateName<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTemplateNameMutationKey() {
@@ -17148,7 +16877,6 @@ export function injectPostTemplateName<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17160,7 +16888,7 @@ export function injectPostTemplateName<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTemplateNameMutationKey() {
@@ -17205,7 +16933,6 @@ export function injectDeleteTemplateName<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17217,7 +16944,7 @@ export function injectDeleteTemplateName<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHeadTemplateNameMutationKey() {
@@ -17262,7 +16989,6 @@ export function injectHeadTemplateName<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17274,7 +17000,7 @@ export function injectHeadTemplateName<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexDiskUsageMutationKey() {
@@ -17321,7 +17047,6 @@ export function injectPostIndexDiskUsage<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17333,7 +17058,7 @@ export function injectPostIndexDiskUsage<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexDownsampleTargetIndexMutationKey() {
@@ -17389,7 +17114,6 @@ export function injectPostIndexDownsampleTargetIndex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17402,7 +17126,7 @@ export function injectPostIndexDownsampleTargetIndex<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAliasNameQueryKey(
@@ -17457,12 +17181,11 @@ export function injectAliasName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAliasNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHeadAliasNameMutationKey() {
@@ -17506,7 +17229,6 @@ export function injectHeadAliasName<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17516,7 +17238,7 @@ export function injectHeadAliasName<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexLifecycleExplainQueryKey(
@@ -17591,7 +17313,6 @@ export function injectIndexLifecycleExplain<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -17599,7 +17320,7 @@ export function injectIndexLifecycleExplain<
       ...getIndexLifecycleExplainQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexFieldUsageStatsQueryKey(
@@ -17674,7 +17395,6 @@ export function injectIndexFieldUsageStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -17682,7 +17402,7 @@ export function injectIndexFieldUsageStats<
       ...getIndexFieldUsageStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getFlushQueryKey(args: InferRequestType<typeof client._flush.$get>) {
@@ -17725,12 +17445,11 @@ export function injectFlush<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getFlushQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostFlushMutationKey() {
@@ -17766,7 +17485,6 @@ export function injectPostFlush<TError = DefaultError, TOnMutateResult = unknown
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17776,7 +17494,7 @@ export function injectPostFlush<TError = DefaultError, TOnMutateResult = unknown
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexFlushQueryKey(
@@ -17840,12 +17558,11 @@ export function injectIndexFlush<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexFlushQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexFlushMutationKey() {
@@ -17889,7 +17606,6 @@ export function injectPostIndexFlush<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17901,7 +17617,7 @@ export function injectPostIndexFlush<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostForcemergeMutationKey() {
@@ -17939,7 +17655,6 @@ export function injectPostForcemerge<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -17951,7 +17666,7 @@ export function injectPostForcemerge<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexForcemergeMutationKey() {
@@ -17998,7 +17713,6 @@ export function injectPostIndexForcemerge<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -18010,7 +17724,7 @@ export function injectPostIndexForcemerge<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAliasQueryKey(args: InferRequestType<typeof client._alias.$get>) {
@@ -18053,12 +17767,11 @@ export function injectAlias<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAliasQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexAliasQueryKey(
@@ -18122,12 +17835,11 @@ export function injectIndexAlias<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexAliasQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getLifecycleStatsQueryKey() {
@@ -18177,12 +17889,11 @@ export function injectLifecycleStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLifecycleStatsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getDataStreamQueryKey(args: InferRequestType<typeof client._data_stream.$get>) {
@@ -18231,12 +17942,11 @@ export function injectDataStream<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getDataStreamQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getDataStreamNameMappingsQueryKey(
@@ -18311,7 +18021,6 @@ export function injectDataStreamNameMappings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18319,7 +18028,7 @@ export function injectDataStreamNameMappings<
       ...getDataStreamNameMappingsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutDataStreamNameMappingsMutationKey() {
@@ -18370,7 +18079,6 @@ export function injectPutDataStreamNameMappings<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -18382,7 +18090,7 @@ export function injectPutDataStreamNameMappings<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDataStreamNameSettingsQueryKey(
@@ -18457,7 +18165,6 @@ export function injectDataStreamNameSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18465,7 +18172,7 @@ export function injectDataStreamNameSettings<
       ...getDataStreamNameSettingsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutDataStreamNameSettingsMutationKey() {
@@ -18516,7 +18223,6 @@ export function injectPutDataStreamNameSettings<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -18528,7 +18234,7 @@ export function injectPutDataStreamNameSettings<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMappingFieldFieldsQueryKey(
@@ -18597,12 +18303,11 @@ export function injectMappingFieldFields<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMappingFieldFieldsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexMappingFieldFieldsQueryKey(
@@ -18677,7 +18382,6 @@ export function injectIndexMappingFieldFields<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -18685,7 +18389,7 @@ export function injectIndexMappingFieldFields<
       ...getIndexMappingFieldFieldsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexTemplateQueryKey(
@@ -18738,12 +18442,11 @@ export function injectIndexTemplate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexTemplateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMappingQueryKey(args: InferRequestType<typeof client._mapping.$get>) {
@@ -18790,12 +18493,11 @@ export function injectMapping<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMappingQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexMappingQueryKey(
@@ -18859,12 +18561,11 @@ export function injectIndexMapping<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexMappingQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexMappingMutationKey() {
@@ -18908,7 +18609,6 @@ export function injectPutIndexMapping<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -18920,7 +18620,7 @@ export function injectPutIndexMapping<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexMappingMutationKey() {
@@ -18967,7 +18667,6 @@ export function injectPostIndexMapping<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -18979,7 +18678,7 @@ export function injectPostIndexMapping<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMigrationReindexIndexStatusQueryKey(
@@ -19054,7 +18753,6 @@ export function injectMigrationReindexIndexStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -19062,7 +18760,7 @@ export function injectMigrationReindexIndexStatus<
       ...getMigrationReindexIndexStatusQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSettingsQueryKey(args: InferRequestType<typeof client._settings.$get>) {
@@ -19111,12 +18809,11 @@ export function injectSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSettingsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSettingsMutationKey() {
@@ -19154,7 +18851,6 @@ export function injectPutSettings<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19164,7 +18860,7 @@ export function injectPutSettings<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexSettingsQueryKey(
@@ -19230,12 +18926,11 @@ export function injectIndexSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexSettingsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexSettingsMutationKey() {
@@ -19282,7 +18977,6 @@ export function injectPutIndexSettings<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19294,7 +18988,7 @@ export function injectPutIndexSettings<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexSettingsNameQueryKey(
@@ -19369,12 +19063,11 @@ export function injectIndexSettingsName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexSettingsNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSettingsNameQueryKey(
@@ -19438,12 +19131,11 @@ export function injectSettingsName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSettingsNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTemplateQueryKey(args: InferRequestType<typeof client._template.$get>) {
@@ -19492,12 +19184,11 @@ export function injectTemplate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTemplateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMigrationReindexMutationKey() {
@@ -19540,7 +19231,6 @@ export function injectPostMigrationReindex<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19552,7 +19242,7 @@ export function injectPostMigrationReindex<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostDataStreamMigrateNameMutationKey() {
@@ -19603,7 +19293,6 @@ export function injectPostDataStreamMigrateName<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19615,7 +19304,7 @@ export function injectPostDataStreamMigrateName<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostDataStreamModifyMutationKey() {
@@ -19660,7 +19349,6 @@ export function injectPostDataStreamModify<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19672,7 +19360,7 @@ export function injectPostDataStreamModify<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexOpenMutationKey() {
@@ -19716,7 +19404,6 @@ export function injectPostIndexOpen<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19726,7 +19413,7 @@ export function injectPostIndexOpen<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostDataStreamPromoteNameMutationKey() {
@@ -19777,7 +19464,6 @@ export function injectPostDataStreamPromoteName<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -19789,7 +19475,7 @@ export function injectPostDataStreamPromoteName<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getRecoveryQueryKey(args: InferRequestType<typeof client._recovery.$get>) {
@@ -19838,12 +19524,11 @@ export function injectRecovery<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRecoveryQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexRecoveryQueryKey(
@@ -19909,12 +19594,11 @@ export function injectIndexRecovery<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexRecoveryQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getRefreshQueryKey(args: InferRequestType<typeof client._refresh.$get>) {
@@ -19961,12 +19645,11 @@ export function injectRefresh<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRefreshQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostRefreshMutationKey() {
@@ -20004,7 +19687,6 @@ export function injectPostRefresh<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20014,7 +19696,7 @@ export function injectPostRefresh<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexRefreshQueryKey(
@@ -20078,12 +19760,11 @@ export function injectIndexRefresh<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexRefreshQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexRefreshMutationKey() {
@@ -20130,7 +19811,6 @@ export function injectPostIndexRefresh<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20142,7 +19822,7 @@ export function injectPostIndexRefresh<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexReloadSearchAnalyzersQueryKey(
@@ -20217,7 +19897,6 @@ export function injectIndexReloadSearchAnalyzers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -20225,7 +19904,7 @@ export function injectIndexReloadSearchAnalyzers<
       ...getIndexReloadSearchAnalyzersQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexReloadSearchAnalyzersMutationKey() {
@@ -20279,7 +19958,6 @@ export function injectPostIndexReloadSearchAnalyzers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20292,7 +19970,7 @@ export function injectPostIndexReloadSearchAnalyzers<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getResolveClusterQueryKey(
@@ -20345,12 +20023,11 @@ export function injectResolveCluster<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getResolveClusterQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getResolveClusterNameQueryKey(
@@ -20419,12 +20096,11 @@ export function injectResolveClusterName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getResolveClusterNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getResolveIndexNameQueryKey(
@@ -20493,12 +20169,11 @@ export function injectResolveIndexName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getResolveIndexNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostResolveIndexNameMutationKey() {
@@ -20545,7 +20220,6 @@ export function injectPostResolveIndexName<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20557,7 +20231,7 @@ export function injectPostResolveIndexName<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAliasRolloverMutationKey() {
@@ -20604,7 +20278,6 @@ export function injectPostAliasRollover<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20616,7 +20289,7 @@ export function injectPostAliasRollover<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAliasRolloverNewIndexMutationKey() {
@@ -20667,7 +20340,6 @@ export function injectPostAliasRolloverNewIndex<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20679,7 +20351,7 @@ export function injectPostAliasRolloverNewIndex<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSegmentsQueryKey(args: InferRequestType<typeof client._segments.$get>) {
@@ -20728,12 +20400,11 @@ export function injectSegments<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSegmentsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexSegmentsQueryKey(
@@ -20799,12 +20470,11 @@ export function injectIndexSegments<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexSegmentsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getShardStoresQueryKey(args: InferRequestType<typeof client._shard_stores.$get>) {
@@ -20855,12 +20525,11 @@ export function injectShardStores<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getShardStoresQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexShardStoresQueryKey(
@@ -20931,12 +20600,11 @@ export function injectIndexShardStores<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexShardStoresQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexShrinkTargetMutationKey() {
@@ -20987,7 +20655,6 @@ export function injectPutIndexShrinkTarget<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -20999,7 +20666,7 @@ export function injectPutIndexShrinkTarget<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexShrinkTargetMutationKey() {
@@ -21050,7 +20717,6 @@ export function injectPostIndexShrinkTarget<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21062,7 +20728,7 @@ export function injectPostIndexShrinkTarget<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexTemplateSimulateIndexNameMutationKey() {
@@ -21116,7 +20782,6 @@ export function injectPostIndexTemplateSimulateIndexName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21129,7 +20794,7 @@ export function injectPostIndexTemplateSimulateIndexName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexTemplateSimulateMutationKey() {
@@ -21174,7 +20839,6 @@ export function injectPostIndexTemplateSimulate<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21186,7 +20850,7 @@ export function injectPostIndexTemplateSimulate<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexTemplateSimulateNameMutationKey() {
@@ -21240,7 +20904,6 @@ export function injectPostIndexTemplateSimulateName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21253,7 +20916,7 @@ export function injectPostIndexTemplateSimulateName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIndexSplitTargetMutationKey() {
@@ -21304,7 +20967,6 @@ export function injectPutIndexSplitTarget<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21316,7 +20978,7 @@ export function injectPutIndexSplitTarget<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexSplitTargetMutationKey() {
@@ -21367,7 +21029,6 @@ export function injectPostIndexSplitTarget<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21379,7 +21040,7 @@ export function injectPostIndexSplitTarget<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getStatsQueryKey(args: InferRequestType<typeof client._stats.$get>) {
@@ -21422,12 +21083,11 @@ export function injectStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getStatsMetricQueryKey(
@@ -21487,12 +21147,11 @@ export function injectStatsMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getStatsMetricQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexStatsQueryKey(
@@ -21556,12 +21215,11 @@ export function injectIndexStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexStatsMetricQueryKey(
@@ -21636,12 +21294,11 @@ export function injectIndexStatsMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexStatsMetricQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostAliasesMutationKey() {
@@ -21679,7 +21336,6 @@ export function injectPostAliases<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21689,7 +21345,7 @@ export function injectPostAliases<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getValidateQueryQueryKey(
@@ -21742,12 +21398,11 @@ export function injectValidateQuery<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getValidateQueryQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostValidateQueryMutationKey() {
@@ -21788,7 +21443,6 @@ export function injectPostValidateQuery<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21800,7 +21454,7 @@ export function injectPostValidateQuery<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexValidateQueryQueryKey(
@@ -21875,12 +21529,11 @@ export function injectIndexValidateQuery<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexValidateQueryQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexValidateQueryMutationKey() {
@@ -21931,7 +21584,6 @@ export function injectPostIndexValidateQuery<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -21943,7 +21595,7 @@ export function injectPostIndexValidateQuery<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceChatCompletionInferenceIdMutationKey() {
@@ -21999,7 +21651,6 @@ export function injectPostInferenceChatCompletionInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22012,7 +21663,7 @@ export function injectPostInferenceChatCompletionInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceChatCompletionInferenceIdStreamMutationKey() {
@@ -22082,7 +21733,6 @@ export function injectPostInferenceChatCompletionInferenceIdStream<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22095,7 +21745,7 @@ export function injectPostInferenceChatCompletionInferenceIdStream<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceCompletionInferenceIdMutationKey() {
@@ -22149,7 +21799,6 @@ export function injectPostInferenceCompletionInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22162,7 +21811,7 @@ export function injectPostInferenceCompletionInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceDecisionInferenceIdMutationKey() {
@@ -22216,7 +21865,6 @@ export function injectPostInferenceDecisionInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22229,7 +21877,7 @@ export function injectPostInferenceDecisionInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getInferenceInferenceIdQueryKey(
@@ -22300,7 +21948,6 @@ export function injectInferenceInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -22308,7 +21955,7 @@ export function injectInferenceInferenceId<
       ...getInferenceInferenceIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceInferenceIdMutationKey() {
@@ -22357,7 +22004,6 @@ export function injectPutInferenceInferenceId<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22369,7 +22015,7 @@ export function injectPutInferenceInferenceId<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceInferenceIdMutationKey() {
@@ -22418,7 +22064,6 @@ export function injectPostInferenceInferenceId<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22430,7 +22075,7 @@ export function injectPostInferenceInferenceId<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteInferenceInferenceIdMutationKey() {
@@ -22481,7 +22126,6 @@ export function injectDeleteInferenceInferenceId<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22493,7 +22137,7 @@ export function injectDeleteInferenceInferenceId<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getInferenceTaskTypeInferenceIdQueryKey(
@@ -22568,7 +22212,6 @@ export function injectInferenceTaskTypeInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -22576,7 +22219,7 @@ export function injectInferenceTaskTypeInferenceId<
       ...getInferenceTaskTypeInferenceIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeInferenceIdMutationKey() {
@@ -22630,7 +22273,6 @@ export function injectPutInferenceTaskTypeInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22643,7 +22285,7 @@ export function injectPutInferenceTaskTypeInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceTaskTypeInferenceIdMutationKey() {
@@ -22699,7 +22341,6 @@ export function injectPostInferenceTaskTypeInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22712,7 +22353,7 @@ export function injectPostInferenceTaskTypeInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteInferenceTaskTypeInferenceIdMutationKey() {
@@ -22768,7 +22409,6 @@ export function injectDeleteInferenceTaskTypeInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22781,7 +22421,7 @@ export function injectDeleteInferenceTaskTypeInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getInferenceRegionPolicyQueryKey() {
@@ -22842,12 +22482,11 @@ export function injectInferenceRegionPolicy<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getInferenceRegionPolicyQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceRegionPolicyMutationKey() {
@@ -22892,7 +22531,6 @@ export function injectPutInferenceRegionPolicy<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22904,7 +22542,7 @@ export function injectPutInferenceRegionPolicy<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteInferenceRegionPolicyMutationKey() {
@@ -22951,7 +22589,6 @@ export function injectDeleteInferenceRegionPolicy<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -22963,7 +22600,7 @@ export function injectDeleteInferenceRegionPolicy<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceDocumentExtractionInferenceIdMutationKey() {
@@ -23025,7 +22662,6 @@ export function injectPostInferenceDocumentExtractionInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23038,7 +22674,7 @@ export function injectPostInferenceDocumentExtractionInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceEmbeddingInferenceIdMutationKey() {
@@ -23092,7 +22728,6 @@ export function injectPostInferenceEmbeddingInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23105,7 +22740,7 @@ export function injectPostInferenceEmbeddingInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getInferenceQueryKey() {
@@ -23153,12 +22788,11 @@ export function injectInference<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getInferenceQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getInferenceTaskTypeAllQueryKey(
@@ -23233,7 +22867,6 @@ export function injectInferenceTaskTypeAll<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -23241,7 +22874,7 @@ export function injectInferenceTaskTypeAll<
       ...getInferenceTaskTypeAllQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeAi21InferenceIdMutationKey() {
@@ -23303,7 +22936,6 @@ export function injectPutInferenceTaskTypeAi21InferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23316,7 +22948,7 @@ export function injectPutInferenceTaskTypeAi21InferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeAlibabacloudInferenceIdMutationKey() {
@@ -23386,7 +23018,6 @@ export function injectPutInferenceTaskTypeAlibabacloudInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23399,7 +23030,7 @@ export function injectPutInferenceTaskTypeAlibabacloudInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeAmazonbedrockInferenceIdMutationKey() {
@@ -23469,7 +23100,6 @@ export function injectPutInferenceTaskTypeAmazonbedrockInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23482,7 +23112,7 @@ export function injectPutInferenceTaskTypeAmazonbedrockInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeAmazonsagemakerInferenceIdMutationKey() {
@@ -23552,7 +23182,6 @@ export function injectPutInferenceTaskTypeAmazonsagemakerInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23565,7 +23194,7 @@ export function injectPutInferenceTaskTypeAmazonsagemakerInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeAnthropicInferenceIdMutationKey() {
@@ -23631,7 +23260,6 @@ export function injectPutInferenceTaskTypeAnthropicInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23644,7 +23272,7 @@ export function injectPutInferenceTaskTypeAnthropicInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeAzureaistudioInferenceIdMutationKey() {
@@ -23714,7 +23342,6 @@ export function injectPutInferenceTaskTypeAzureaistudioInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23727,7 +23354,7 @@ export function injectPutInferenceTaskTypeAzureaistudioInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeAzureopenaiInferenceIdMutationKey() {
@@ -23795,7 +23422,6 @@ export function injectPutInferenceTaskTypeAzureopenaiInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23808,7 +23434,7 @@ export function injectPutInferenceTaskTypeAzureopenaiInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeCohereInferenceIdMutationKey() {
@@ -23870,7 +23496,6 @@ export function injectPutInferenceTaskTypeCohereInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23883,7 +23508,7 @@ export function injectPutInferenceTaskTypeCohereInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeContextualaiInferenceIdMutationKey() {
@@ -23953,7 +23578,6 @@ export function injectPutInferenceTaskTypeContextualaiInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -23966,7 +23590,7 @@ export function injectPutInferenceTaskTypeContextualaiInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeCustomInferenceIdMutationKey() {
@@ -24028,7 +23652,6 @@ export function injectPutInferenceTaskTypeCustomInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24041,7 +23664,7 @@ export function injectPutInferenceTaskTypeCustomInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeDeepseekInferenceIdMutationKey() {
@@ -24107,7 +23730,6 @@ export function injectPutInferenceTaskTypeDeepseekInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24120,7 +23742,7 @@ export function injectPutInferenceTaskTypeDeepseekInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeElasticsearchInferenceIdMutationKey() {
@@ -24190,7 +23812,6 @@ export function injectPutInferenceTaskTypeElasticsearchInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24203,7 +23824,7 @@ export function injectPutInferenceTaskTypeElasticsearchInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeElserInferenceIdMutationKey() {
@@ -24265,7 +23886,6 @@ export function injectPutInferenceTaskTypeElserInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24278,7 +23898,7 @@ export function injectPutInferenceTaskTypeElserInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeFireworksaiInferenceIdMutationKey() {
@@ -24346,7 +23966,6 @@ export function injectPutInferenceTaskTypeFireworksaiInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24359,7 +23978,7 @@ export function injectPutInferenceTaskTypeFireworksaiInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeGoogleaistudioInferenceIdMutationKey() {
@@ -24429,7 +24048,6 @@ export function injectPutInferenceTaskTypeGoogleaistudioInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24442,7 +24060,7 @@ export function injectPutInferenceTaskTypeGoogleaistudioInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeGooglevertexaiInferenceIdMutationKey() {
@@ -24512,7 +24130,6 @@ export function injectPutInferenceTaskTypeGooglevertexaiInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24525,7 +24142,7 @@ export function injectPutInferenceTaskTypeGooglevertexaiInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeGroqInferenceIdMutationKey() {
@@ -24587,7 +24204,6 @@ export function injectPutInferenceTaskTypeGroqInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24600,7 +24216,7 @@ export function injectPutInferenceTaskTypeGroqInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeHuggingfaceInferenceIdMutationKey() {
@@ -24668,7 +24284,6 @@ export function injectPutInferenceTaskTypeHuggingfaceInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24681,7 +24296,7 @@ export function injectPutInferenceTaskTypeHuggingfaceInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeJinaaiInferenceIdMutationKey() {
@@ -24743,7 +24358,6 @@ export function injectPutInferenceTaskTypeJinaaiInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24756,7 +24370,7 @@ export function injectPutInferenceTaskTypeJinaaiInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeLlamaInferenceIdMutationKey() {
@@ -24818,7 +24432,6 @@ export function injectPutInferenceTaskTypeLlamaInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24831,7 +24444,7 @@ export function injectPutInferenceTaskTypeLlamaInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeMistralInferenceIdMutationKey() {
@@ -24895,7 +24508,6 @@ export function injectPutInferenceTaskTypeMistralInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24908,7 +24520,7 @@ export function injectPutInferenceTaskTypeMistralInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeNvidiaInferenceIdMutationKey() {
@@ -24970,7 +24582,6 @@ export function injectPutInferenceTaskTypeNvidiaInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -24983,7 +24594,7 @@ export function injectPutInferenceTaskTypeNvidiaInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeOpenaiInferenceIdMutationKey() {
@@ -25045,7 +24656,6 @@ export function injectPutInferenceTaskTypeOpenaiInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25058,7 +24668,7 @@ export function injectPutInferenceTaskTypeOpenaiInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeOpenshiftaiInferenceIdMutationKey() {
@@ -25126,7 +24736,6 @@ export function injectPutInferenceTaskTypeOpenshiftaiInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25139,7 +24748,7 @@ export function injectPutInferenceTaskTypeOpenshiftaiInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeVoyageaiInferenceIdMutationKey() {
@@ -25205,7 +24814,6 @@ export function injectPutInferenceTaskTypeVoyageaiInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25218,7 +24826,7 @@ export function injectPutInferenceTaskTypeVoyageaiInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeWatsonxInferenceIdMutationKey() {
@@ -25282,7 +24890,6 @@ export function injectPutInferenceTaskTypeWatsonxInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25295,7 +24902,7 @@ export function injectPutInferenceTaskTypeWatsonxInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceRerankInferenceIdMutationKey() {
@@ -25349,7 +24956,6 @@ export function injectPostInferenceRerankInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25362,7 +24968,7 @@ export function injectPostInferenceRerankInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceSparseEmbeddingInferenceIdMutationKey() {
@@ -25418,7 +25024,6 @@ export function injectPostInferenceSparseEmbeddingInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25431,7 +25036,7 @@ export function injectPostInferenceSparseEmbeddingInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceCompletionInferenceIdStreamMutationKey() {
@@ -25497,7 +25102,6 @@ export function injectPostInferenceCompletionInferenceIdStream<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25510,7 +25114,7 @@ export function injectPostInferenceCompletionInferenceIdStream<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostInferenceTextEmbeddingInferenceIdMutationKey() {
@@ -25566,7 +25170,6 @@ export function injectPostInferenceTextEmbeddingInferenceId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25579,7 +25182,7 @@ export function injectPostInferenceTextEmbeddingInferenceId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceInferenceIdUpdateMutationKey() {
@@ -25633,7 +25236,6 @@ export function injectPutInferenceInferenceIdUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25646,7 +25248,7 @@ export function injectPutInferenceInferenceIdUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutInferenceTaskTypeInferenceIdUpdateMutationKey() {
@@ -25712,7 +25314,6 @@ export function injectPutInferenceTaskTypeInferenceIdUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25725,7 +25326,7 @@ export function injectPutInferenceTaskTypeInferenceIdUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryKey() {
@@ -25767,12 +25368,11 @@ export function inject<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHeadMutationKey() {
@@ -25808,7 +25408,6 @@ export function injectHead<TError = DefaultError, TOnMutateResult = unknown>(
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25818,7 +25417,7 @@ export function injectHead<TError = DefaultError, TOnMutateResult = unknown>(
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIngestGeoipDatabaseIdQueryKey(
@@ -25893,7 +25492,6 @@ export function injectIngestGeoipDatabaseId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -25901,7 +25499,7 @@ export function injectIngestGeoipDatabaseId<
       ...getIngestGeoipDatabaseIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIngestGeoipDatabaseIdMutationKey() {
@@ -25952,7 +25550,6 @@ export function injectPutIngestGeoipDatabaseId<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -25964,7 +25561,7 @@ export function injectPutIngestGeoipDatabaseId<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIngestGeoipDatabaseIdMutationKey() {
@@ -26015,7 +25612,6 @@ export function injectDeleteIngestGeoipDatabaseId<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -26027,7 +25623,7 @@ export function injectDeleteIngestGeoipDatabaseId<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIngestIpLocationDatabaseIdQueryKey(
@@ -26102,7 +25698,6 @@ export function injectIngestIpLocationDatabaseId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -26110,7 +25705,7 @@ export function injectIngestIpLocationDatabaseId<
       ...getIngestIpLocationDatabaseIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutIngestIpLocationDatabaseIdMutationKey() {
@@ -26164,7 +25759,6 @@ export function injectPutIngestIpLocationDatabaseId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -26177,7 +25771,7 @@ export function injectPutIngestIpLocationDatabaseId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIngestIpLocationDatabaseIdMutationKey() {
@@ -26231,7 +25825,6 @@ export function injectDeleteIngestIpLocationDatabaseId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -26244,7 +25837,7 @@ export function injectDeleteIngestIpLocationDatabaseId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIngestPipelineIdQueryKey(
@@ -26313,12 +25906,11 @@ export function injectIngestPipelineId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIngestPipelineIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutIngestPipelineIdMutationKey() {
@@ -26365,7 +25957,6 @@ export function injectPutIngestPipelineId<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -26377,7 +25968,7 @@ export function injectPutIngestPipelineId<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteIngestPipelineIdMutationKey() {
@@ -26426,7 +26017,6 @@ export function injectDeleteIngestPipelineId<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -26438,7 +26028,7 @@ export function injectDeleteIngestPipelineId<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIngestGeoipStatsQueryKey() {
@@ -26493,12 +26083,11 @@ export function injectIngestGeoipStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIngestGeoipStatsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIngestGeoipDatabaseQueryKey() {
@@ -26555,12 +26144,11 @@ export function injectIngestGeoipDatabase<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIngestGeoipDatabaseQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIngestIpLocationDatabaseQueryKey() {
@@ -26623,12 +26211,11 @@ export function injectIngestIpLocationDatabase<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIngestIpLocationDatabaseQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIngestPipelineQueryKey(
@@ -26681,12 +26268,11 @@ export function injectIngestPipeline<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIngestPipelineQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIngestProcessorGrokQueryKey() {
@@ -26743,12 +26329,11 @@ export function injectIngestProcessorGrok<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIngestProcessorGrokQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIngestPipelineSimulateQueryKey(
@@ -26815,7 +26400,6 @@ export function injectIngestPipelineSimulate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -26823,7 +26407,7 @@ export function injectIngestPipelineSimulate<
       ...getIngestPipelineSimulateQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIngestPipelineSimulateMutationKey() {
@@ -26870,7 +26454,6 @@ export function injectPostIngestPipelineSimulate<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -26882,7 +26465,7 @@ export function injectPostIngestPipelineSimulate<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIngestPipelineIdSimulateQueryKey(
@@ -26957,7 +26540,6 @@ export function injectIngestPipelineIdSimulate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -26965,7 +26547,7 @@ export function injectIngestPipelineIdSimulate<
       ...getIngestPipelineIdSimulateQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIngestPipelineIdSimulateMutationKey() {
@@ -27019,7 +26601,6 @@ export function injectPostIngestPipelineIdSimulate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27032,7 +26613,7 @@ export function injectPostIngestPipelineIdSimulate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexKnnEvalQueryKey(
@@ -27098,12 +26679,11 @@ export function injectIndexKnnEval<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexKnnEvalQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexKnnEvalMutationKey() {
@@ -27150,7 +26730,6 @@ export function injectPostIndexKnnEval<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27162,7 +26741,7 @@ export function injectPostIndexKnnEval<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getLicenseQueryKey(args: InferRequestType<typeof client._license.$get>) {
@@ -27209,12 +26788,11 @@ export function injectLicense<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLicenseQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutLicenseMutationKey() {
@@ -27250,7 +26828,6 @@ export function injectPutLicense<TError = DefaultError, TOnMutateResult = unknow
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27260,7 +26837,7 @@ export function injectPutLicense<TError = DefaultError, TOnMutateResult = unknow
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostLicenseMutationKey() {
@@ -27298,7 +26875,6 @@ export function injectPostLicense<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27308,7 +26884,7 @@ export function injectPostLicense<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteLicenseMutationKey() {
@@ -27346,7 +26922,6 @@ export function injectDeleteLicense<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27356,7 +26931,7 @@ export function injectDeleteLicense<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getLicenseBasicStatusQueryKey() {
@@ -27413,12 +26988,11 @@ export function injectLicenseBasicStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLicenseBasicStatusQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getLicenseTrialStatusQueryKey() {
@@ -27475,12 +27049,11 @@ export function injectLicenseTrialStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLicenseTrialStatusQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostLicenseStartBasicMutationKey() {
@@ -27525,7 +27098,6 @@ export function injectPostLicenseStartBasic<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27537,7 +27109,7 @@ export function injectPostLicenseStartBasic<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostLicenseStartTrialMutationKey() {
@@ -27582,7 +27154,6 @@ export function injectPostLicenseStartTrial<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27594,7 +27165,7 @@ export function injectPostLicenseStartTrial<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getReindexQueryKey(args: InferRequestType<typeof client._reindex.$get>) {
@@ -27641,12 +27212,11 @@ export function injectReindex<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getReindexQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostReindexMutationKey() {
@@ -27684,7 +27254,6 @@ export function injectPostReindex<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27694,7 +27263,7 @@ export function injectPostReindex<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getLogstashPipelineIdQueryKey(
@@ -27763,12 +27332,11 @@ export function injectLogstashPipelineId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLogstashPipelineIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutLogstashPipelineIdMutationKey() {
@@ -27815,7 +27383,6 @@ export function injectPutLogstashPipelineId<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27827,7 +27394,7 @@ export function injectPutLogstashPipelineId<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteLogstashPipelineIdMutationKey() {
@@ -27876,7 +27443,6 @@ export function injectDeleteLogstashPipelineId<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -27888,7 +27454,7 @@ export function injectDeleteLogstashPipelineId<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getLogstashPipelineQueryKey() {
@@ -27943,12 +27509,11 @@ export function injectLogstashPipeline<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLogstashPipelineQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMgetQueryKey(args: InferRequestType<typeof client._mget.$get>) {
@@ -27991,12 +27556,11 @@ export function injectMget<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMgetQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMgetMutationKey() {
@@ -28032,7 +27596,6 @@ export function injectPostMget<TError = DefaultError, TOnMutateResult = unknown>
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28042,7 +27605,7 @@ export function injectPostMget<TError = DefaultError, TOnMutateResult = unknown>
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexMgetQueryKey(
@@ -28106,12 +27669,11 @@ export function injectIndexMget<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexMgetQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexMgetMutationKey() {
@@ -28155,7 +27717,6 @@ export function injectPostIndexMget<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28165,7 +27726,7 @@ export function injectPostIndexMget<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMigrationDeprecationsQueryKey() {
@@ -28226,12 +27787,11 @@ export function injectMigrationDeprecations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMigrationDeprecationsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexMigrationDeprecationsQueryKey(
@@ -28306,7 +27866,6 @@ export function injectIndexMigrationDeprecations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -28314,7 +27873,7 @@ export function injectIndexMigrationDeprecations<
       ...getIndexMigrationDeprecationsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMigrationSystemFeaturesQueryKey() {
@@ -28375,12 +27934,11 @@ export function injectMigrationSystemFeatures<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMigrationSystemFeaturesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMigrationSystemFeaturesMutationKey() {
@@ -28427,7 +27985,6 @@ export function injectPostMigrationSystemFeatures<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28439,7 +27996,7 @@ export function injectPostMigrationSystemFeatures<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlTrainedModelsModelIdDeploymentCacheClearMutationKey() {
@@ -28509,7 +28066,6 @@ export function injectPostMlTrainedModelsModelIdDeploymentCacheClear<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28522,7 +28078,7 @@ export function injectPostMlTrainedModelsModelIdDeploymentCacheClear<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdCloseMutationKey() {
@@ -28578,7 +28134,6 @@ export function injectPostMlAnomalyDetectorsJobIdClose<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28591,7 +28146,7 @@ export function injectPostMlAnomalyDetectorsJobIdClose<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlCalendarsCalendarIdQueryKey(
@@ -28666,7 +28221,6 @@ export function injectMlCalendarsCalendarId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -28674,7 +28228,7 @@ export function injectMlCalendarsCalendarId<
       ...getMlCalendarsCalendarIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlCalendarsCalendarIdMutationKey() {
@@ -28725,7 +28279,6 @@ export function injectPutMlCalendarsCalendarId<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28737,7 +28290,7 @@ export function injectPutMlCalendarsCalendarId<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlCalendarsCalendarIdMutationKey() {
@@ -28788,7 +28341,6 @@ export function injectPostMlCalendarsCalendarId<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28800,7 +28352,7 @@ export function injectPostMlCalendarsCalendarId<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlCalendarsCalendarIdMutationKey() {
@@ -28851,7 +28403,6 @@ export function injectDeleteMlCalendarsCalendarId<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28863,7 +28414,7 @@ export function injectDeleteMlCalendarsCalendarId<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlCalendarsCalendarIdEventsEventIdMutationKey() {
@@ -28933,7 +28484,6 @@ export function injectDeleteMlCalendarsCalendarIdEventsEventId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -28946,7 +28496,7 @@ export function injectDeleteMlCalendarsCalendarIdEventsEventId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlCalendarsCalendarIdJobsJobIdMutationKey() {
@@ -29006,7 +28556,6 @@ export function injectPutMlCalendarsCalendarIdJobsJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29019,7 +28568,7 @@ export function injectPutMlCalendarsCalendarIdJobsJobId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlCalendarsCalendarIdJobsJobIdMutationKey() {
@@ -29085,7 +28634,6 @@ export function injectDeleteMlCalendarsCalendarIdJobsJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29098,7 +28646,7 @@ export function injectDeleteMlCalendarsCalendarIdJobsJobId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDataFrameAnalyticsIdQueryKey(
@@ -29173,7 +28721,6 @@ export function injectMlDataFrameAnalyticsId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -29181,7 +28728,7 @@ export function injectMlDataFrameAnalyticsId<
       ...getMlDataFrameAnalyticsIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlDataFrameAnalyticsIdMutationKey() {
@@ -29232,7 +28779,6 @@ export function injectPutMlDataFrameAnalyticsId<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29244,7 +28790,7 @@ export function injectPutMlDataFrameAnalyticsId<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlDataFrameAnalyticsIdMutationKey() {
@@ -29298,7 +28844,6 @@ export function injectDeleteMlDataFrameAnalyticsId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29311,7 +28856,7 @@ export function injectDeleteMlDataFrameAnalyticsId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDatafeedsDatafeedIdQueryKey(
@@ -29386,7 +28931,6 @@ export function injectMlDatafeedsDatafeedId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -29394,7 +28938,7 @@ export function injectMlDatafeedsDatafeedId<
       ...getMlDatafeedsDatafeedIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlDatafeedsDatafeedIdMutationKey() {
@@ -29445,7 +28989,6 @@ export function injectPutMlDatafeedsDatafeedId<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29457,7 +29000,7 @@ export function injectPutMlDatafeedsDatafeedId<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlDatafeedsDatafeedIdMutationKey() {
@@ -29508,7 +29051,6 @@ export function injectDeleteMlDatafeedsDatafeedId<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29520,7 +29062,7 @@ export function injectDeleteMlDatafeedsDatafeedId<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlDeleteExpiredDataJobIdMutationKey() {
@@ -29574,7 +29116,6 @@ export function injectDeleteMlDeleteExpiredDataJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29587,7 +29128,7 @@ export function injectDeleteMlDeleteExpiredDataJobId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlDeleteExpiredDataMutationKey() {
@@ -29634,7 +29175,6 @@ export function injectDeleteMlDeleteExpiredData<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29646,7 +29186,7 @@ export function injectDeleteMlDeleteExpiredData<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlFiltersFilterIdQueryKey(
@@ -29715,12 +29255,11 @@ export function injectMlFiltersFilterId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlFiltersFilterIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlFiltersFilterIdMutationKey() {
@@ -29767,7 +29306,6 @@ export function injectPutMlFiltersFilterId<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29779,7 +29317,7 @@ export function injectPutMlFiltersFilterId<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlFiltersFilterIdMutationKey() {
@@ -29828,7 +29366,6 @@ export function injectDeleteMlFiltersFilterId<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29840,7 +29377,7 @@ export function injectDeleteMlFiltersFilterId<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdForecastMutationKey() {
@@ -29900,7 +29437,6 @@ export function injectPostMlAnomalyDetectorsJobIdForecast<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29913,7 +29449,7 @@ export function injectPostMlAnomalyDetectorsJobIdForecast<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlAnomalyDetectorsJobIdForecastMutationKey() {
@@ -29973,7 +29509,6 @@ export function injectDeleteMlAnomalyDetectorsJobIdForecast<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -29986,7 +29521,7 @@ export function injectDeleteMlAnomalyDetectorsJobIdForecast<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlAnomalyDetectorsJobIdForecastForecastIdMutationKey() {
@@ -30056,7 +29591,6 @@ export function injectDeleteMlAnomalyDetectorsJobIdForecastForecastId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30069,7 +29603,7 @@ export function injectDeleteMlAnomalyDetectorsJobIdForecastForecastId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdQueryKey(
@@ -30144,7 +29678,6 @@ export function injectMlAnomalyDetectorsJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -30152,7 +29685,7 @@ export function injectMlAnomalyDetectorsJobId<
       ...getMlAnomalyDetectorsJobIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlAnomalyDetectorsJobIdMutationKey() {
@@ -30203,7 +29736,6 @@ export function injectPutMlAnomalyDetectorsJobId<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30215,7 +29747,7 @@ export function injectPutMlAnomalyDetectorsJobId<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlAnomalyDetectorsJobIdMutationKey() {
@@ -30269,7 +29801,6 @@ export function injectDeleteMlAnomalyDetectorsJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30282,7 +29813,7 @@ export function injectDeleteMlAnomalyDetectorsJobId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdQueryKey(
@@ -30379,7 +29910,6 @@ export function injectMlAnomalyDetectorsJobIdModelSnapshotsSnapshotId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -30390,7 +29920,7 @@ export function injectMlAnomalyDetectorsJobIdModelSnapshotsSnapshotId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdMutationKey() {
@@ -30463,7 +29993,6 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30476,7 +30005,7 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdMutationKey() {
@@ -30549,7 +30078,6 @@ export function injectDeleteMlAnomalyDetectorsJobIdModelSnapshotsSnapshotId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30563,7 +30091,7 @@ export function injectDeleteMlAnomalyDetectorsJobIdModelSnapshotsSnapshotId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlTrainedModelsModelIdQueryKey(
@@ -30638,7 +30166,6 @@ export function injectMlTrainedModelsModelId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -30646,7 +30173,7 @@ export function injectMlTrainedModelsModelId<
       ...getMlTrainedModelsModelIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlTrainedModelsModelIdMutationKey() {
@@ -30697,7 +30224,6 @@ export function injectPutMlTrainedModelsModelId<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30709,7 +30235,7 @@ export function injectPutMlTrainedModelsModelId<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlTrainedModelsModelIdMutationKey() {
@@ -30763,7 +30289,6 @@ export function injectDeleteMlTrainedModelsModelId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30776,7 +30301,7 @@ export function injectDeleteMlTrainedModelsModelId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlTrainedModelsModelIdModelAliasesModelAliasMutationKey() {
@@ -30846,7 +30371,6 @@ export function injectPutMlTrainedModelsModelIdModelAliasesModelAlias<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30859,7 +30383,7 @@ export function injectPutMlTrainedModelsModelIdModelAliasesModelAlias<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteMlTrainedModelsModelIdModelAliasesModelAliasMutationKey() {
@@ -30929,7 +30453,6 @@ export function injectDeleteMlTrainedModelsModelIdModelAliasesModelAlias<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -30942,7 +30465,7 @@ export function injectDeleteMlTrainedModelsModelIdModelAliasesModelAlias<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsEstimateModelMemoryMutationKey() {
@@ -30996,7 +30519,6 @@ export function injectPostMlAnomalyDetectorsEstimateModelMemory<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -31009,7 +30531,7 @@ export function injectPostMlAnomalyDetectorsEstimateModelMemory<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDataFrameEvaluateMutationKey() {
@@ -31054,7 +30576,6 @@ export function injectPostMlDataFrameEvaluate<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -31066,7 +30587,7 @@ export function injectPostMlDataFrameEvaluate<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDataFrameAnalyticsExplainQueryKey(
@@ -31141,7 +30662,6 @@ export function injectMlDataFrameAnalyticsExplain<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -31149,7 +30669,7 @@ export function injectMlDataFrameAnalyticsExplain<
       ...getMlDataFrameAnalyticsExplainQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDataFrameAnalyticsExplainMutationKey() {
@@ -31203,7 +30723,6 @@ export function injectPostMlDataFrameAnalyticsExplain<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -31216,7 +30735,7 @@ export function injectPostMlDataFrameAnalyticsExplain<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDataFrameAnalyticsIdExplainQueryKey(
@@ -31293,7 +30812,6 @@ export function injectMlDataFrameAnalyticsIdExplain<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -31301,7 +30819,7 @@ export function injectMlDataFrameAnalyticsIdExplain<
       ...getMlDataFrameAnalyticsIdExplainQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDataFrameAnalyticsIdExplainMutationKey() {
@@ -31357,7 +30875,6 @@ export function injectPostMlDataFrameAnalyticsIdExplain<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -31370,7 +30887,7 @@ export function injectPostMlDataFrameAnalyticsIdExplain<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdFlushMutationKey() {
@@ -31426,7 +30943,6 @@ export function injectPostMlAnomalyDetectorsJobIdFlush<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -31439,7 +30955,7 @@ export function injectPostMlAnomalyDetectorsJobIdFlush<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdResultsBucketsTimestampQueryKey(
@@ -31536,7 +31052,6 @@ export function injectMlAnomalyDetectorsJobIdResultsBucketsTimestamp<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -31547,7 +31062,7 @@ export function injectMlAnomalyDetectorsJobIdResultsBucketsTimestamp<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdResultsBucketsTimestampMutationKey() {
@@ -31617,7 +31132,6 @@ export function injectPostMlAnomalyDetectorsJobIdResultsBucketsTimestamp<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -31630,7 +31144,7 @@ export function injectPostMlAnomalyDetectorsJobIdResultsBucketsTimestamp<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdResultsBucketsQueryKey(
@@ -31723,7 +31237,6 @@ export function injectMlAnomalyDetectorsJobIdResultsBuckets<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -31731,7 +31244,7 @@ export function injectMlAnomalyDetectorsJobIdResultsBuckets<
       ...getMlAnomalyDetectorsJobIdResultsBucketsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdResultsBucketsMutationKey() {
@@ -31801,7 +31314,6 @@ export function injectPostMlAnomalyDetectorsJobIdResultsBuckets<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -31814,7 +31326,7 @@ export function injectPostMlAnomalyDetectorsJobIdResultsBuckets<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlCalendarsCalendarIdEventsQueryKey(
@@ -31889,7 +31401,6 @@ export function injectMlCalendarsCalendarIdEvents<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -31897,7 +31408,7 @@ export function injectMlCalendarsCalendarIdEvents<
       ...getMlCalendarsCalendarIdEventsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlCalendarsCalendarIdEventsMutationKey() {
@@ -31951,7 +31462,6 @@ export function injectPostMlCalendarsCalendarIdEvents<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -31964,7 +31474,7 @@ export function injectPostMlCalendarsCalendarIdEvents<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlCalendarsQueryKey(args: InferRequestType<typeof client._ml.calendars.$get>) {
@@ -32015,12 +31525,11 @@ export function injectMlCalendars<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlCalendarsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlCalendarsMutationKey() {
@@ -32060,7 +31569,6 @@ export function injectPostMlCalendars<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -32072,7 +31580,7 @@ export function injectPostMlCalendars<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdResultsCategoriesCategoryIdQueryKey(
@@ -32169,7 +31677,6 @@ export function injectMlAnomalyDetectorsJobIdResultsCategoriesCategoryId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -32180,7 +31687,7 @@ export function injectMlAnomalyDetectorsJobIdResultsCategoriesCategoryId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdResultsCategoriesCategoryIdMutationKey() {
@@ -32253,7 +31760,6 @@ export function injectPostMlAnomalyDetectorsJobIdResultsCategoriesCategoryId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -32267,7 +31773,7 @@ export function injectPostMlAnomalyDetectorsJobIdResultsCategoriesCategoryId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdResultsCategoriesQueryKey(
@@ -32364,7 +31870,6 @@ export function injectMlAnomalyDetectorsJobIdResultsCategories<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -32375,7 +31880,7 @@ export function injectMlAnomalyDetectorsJobIdResultsCategories<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdResultsCategoriesMutationKey() {
@@ -32445,7 +31950,6 @@ export function injectPostMlAnomalyDetectorsJobIdResultsCategories<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -32458,7 +31962,7 @@ export function injectPostMlAnomalyDetectorsJobIdResultsCategories<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDataFrameAnalyticsQueryKey(
@@ -32525,7 +32029,6 @@ export function injectMlDataFrameAnalytics<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -32533,7 +32036,7 @@ export function injectMlDataFrameAnalytics<
       ...getMlDataFrameAnalyticsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDataFrameAnalyticsStatsQueryKey(
@@ -32604,7 +32107,6 @@ export function injectMlDataFrameAnalyticsStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -32612,7 +32114,7 @@ export function injectMlDataFrameAnalyticsStats<
       ...getMlDataFrameAnalyticsStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDataFrameAnalyticsIdStatsQueryKey(
@@ -32687,7 +32189,6 @@ export function injectMlDataFrameAnalyticsIdStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -32695,7 +32196,7 @@ export function injectMlDataFrameAnalyticsIdStats<
       ...getMlDataFrameAnalyticsIdStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDatafeedsDatafeedIdStatsQueryKey(
@@ -32770,7 +32271,6 @@ export function injectMlDatafeedsDatafeedIdStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -32778,7 +32278,7 @@ export function injectMlDatafeedsDatafeedIdStats<
       ...getMlDatafeedsDatafeedIdStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDatafeedsStatsQueryKey(
@@ -32833,12 +32333,11 @@ export function injectMlDatafeedsStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlDatafeedsStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMlDatafeedsQueryKey(args: InferRequestType<typeof client._ml.datafeeds.$get>) {
@@ -32889,12 +32388,11 @@ export function injectMlDatafeeds<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlDatafeedsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMlFiltersQueryKey(args: InferRequestType<typeof client._ml.filters.$get>) {
@@ -32943,12 +32441,11 @@ export function injectMlFilters<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlFiltersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdResultsInfluencersQueryKey(
@@ -33045,7 +32542,6 @@ export function injectMlAnomalyDetectorsJobIdResultsInfluencers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -33056,7 +32552,7 @@ export function injectMlAnomalyDetectorsJobIdResultsInfluencers<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdResultsInfluencersMutationKey() {
@@ -33126,7 +32622,6 @@ export function injectPostMlAnomalyDetectorsJobIdResultsInfluencers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -33139,7 +32634,7 @@ export function injectPostMlAnomalyDetectorsJobIdResultsInfluencers<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsStatsQueryKey(
@@ -33208,7 +32703,6 @@ export function injectMlAnomalyDetectorsStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -33216,7 +32710,7 @@ export function injectMlAnomalyDetectorsStats<
       ...getMlAnomalyDetectorsStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdStatsQueryKey(
@@ -33293,7 +32787,6 @@ export function injectMlAnomalyDetectorsJobIdStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -33301,7 +32794,7 @@ export function injectMlAnomalyDetectorsJobIdStats<
       ...getMlAnomalyDetectorsJobIdStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsQueryKey(
@@ -33361,12 +32854,11 @@ export function injectMlAnomalyDetectors<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlAnomalyDetectorsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMlMemoryStatsQueryKey(
@@ -33421,12 +32913,11 @@ export function injectMlMemoryStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlMemoryStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMlMemoryNodeIdStatsQueryKey(
@@ -33501,12 +32992,11 @@ export function injectMlMemoryNodeIdStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlMemoryNodeIdStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpgradeStatsQueryKey(
@@ -33606,7 +33096,6 @@ export function injectMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpgradeStat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -33617,7 +33106,7 @@ export function injectMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpgradeStat
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdModelSnapshotsQueryKey(
@@ -33708,7 +33197,6 @@ export function injectMlAnomalyDetectorsJobIdModelSnapshots<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -33716,7 +33204,7 @@ export function injectMlAnomalyDetectorsJobIdModelSnapshots<
       ...getMlAnomalyDetectorsJobIdModelSnapshotsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdModelSnapshotsMutationKey() {
@@ -33782,7 +33270,6 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshots<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -33795,7 +33282,7 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshots<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdResultsOverallBucketsQueryKey(
@@ -33892,7 +33379,6 @@ export function injectMlAnomalyDetectorsJobIdResultsOverallBuckets<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -33903,7 +33389,7 @@ export function injectMlAnomalyDetectorsJobIdResultsOverallBuckets<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdResultsOverallBucketsMutationKey() {
@@ -33973,7 +33459,6 @@ export function injectPostMlAnomalyDetectorsJobIdResultsOverallBuckets<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -33986,7 +33471,7 @@ export function injectPostMlAnomalyDetectorsJobIdResultsOverallBuckets<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlAnomalyDetectorsJobIdResultsRecordsQueryKey(
@@ -34079,7 +33564,6 @@ export function injectMlAnomalyDetectorsJobIdResultsRecords<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -34087,7 +33571,7 @@ export function injectMlAnomalyDetectorsJobIdResultsRecords<
       ...getMlAnomalyDetectorsJobIdResultsRecordsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdResultsRecordsMutationKey() {
@@ -34157,7 +33641,6 @@ export function injectPostMlAnomalyDetectorsJobIdResultsRecords<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -34170,7 +33653,7 @@ export function injectPostMlAnomalyDetectorsJobIdResultsRecords<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlTrainedModelsQueryKey(
@@ -34225,12 +33708,11 @@ export function injectMlTrainedModels<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlTrainedModelsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMlTrainedModelsModelIdStatsQueryKey(
@@ -34305,7 +33787,6 @@ export function injectMlTrainedModelsModelIdStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -34313,7 +33794,7 @@ export function injectMlTrainedModelsModelIdStats<
       ...getMlTrainedModelsModelIdStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlTrainedModelsStatsQueryKey(
@@ -34380,7 +33861,6 @@ export function injectMlTrainedModelsStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -34388,7 +33868,7 @@ export function injectMlTrainedModelsStats<
       ...getMlTrainedModelsStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlTrainedModelsModelIdInferMutationKey() {
@@ -34444,7 +33924,6 @@ export function injectPostMlTrainedModelsModelIdInfer<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -34457,7 +33936,7 @@ export function injectPostMlTrainedModelsModelIdInfer<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlInfoQueryKey() {
@@ -34503,12 +33982,11 @@ export function injectMlInfo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlInfoQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdOpenMutationKey() {
@@ -34564,7 +34042,6 @@ export function injectPostMlAnomalyDetectorsJobIdOpen<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -34577,7 +34054,7 @@ export function injectPostMlAnomalyDetectorsJobIdOpen<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdDataMutationKey() {
@@ -34633,7 +34110,6 @@ export function injectPostMlAnomalyDetectorsJobIdData<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -34646,7 +34122,7 @@ export function injectPostMlAnomalyDetectorsJobIdData<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDataFrameAnalyticsPreviewQueryKey(
@@ -34721,7 +34197,6 @@ export function injectMlDataFrameAnalyticsPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -34729,7 +34204,7 @@ export function injectMlDataFrameAnalyticsPreview<
       ...getMlDataFrameAnalyticsPreviewQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDataFrameAnalyticsPreviewMutationKey() {
@@ -34783,7 +34258,6 @@ export function injectPostMlDataFrameAnalyticsPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -34796,7 +34270,7 @@ export function injectPostMlDataFrameAnalyticsPreview<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDataFrameAnalyticsIdPreviewQueryKey(
@@ -34873,7 +34347,6 @@ export function injectMlDataFrameAnalyticsIdPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -34881,7 +34354,7 @@ export function injectMlDataFrameAnalyticsIdPreview<
       ...getMlDataFrameAnalyticsIdPreviewQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDataFrameAnalyticsIdPreviewMutationKey() {
@@ -34937,7 +34410,6 @@ export function injectPostMlDataFrameAnalyticsIdPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -34950,7 +34422,7 @@ export function injectPostMlDataFrameAnalyticsIdPreview<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDatafeedsDatafeedIdPreviewQueryKey(
@@ -35025,7 +34497,6 @@ export function injectMlDatafeedsDatafeedIdPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -35033,7 +34504,7 @@ export function injectMlDatafeedsDatafeedIdPreview<
       ...getMlDatafeedsDatafeedIdPreviewQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDatafeedsDatafeedIdPreviewMutationKey() {
@@ -35089,7 +34560,6 @@ export function injectPostMlDatafeedsDatafeedIdPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35102,7 +34572,7 @@ export function injectPostMlDatafeedsDatafeedIdPreview<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMlDatafeedsPreviewQueryKey(
@@ -35165,12 +34635,11 @@ export function injectMlDatafeedsPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMlDatafeedsPreviewQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDatafeedsPreviewMutationKey() {
@@ -35215,7 +34684,6 @@ export function injectPostMlDatafeedsPreview<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35227,7 +34695,7 @@ export function injectPostMlDatafeedsPreview<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlTrainedModelsModelIdDefinitionPartMutationKey() {
@@ -35297,7 +34765,6 @@ export function injectPutMlTrainedModelsModelIdDefinitionPart<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35310,7 +34777,7 @@ export function injectPutMlTrainedModelsModelIdDefinitionPart<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutMlTrainedModelsModelIdVocabularyMutationKey() {
@@ -35366,7 +34833,6 @@ export function injectPutMlTrainedModelsModelIdVocabulary<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35379,7 +34845,7 @@ export function injectPutMlTrainedModelsModelIdVocabulary<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdResetMutationKey() {
@@ -35435,7 +34901,6 @@ export function injectPostMlAnomalyDetectorsJobIdReset<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35448,7 +34913,7 @@ export function injectPostMlAnomalyDetectorsJobIdReset<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdRevertMutationKey() {
@@ -35525,7 +34990,6 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdRevert<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35539,7 +35003,7 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdRevert<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlSetUpgradeModeMutationKey() {
@@ -35584,7 +35048,6 @@ export function injectPostMlSetUpgradeMode<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35596,7 +35059,7 @@ export function injectPostMlSetUpgradeMode<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDataFrameAnalyticsIdStartMutationKey() {
@@ -35652,7 +35115,6 @@ export function injectPostMlDataFrameAnalyticsIdStart<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35665,7 +35127,7 @@ export function injectPostMlDataFrameAnalyticsIdStart<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDatafeedsDatafeedIdStartMutationKey() {
@@ -35719,7 +35181,6 @@ export function injectPostMlDatafeedsDatafeedIdStart<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35732,7 +35193,7 @@ export function injectPostMlDatafeedsDatafeedIdStart<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlTrainedModelsModelIdDeploymentStartMutationKey() {
@@ -35802,7 +35263,6 @@ export function injectPostMlTrainedModelsModelIdDeploymentStart<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35815,7 +35275,7 @@ export function injectPostMlTrainedModelsModelIdDeploymentStart<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDataFrameAnalyticsIdStopMutationKey() {
@@ -35869,7 +35329,6 @@ export function injectPostMlDataFrameAnalyticsIdStop<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35882,7 +35341,7 @@ export function injectPostMlDataFrameAnalyticsIdStop<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDatafeedsDatafeedIdStopMutationKey() {
@@ -35936,7 +35395,6 @@ export function injectPostMlDatafeedsDatafeedIdStop<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -35949,7 +35407,7 @@ export function injectPostMlDatafeedsDatafeedIdStop<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlTrainedModelsModelIdDeploymentStopMutationKey() {
@@ -36019,7 +35477,6 @@ export function injectPostMlTrainedModelsModelIdDeploymentStop<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36032,7 +35489,7 @@ export function injectPostMlTrainedModelsModelIdDeploymentStop<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDataFrameAnalyticsIdUpdateMutationKey() {
@@ -36088,7 +35545,6 @@ export function injectPostMlDataFrameAnalyticsIdUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36101,7 +35557,7 @@ export function injectPostMlDataFrameAnalyticsIdUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlDatafeedsDatafeedIdUpdateMutationKey() {
@@ -36155,7 +35611,6 @@ export function injectPostMlDatafeedsDatafeedIdUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36168,7 +35623,7 @@ export function injectPostMlDatafeedsDatafeedIdUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlFiltersFilterIdUpdateMutationKey() {
@@ -36219,7 +35674,6 @@ export function injectPostMlFiltersFilterIdUpdate<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36231,7 +35685,7 @@ export function injectPostMlFiltersFilterIdUpdate<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdUpdateMutationKey() {
@@ -36287,7 +35741,6 @@ export function injectPostMlAnomalyDetectorsJobIdUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36300,7 +35753,7 @@ export function injectPostMlAnomalyDetectorsJobIdUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpdateMutationKey() {
@@ -36377,7 +35830,6 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36391,7 +35843,7 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlTrainedModelsModelIdDeploymentUpdateMutationKey() {
@@ -36461,7 +35913,6 @@ export function injectPostMlTrainedModelsModelIdDeploymentUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36474,7 +35925,7 @@ export function injectPostMlTrainedModelsModelIdDeploymentUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpgradeMutationKey() {
@@ -36551,7 +36002,6 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpgrade
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36565,7 +36015,7 @@ export function injectPostMlAnomalyDetectorsJobIdModelSnapshotsSnapshotIdUpgrade
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMsearchQueryKey(args: InferRequestType<typeof client._msearch.$get>) {
@@ -36612,12 +36062,11 @@ export function injectMsearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMsearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMsearchMutationKey() {
@@ -36655,7 +36104,6 @@ export function injectPostMsearch<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36665,7 +36113,7 @@ export function injectPostMsearch<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexMsearchQueryKey(
@@ -36729,12 +36177,11 @@ export function injectIndexMsearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexMsearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexMsearchMutationKey() {
@@ -36781,7 +36228,6 @@ export function injectPostIndexMsearch<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36793,7 +36239,7 @@ export function injectPostIndexMsearch<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMsearchTemplateQueryKey(
@@ -36848,12 +36294,11 @@ export function injectMsearchTemplate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMsearchTemplateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMsearchTemplateMutationKey() {
@@ -36896,7 +36341,6 @@ export function injectPostMsearchTemplate<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -36908,7 +36352,7 @@ export function injectPostMsearchTemplate<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexMsearchTemplateQueryKey(
@@ -36983,7 +36427,6 @@ export function injectIndexMsearchTemplate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -36991,7 +36434,7 @@ export function injectIndexMsearchTemplate<
       ...getIndexMsearchTemplateQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexMsearchTemplateMutationKey() {
@@ -37042,7 +36485,6 @@ export function injectPostIndexMsearchTemplate<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -37054,7 +36496,7 @@ export function injectPostIndexMsearchTemplate<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getMtermvectorsQueryKey(args: InferRequestType<typeof client._mtermvectors.$get>) {
@@ -37105,12 +36547,11 @@ export function injectMtermvectors<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMtermvectorsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMtermvectorsMutationKey() {
@@ -37151,7 +36592,6 @@ export function injectPostMtermvectors<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -37163,7 +36603,7 @@ export function injectPostMtermvectors<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexMtermvectorsQueryKey(
@@ -37234,12 +36674,11 @@ export function injectIndexMtermvectors<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexMtermvectorsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexMtermvectorsMutationKey() {
@@ -37288,7 +36727,6 @@ export function injectPostIndexMtermvectors<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -37300,7 +36738,7 @@ export function injectPostIndexMtermvectors<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteNodesNodeIdRepositoriesMeteringMaxArchiveVersionMutationKey() {
@@ -37377,7 +36815,6 @@ export function injectDeleteNodesNodeIdRepositoriesMeteringMaxArchiveVersion<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -37391,7 +36828,7 @@ export function injectDeleteNodesNodeIdRepositoriesMeteringMaxArchiveVersion<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdRepositoriesMeteringQueryKey(
@@ -37470,7 +36907,6 @@ export function injectNodesNodeIdRepositoriesMetering<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -37478,7 +36914,7 @@ export function injectNodesNodeIdRepositoriesMetering<
       ...getNodesNodeIdRepositoriesMeteringQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNodesHotThreadsQueryKey(
@@ -37533,12 +36969,11 @@ export function injectNodesHotThreads<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesHotThreadsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdHotThreadsQueryKey(
@@ -37613,7 +37048,6 @@ export function injectNodesNodeIdHotThreads<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -37621,7 +37055,7 @@ export function injectNodesNodeIdHotThreads<
       ...getNodesNodeIdHotThreadsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNodesQueryKey(args: InferRequestType<typeof client._nodes.$get>) {
@@ -37664,12 +37098,11 @@ export function injectNodes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdQueryKey(
@@ -37733,12 +37166,11 @@ export function injectNodesNodeId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesNodeIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesMetricQueryKey(
@@ -37798,12 +37230,11 @@ export function injectNodesMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesMetricQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdMetricQueryKey(
@@ -37878,12 +37309,11 @@ export function injectNodesNodeIdMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesNodeIdMetricQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostNodesReloadSecureSettingsMutationKey() {
@@ -37933,7 +37363,6 @@ export function injectPostNodesReloadSecureSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -37946,7 +37375,7 @@ export function injectPostNodesReloadSecureSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostNodesNodeIdReloadSecureSettingsMutationKey() {
@@ -38002,7 +37431,6 @@ export function injectPostNodesNodeIdReloadSecureSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -38015,7 +37443,7 @@ export function injectPostNodesNodeIdReloadSecureSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNodesStatsQueryKey(args: InferRequestType<typeof client._nodes.stats.$get>) {
@@ -38064,12 +37492,11 @@ export function injectNodesStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdStatsQueryKey(
@@ -38140,12 +37567,11 @@ export function injectNodesNodeIdStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesNodeIdStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesStatsMetricQueryKey(
@@ -38214,12 +37640,11 @@ export function injectNodesStatsMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesStatsMetricQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdStatsMetricQueryKey(
@@ -38294,7 +37719,6 @@ export function injectNodesNodeIdStatsMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -38302,7 +37726,7 @@ export function injectNodesNodeIdStatsMetric<
       ...getNodesNodeIdStatsMetricQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNodesStatsMetricIndexMetricQueryKey(
@@ -38377,7 +37801,6 @@ export function injectNodesStatsMetricIndexMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -38385,7 +37808,7 @@ export function injectNodesStatsMetricIndexMetric<
       ...getNodesStatsMetricIndexMetricQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdStatsMetricIndexMetricQueryKey(
@@ -38482,7 +37905,6 @@ export function injectNodesNodeIdStatsMetricIndexMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -38490,7 +37912,7 @@ export function injectNodesNodeIdStatsMetricIndexMetric<
       ...getNodesNodeIdStatsMetricIndexMetricQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getNodesUsageQueryKey(args: InferRequestType<typeof client._nodes.usage.$get>) {
@@ -38539,12 +37961,11 @@ export function injectNodesUsage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesUsageQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdUsageQueryKey(
@@ -38615,12 +38036,11 @@ export function injectNodesNodeIdUsage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesNodeIdUsageQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesUsageMetricQueryKey(
@@ -38689,12 +38109,11 @@ export function injectNodesUsageMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getNodesUsageMetricQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getNodesNodeIdUsageMetricQueryKey(
@@ -38769,7 +38188,6 @@ export function injectNodesNodeIdUsageMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -38777,7 +38195,7 @@ export function injectNodesNodeIdUsageMetric<
       ...getNodesNodeIdUsageMetricQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexPitMutationKey() {
@@ -38821,7 +38239,6 @@ export function injectPostIndexPit<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -38831,7 +38248,7 @@ export function injectPostIndexPit<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPrometheusApiV1StatusBuildinfoQueryKey() {
@@ -38900,7 +38317,6 @@ export function injectPrometheusApiV1StatusBuildinfo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -38908,7 +38324,7 @@ export function injectPrometheusApiV1StatusBuildinfo<
       ...getPrometheusApiV1StatusBuildinfoQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPrometheusIndexApiV1StatusBuildinfoQueryKey(
@@ -39005,7 +38421,6 @@ export function injectPrometheusIndexApiV1StatusBuildinfo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -39013,7 +38428,7 @@ export function injectPrometheusIndexApiV1StatusBuildinfo<
       ...getPrometheusIndexApiV1StatusBuildinfoQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutScriptsIdContextMutationKey() {
@@ -39062,7 +38477,6 @@ export function injectPutScriptsIdContext<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39074,7 +38488,7 @@ export function injectPutScriptsIdContext<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostScriptsIdContextMutationKey() {
@@ -39123,7 +38537,6 @@ export function injectPostScriptsIdContext<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39135,7 +38548,7 @@ export function injectPostScriptsIdContext<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryRulesRulesetIdRuleRuleIdQueryKey(
@@ -39220,7 +38633,6 @@ export function injectQueryRulesRulesetIdRuleRuleId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -39228,7 +38640,7 @@ export function injectQueryRulesRulesetIdRuleRuleId<
       ...getQueryRulesRulesetIdRuleRuleIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutQueryRulesRulesetIdRuleRuleIdMutationKey() {
@@ -39288,7 +38700,6 @@ export function injectPutQueryRulesRulesetIdRuleRuleId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39301,7 +38712,7 @@ export function injectPutQueryRulesRulesetIdRuleRuleId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteQueryRulesRulesetIdRuleRuleIdMutationKey() {
@@ -39367,7 +38778,6 @@ export function injectDeleteQueryRulesRulesetIdRuleRuleId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39380,7 +38790,7 @@ export function injectDeleteQueryRulesRulesetIdRuleRuleId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryRulesRulesetIdQueryKey(
@@ -39451,12 +38861,11 @@ export function injectQueryRulesRulesetId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryRulesRulesetIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutQueryRulesRulesetIdMutationKey() {
@@ -39505,7 +38914,6 @@ export function injectPutQueryRulesRulesetId<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39517,7 +38925,7 @@ export function injectPutQueryRulesRulesetId<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteQueryRulesRulesetIdMutationKey() {
@@ -39568,7 +38976,6 @@ export function injectDeleteQueryRulesRulesetId<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39580,7 +38987,7 @@ export function injectDeleteQueryRulesRulesetId<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getQueryRulesQueryKey(args: InferRequestType<typeof client._query_rules.$get>) {
@@ -39629,12 +39036,11 @@ export function injectQueryRules<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getQueryRulesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostQueryRulesRulesetIdTestMutationKey() {
@@ -39685,7 +39091,6 @@ export function injectPostQueryRulesRulesetIdTest<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39697,7 +39102,7 @@ export function injectPostQueryRulesRulesetIdTest<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getRankEvalQueryKey(args: InferRequestType<typeof client._rank_eval.$get>) {
@@ -39746,12 +39151,11 @@ export function injectRankEval<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRankEvalQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostRankEvalMutationKey() {
@@ -39789,7 +39193,6 @@ export function injectPostRankEval<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39799,7 +39202,7 @@ export function injectPostRankEval<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexRankEvalQueryKey(
@@ -39865,12 +39268,11 @@ export function injectIndexRankEval<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexRankEvalQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexRankEvalMutationKey() {
@@ -39917,7 +39319,6 @@ export function injectPostIndexRankEval<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39929,7 +39330,7 @@ export function injectPostIndexRankEval<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostReindexTaskIdRethrottleMutationKey() {
@@ -39980,7 +39381,6 @@ export function injectPostReindexTaskIdRethrottle<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -39992,7 +39392,7 @@ export function injectPostReindexTaskIdRethrottle<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getRenderTemplateQueryKey(
@@ -40045,12 +39445,11 @@ export function injectRenderTemplate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRenderTemplateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostRenderTemplateMutationKey() {
@@ -40093,7 +39492,6 @@ export function injectPostRenderTemplate<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -40105,7 +39503,7 @@ export function injectPostRenderTemplate<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getRenderTemplateIdQueryKey(
@@ -40174,12 +39572,11 @@ export function injectRenderTemplateId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRenderTemplateIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostRenderTemplateIdMutationKey() {
@@ -40226,7 +39623,6 @@ export function injectPostRenderTemplateId<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -40238,7 +39634,7 @@ export function injectPostRenderTemplateId<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getRollupJobIdQueryKey(
@@ -40302,12 +39698,11 @@ export function injectRollupJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRollupJobIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutRollupJobIdMutationKey() {
@@ -40351,7 +39746,6 @@ export function injectPutRollupJobId<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -40363,7 +39757,7 @@ export function injectPutRollupJobId<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteRollupJobIdMutationKey() {
@@ -40408,7 +39802,6 @@ export function injectDeleteRollupJobId<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -40420,7 +39813,7 @@ export function injectDeleteRollupJobId<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getRollupJobQueryKey() {
@@ -40468,12 +39861,11 @@ export function injectRollupJob<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRollupJobQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getRollupDataIdQueryKey(
@@ -40537,12 +39929,11 @@ export function injectRollupDataId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRollupDataIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getRollupDataQueryKey() {
@@ -40590,12 +39981,11 @@ export function injectRollupData<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRollupDataQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexRollupDataQueryKey(
@@ -40670,12 +40060,11 @@ export function injectIndexRollupData<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexRollupDataQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexRollupSearchQueryKey(
@@ -40746,12 +40135,11 @@ export function injectIndexRollupSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexRollupSearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexRollupSearchMutationKey() {
@@ -40800,7 +40188,6 @@ export function injectPostIndexRollupSearch<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -40812,7 +40199,7 @@ export function injectPostIndexRollupSearch<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostRollupJobIdStartMutationKey() {
@@ -40863,7 +40250,6 @@ export function injectPostRollupJobIdStart<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -40875,7 +40261,7 @@ export function injectPostRollupJobIdStart<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostRollupJobIdStopMutationKey() {
@@ -40924,7 +40310,6 @@ export function injectPostRollupJobIdStop<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -40936,7 +40321,7 @@ export function injectPostRollupJobIdStop<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getScriptsPainlessExecuteQueryKey(
@@ -41003,7 +40388,6 @@ export function injectScriptsPainlessExecute<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -41011,7 +40395,7 @@ export function injectScriptsPainlessExecute<
       ...getScriptsPainlessExecuteQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostScriptsPainlessExecuteMutationKey() {
@@ -41058,7 +40442,6 @@ export function injectPostScriptsPainlessExecute<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -41070,7 +40453,7 @@ export function injectPostScriptsPainlessExecute<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSearchQueryKey(args: InferRequestType<typeof client._search.$get>) {
@@ -41117,12 +40500,11 @@ export function injectSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSearchMutationKey() {
@@ -41158,7 +40540,6 @@ export function injectPostSearch<TError = DefaultError, TOnMutateResult = unknow
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -41168,7 +40549,7 @@ export function injectPostSearch<TError = DefaultError, TOnMutateResult = unknow
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexSearchQueryKey(
@@ -41232,12 +40613,11 @@ export function injectIndexSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexSearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexSearchMutationKey() {
@@ -41281,7 +40661,6 @@ export function injectPostIndexSearch<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -41293,7 +40672,7 @@ export function injectPostIndexSearch<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApplicationSearchApplicationNameQueryKey(
@@ -41368,7 +40747,6 @@ export function injectApplicationSearchApplicationName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -41376,7 +40754,7 @@ export function injectApplicationSearchApplicationName<
       ...getApplicationSearchApplicationNameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApplicationSearchApplicationNameMutationKey() {
@@ -41430,7 +40808,6 @@ export function injectPutApplicationSearchApplicationName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -41443,7 +40820,7 @@ export function injectPutApplicationSearchApplicationName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApplicationSearchApplicationNameMutationKey() {
@@ -41499,7 +40876,6 @@ export function injectDeleteApplicationSearchApplicationName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -41512,7 +40888,7 @@ export function injectDeleteApplicationSearchApplicationName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApplicationAnalyticsNameQueryKey(
@@ -41587,7 +40963,6 @@ export function injectApplicationAnalyticsName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -41595,7 +40970,7 @@ export function injectApplicationAnalyticsName<
       ...getApplicationAnalyticsNameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutApplicationAnalyticsNameMutationKey() {
@@ -41646,7 +41021,6 @@ export function injectPutApplicationAnalyticsName<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -41658,7 +41032,7 @@ export function injectPutApplicationAnalyticsName<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteApplicationAnalyticsNameMutationKey() {
@@ -41712,7 +41086,6 @@ export function injectDeleteApplicationAnalyticsName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -41725,7 +41098,7 @@ export function injectDeleteApplicationAnalyticsName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApplicationAnalyticsQueryKey() {
@@ -41782,12 +41155,11 @@ export function injectApplicationAnalytics<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getApplicationAnalyticsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getApplicationSearchApplicationQueryKey(
@@ -41858,7 +41230,6 @@ export function injectApplicationSearchApplication<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -41866,7 +41237,7 @@ export function injectApplicationSearchApplication<
       ...getApplicationSearchApplicationQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApplicationAnalyticsCollectionNameEventEventTypeMutationKey() {
@@ -41940,7 +41311,6 @@ export function injectPostApplicationAnalyticsCollectionNameEventEventType<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -41953,7 +41323,7 @@ export function injectPostApplicationAnalyticsCollectionNameEventEventType<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApplicationSearchApplicationNameRenderQueryMutationKey() {
@@ -42023,7 +41393,6 @@ export function injectPostApplicationSearchApplicationNameRenderQuery<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -42036,7 +41405,7 @@ export function injectPostApplicationSearchApplicationNameRenderQuery<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getApplicationSearchApplicationNameSearchQueryKey(
@@ -42127,7 +41496,6 @@ export function injectApplicationSearchApplicationNameSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -42138,7 +41506,7 @@ export function injectApplicationSearchApplicationNameSearch<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostApplicationSearchApplicationNameSearchMutationKey() {
@@ -42204,7 +41572,6 @@ export function injectPostApplicationSearchApplicationNameSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -42217,7 +41584,7 @@ export function injectPostApplicationSearchApplicationNameSearch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexMvtFieldZoomXYQueryKey(
@@ -42302,12 +41669,11 @@ export function injectIndexMvtFieldZoomXY<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexMvtFieldZoomXYQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexMvtFieldZoomXYMutationKey() {
@@ -42368,7 +41734,6 @@ export function injectPostIndexMvtFieldZoomXY<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -42380,7 +41745,7 @@ export function injectPostIndexMvtFieldZoomXY<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSearchShardsQueryKey(args: InferRequestType<typeof client._search_shards.$get>) {
@@ -42431,12 +41796,11 @@ export function injectSearchShards<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSearchShardsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSearchShardsMutationKey() {
@@ -42477,7 +41841,6 @@ export function injectPostSearchShards<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -42489,7 +41852,7 @@ export function injectPostSearchShards<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexSearchShardsQueryKey(
@@ -42560,12 +41923,11 @@ export function injectIndexSearchShards<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexSearchShardsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexSearchShardsMutationKey() {
@@ -42614,7 +41976,6 @@ export function injectPostIndexSearchShards<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -42626,7 +41987,7 @@ export function injectPostIndexSearchShards<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSearchTemplateQueryKey(
@@ -42679,12 +42040,11 @@ export function injectSearchTemplate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSearchTemplateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSearchTemplateMutationKey() {
@@ -42727,7 +42087,6 @@ export function injectPostSearchTemplate<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -42739,7 +42098,7 @@ export function injectPostSearchTemplate<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexSearchTemplateQueryKey(
@@ -42814,12 +42173,11 @@ export function injectIndexSearchTemplate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexSearchTemplateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexSearchTemplateMutationKey() {
@@ -42870,7 +42228,6 @@ export function injectPostIndexSearchTemplate<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -42882,7 +42239,7 @@ export function injectPostIndexSearchTemplate<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSearchableSnapshotsCacheStatsQueryKey() {
@@ -42951,7 +42308,6 @@ export function injectSearchableSnapshotsCacheStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -42959,7 +42315,7 @@ export function injectSearchableSnapshotsCacheStats<
       ...getSearchableSnapshotsCacheStatsQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSearchableSnapshotsNodeIdCacheStatsQueryKey(
@@ -43050,7 +42406,6 @@ export function injectSearchableSnapshotsNodeIdCacheStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -43058,7 +42413,7 @@ export function injectSearchableSnapshotsNodeIdCacheStats<
       ...getSearchableSnapshotsNodeIdCacheStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSearchableSnapshotsCacheClearMutationKey() {
@@ -43112,7 +42467,6 @@ export function injectPostSearchableSnapshotsCacheClear<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43125,7 +42479,7 @@ export function injectPostSearchableSnapshotsCacheClear<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexSearchableSnapshotsCacheClearMutationKey() {
@@ -43191,7 +42545,6 @@ export function injectPostIndexSearchableSnapshotsCacheClear<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43204,7 +42557,7 @@ export function injectPostIndexSearchableSnapshotsCacheClear<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSnapshotRepositorySnapshotMountMutationKey() {
@@ -43264,7 +42617,6 @@ export function injectPostSnapshotRepositorySnapshotMount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43277,7 +42629,7 @@ export function injectPostSnapshotRepositorySnapshotMount<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSearchableSnapshotsStatsQueryKey(
@@ -43346,7 +42698,6 @@ export function injectSearchableSnapshotsStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -43354,7 +42705,7 @@ export function injectSearchableSnapshotsStats<
       ...getSearchableSnapshotsStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexSearchableSnapshotsStatsQueryKey(
@@ -43431,7 +42782,6 @@ export function injectIndexSearchableSnapshotsStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -43439,7 +42789,7 @@ export function injectIndexSearchableSnapshotsStats<
       ...getIndexSearchableSnapshotsStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityProfileActivateMutationKey() {
@@ -43486,7 +42836,6 @@ export function injectPostSecurityProfileActivate<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43498,7 +42847,7 @@ export function injectPostSecurityProfileActivate<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityAuthenticateQueryKey() {
@@ -43559,12 +42908,11 @@ export function injectSecurityAuthenticate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityAuthenticateQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityRoleQueryKey(args: InferRequestType<typeof client._security.role.$get>) {
@@ -43615,12 +42963,11 @@ export function injectSecurityRole<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityRoleQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityRoleMutationKey() {
@@ -43661,7 +43008,6 @@ export function injectPostSecurityRole<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43673,7 +43019,7 @@ export function injectPostSecurityRole<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityRoleMutationKey() {
@@ -43716,7 +43062,6 @@ export function injectDeleteSecurityRole<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43728,7 +43073,7 @@ export function injectDeleteSecurityRole<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityApiKeyBulkUpdateMutationKey() {
@@ -43780,7 +43125,6 @@ export function injectPostSecurityApiKeyBulkUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43793,7 +43137,7 @@ export function injectPostSecurityApiKeyBulkUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityUserUsernamePasswordMutationKey() {
@@ -43847,7 +43191,6 @@ export function injectPutSecurityUserUsernamePassword<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43860,7 +43203,7 @@ export function injectPutSecurityUserUsernamePassword<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityUserUsernamePasswordMutationKey() {
@@ -43914,7 +43257,6 @@ export function injectPostSecurityUserUsernamePassword<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43927,7 +43269,7 @@ export function injectPostSecurityUserUsernamePassword<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityUserPasswordMutationKey() {
@@ -43972,7 +43314,6 @@ export function injectPutSecurityUserPassword<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -43984,7 +43325,7 @@ export function injectPutSecurityUserPassword<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityUserPasswordMutationKey() {
@@ -44029,7 +43370,6 @@ export function injectPostSecurityUserPassword<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44041,7 +43381,7 @@ export function injectPostSecurityUserPassword<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityApiKeyIdsClearCacheMutationKey() {
@@ -44097,7 +43437,6 @@ export function injectPostSecurityApiKeyIdsClearCache<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44110,7 +43449,7 @@ export function injectPostSecurityApiKeyIdsClearCache<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityPrivilegeApplicationClearCacheMutationKey() {
@@ -44176,7 +43515,6 @@ export function injectPostSecurityPrivilegeApplicationClearCache<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44189,7 +43527,7 @@ export function injectPostSecurityPrivilegeApplicationClearCache<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityRealmRealmsClearCacheMutationKey() {
@@ -44245,7 +43583,6 @@ export function injectPostSecurityRealmRealmsClearCache<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44258,7 +43595,7 @@ export function injectPostSecurityRealmRealmsClearCache<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityRoleNameClearCacheMutationKey() {
@@ -44312,7 +43649,6 @@ export function injectPostSecurityRoleNameClearCache<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44325,7 +43661,7 @@ export function injectPostSecurityRoleNameClearCache<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityServiceNamespaceServiceCredentialTokenNameClearCacheMutationKey() {
@@ -44401,7 +43737,6 @@ export function injectPostSecurityServiceNamespaceServiceCredentialTokenNameClea
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44415,7 +43750,7 @@ export function injectPostSecurityServiceNamespaceServiceCredentialTokenNameClea
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityApiKeyCloneMutationKey() {
@@ -44460,7 +43795,6 @@ export function injectPutSecurityApiKeyClone<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44472,7 +43806,7 @@ export function injectPutSecurityApiKeyClone<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityApiKeyCloneMutationKey() {
@@ -44517,7 +43851,6 @@ export function injectPostSecurityApiKeyClone<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44529,7 +43862,7 @@ export function injectPostSecurityApiKeyClone<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityApiKeyQueryKey(
@@ -44584,12 +43917,11 @@ export function injectSecurityApiKey<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityApiKeyQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityApiKeyMutationKey() {
@@ -44632,7 +43964,6 @@ export function injectPutSecurityApiKey<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44644,7 +43975,7 @@ export function injectPutSecurityApiKey<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityApiKeyMutationKey() {
@@ -44687,7 +44018,6 @@ export function injectPostSecurityApiKey<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44699,7 +44029,7 @@ export function injectPostSecurityApiKey<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityApiKeyMutationKey() {
@@ -44742,7 +44072,6 @@ export function injectDeleteSecurityApiKey<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44754,7 +44083,7 @@ export function injectDeleteSecurityApiKey<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityCrossClusterApiKeyMutationKey() {
@@ -44806,7 +44135,6 @@ export function injectPostSecurityCrossClusterApiKey<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44819,7 +44147,7 @@ export function injectPostSecurityCrossClusterApiKey<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityServiceNamespaceServiceCredentialTokenNameMutationKey() {
@@ -44896,7 +44224,6 @@ export function injectPutSecurityServiceNamespaceServiceCredentialTokenName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -44910,7 +44237,7 @@ export function injectPutSecurityServiceNamespaceServiceCredentialTokenName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityServiceNamespaceServiceCredentialTokenNameMutationKey() {
@@ -44987,7 +44314,6 @@ export function injectPostSecurityServiceNamespaceServiceCredentialTokenName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45001,7 +44327,7 @@ export function injectPostSecurityServiceNamespaceServiceCredentialTokenName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityServiceNamespaceServiceCredentialTokenNameMutationKey() {
@@ -45078,7 +44404,6 @@ export function injectDeleteSecurityServiceNamespaceServiceCredentialTokenName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45092,7 +44417,7 @@ export function injectDeleteSecurityServiceNamespaceServiceCredentialTokenName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityServiceNamespaceServiceCredentialTokenMutationKey() {
@@ -45162,7 +44487,6 @@ export function injectPostSecurityServiceNamespaceServiceCredentialToken<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45175,7 +44499,7 @@ export function injectPostSecurityServiceNamespaceServiceCredentialToken<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityDelegatePkiMutationKey() {
@@ -45220,7 +44544,6 @@ export function injectPostSecurityDelegatePki<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45232,7 +44555,7 @@ export function injectPostSecurityDelegatePki<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityPrivilegeApplicationNameQueryKey(
@@ -45311,7 +44634,6 @@ export function injectSecurityPrivilegeApplicationName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -45319,7 +44641,7 @@ export function injectSecurityPrivilegeApplicationName<
       ...getSecurityPrivilegeApplicationNameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityPrivilegeApplicationNameMutationKey() {
@@ -45381,7 +44703,6 @@ export function injectDeleteSecurityPrivilegeApplicationName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45394,7 +44715,7 @@ export function injectDeleteSecurityPrivilegeApplicationName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityRoleNameQueryKey(
@@ -45463,12 +44784,11 @@ export function injectSecurityRoleName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityRoleNameQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityRoleNameMutationKey() {
@@ -45515,7 +44835,6 @@ export function injectPutSecurityRoleName<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45527,7 +44846,7 @@ export function injectPutSecurityRoleName<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityRoleNameMutationKey() {
@@ -45574,7 +44893,6 @@ export function injectPostSecurityRoleName<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45586,7 +44904,7 @@ export function injectPostSecurityRoleName<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityRoleNameMutationKey() {
@@ -45635,7 +44953,6 @@ export function injectDeleteSecurityRoleName<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45647,7 +44964,7 @@ export function injectDeleteSecurityRoleName<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityRoleMappingNameQueryKey(
@@ -45722,7 +45039,6 @@ export function injectSecurityRoleMappingName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -45730,7 +45046,7 @@ export function injectSecurityRoleMappingName<
       ...getSecurityRoleMappingNameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityRoleMappingNameMutationKey() {
@@ -45781,7 +45097,6 @@ export function injectPutSecurityRoleMappingName<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45793,7 +45108,7 @@ export function injectPutSecurityRoleMappingName<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityRoleMappingNameMutationKey() {
@@ -45844,7 +45159,6 @@ export function injectPostSecurityRoleMappingName<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45856,7 +45170,7 @@ export function injectPostSecurityRoleMappingName<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityRoleMappingNameMutationKey() {
@@ -45910,7 +45224,6 @@ export function injectDeleteSecurityRoleMappingName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -45923,7 +45236,7 @@ export function injectDeleteSecurityRoleMappingName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityUserUsernameQueryKey(
@@ -45994,7 +45307,6 @@ export function injectSecurityUserUsername<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -46002,7 +45314,7 @@ export function injectSecurityUserUsername<
       ...getSecurityUserUsernameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityUserUsernameMutationKey() {
@@ -46051,7 +45363,6 @@ export function injectPutSecurityUserUsername<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46063,7 +45374,7 @@ export function injectPutSecurityUserUsername<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityUserUsernameMutationKey() {
@@ -46112,7 +45423,6 @@ export function injectPostSecurityUserUsername<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46124,7 +45434,7 @@ export function injectPostSecurityUserUsername<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityUserUsernameMutationKey() {
@@ -46175,7 +45485,6 @@ export function injectDeleteSecurityUserUsername<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46187,7 +45496,7 @@ export function injectDeleteSecurityUserUsername<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityServiceNamespaceServiceQueryKey(
@@ -46264,7 +45573,6 @@ export function injectSecurityServiceNamespaceService<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -46272,7 +45580,7 @@ export function injectSecurityServiceNamespaceService<
       ...getSecurityServiceNamespaceServiceQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityServiceNamespaceServiceMutationKey() {
@@ -46328,7 +45636,6 @@ export function injectPutSecurityServiceNamespaceService<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46341,7 +45648,7 @@ export function injectPutSecurityServiceNamespaceService<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityServiceNamespaceServiceMutationKey() {
@@ -46403,7 +45710,6 @@ export function injectDeleteSecurityServiceNamespaceService<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46416,7 +45722,7 @@ export function injectDeleteSecurityServiceNamespaceService<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityUserUsernameDisableMutationKey() {
@@ -46470,7 +45776,6 @@ export function injectPutSecurityUserUsernameDisable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46483,7 +45788,7 @@ export function injectPutSecurityUserUsernameDisable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityUserUsernameDisableMutationKey() {
@@ -46537,7 +45842,6 @@ export function injectPostSecurityUserUsernameDisable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46550,7 +45854,7 @@ export function injectPostSecurityUserUsernameDisable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityProfileUidDisableMutationKey() {
@@ -46604,7 +45908,6 @@ export function injectPutSecurityProfileUidDisable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46617,7 +45920,7 @@ export function injectPutSecurityProfileUidDisable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityProfileUidDisableMutationKey() {
@@ -46671,7 +45974,6 @@ export function injectPostSecurityProfileUidDisable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46684,7 +45986,7 @@ export function injectPostSecurityProfileUidDisable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityUserUsernameEnableMutationKey() {
@@ -46738,7 +46040,6 @@ export function injectPutSecurityUserUsernameEnable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46751,7 +46052,7 @@ export function injectPutSecurityUserUsernameEnable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityUserUsernameEnableMutationKey() {
@@ -46805,7 +46106,6 @@ export function injectPostSecurityUserUsernameEnable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46818,7 +46118,7 @@ export function injectPostSecurityUserUsernameEnable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityProfileUidEnableMutationKey() {
@@ -46869,7 +46169,6 @@ export function injectPutSecurityProfileUidEnable<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46881,7 +46180,7 @@ export function injectPutSecurityProfileUidEnable<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityProfileUidEnableMutationKey() {
@@ -46935,7 +46234,6 @@ export function injectPostSecurityProfileUidEnable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -46948,7 +46246,7 @@ export function injectPostSecurityProfileUidEnable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityEnrollKibanaQueryKey() {
@@ -47009,12 +46307,11 @@ export function injectSecurityEnrollKibana<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityEnrollKibanaQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityEnrollNodeQueryKey() {
@@ -47071,12 +46368,11 @@ export function injectSecurityEnrollNode<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityEnrollNodeQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityPrivilegeBuiltinQueryKey() {
@@ -47139,12 +46435,11 @@ export function injectSecurityPrivilegeBuiltin<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityPrivilegeBuiltinQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityPrivilegeQueryKey() {
@@ -47199,12 +46494,11 @@ export function injectSecurityPrivilege<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityPrivilegeQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityPrivilegeMutationKey() {
@@ -47247,7 +46541,6 @@ export function injectPutSecurityPrivilege<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -47259,7 +46552,7 @@ export function injectPutSecurityPrivilege<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityPrivilegeMutationKey() {
@@ -47302,7 +46595,6 @@ export function injectPostSecurityPrivilege<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -47314,7 +46606,7 @@ export function injectPostSecurityPrivilege<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityPrivilegeApplicationQueryKey(
@@ -47389,7 +46681,6 @@ export function injectSecurityPrivilegeApplication<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -47397,7 +46688,7 @@ export function injectSecurityPrivilegeApplication<
       ...getSecurityPrivilegeApplicationQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityRoleMappingQueryKey() {
@@ -47454,12 +46745,11 @@ export function injectSecurityRoleMapping<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityRoleMappingQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityServiceNamespaceQueryKey(
@@ -47534,7 +46824,6 @@ export function injectSecurityServiceNamespace<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -47542,7 +46831,7 @@ export function injectSecurityServiceNamespace<
       ...getSecurityServiceNamespaceQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityServiceQueryKey(
@@ -47597,12 +46886,11 @@ export function injectSecurityService<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityServiceQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityServiceNamespaceServiceCredentialQueryKey(
@@ -47699,7 +46987,6 @@ export function injectSecurityServiceNamespaceServiceCredential<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -47710,7 +46997,7 @@ export function injectSecurityServiceNamespaceServiceCredential<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecuritySettingsQueryKey(
@@ -47765,12 +47052,11 @@ export function injectSecuritySettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecuritySettingsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecuritySettingsMutationKey() {
@@ -47813,7 +47099,6 @@ export function injectPutSecuritySettings<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -47825,7 +47110,7 @@ export function injectPutSecuritySettings<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityStatsQueryKey() {
@@ -47875,12 +47160,11 @@ export function injectSecurityStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityStatsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityOauth2TokenMutationKey() {
@@ -47925,7 +47209,6 @@ export function injectPostSecurityOauth2Token<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -47937,7 +47220,7 @@ export function injectPostSecurityOauth2Token<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSecurityOauth2TokenMutationKey() {
@@ -47982,7 +47265,6 @@ export function injectDeleteSecurityOauth2Token<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -47994,7 +47276,7 @@ export function injectDeleteSecurityOauth2Token<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityUserQueryKey(args: InferRequestType<typeof client._security.user.$get>) {
@@ -48045,12 +47327,11 @@ export function injectSecurityUser<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityUserQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityUserPrivilegesQueryKey() {
@@ -48111,12 +47392,11 @@ export function injectSecurityUserPrivileges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityUserPrivilegesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityProfileUidQueryKey(
@@ -48185,12 +47465,11 @@ export function injectSecurityProfileUid<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityProfileUidQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityApiKeyGrantMutationKey() {
@@ -48235,7 +47514,6 @@ export function injectPostSecurityApiKeyGrant<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -48247,7 +47525,7 @@ export function injectPostSecurityApiKeyGrant<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityUserHasPrivilegesQueryKey(
@@ -48316,7 +47594,6 @@ export function injectSecurityUserHasPrivileges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -48324,7 +47601,7 @@ export function injectSecurityUserHasPrivileges<
       ...getSecurityUserHasPrivilegesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityUserHasPrivilegesMutationKey() {
@@ -48376,7 +47653,6 @@ export function injectPostSecurityUserHasPrivileges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -48389,7 +47665,7 @@ export function injectPostSecurityUserHasPrivileges<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityUserUserHasPrivilegesQueryKey(
@@ -48466,7 +47742,6 @@ export function injectSecurityUserUserHasPrivileges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -48474,7 +47749,7 @@ export function injectSecurityUserUserHasPrivileges<
       ...getSecurityUserUserHasPrivilegesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityUserUserHasPrivilegesMutationKey() {
@@ -48530,7 +47805,6 @@ export function injectPostSecurityUserUserHasPrivileges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -48543,7 +47817,7 @@ export function injectPostSecurityUserUserHasPrivileges<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityProfileHasPrivilegesQueryKey(
@@ -48618,7 +47892,6 @@ export function injectSecurityProfileHasPrivileges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -48626,7 +47899,7 @@ export function injectSecurityProfileHasPrivileges<
       ...getSecurityProfileHasPrivilegesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityProfileHasPrivilegesMutationKey() {
@@ -48680,7 +47953,6 @@ export function injectPostSecurityProfileHasPrivileges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -48693,7 +47965,7 @@ export function injectPostSecurityProfileHasPrivileges<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityOidcAuthenticateMutationKey() {
@@ -48743,7 +48015,6 @@ export function injectPostSecurityOidcAuthenticate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -48756,7 +48027,7 @@ export function injectPostSecurityOidcAuthenticate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityOidcLogoutMutationKey() {
@@ -48801,7 +48072,6 @@ export function injectPostSecurityOidcLogout<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -48813,7 +48083,7 @@ export function injectPostSecurityOidcLogout<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityOidcPrepareMutationKey() {
@@ -48858,7 +48128,6 @@ export function injectPostSecurityOidcPrepare<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -48870,7 +48139,7 @@ export function injectPostSecurityOidcPrepare<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityQueryApiKeyQueryKey(
@@ -48937,12 +48206,11 @@ export function injectSecurityQueryApiKey<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityQueryApiKeyQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityQueryApiKeyMutationKey() {
@@ -48987,7 +48255,6 @@ export function injectPostSecurityQueryApiKey<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -48999,7 +48266,7 @@ export function injectPostSecurityQueryApiKey<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityQueryRoleQueryKey(
@@ -49059,12 +48326,11 @@ export function injectSecurityQueryRole<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityQueryRoleQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityQueryRoleMutationKey() {
@@ -49109,7 +48375,6 @@ export function injectPostSecurityQueryRole<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49121,7 +48386,7 @@ export function injectPostSecurityQueryRole<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityQueryUserQueryKey(
@@ -49181,12 +48446,11 @@ export function injectSecurityQueryUser<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSecurityQueryUserQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityQueryUserMutationKey() {
@@ -49231,7 +48495,6 @@ export function injectPostSecurityQueryUser<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49243,7 +48506,7 @@ export function injectPostSecurityQueryUser<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecuritySamlAuthenticateMutationKey() {
@@ -49293,7 +48556,6 @@ export function injectPostSecuritySamlAuthenticate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49306,7 +48568,7 @@ export function injectPostSecuritySamlAuthenticate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecuritySamlCompleteLogoutMutationKey() {
@@ -49358,7 +48620,6 @@ export function injectPostSecuritySamlCompleteLogout<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49371,7 +48632,7 @@ export function injectPostSecuritySamlCompleteLogout<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecuritySamlInvalidateMutationKey() {
@@ -49416,7 +48677,6 @@ export function injectPostSecuritySamlInvalidate<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49428,7 +48688,7 @@ export function injectPostSecuritySamlInvalidate<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecuritySamlLogoutMutationKey() {
@@ -49473,7 +48733,6 @@ export function injectPostSecuritySamlLogout<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49485,7 +48744,7 @@ export function injectPostSecuritySamlLogout<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecuritySamlPrepareMutationKey() {
@@ -49530,7 +48789,6 @@ export function injectPostSecuritySamlPrepare<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49542,7 +48800,7 @@ export function injectPostSecuritySamlPrepare<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecuritySamlMetadataRealmNameQueryKey(
@@ -49617,7 +48875,6 @@ export function injectSecuritySamlMetadataRealmName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -49625,7 +48882,7 @@ export function injectSecuritySamlMetadataRealmName<
       ...getSecuritySamlMetadataRealmNameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSecurityProfileSuggestQueryKey(
@@ -49692,7 +48949,6 @@ export function injectSecurityProfileSuggest<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -49700,7 +48956,7 @@ export function injectSecurityProfileSuggest<
       ...getSecurityProfileSuggestQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityProfileSuggestMutationKey() {
@@ -49747,7 +49003,6 @@ export function injectPostSecurityProfileSuggest<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49759,7 +49014,7 @@ export function injectPostSecurityProfileSuggest<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityApiKeyIdMutationKey() {
@@ -49806,7 +49061,6 @@ export function injectPutSecurityApiKeyId<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49818,7 +49072,7 @@ export function injectPutSecurityApiKeyId<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityCrossClusterApiKeyIdMutationKey() {
@@ -49872,7 +49126,6 @@ export function injectPutSecurityCrossClusterApiKeyId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49885,7 +49138,7 @@ export function injectPutSecurityCrossClusterApiKeyId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSecurityProfileUidDataMutationKey() {
@@ -49936,7 +49189,6 @@ export function injectPutSecurityProfileUidData<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -49948,7 +49200,7 @@ export function injectPutSecurityProfileUidData<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSecurityProfileUidDataMutationKey() {
@@ -49999,7 +49251,6 @@ export function injectPostSecurityProfileUidData<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50011,7 +49262,7 @@ export function injectPostSecurityProfileUidData<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIngestSimulateQueryKey(
@@ -50066,12 +49317,11 @@ export function injectIngestSimulate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIngestSimulateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIngestSimulateMutationKey() {
@@ -50114,7 +49364,6 @@ export function injectPostIngestSimulate<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50126,7 +49375,7 @@ export function injectPostIngestSimulate<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIngestIndexSimulateQueryKey(
@@ -50201,12 +49450,11 @@ export function injectIngestIndexSimulate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIngestIndexSimulateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIngestIndexSimulateMutationKey() {
@@ -50257,7 +49505,6 @@ export function injectPostIngestIndexSimulate<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50269,7 +49516,7 @@ export function injectPostIngestIndexSimulate<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSlmPolicyPolicyIdQueryKey(
@@ -50338,12 +49585,11 @@ export function injectSlmPolicyPolicyId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSlmPolicyPolicyIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSlmPolicyPolicyIdMutationKey() {
@@ -50390,7 +49636,6 @@ export function injectPutSlmPolicyPolicyId<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50402,7 +49647,7 @@ export function injectPutSlmPolicyPolicyId<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSlmPolicyPolicyIdMutationKey() {
@@ -50451,7 +49696,6 @@ export function injectDeleteSlmPolicyPolicyId<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50463,7 +49707,7 @@ export function injectDeleteSlmPolicyPolicyId<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSlmPolicyPolicyIdExecuteMutationKey() {
@@ -50514,7 +49758,6 @@ export function injectPutSlmPolicyPolicyIdExecute<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50526,7 +49769,7 @@ export function injectPutSlmPolicyPolicyIdExecute<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSlmExecuteRetentionMutationKey() {
@@ -50571,7 +49814,6 @@ export function injectPostSlmExecuteRetention<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50583,7 +49825,7 @@ export function injectPostSlmExecuteRetention<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSlmPolicyQueryKey(args: InferRequestType<typeof client._slm.policy.$get>) {
@@ -50632,12 +49874,11 @@ export function injectSlmPolicy<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSlmPolicyQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSlmStatsQueryKey(args: InferRequestType<typeof client._slm.stats.$get>) {
@@ -50686,12 +49927,11 @@ export function injectSlmStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSlmStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSlmStatusQueryKey(args: InferRequestType<typeof client._slm.status.$get>) {
@@ -50740,12 +49980,11 @@ export function injectSlmStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSlmStatusQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSlmStartMutationKey() {
@@ -50783,7 +50022,6 @@ export function injectPostSlmStart<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50793,7 +50031,7 @@ export function injectPostSlmStart<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSlmStopMutationKey() {
@@ -50831,7 +50069,6 @@ export function injectPostSlmStop<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50841,7 +50078,7 @@ export function injectPostSlmStop<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSnapshotRepositoryCleanupMutationKey() {
@@ -50895,7 +50132,6 @@ export function injectPostSnapshotRepositoryCleanup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50908,7 +50144,7 @@ export function injectPostSnapshotRepositoryCleanup<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSnapshotRepositorySnapshotCloneTargetSnapshotMutationKey() {
@@ -50978,7 +50214,6 @@ export function injectPutSnapshotRepositorySnapshotCloneTargetSnapshot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -50991,7 +50226,7 @@ export function injectPutSnapshotRepositorySnapshotCloneTargetSnapshot<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSnapshotRepositorySnapshotQueryKey(
@@ -51066,7 +50301,6 @@ export function injectSnapshotRepositorySnapshot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -51074,7 +50308,7 @@ export function injectSnapshotRepositorySnapshot<
       ...getSnapshotRepositorySnapshotQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutSnapshotRepositorySnapshotMutationKey() {
@@ -51128,7 +50362,6 @@ export function injectPutSnapshotRepositorySnapshot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51141,7 +50374,7 @@ export function injectPutSnapshotRepositorySnapshot<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSnapshotRepositorySnapshotMutationKey() {
@@ -51195,7 +50428,6 @@ export function injectPostSnapshotRepositorySnapshot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51208,7 +50440,7 @@ export function injectPostSnapshotRepositorySnapshot<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSnapshotRepositorySnapshotMutationKey() {
@@ -51262,7 +50494,6 @@ export function injectDeleteSnapshotRepositorySnapshot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51275,7 +50506,7 @@ export function injectDeleteSnapshotRepositorySnapshot<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSnapshotRepositoryQueryKey(
@@ -51344,12 +50575,11 @@ export function injectSnapshotRepository<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSnapshotRepositoryQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSnapshotRepositoryMutationKey() {
@@ -51396,7 +50626,6 @@ export function injectPutSnapshotRepository<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51408,7 +50637,7 @@ export function injectPutSnapshotRepository<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSnapshotRepositoryMutationKey() {
@@ -51455,7 +50684,6 @@ export function injectPostSnapshotRepository<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51467,7 +50695,7 @@ export function injectPostSnapshotRepository<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSnapshotRepositoryMutationKey() {
@@ -51516,7 +50744,6 @@ export function injectDeleteSnapshotRepository<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51528,7 +50755,7 @@ export function injectDeleteSnapshotRepository<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSnapshotQueryKey(args: InferRequestType<typeof client._snapshot.$get>) {
@@ -51577,12 +50804,11 @@ export function injectSnapshot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSnapshotQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSnapshotRepositoryAnalyzeMutationKey() {
@@ -51636,7 +50862,6 @@ export function injectPostSnapshotRepositoryAnalyze<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51649,7 +50874,7 @@ export function injectPostSnapshotRepositoryAnalyze<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSnapshotRepositoryVerifyIntegrityMutationKey() {
@@ -51709,7 +50934,6 @@ export function injectPostSnapshotRepositoryVerifyIntegrity<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51722,7 +50946,7 @@ export function injectPostSnapshotRepositoryVerifyIntegrity<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSnapshotRepositorySnapshotRestoreMutationKey() {
@@ -51788,7 +51012,6 @@ export function injectPostSnapshotRepositorySnapshotRestore<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -51801,7 +51024,7 @@ export function injectPostSnapshotRepositorySnapshotRestore<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSnapshotStatusQueryKey(
@@ -51856,12 +51079,11 @@ export function injectSnapshotStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSnapshotStatusQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSnapshotRepositoryStatusQueryKey(
@@ -51936,7 +51158,6 @@ export function injectSnapshotRepositoryStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -51944,7 +51165,7 @@ export function injectSnapshotRepositoryStatus<
       ...getSnapshotRepositoryStatusQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSnapshotRepositorySnapshotStatusQueryKey(
@@ -52029,7 +51250,6 @@ export function injectSnapshotRepositorySnapshotStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -52037,7 +51257,7 @@ export function injectSnapshotRepositorySnapshotStatus<
       ...getSnapshotRepositorySnapshotStatusQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSnapshotRepositoryVerifyMutationKey() {
@@ -52091,7 +51311,6 @@ export function injectPostSnapshotRepositoryVerify<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52104,7 +51323,7 @@ export function injectPostSnapshotRepositoryVerify<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostSqlCloseMutationKey() {
@@ -52142,7 +51361,6 @@ export function injectPostSqlClose<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52152,7 +51370,7 @@ export function injectPostSqlClose<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSqlAsyncDeleteIdMutationKey() {
@@ -52201,7 +51419,6 @@ export function injectDeleteSqlAsyncDeleteId<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52213,7 +51430,7 @@ export function injectDeleteSqlAsyncDeleteId<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSqlAsyncIdQueryKey(
@@ -52273,12 +51490,11 @@ export function injectSqlAsyncId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSqlAsyncIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSqlAsyncStatusIdQueryKey(
@@ -52347,12 +51563,11 @@ export function injectSqlAsyncStatusId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSqlAsyncStatusIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSqlQueryKey(args: InferRequestType<typeof client._sql.$get>) {
@@ -52395,12 +51610,11 @@ export function injectSql<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSqlQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSqlMutationKey() {
@@ -52436,7 +51650,6 @@ export function injectPostSql<TError = DefaultError, TOnMutateResult = unknown>(
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52446,7 +51659,7 @@ export function injectPostSql<TError = DefaultError, TOnMutateResult = unknown>(
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSqlTranslateQueryKey(args: InferRequestType<typeof client._sql.translate.$get>) {
@@ -52497,12 +51710,11 @@ export function injectSqlTranslate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSqlTranslateQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostSqlTranslateMutationKey() {
@@ -52543,7 +51755,6 @@ export function injectPostSqlTranslate<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52555,7 +51766,7 @@ export function injectPostSqlTranslate<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSslCertificatesQueryKey() {
@@ -52610,12 +51821,11 @@ export function injectSslCertificates<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSslCertificatesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostStreamsNameDisableMutationKey() {
@@ -52666,7 +51876,6 @@ export function injectPostStreamsNameDisable<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52678,7 +51887,7 @@ export function injectPostStreamsNameDisable<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostStreamsNameEnableMutationKey() {
@@ -52729,7 +51938,6 @@ export function injectPostStreamsNameEnable<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52741,7 +51949,7 @@ export function injectPostStreamsNameEnable<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getStreamsStatusQueryKey(
@@ -52794,12 +52002,11 @@ export function injectStreamsStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getStreamsStatusQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSynonymsIdQueryKey(
@@ -52859,12 +52066,11 @@ export function injectSynonymsId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSynonymsIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSynonymsIdMutationKey() {
@@ -52908,7 +52114,6 @@ export function injectPutSynonymsId<TError = DefaultError, TOnMutateResult = unk
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52918,7 +52123,7 @@ export function injectPutSynonymsId<TError = DefaultError, TOnMutateResult = unk
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSynonymsIdMutationKey() {
@@ -52963,7 +52168,6 @@ export function injectDeleteSynonymsId<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -52975,7 +52179,7 @@ export function injectDeleteSynonymsId<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSynonymsSetIdRuleIdQueryKey(
@@ -53050,12 +52254,11 @@ export function injectSynonymsSetIdRuleId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSynonymsSetIdRuleIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutSynonymsSetIdRuleIdMutationKey() {
@@ -53106,7 +52309,6 @@ export function injectPutSynonymsSetIdRuleId<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -53118,7 +52320,7 @@ export function injectPutSynonymsSetIdRuleId<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteSynonymsSetIdRuleIdMutationKey() {
@@ -53169,7 +52371,6 @@ export function injectDeleteSynonymsSetIdRuleId<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -53181,7 +52382,7 @@ export function injectDeleteSynonymsSetIdRuleId<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getSynonymsQueryKey(args: InferRequestType<typeof client._synonyms.$get>) {
@@ -53230,12 +52431,11 @@ export function injectSynonyms<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSynonymsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTasksCancelMutationKey() {
@@ -53275,7 +52475,6 @@ export function injectPostTasksCancel<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -53287,7 +52486,7 @@ export function injectPostTasksCancel<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTasksTaskIdCancelMutationKey() {
@@ -53338,7 +52537,6 @@ export function injectPostTasksTaskIdCancel<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -53350,7 +52548,7 @@ export function injectPostTasksTaskIdCancel<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTasksTaskIdQueryKey(
@@ -53414,12 +52612,11 @@ export function injectTasksTaskId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTasksTaskIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTasksQueryKey(args: InferRequestType<typeof client._tasks.$get>) {
@@ -53462,12 +52659,11 @@ export function injectTasks<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTasksQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getIndexTermsEnumQueryKey(
@@ -53533,12 +52729,11 @@ export function injectIndexTermsEnum<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexTermsEnumQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexTermsEnumMutationKey() {
@@ -53585,7 +52780,6 @@ export function injectPostIndexTermsEnum<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -53597,7 +52791,7 @@ export function injectPostIndexTermsEnum<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexTermvectorsIdQueryKey(
@@ -53672,12 +52866,11 @@ export function injectIndexTermvectorsId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexTermvectorsIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexTermvectorsIdMutationKey() {
@@ -53728,7 +52921,6 @@ export function injectPostIndexTermvectorsId<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -53740,7 +52932,7 @@ export function injectPostIndexTermvectorsId<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIndexTermvectorsQueryKey(
@@ -53809,12 +53001,11 @@ export function injectIndexTermvectors<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIndexTermvectorsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexTermvectorsMutationKey() {
@@ -53863,7 +53054,6 @@ export function injectPostIndexTermvectors<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -53875,7 +53065,7 @@ export function injectPostIndexTermvectors<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTextStructureFindFieldStructureQueryKey(
@@ -53950,7 +53140,6 @@ export function injectTextStructureFindFieldStructure<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -53958,7 +53147,7 @@ export function injectTextStructureFindFieldStructure<
       ...getTextStructureFindFieldStructureQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTextStructureFindMessageStructureQueryKey(
@@ -54033,7 +53222,6 @@ export function injectTextStructureFindMessageStructure<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -54041,7 +53229,7 @@ export function injectTextStructureFindMessageStructure<
       ...getTextStructureFindMessageStructureQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTextStructureFindMessageStructureMutationKey() {
@@ -54095,7 +53283,6 @@ export function injectPostTextStructureFindMessageStructure<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -54108,7 +53295,7 @@ export function injectPostTextStructureFindMessageStructure<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTextStructureFindStructureMutationKey() {
@@ -54160,7 +53347,6 @@ export function injectPostTextStructureFindStructure<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -54173,7 +53359,7 @@ export function injectPostTextStructureFindStructure<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTextStructureTestGrokPatternQueryKey(
@@ -54248,7 +53434,6 @@ export function injectTextStructureTestGrokPattern<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -54256,7 +53441,7 @@ export function injectTextStructureTestGrokPattern<
       ...getTextStructureTestGrokPatternQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTextStructureTestGrokPatternMutationKey() {
@@ -54310,7 +53495,6 @@ export function injectPostTextStructureTestGrokPattern<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -54323,7 +53507,7 @@ export function injectPostTextStructureTestGrokPattern<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTransformTransformIdQueryKey(
@@ -54394,7 +53578,6 @@ export function injectTransformTransformId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -54402,7 +53585,7 @@ export function injectTransformTransformId<
       ...getTransformTransformIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutTransformTransformIdMutationKey() {
@@ -54451,7 +53634,6 @@ export function injectPutTransformTransformId<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -54463,7 +53645,7 @@ export function injectPutTransformTransformId<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTransformTransformIdMutationKey() {
@@ -54514,7 +53696,6 @@ export function injectDeleteTransformTransformId<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -54526,7 +53707,7 @@ export function injectDeleteTransformTransformId<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTransformNodeStatsQueryKey() {
@@ -54583,12 +53764,11 @@ export function injectTransformNodeStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTransformNodeStatsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTransformQueryKey(args: InferRequestType<typeof client._transform.$get>) {
@@ -54637,12 +53817,11 @@ export function injectTransform<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTransformQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTransformTransformIdStatsQueryKey(
@@ -54717,7 +53896,6 @@ export function injectTransformTransformIdStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -54725,7 +53903,7 @@ export function injectTransformTransformIdStats<
       ...getTransformTransformIdStatsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTransformTransformIdPreviewQueryKey(
@@ -54800,7 +53978,6 @@ export function injectTransformTransformIdPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -54808,7 +53985,7 @@ export function injectTransformTransformIdPreview<
       ...getTransformTransformIdPreviewQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformTransformIdPreviewMutationKey() {
@@ -54862,7 +54039,6 @@ export function injectPostTransformTransformIdPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -54875,7 +54051,7 @@ export function injectPostTransformTransformIdPreview<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTransformPreviewQueryKey(
@@ -54930,12 +54106,11 @@ export function injectTransformPreview<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTransformPreviewQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformPreviewMutationKey() {
@@ -54978,7 +54153,6 @@ export function injectPostTransformPreview<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -54990,7 +54164,7 @@ export function injectPostTransformPreview<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformTransformIdResetMutationKey() {
@@ -55044,7 +54218,6 @@ export function injectPostTransformTransformIdReset<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55057,7 +54230,7 @@ export function injectPostTransformTransformIdReset<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformTransformIdScheduleNowMutationKey() {
@@ -55113,7 +54286,6 @@ export function injectPostTransformTransformIdScheduleNow<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55126,7 +54298,7 @@ export function injectPostTransformTransformIdScheduleNow<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformSetUpgradeModeMutationKey() {
@@ -55173,7 +54345,6 @@ export function injectPostTransformSetUpgradeMode<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55185,7 +54356,7 @@ export function injectPostTransformSetUpgradeMode<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformTransformIdStartMutationKey() {
@@ -55239,7 +54410,6 @@ export function injectPostTransformTransformIdStart<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55252,7 +54422,7 @@ export function injectPostTransformTransformIdStart<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformTransformIdStopMutationKey() {
@@ -55306,7 +54476,6 @@ export function injectPostTransformTransformIdStop<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55319,7 +54488,7 @@ export function injectPostTransformTransformIdStop<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformTransformIdUpdateMutationKey() {
@@ -55373,7 +54542,6 @@ export function injectPostTransformTransformIdUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55386,7 +54554,7 @@ export function injectPostTransformTransformIdUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTransformUpgradeMutationKey() {
@@ -55429,7 +54597,6 @@ export function injectPostTransformUpgrade<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55441,7 +54608,7 @@ export function injectPostTransformUpgrade<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexUpdateIdMutationKey() {
@@ -55490,7 +54657,6 @@ export function injectPostIndexUpdateId<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55502,7 +54668,7 @@ export function injectPostIndexUpdateId<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIndexUpdateByQueryMutationKey() {
@@ -55553,7 +54719,6 @@ export function injectPostIndexUpdateByQuery<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55565,7 +54730,7 @@ export function injectPostIndexUpdateByQuery<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostUpdateByQueryTaskIdRethrottleMutationKey() {
@@ -55621,7 +54786,6 @@ export function injectPostUpdateByQueryTaskIdRethrottle<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55634,7 +54798,7 @@ export function injectPostUpdateByQueryTaskIdRethrottle<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutWatcherWatchWatchIdAckMutationKey() {
@@ -55685,7 +54849,6 @@ export function injectPutWatcherWatchWatchIdAck<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55697,7 +54860,7 @@ export function injectPutWatcherWatchWatchIdAck<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherWatchWatchIdAckMutationKey() {
@@ -55748,7 +54911,6 @@ export function injectPostWatcherWatchWatchIdAck<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55760,7 +54922,7 @@ export function injectPostWatcherWatchWatchIdAck<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutWatcherWatchWatchIdAckActionIdMutationKey() {
@@ -55824,7 +54986,6 @@ export function injectPutWatcherWatchWatchIdAckActionId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55837,7 +54998,7 @@ export function injectPutWatcherWatchWatchIdAckActionId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherWatchWatchIdAckActionIdMutationKey() {
@@ -55903,7 +55064,6 @@ export function injectPostWatcherWatchWatchIdAckActionId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55916,7 +55076,7 @@ export function injectPostWatcherWatchWatchIdAckActionId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutWatcherWatchWatchIdActivateMutationKey() {
@@ -55970,7 +55130,6 @@ export function injectPutWatcherWatchWatchIdActivate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -55983,7 +55142,7 @@ export function injectPutWatcherWatchWatchIdActivate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherWatchWatchIdActivateMutationKey() {
@@ -56037,7 +55196,6 @@ export function injectPostWatcherWatchWatchIdActivate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56050,7 +55208,7 @@ export function injectPostWatcherWatchWatchIdActivate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutWatcherWatchWatchIdDeactivateMutationKey() {
@@ -56106,7 +55264,6 @@ export function injectPutWatcherWatchWatchIdDeactivate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56119,7 +55276,7 @@ export function injectPutWatcherWatchWatchIdDeactivate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherWatchWatchIdDeactivateMutationKey() {
@@ -56175,7 +55332,6 @@ export function injectPostWatcherWatchWatchIdDeactivate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56188,7 +55344,7 @@ export function injectPostWatcherWatchWatchIdDeactivate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWatcherWatchIdQueryKey(
@@ -56252,12 +55408,11 @@ export function injectWatcherWatchId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getWatcherWatchIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutWatcherWatchIdMutationKey() {
@@ -56302,7 +55457,6 @@ export function injectPutWatcherWatchId<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56314,7 +55468,7 @@ export function injectPutWatcherWatchId<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherWatchIdMutationKey() {
@@ -56361,7 +55515,6 @@ export function injectPostWatcherWatchId<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56373,7 +55526,7 @@ export function injectPostWatcherWatchId<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteWatcherWatchIdMutationKey() {
@@ -56420,7 +55573,6 @@ export function injectDeleteWatcherWatchId<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56432,7 +55584,7 @@ export function injectDeleteWatcherWatchId<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutWatcherWatchIdExecuteMutationKey() {
@@ -56483,7 +55635,6 @@ export function injectPutWatcherWatchIdExecute<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56495,7 +55646,7 @@ export function injectPutWatcherWatchIdExecute<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherWatchIdExecuteMutationKey() {
@@ -56546,7 +55697,6 @@ export function injectPostWatcherWatchIdExecute<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56558,7 +55708,7 @@ export function injectPostWatcherWatchIdExecute<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutWatcherWatchExecuteMutationKey() {
@@ -56603,7 +55753,6 @@ export function injectPutWatcherWatchExecute<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56615,7 +55764,7 @@ export function injectPutWatcherWatchExecute<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherWatchExecuteMutationKey() {
@@ -56660,7 +55809,6 @@ export function injectPostWatcherWatchExecute<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56672,7 +55820,7 @@ export function injectPostWatcherWatchExecute<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWatcherSettingsQueryKey(
@@ -56727,12 +55875,11 @@ export function injectWatcherSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getWatcherSettingsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutWatcherSettingsMutationKey() {
@@ -56775,7 +55922,6 @@ export function injectPutWatcherSettings<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56787,7 +55933,7 @@ export function injectPutWatcherSettings<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWatcherQueryWatchesQueryKey(
@@ -56854,12 +56000,11 @@ export function injectWatcherQueryWatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getWatcherQueryWatchesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherQueryWatchesMutationKey() {
@@ -56904,7 +56049,6 @@ export function injectPostWatcherQueryWatches<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56916,7 +56060,7 @@ export function injectPostWatcherQueryWatches<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherStartMutationKey() {
@@ -56957,7 +56101,6 @@ export function injectPostWatcherStart<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -56969,7 +56112,7 @@ export function injectPostWatcherStart<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWatcherStatsQueryKey(args: InferRequestType<typeof client._watcher.stats.$get>) {
@@ -57020,12 +56163,11 @@ export function injectWatcherStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getWatcherStatsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getWatcherStatsMetricQueryKey(
@@ -57094,12 +56236,11 @@ export function injectWatcherStatsMetric<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getWatcherStatsMetricQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostWatcherStopMutationKey() {
@@ -57139,7 +56280,6 @@ export function injectPostWatcherStop<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -57151,7 +56291,7 @@ export function injectPostWatcherStop<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getXpackQueryKey(args: InferRequestType<typeof client._xpack.$get>) {
@@ -57194,12 +56334,11 @@ export function injectXpack<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getXpackQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getXpackUsageQueryKey(args: InferRequestType<typeof client._xpack.usage.$get>) {
@@ -57248,10 +56387,9 @@ export function injectXpackUsage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getXpackUsageQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }

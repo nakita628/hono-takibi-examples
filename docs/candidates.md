@@ -8,9 +8,6 @@ been added. This file only holds what is still to do and what has been ruled out
 One line per document: `name | raw URL | note`. Take them from the top, at most three a day.
 Each was checked with `node scripts/probe-spec.mjs` on 2026-11-22.
 
-- ga4gh-drs | https://raw.githubusercontent.com/ga4gh/data-repository-service-schemas/develop/openapi/data_repository_service.openapi.yaml | OpenAPI 3.0.3, 9 operations, 51 files through external `$ref`s, probe warns about one deep pointer: check the output by eye
-- open-banking-uk-pisp | https://raw.githubusercontent.com/OpenBankingUK/read-write-api-specs/master/dist/openapi/payment-initiation-openapi.yaml | OpenAPI 3.0.0, 41 operations (same directory as open-banking-uk-aisp, added 2026-11-23; `confirmation-funds-openapi.yaml` and `vrp-openapi.yaml` there also pass the probe)
-- apache-polaris-management | https://raw.githubusercontent.com/apache/polaris/main/spec/polaris-management-service.yml | OpenAPI 3.1.1, 33 operations
 - manticore | https://raw.githubusercontent.com/manticoresoftware/openapi/master/manticore.yml | OpenAPI 3.1.0, 11 operations
 - stoat-revolt | https://raw.githubusercontent.com/revoltchat/api/master/OpenAPI.json | OpenAPI 3.0.0, 131 operations (formerly Revolt)
 - audiobookshelf | https://raw.githubusercontent.com/advplyr/audiobookshelf/master/docs/openapi.json | OpenAPI 3.0.0, 46 operations

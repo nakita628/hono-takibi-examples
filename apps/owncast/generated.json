@@ -1,7 +1,7 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "a17ddfbeee4eba827fffaa14eab7531d766cbb3742164a45eff325a1a279d332",
     "sources": {
@@ -11,10 +11,7 @@
       }
     },
     "typecheck": {
-      "errors": 10,
-      "where": "`index.ts`",
-      "codes": "TS2724 ×6, TS2305 ×4",
-      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   }
 }

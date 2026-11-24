@@ -1,21 +1,18 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "913d0341f6cc9dac2113eeca77e87082d878b2c2ef23278b2072c284463d4a1b",
     "sources": {
       "https://huggingface.co/.well-known/openapi.json": {
-        "etag": "W/\"12feb2-WYPqDhgYJD3UD/kv7eX/D2eYDyk\"",
-        "sha256": "65458fc838099311ece0b028542ec9aea8c2b1e2855f85f15097fc92705a533c",
-        "canonical": "973920a297f8f3e110347151ee0ce213f0d3cd9e8f35e2ae2f6b54089db30ad0"
+        "etag": "W/\"1301c0-qa7otS9kpDYiYaolI5krapznJmA\"",
+        "sha256": "b0c151ad8afa38094ec2508c46eafd6cb77e3ab42006f6e0875e54d632c6e71f",
+        "canonical": "675802c162bd18ad0e6f21520cd7a4f4a496fc9d9de3d102133925107436ccf7"
       }
     },
     "typecheck": {
-      "errors": 222,
-      "where": "`index.ts`",
-      "codes": "TS2724 ×197, TS2305 ×25",
-      "issue": "[#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   }
 }

@@ -225,8 +225,8 @@
     }
   },
   "configs/anchore-io.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "1404a05c844ba3432618290babbff079b6b4fb5ff1492325aa1a6182d322acd4",
     "sources": {
@@ -236,10 +236,7 @@
       }
     },
     "typecheck": {
-      "errors": 30,
-      "where": "`hooks/*`",
-      "codes": "TS2393 ×12, TS2323 ×12, TS2769 ×6",
-      "issue": "[#536](https://github.com/nakita628/hono-takibi/issues/536) (the TS2769 errors come from the duplicate `getQueryKey`)"
+      "errors": 0
     }
   },
   "configs/apache-org-airflow.config.ts": {
@@ -2961,8 +2958,8 @@
     }
   },
   "configs/influxdata.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "c839a39c729b09aa464fc4d3f0d3883cec7845eee009f020e966a0bf83b7d50a",
     "sources": {
@@ -2972,10 +2969,7 @@
       }
     },
     "typecheck": {
-      "errors": 24,
-      "where": "`hooks/*`",
-      "codes": "TS2393 ×12, TS2323 ×12",
-      "issue": "[#536](https://github.com/nakita628/hono-takibi/issues/536)"
+      "errors": 0
     }
   },
   "configs/intellifi-nl.config.ts": {

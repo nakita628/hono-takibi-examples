@@ -1,17 +1,9 @@
-import {
-  injectQuery,
-  injectMutation,
-  queryOptions,
-  mutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, injectMutation, queryOptions, mutationOptions } from '@tanstack/angular-query'
 import type {
   CreateQueryOptions,
   CreateMutationOptions,
   DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+} from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -74,12 +66,11 @@ export function injectEthV1BeaconGenesis<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1BeaconGenesisQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdRootQueryKey(
@@ -154,7 +145,6 @@ export function injectEthV1BeaconStatesStateIdRoot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -162,7 +152,7 @@ export function injectEthV1BeaconStatesStateIdRoot<
       ...getEthV1BeaconStatesStateIdRootQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdForkQueryKey(
@@ -237,7 +227,6 @@ export function injectEthV1BeaconStatesStateIdFork<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -245,7 +234,7 @@ export function injectEthV1BeaconStatesStateIdFork<
       ...getEthV1BeaconStatesStateIdForkQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdFinalityCheckpointsQueryKey(
@@ -342,7 +331,6 @@ export function injectEthV1BeaconStatesStateIdFinalityCheckpoints<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -353,7 +341,7 @@ export function injectEthV1BeaconStatesStateIdFinalityCheckpoints<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdValidatorsQueryKey(
@@ -434,7 +422,6 @@ export function injectEthV1BeaconStatesStateIdValidators<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -442,7 +429,7 @@ export function injectEthV1BeaconStatesStateIdValidators<
       ...getEthV1BeaconStatesStateIdValidatorsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconStatesStateIdValidatorsMutationKey() {
@@ -502,7 +489,6 @@ export function injectPostEthV1BeaconStatesStateIdValidators<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -515,7 +501,7 @@ export function injectPostEthV1BeaconStatesStateIdValidators<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdValidatorsValidatorIdQueryKey(
@@ -612,7 +598,6 @@ export function injectEthV1BeaconStatesStateIdValidatorsValidatorId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -623,7 +608,7 @@ export function injectEthV1BeaconStatesStateIdValidatorsValidatorId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdValidatorBalancesQueryKey(
@@ -720,7 +705,6 @@ export function injectEthV1BeaconStatesStateIdValidatorBalances<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -731,7 +715,7 @@ export function injectEthV1BeaconStatesStateIdValidatorBalances<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconStatesStateIdValidatorBalancesMutationKey() {
@@ -801,7 +785,6 @@ export function injectPostEthV1BeaconStatesStateIdValidatorBalances<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -814,7 +797,7 @@ export function injectPostEthV1BeaconStatesStateIdValidatorBalances<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconStatesStateIdValidatorIdentitiesMutationKey() {
@@ -884,7 +867,6 @@ export function injectPostEthV1BeaconStatesStateIdValidatorIdentities<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -897,7 +879,7 @@ export function injectPostEthV1BeaconStatesStateIdValidatorIdentities<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconStatesStateIdBuildersMutationKey() {
@@ -957,7 +939,6 @@ export function injectPostEthV1BeaconStatesStateIdBuilders<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -970,7 +951,7 @@ export function injectPostEthV1BeaconStatesStateIdBuilders<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdCommitteesQueryKey(
@@ -1051,7 +1032,6 @@ export function injectEthV1BeaconStatesStateIdCommittees<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1059,7 +1039,7 @@ export function injectEthV1BeaconStatesStateIdCommittees<
       ...getEthV1BeaconStatesStateIdCommitteesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdSyncCommitteesQueryKey(
@@ -1150,7 +1130,6 @@ export function injectEthV1BeaconStatesStateIdSyncCommittees<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1161,7 +1140,7 @@ export function injectEthV1BeaconStatesStateIdSyncCommittees<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdPtcQueryKey(
@@ -1236,7 +1215,6 @@ export function injectEthV1BeaconStatesStateIdPtc<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1244,7 +1222,7 @@ export function injectEthV1BeaconStatesStateIdPtc<
       ...getEthV1BeaconStatesStateIdPtcQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdRandaoQueryKey(
@@ -1321,7 +1299,6 @@ export function injectEthV1BeaconStatesStateIdRandao<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1329,7 +1306,7 @@ export function injectEthV1BeaconStatesStateIdRandao<
       ...getEthV1BeaconStatesStateIdRandaoQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdPendingConsolidationsQueryKey(
@@ -1426,7 +1403,6 @@ export function injectEthV1BeaconStatesStateIdPendingConsolidations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1437,7 +1413,7 @@ export function injectEthV1BeaconStatesStateIdPendingConsolidations<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdPendingDepositsQueryKey(
@@ -1530,7 +1506,6 @@ export function injectEthV1BeaconStatesStateIdPendingDeposits<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1541,7 +1516,7 @@ export function injectEthV1BeaconStatesStateIdPendingDeposits<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdPendingPartialWithdrawalsQueryKey(
@@ -1638,7 +1613,6 @@ export function injectEthV1BeaconStatesStateIdPendingPartialWithdrawals<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1649,7 +1623,7 @@ export function injectEthV1BeaconStatesStateIdPendingPartialWithdrawals<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdProposerLookaheadQueryKey(
@@ -1746,7 +1720,6 @@ export function injectEthV1BeaconStatesStateIdProposerLookahead<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1757,7 +1730,7 @@ export function injectEthV1BeaconStatesStateIdProposerLookahead<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdBuilderPendingWithdrawalsQueryKey(
@@ -1854,7 +1827,6 @@ export function injectEthV1BeaconStatesStateIdBuilderPendingWithdrawals<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1865,7 +1837,7 @@ export function injectEthV1BeaconStatesStateIdBuilderPendingWithdrawals<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconStatesStateIdBuilderPendingPaymentsQueryKey(
@@ -1962,7 +1934,6 @@ export function injectEthV1BeaconStatesStateIdBuilderPendingPayments<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1973,7 +1944,7 @@ export function injectEthV1BeaconStatesStateIdBuilderPendingPayments<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconHeadersQueryKey(
@@ -2033,12 +2004,11 @@ export function injectEthV1BeaconHeaders<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1BeaconHeadersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconHeadersBlockIdQueryKey(
@@ -2113,7 +2083,6 @@ export function injectEthV1BeaconHeadersBlockId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2121,7 +2090,7 @@ export function injectEthV1BeaconHeadersBlockId<
       ...getEthV1BeaconHeadersBlockIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV2BeaconBlindedBlocksMutationKey() {
@@ -2171,7 +2140,6 @@ export function injectPostEthV2BeaconBlindedBlocks<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2184,7 +2152,7 @@ export function injectPostEthV2BeaconBlindedBlocks<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV2BeaconBlocksMutationKey() {
@@ -2229,7 +2197,6 @@ export function injectPostEthV2BeaconBlocks<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2241,7 +2208,7 @@ export function injectPostEthV2BeaconBlocks<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconExecutionPayloadBidsMutationKey() {
@@ -2295,7 +2262,6 @@ export function injectPostEthV1BeaconExecutionPayloadBids<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2308,7 +2274,7 @@ export function injectPostEthV1BeaconExecutionPayloadBids<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconExecutionPayloadEnvelopesMutationKey() {
@@ -2362,7 +2328,6 @@ export function injectPostEthV1BeaconExecutionPayloadEnvelopes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2375,7 +2340,7 @@ export function injectPostEthV1BeaconExecutionPayloadEnvelopes<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconExecutionPayloadEnvelopesBlockIdQueryKey(
@@ -2468,7 +2433,6 @@ export function injectEthV1BeaconExecutionPayloadEnvelopesBlockId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2479,7 +2443,7 @@ export function injectEthV1BeaconExecutionPayloadEnvelopesBlockId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconProposerPreferencesQueryKey(
@@ -2554,7 +2518,6 @@ export function injectEthV1BeaconProposerPreferences<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2562,7 +2525,7 @@ export function injectEthV1BeaconProposerPreferences<
       ...getEthV1BeaconProposerPreferencesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2BeaconBlocksBlockIdQueryKey(
@@ -2637,7 +2600,6 @@ export function injectEthV2BeaconBlocksBlockId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2645,7 +2607,7 @@ export function injectEthV2BeaconBlocksBlockId<
       ...getEthV2BeaconBlocksBlockIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconBlocksBlockIdRootQueryKey(
@@ -2720,7 +2682,6 @@ export function injectEthV1BeaconBlocksBlockIdRoot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2728,7 +2689,7 @@ export function injectEthV1BeaconBlocksBlockIdRoot<
       ...getEthV1BeaconBlocksBlockIdRootQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2BeaconBlocksBlockIdAttestationsQueryKey(
@@ -2815,7 +2776,6 @@ export function injectEthV2BeaconBlocksBlockIdAttestations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2823,7 +2783,7 @@ export function injectEthV2BeaconBlocksBlockIdAttestations<
       ...getEthV2BeaconBlocksBlockIdAttestationsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconBlobsBlockIdQueryKey(
@@ -2898,7 +2858,6 @@ export function injectEthV1BeaconBlobsBlockId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2906,7 +2865,7 @@ export function injectEthV1BeaconBlobsBlockId<
       ...getEthV1BeaconBlobsBlockIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1DebugBeaconDataColumnSidecarsBlockIdQueryKey(
@@ -2999,7 +2958,6 @@ export function injectEthV1DebugBeaconDataColumnSidecarsBlockId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3010,7 +2968,7 @@ export function injectEthV1DebugBeaconDataColumnSidecarsBlockId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconRewardsSyncCommitteeBlockIdMutationKey() {
@@ -3076,7 +3034,6 @@ export function injectPostEthV1BeaconRewardsSyncCommitteeBlockId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3089,7 +3046,7 @@ export function injectPostEthV1BeaconRewardsSyncCommitteeBlockId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconRewardsBlocksBlockIdQueryKey(
@@ -3164,7 +3121,6 @@ export function injectEthV1BeaconRewardsBlocksBlockId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3172,7 +3128,7 @@ export function injectEthV1BeaconRewardsBlocksBlockId<
       ...getEthV1BeaconRewardsBlocksBlockIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconRewardsAttestationsEpochMutationKey() {
@@ -3228,7 +3184,6 @@ export function injectPostEthV1BeaconRewardsAttestationsEpoch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3241,7 +3196,7 @@ export function injectPostEthV1BeaconRewardsAttestationsEpoch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconBlindedBlocksBlockIdQueryKey(
@@ -3316,7 +3271,6 @@ export function injectEthV1BeaconBlindedBlocksBlockId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3324,7 +3278,7 @@ export function injectEthV1BeaconBlindedBlocksBlockId<
       ...getEthV1BeaconBlindedBlocksBlockIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconLightClientBootstrapBlockRootQueryKey(
@@ -3415,7 +3369,6 @@ export function injectEthV1BeaconLightClientBootstrapBlockRoot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3426,7 +3379,7 @@ export function injectEthV1BeaconLightClientBootstrapBlockRoot<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconLightClientUpdatesQueryKey(
@@ -3501,7 +3454,6 @@ export function injectEthV1BeaconLightClientUpdates<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3509,7 +3461,7 @@ export function injectEthV1BeaconLightClientUpdates<
       ...getEthV1BeaconLightClientUpdatesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconLightClientFinalityUpdateQueryKey() {
@@ -3578,7 +3530,6 @@ export function injectEthV1BeaconLightClientFinalityUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3586,7 +3537,7 @@ export function injectEthV1BeaconLightClientFinalityUpdate<
       ...getEthV1BeaconLightClientFinalityUpdateQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconLightClientOptimisticUpdateQueryKey() {
@@ -3655,7 +3606,6 @@ export function injectEthV1BeaconLightClientOptimisticUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3663,7 +3613,7 @@ export function injectEthV1BeaconLightClientOptimisticUpdate<
       ...getEthV1BeaconLightClientOptimisticUpdateQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2BeaconPoolAttestationsQueryKey(
@@ -3734,7 +3684,6 @@ export function injectEthV2BeaconPoolAttestations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3742,7 +3691,7 @@ export function injectEthV2BeaconPoolAttestations<
       ...getEthV2BeaconPoolAttestationsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV2BeaconPoolAttestationsMutationKey() {
@@ -3794,7 +3743,6 @@ export function injectPostEthV2BeaconPoolAttestations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3807,7 +3755,7 @@ export function injectPostEthV2BeaconPoolAttestations<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconPoolPayloadAttestationsQueryKey(
@@ -3882,7 +3830,6 @@ export function injectEthV1BeaconPoolPayloadAttestations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3890,7 +3837,7 @@ export function injectEthV1BeaconPoolPayloadAttestations<
       ...getEthV1BeaconPoolPayloadAttestationsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconPoolPayloadAttestationsMutationKey() {
@@ -3944,7 +3891,6 @@ export function injectPostEthV1BeaconPoolPayloadAttestations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3957,7 +3903,7 @@ export function injectPostEthV1BeaconPoolPayloadAttestations<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2BeaconPoolAttesterSlashingsQueryKey() {
@@ -4026,7 +3972,6 @@ export function injectEthV2BeaconPoolAttesterSlashings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4034,7 +3979,7 @@ export function injectEthV2BeaconPoolAttesterSlashings<
       ...getEthV2BeaconPoolAttesterSlashingsQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV2BeaconPoolAttesterSlashingsMutationKey() {
@@ -4088,7 +4033,6 @@ export function injectPostEthV2BeaconPoolAttesterSlashings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4101,7 +4045,7 @@ export function injectPostEthV2BeaconPoolAttesterSlashings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconPoolProposerSlashingsQueryKey() {
@@ -4170,7 +4114,6 @@ export function injectEthV1BeaconPoolProposerSlashings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4178,7 +4121,7 @@ export function injectEthV1BeaconPoolProposerSlashings<
       ...getEthV1BeaconPoolProposerSlashingsQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconPoolProposerSlashingsMutationKey() {
@@ -4232,7 +4175,6 @@ export function injectPostEthV1BeaconPoolProposerSlashings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4245,7 +4187,7 @@ export function injectPostEthV1BeaconPoolProposerSlashings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconPoolSyncCommitteesMutationKey() {
@@ -4299,7 +4241,6 @@ export function injectPostEthV1BeaconPoolSyncCommittees<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4312,7 +4253,7 @@ export function injectPostEthV1BeaconPoolSyncCommittees<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconPoolVoluntaryExitsQueryKey() {
@@ -4381,7 +4322,6 @@ export function injectEthV1BeaconPoolVoluntaryExits<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4389,7 +4329,7 @@ export function injectEthV1BeaconPoolVoluntaryExits<
       ...getEthV1BeaconPoolVoluntaryExitsQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconPoolVoluntaryExitsMutationKey() {
@@ -4443,7 +4383,6 @@ export function injectPostEthV1BeaconPoolVoluntaryExits<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4456,7 +4395,7 @@ export function injectPostEthV1BeaconPoolVoluntaryExits<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1BeaconPoolBlsToExecutionChangesQueryKey() {
@@ -4525,7 +4464,6 @@ export function injectEthV1BeaconPoolBlsToExecutionChanges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4533,7 +4471,7 @@ export function injectEthV1BeaconPoolBlsToExecutionChanges<
       ...getEthV1BeaconPoolBlsToExecutionChangesQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1BeaconPoolBlsToExecutionChangesMutationKey() {
@@ -4587,7 +4525,6 @@ export function injectPostEthV1BeaconPoolBlsToExecutionChanges<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4600,7 +4537,7 @@ export function injectPostEthV1BeaconPoolBlsToExecutionChanges<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2DebugBeaconStatesStateIdQueryKey(
@@ -4675,7 +4612,6 @@ export function injectEthV2DebugBeaconStatesStateId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -4683,7 +4619,7 @@ export function injectEthV2DebugBeaconStatesStateId<
       ...getEthV2DebugBeaconStatesStateIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2DebugBeaconHeadsQueryKey() {
@@ -4744,12 +4680,11 @@ export function injectEthV2DebugBeaconHeads<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV2DebugBeaconHeadsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1DebugForkChoiceQueryKey() {
@@ -4810,12 +4745,11 @@ export function injectEthV1DebugForkChoice<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1DebugForkChoiceQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2DebugForkChoiceQueryKey() {
@@ -4876,12 +4810,11 @@ export function injectEthV2DebugForkChoice<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV2DebugForkChoiceQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1NodeIdentityQueryKey() {
@@ -4936,12 +4869,11 @@ export function injectEthV1NodeIdentity<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1NodeIdentityQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1NodePeersQueryKey(
@@ -4996,12 +4928,11 @@ export function injectEthV1NodePeers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1NodePeersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1NodePeersPeerIdQueryKey(
@@ -5076,7 +5007,6 @@ export function injectEthV1NodePeersPeerId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5084,7 +5014,7 @@ export function injectEthV1NodePeersPeerId<
       ...getEthV1NodePeersPeerIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1NodePeerCountQueryKey() {
@@ -5141,12 +5071,11 @@ export function injectEthV1NodePeerCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1NodePeerCountQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1NodeVersionQueryKey() {
@@ -5201,12 +5130,11 @@ export function injectEthV1NodeVersion<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1NodeVersionQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2NodeVersionQueryKey() {
@@ -5261,12 +5189,11 @@ export function injectEthV2NodeVersion<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV2NodeVersionQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1NodeSyncingQueryKey() {
@@ -5321,12 +5248,11 @@ export function injectEthV1NodeSyncing<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1NodeSyncingQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1NodeHealthQueryKey(
@@ -5381,12 +5307,11 @@ export function injectEthV1NodeHealth<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1NodeHealthQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1ConfigForkScheduleQueryKey() {
@@ -5449,12 +5374,11 @@ export function injectEthV1ConfigForkSchedule<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1ConfigForkScheduleQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1ConfigSpecQueryKey() {
@@ -5509,12 +5433,11 @@ export function injectEthV1ConfigSpec<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1ConfigSpecQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1ConfigDepositContractQueryKey() {
@@ -5577,12 +5500,11 @@ export function injectEthV1ConfigDepositContract<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1ConfigDepositContractQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorDutiesAttesterEpochMutationKey() {
@@ -5638,7 +5560,6 @@ export function injectPostEthV1ValidatorDutiesAttesterEpoch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5651,7 +5572,7 @@ export function injectPostEthV1ValidatorDutiesAttesterEpoch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1ValidatorDutiesProposerEpochQueryKey(
@@ -5728,7 +5649,6 @@ export function injectEthV1ValidatorDutiesProposerEpoch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5736,7 +5656,7 @@ export function injectEthV1ValidatorDutiesProposerEpoch<
       ...getEthV1ValidatorDutiesProposerEpochQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2ValidatorDutiesProposerEpochQueryKey(
@@ -5813,7 +5733,6 @@ export function injectEthV2ValidatorDutiesProposerEpoch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -5821,7 +5740,7 @@ export function injectEthV2ValidatorDutiesProposerEpoch<
       ...getEthV2ValidatorDutiesProposerEpochQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorDutiesSyncEpochMutationKey() {
@@ -5875,7 +5794,6 @@ export function injectPostEthV1ValidatorDutiesSyncEpoch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5888,7 +5806,7 @@ export function injectPostEthV1ValidatorDutiesSyncEpoch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorDutiesPtcEpochMutationKey() {
@@ -5942,7 +5860,6 @@ export function injectPostEthV1ValidatorDutiesPtcEpoch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5955,7 +5872,7 @@ export function injectPostEthV1ValidatorDutiesPtcEpoch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV3ValidatorBlocksSlotQueryKey(
@@ -6030,7 +5947,6 @@ export function injectEthV3ValidatorBlocksSlot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6038,7 +5954,7 @@ export function injectEthV3ValidatorBlocksSlot<
       ...getEthV3ValidatorBlocksSlotQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV4ValidatorBlocksSlotMutationKey() {
@@ -6092,7 +6008,6 @@ export function injectPostEthV4ValidatorBlocksSlot<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6105,7 +6020,7 @@ export function injectPostEthV4ValidatorBlocksSlot<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1ValidatorAttestationDataQueryKey(
@@ -6180,7 +6095,6 @@ export function injectEthV1ValidatorAttestationData<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6188,7 +6102,7 @@ export function injectEthV1ValidatorAttestationData<
       ...getEthV1ValidatorAttestationDataQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1ValidatorPayloadAttestationDataQueryKey(
@@ -6263,7 +6177,6 @@ export function injectEthV1ValidatorPayloadAttestationData<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6271,7 +6184,7 @@ export function injectEthV1ValidatorPayloadAttestationData<
       ...getEthV1ValidatorPayloadAttestationDataQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV2ValidatorAggregateAttestationQueryKey(
@@ -6346,7 +6259,6 @@ export function injectEthV2ValidatorAggregateAttestation<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6354,7 +6266,7 @@ export function injectEthV2ValidatorAggregateAttestation<
       ...getEthV2ValidatorAggregateAttestationQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV2ValidatorAggregateAndProofsMutationKey() {
@@ -6408,7 +6320,6 @@ export function injectPostEthV2ValidatorAggregateAndProofs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6421,7 +6332,7 @@ export function injectPostEthV2ValidatorAggregateAndProofs<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorBeaconCommitteeSubscriptionsMutationKey() {
@@ -6479,7 +6390,6 @@ export function injectPostEthV1ValidatorBeaconCommitteeSubscriptions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6492,7 +6402,7 @@ export function injectPostEthV1ValidatorBeaconCommitteeSubscriptions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorSyncCommitteeSubscriptionsMutationKey() {
@@ -6548,7 +6458,6 @@ export function injectPostEthV1ValidatorSyncCommitteeSubscriptions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6561,7 +6470,7 @@ export function injectPostEthV1ValidatorSyncCommitteeSubscriptions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorBeaconCommitteeSelectionsMutationKey() {
@@ -6615,7 +6524,6 @@ export function injectPostEthV1ValidatorBeaconCommitteeSelections<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6628,7 +6536,7 @@ export function injectPostEthV1ValidatorBeaconCommitteeSelections<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1ValidatorSyncCommitteeContributionQueryKey(
@@ -6703,7 +6611,6 @@ export function injectEthV1ValidatorSyncCommitteeContribution<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -6714,7 +6621,7 @@ export function injectEthV1ValidatorSyncCommitteeContribution<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorSyncCommitteeSelectionsMutationKey() {
@@ -6768,7 +6675,6 @@ export function injectPostEthV1ValidatorSyncCommitteeSelections<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6781,7 +6687,7 @@ export function injectPostEthV1ValidatorSyncCommitteeSelections<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorContributionAndProofsMutationKey() {
@@ -6835,7 +6741,6 @@ export function injectPostEthV1ValidatorContributionAndProofs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6848,7 +6753,7 @@ export function injectPostEthV1ValidatorContributionAndProofs<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorPrepareBeaconProposerMutationKey() {
@@ -6902,7 +6807,6 @@ export function injectPostEthV1ValidatorPrepareBeaconProposer<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6915,7 +6819,7 @@ export function injectPostEthV1ValidatorPrepareBeaconProposer<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorRegisterValidatorMutationKey() {
@@ -6969,7 +6873,6 @@ export function injectPostEthV1ValidatorRegisterValidator<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6982,7 +6885,7 @@ export function injectPostEthV1ValidatorRegisterValidator<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorProposerPreferencesMutationKey() {
@@ -7036,7 +6939,6 @@ export function injectPostEthV1ValidatorProposerPreferences<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7049,7 +6951,7 @@ export function injectPostEthV1ValidatorProposerPreferences<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorBuilderPreferencesMutationKey() {
@@ -7103,7 +7005,6 @@ export function injectPostEthV1ValidatorBuilderPreferences<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7116,7 +7017,7 @@ export function injectPostEthV1ValidatorBuilderPreferences<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostEthV1ValidatorLivenessEpochMutationKey() {
@@ -7170,7 +7071,6 @@ export function injectPostEthV1ValidatorLivenessEpoch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7183,7 +7083,7 @@ export function injectPostEthV1ValidatorLivenessEpoch<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1ValidatorExecutionPayloadEnvelopesSlotBeaconBlockRootQueryKey(
@@ -7284,7 +7184,6 @@ export function injectEthV1ValidatorExecutionPayloadEnvelopesSlotBeaconBlockRoot
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -7295,7 +7194,7 @@ export function injectEthV1ValidatorExecutionPayloadEnvelopesSlotBeaconBlockRoot
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getEthV1EventsQueryKey(args: InferRequestType<typeof client.eth.v1.events.$get>) {
@@ -7346,10 +7245,9 @@ export function injectEthV1Events<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEthV1EventsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }

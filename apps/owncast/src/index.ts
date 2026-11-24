@@ -2,7 +2,6 @@ import { OpenAPIHono } from '@hono/zod-openapi'
 import {
   deleteAdminConfigFaviconRoute,
   deleteAdminFederationServersIdRoute,
-  deleteAdminPrometheusRoute,
   getAdminAccesstokensRoute,
   getAdminChatClientsRoute,
   getAdminChatMessagesRoute,
@@ -20,7 +19,6 @@ import {
   getAdminLogsRoute,
   getAdminLogsWarningsRoute,
   getAdminMetricsVideoRoute,
-  getAdminPrometheusRoute,
   getAdminServerconfigRoute,
   getAdminStatusRoute,
   getAdminUsersRoute,
@@ -128,7 +126,6 @@ import {
   optionsAdminLogsRoute,
   optionsAdminLogsWarningsRoute,
   optionsAdminMetricsVideoRoute,
-  optionsAdminPrometheusRoute,
   optionsAdminServerconfigRoute,
   optionsAdminStatusRoute,
   optionsAdminUsersDeleteRoute,
@@ -216,7 +213,6 @@ import {
   postAdminFederationServersRoute,
   postAdminFollowersApproveRoute,
   postAdminFollowersRemoveRoute,
-  postAdminPrometheusRoute,
   postAdminUsersDeleteRoute,
   postAdminWebhooksCreateRoute,
   postAdminWebhooksDeleteRoute,
@@ -240,12 +236,10 @@ import {
   postNotificationsRegisterRoute,
   postRemotefollowRoute,
   putAdminFederationServersIdReorderRoute,
-  putAdminPrometheusRoute,
 } from './routes'
 import {
   deleteAdminConfigFaviconRouteHandler,
   deleteAdminFederationServersIdRouteHandler,
-  deleteAdminPrometheusRouteHandler,
   getAdminAccesstokensRouteHandler,
   getAdminChatClientsRouteHandler,
   getAdminChatMessagesRouteHandler,
@@ -263,7 +257,6 @@ import {
   getAdminLogsRouteHandler,
   getAdminLogsWarningsRouteHandler,
   getAdminMetricsVideoRouteHandler,
-  getAdminPrometheusRouteHandler,
   getAdminServerconfigRouteHandler,
   getAdminStatusRouteHandler,
   getAdminUsersRouteHandler,
@@ -371,7 +364,6 @@ import {
   optionsAdminLogsRouteHandler,
   optionsAdminLogsWarningsRouteHandler,
   optionsAdminMetricsVideoRouteHandler,
-  optionsAdminPrometheusRouteHandler,
   optionsAdminServerconfigRouteHandler,
   optionsAdminStatusRouteHandler,
   optionsAdminUsersDeleteRouteHandler,
@@ -459,7 +451,6 @@ import {
   postAdminFederationServersRouteHandler,
   postAdminFollowersApproveRouteHandler,
   postAdminFollowersRemoveRouteHandler,
-  postAdminPrometheusRouteHandler,
   postAdminUsersDeleteRouteHandler,
   postAdminWebhooksCreateRouteHandler,
   postAdminWebhooksDeleteRouteHandler,
@@ -483,7 +474,6 @@ import {
   postNotificationsRegisterRouteHandler,
   postRemotefollowRouteHandler,
   putAdminFederationServersIdReorderRouteHandler,
-  putAdminPrometheusRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
@@ -820,11 +810,6 @@ export const api = app
   .openapi(optionsAdminYpResetRoute, optionsAdminYpResetRouteHandler)
   .openapi(getAdminMetricsVideoRoute, getAdminMetricsVideoRouteHandler)
   .openapi(optionsAdminMetricsVideoRoute, optionsAdminMetricsVideoRouteHandler)
-  .openapi(getAdminPrometheusRoute, getAdminPrometheusRouteHandler)
-  .openapi(postAdminPrometheusRoute, postAdminPrometheusRouteHandler)
-  .openapi(putAdminPrometheusRoute, putAdminPrometheusRouteHandler)
-  .openapi(deleteAdminPrometheusRoute, deleteAdminPrometheusRouteHandler)
-  .openapi(optionsAdminPrometheusRoute, optionsAdminPrometheusRouteHandler)
   .openapi(postAdminFederationSendRoute, postAdminFederationSendRouteHandler)
   .openapi(optionsAdminFederationSendRoute, optionsAdminFederationSendRouteHandler)
   .openapi(getAdminFederationActionsRoute, getAdminFederationActionsRouteHandler)

@@ -9,6 +9,11 @@
         "etag": "W/\"77edad7d09c181b5a7a8ff11720d72c2-ssl\"",
         "sha256": "7652f1307b3bc6cb7a10526c28788a430246f641cb9785a9f1b7b0dd912cdfae"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.6",
+      "date": "2026-11-24",
+      "error": "Missing $ref pointer \"#/$defs/PromptTokensDetails\". Token \"$defs\" does not exist."
     }
   }
 }

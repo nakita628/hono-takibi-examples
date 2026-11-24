@@ -1,17 +1,9 @@
-import {
-  injectQuery,
-  injectMutation,
-  queryOptions,
-  mutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, injectMutation, queryOptions, mutationOptions } from '@tanstack/angular-query'
 import type {
   CreateQueryOptions,
   CreateMutationOptions,
   DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+} from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -71,12 +63,11 @@ export function injectHello<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getHelloQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getReadyQueryKey() {
@@ -118,12 +109,11 @@ export function injectReady<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getReadyQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTykApisQueryKey() {
@@ -169,12 +159,11 @@ export function injectTykApis<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykApisQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykApisMutationKey() {
@@ -212,7 +201,6 @@ export function injectPostTykApis<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -222,7 +210,7 @@ export function injectPostTykApis<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykApisApiIDQueryKey(
@@ -286,12 +274,11 @@ export function injectTykApisApiID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykApisApiIDQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutTykApisApiIDMutationKey() {
@@ -335,7 +322,6 @@ export function injectPutTykApisApiID<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -347,7 +333,7 @@ export function injectPutTykApisApiID<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykApisApiIDMutationKey() {
@@ -392,7 +378,6 @@ export function injectDeleteTykApisApiID<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -404,7 +389,7 @@ export function injectDeleteTykApisApiID<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykApisApiIDVersionsQueryKey(
@@ -479,7 +464,6 @@ export function injectTykApisApiIDVersions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -487,7 +471,7 @@ export function injectTykApisApiIDVersions<
       ...getTykApisApiIDVersionsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykApisOasQueryKey(args: InferRequestType<typeof client.tyk.apis.oas.$get>) {
@@ -536,12 +520,11 @@ export function injectTykApisOas<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykApisOasQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykApisOasMutationKey() {
@@ -581,7 +564,6 @@ export function injectPostTykApisOas<TError = DefaultError, TOnMutateResult = un
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -593,7 +575,7 @@ export function injectPostTykApisOas<TError = DefaultError, TOnMutateResult = un
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykApisOasApiIDQueryKey(
@@ -662,12 +644,11 @@ export function injectTykApisOasApiID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykApisOasApiIDQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutTykApisOasApiIDMutationKey() {
@@ -714,7 +695,6 @@ export function injectPutTykApisOasApiID<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -726,7 +706,7 @@ export function injectPutTykApisOasApiID<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykApisOasApiIDMutationKey() {
@@ -773,7 +753,6 @@ export function injectDeleteTykApisOasApiID<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -785,7 +764,7 @@ export function injectDeleteTykApisOasApiID<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchTykApisOasApiIDMutationKey() {
@@ -832,7 +811,6 @@ export function injectPatchTykApisOasApiID<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -844,7 +822,7 @@ export function injectPatchTykApisOasApiID<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykApisOasApiIDExportQueryKey(
@@ -919,7 +897,6 @@ export function injectTykApisOasApiIDExport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -927,7 +904,7 @@ export function injectTykApisOasApiIDExport<
       ...getTykApisOasApiIDExportQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykApisOasApiIDVersionsQueryKey(
@@ -1002,7 +979,6 @@ export function injectTykApisOasApiIDVersions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1010,7 +986,7 @@ export function injectTykApisOasApiIDVersions<
       ...getTykApisOasApiIDVersionsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykApisOasExportQueryKey(
@@ -1065,12 +1041,11 @@ export function injectTykApisOasExport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykApisOasExportQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykApisOasImportMutationKey() {
@@ -1113,7 +1088,6 @@ export function injectPostTykApisOasImport<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1125,7 +1099,7 @@ export function injectPostTykApisOasImport<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykMcpsQueryKey() {
@@ -1171,12 +1145,11 @@ export function injectTykMcps<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykMcpsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykMcpsMutationKey() {
@@ -1214,7 +1187,6 @@ export function injectPostTykMcps<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1224,7 +1196,7 @@ export function injectPostTykMcps<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykMcpsApiIDQueryKey(
@@ -1288,12 +1260,11 @@ export function injectTykMcpsApiID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykMcpsApiIDQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutTykMcpsApiIDMutationKey() {
@@ -1337,7 +1308,6 @@ export function injectPutTykMcpsApiID<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1349,7 +1319,7 @@ export function injectPutTykMcpsApiID<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykMcpsApiIDMutationKey() {
@@ -1394,7 +1364,6 @@ export function injectDeleteTykMcpsApiID<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1406,7 +1375,7 @@ export function injectDeleteTykMcpsApiID<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykCacheApiIDMutationKey() {
@@ -1453,7 +1422,6 @@ export function injectDeleteTykCacheApiID<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1465,7 +1433,7 @@ export function injectDeleteTykCacheApiID<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykCacheJwksApiIDMutationKey() {
@@ -1514,7 +1482,6 @@ export function injectDeleteTykCacheJwksApiID<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1526,7 +1493,7 @@ export function injectDeleteTykCacheJwksApiID<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykCacheJwksMutationKey() {
@@ -1569,7 +1536,6 @@ export function injectDeleteTykCacheJwks<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1581,7 +1547,7 @@ export function injectDeleteTykCacheJwks<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykCertsQueryKey(args: InferRequestType<typeof client.tyk.certs.$get>) {
@@ -1630,12 +1596,11 @@ export function injectTykCerts<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykCertsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykCertsMutationKey() {
@@ -1673,7 +1638,6 @@ export function injectPostTykCerts<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1683,7 +1647,7 @@ export function injectPostTykCerts<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykCertsCertIDQueryKey(
@@ -1747,12 +1711,11 @@ export function injectTykCertsCertID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykCertsCertIDQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykCertsCertIDMutationKey() {
@@ -1799,7 +1762,6 @@ export function injectDeleteTykCertsCertID<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1811,7 +1773,7 @@ export function injectDeleteTykCertsCertID<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykDebugMutationKey() {
@@ -1849,7 +1811,6 @@ export function injectPostTykDebug<TError = DefaultError, TOnMutateResult = unkn
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1859,7 +1820,7 @@ export function injectPostTykDebug<TError = DefaultError, TOnMutateResult = unkn
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykKeysQueryKey() {
@@ -1905,12 +1866,11 @@ export function injectTykKeys<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykKeysQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykKeysMutationKey() {
@@ -1948,7 +1908,6 @@ export function injectPostTykKeys<TError = DefaultError, TOnMutateResult = unkno
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1958,7 +1917,7 @@ export function injectPostTykKeys<TError = DefaultError, TOnMutateResult = unkno
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykKeysKeyIDQueryKey(
@@ -2022,12 +1981,11 @@ export function injectTykKeysKeyID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykKeysKeyIDQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutTykKeysKeyIDMutationKey() {
@@ -2071,7 +2029,6 @@ export function injectPutTykKeysKeyID<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2083,7 +2040,7 @@ export function injectPutTykKeysKeyID<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykKeysKeyIDMutationKey() {
@@ -2128,7 +2085,6 @@ export function injectPostTykKeysKeyID<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2140,7 +2096,7 @@ export function injectPostTykKeysKeyID<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykKeysKeyIDMutationKey() {
@@ -2185,7 +2141,6 @@ export function injectDeleteTykKeysKeyID<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2197,7 +2152,7 @@ export function injectDeleteTykKeysKeyID<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykKeysCreateMutationKey() {
@@ -2238,7 +2193,6 @@ export function injectPostTykKeysCreate<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2250,7 +2204,7 @@ export function injectPostTykKeysCreate<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykKeysPolicyKeyIDMutationKey() {
@@ -2299,7 +2253,6 @@ export function injectPostTykKeysPolicyKeyID<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2311,7 +2264,7 @@ export function injectPostTykKeysPolicyKeyID<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykKeysPreviewMutationKey() {
@@ -2354,7 +2307,6 @@ export function injectPostTykKeysPreview<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2366,7 +2318,7 @@ export function injectPostTykKeysPreview<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykOauthClientsApiIDQueryKey(
@@ -2437,7 +2389,6 @@ export function injectTykOauthClientsApiID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2445,7 +2396,7 @@ export function injectTykOauthClientsApiID<
       ...getTykOauthClientsApiIDQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykOauthClientsApiIDKeyNameQueryKey(
@@ -2520,7 +2471,6 @@ export function injectTykOauthClientsApiIDKeyName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2528,7 +2478,7 @@ export function injectTykOauthClientsApiIDKeyName<
       ...getTykOauthClientsApiIDKeyNameQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutTykOauthClientsApiIDKeyNameMutationKey() {
@@ -2582,7 +2532,6 @@ export function injectPutTykOauthClientsApiIDKeyName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2595,7 +2544,7 @@ export function injectPutTykOauthClientsApiIDKeyName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykOauthClientsApiIDKeyNameMutationKey() {
@@ -2651,7 +2600,6 @@ export function injectDeleteTykOauthClientsApiIDKeyName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2664,7 +2612,7 @@ export function injectDeleteTykOauthClientsApiIDKeyName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutTykOauthClientsApiIDKeyNameRotateMutationKey() {
@@ -2728,7 +2676,6 @@ export function injectPutTykOauthClientsApiIDKeyNameRotate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2741,7 +2688,7 @@ export function injectPutTykOauthClientsApiIDKeyNameRotate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykOauthClientsApiIDKeyNameTokensQueryKey(
@@ -2828,7 +2775,6 @@ export function injectTykOauthClientsApiIDKeyNameTokens<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2836,7 +2782,7 @@ export function injectTykOauthClientsApiIDKeyNameTokens<
       ...getTykOauthClientsApiIDKeyNameTokensQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykOauthClientsApisAppIDQueryKey(
@@ -2911,7 +2857,6 @@ export function injectTykOauthClientsApisAppID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2919,7 +2864,7 @@ export function injectTykOauthClientsApisAppID<
       ...getTykOauthClientsApisAppIDQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykOauthClientsCreateMutationKey() {
@@ -2964,7 +2909,6 @@ export function injectPostTykOauthClientsCreate<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2976,7 +2920,7 @@ export function injectPostTykOauthClientsCreate<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykOauthRefreshKeyNameMutationKey() {
@@ -3030,7 +2974,6 @@ export function injectDeleteTykOauthRefreshKeyName<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3043,7 +2986,7 @@ export function injectDeleteTykOauthRefreshKeyName<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykOauthRevokeMutationKey() {
@@ -3086,7 +3029,6 @@ export function injectPostTykOauthRevoke<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3098,7 +3040,7 @@ export function injectPostTykOauthRevoke<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykOauthRevokeAllMutationKey() {
@@ -3143,7 +3085,6 @@ export function injectPostTykOauthRevokeAll<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3155,7 +3096,7 @@ export function injectPostTykOauthRevokeAll<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykOauthTokensMutationKey() {
@@ -3198,7 +3139,6 @@ export function injectDeleteTykOauthTokens<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3210,7 +3150,7 @@ export function injectDeleteTykOauthTokens<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykOrgKeysQueryKey(args: InferRequestType<typeof client.tyk.org.keys.$get>) {
@@ -3259,12 +3199,11 @@ export function injectTykOrgKeys<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykOrgKeysQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTykOrgKeysKeyIDQueryKey(
@@ -3333,12 +3272,11 @@ export function injectTykOrgKeysKeyID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykOrgKeysKeyIDQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutTykOrgKeysKeyIDMutationKey() {
@@ -3385,7 +3323,6 @@ export function injectPutTykOrgKeysKeyID<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3397,7 +3334,7 @@ export function injectPutTykOrgKeysKeyID<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykOrgKeysKeyIDMutationKey() {
@@ -3444,7 +3381,6 @@ export function injectPostTykOrgKeysKeyID<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3456,7 +3392,7 @@ export function injectPostTykOrgKeysKeyID<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykOrgKeysKeyIDMutationKey() {
@@ -3503,7 +3439,6 @@ export function injectDeleteTykOrgKeysKeyID<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3515,7 +3450,7 @@ export function injectDeleteTykOrgKeysKeyID<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykPoliciesQueryKey() {
@@ -3563,12 +3498,11 @@ export function injectTykPolicies<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykPoliciesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostTykPoliciesMutationKey() {
@@ -3608,7 +3542,6 @@ export function injectPostTykPolicies<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3620,7 +3553,7 @@ export function injectPostTykPolicies<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykPoliciesPolIDQueryKey(
@@ -3689,12 +3622,11 @@ export function injectTykPoliciesPolID<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykPoliciesPolIDQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPutTykPoliciesPolIDMutationKey() {
@@ -3741,7 +3673,6 @@ export function injectPutTykPoliciesPolID<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3753,7 +3684,7 @@ export function injectPutTykPoliciesPolID<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteTykPoliciesPolIDMutationKey() {
@@ -3800,7 +3731,6 @@ export function injectDeleteTykPoliciesPolID<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3812,7 +3742,7 @@ export function injectDeleteTykPoliciesPolID<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykReloadQueryKey(args: InferRequestType<typeof client.tyk.reload.$get>) {
@@ -3861,12 +3791,11 @@ export function injectTykReload<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykReloadQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTykReloadGroupQueryKey() {
@@ -3916,12 +3845,11 @@ export function injectTykReloadGroup<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykReloadGroupQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostListenPathTykBatchMutationKey() {
@@ -3972,7 +3900,6 @@ export function injectPostListenPathTykBatch<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3984,7 +3911,7 @@ export function injectPostListenPathTykBatch<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTykSchemaQueryKey(args: InferRequestType<typeof client.tyk.schema.$get>) {
@@ -4033,10 +3960,9 @@ export function injectTykSchema<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTykSchemaQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }

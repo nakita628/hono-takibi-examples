@@ -7,8 +7,14 @@
     "sources": {
       "https://raw.githubusercontent.com/grocy/grocy/master/grocy.openapi.json": {
         "etag": "W/\"f3c341e3bfac544616f5fc12f043a1d6f47554bfeb70d90ab4e9a9a58e5016e1\"",
-        "sha256": "8d1b4f5b245818db259c245df5f82c7a7186935293b1a559a369060f0e34e1a4"
+        "sha256": "8d1b4f5b245818db259c245df5f82c7a7186935293b1a559a369060f0e34e1a4",
+        "canonical": "9b29f89e5a3c87125e308a06006453f061463415e785f424d782f12ef27ab022"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.6",
+      "date": "2026-11-24",
+      "error": "Missing $ref pointer \"#/components/schemas/ExposedEntity_NotIncludingNotListable\". Token \"ExposedEntity_NotIncludingNotListable\" does not exist."
     }
   }
 }

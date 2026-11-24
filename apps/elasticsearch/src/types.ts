@@ -179304,6 +179304,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   time_zone?: string | undefined
                   approximation?: {} | undefined
                   column_metadata?: {} | undefined
+                  unmapped_fields?: {} | undefined
+                  wildcards_match_views?: boolean | undefined
+                  wildcards_match_datasets?: boolean | undefined
+                  exemplars?: {} | undefined
                 }
               | undefined
           }
@@ -180681,6 +180685,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   time_zone?: string | undefined
                   approximation?: {} | undefined
                   column_metadata?: {} | undefined
+                  unmapped_fields?: {} | undefined
+                  wildcards_match_views?: boolean | undefined
+                  wildcards_match_datasets?: boolean | undefined
+                  exemplars?: {} | undefined
                 }
               | undefined
           }

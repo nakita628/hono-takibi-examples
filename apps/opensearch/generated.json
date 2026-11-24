@@ -1,7 +1,7 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "826a174c799f5448007ed2b99517215e15daea7120250aab456a391f9965f015",
     "sources": {
@@ -11,10 +11,7 @@
       }
     },
     "typecheck": {
-      "errors": 748,
-      "where": "`index.ts`, `hooks/*`",
-      "codes": "TS2305 ×571, TS2724 ×149, TS2393 ×14, TS2323 ×14",
-      "issue": "[#546](https://github.com/nakita628/hono-takibi/issues/546) (the paths under `/{index}` are written to handlers/index.ts, the barrel's own path), [#536](https://github.com/nakita628/hono-takibi/issues/536)"
+      "errors": 0
     }
   }
 }

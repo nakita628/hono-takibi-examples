@@ -1,17 +1,9 @@
-import {
-  injectQuery,
-  injectMutation,
-  queryOptions,
-  mutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, injectMutation, queryOptions, mutationOptions } from '@tanstack/angular-query'
 import type {
   CreateQueryOptions,
   CreateMutationOptions,
   DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+} from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -123,12 +115,11 @@ export function injectStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getStatusQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getEmojiQueryKey() {
@@ -170,12 +161,11 @@ export function injectEmoji<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getEmojiQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getChatQueryKey(args: InferRequestType<typeof client.chat.$get>) {
@@ -218,12 +208,11 @@ export function injectChat<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getChatQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostChatRegisterMutationKey() {
@@ -264,7 +253,6 @@ export function injectPostChatRegister<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -276,7 +264,7 @@ export function injectPostChatRegister<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsChatRegisterMutationKey() {
@@ -321,7 +309,6 @@ export function injectOptionsChatRegister<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -333,7 +320,7 @@ export function injectOptionsChatRegister<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostChatMessagevisibilityMutationKey() {
@@ -378,7 +365,6 @@ export function injectPostChatMessagevisibility<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -390,7 +376,7 @@ export function injectPostChatMessagevisibility<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostChatUsersSetenabledMutationKey() {
@@ -435,7 +421,6 @@ export function injectPostChatUsersSetenabled<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -447,7 +432,7 @@ export function injectPostChatUsersSetenabled<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConfigQueryKey() {
@@ -489,12 +474,11 @@ export function injectConfig<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getConfigQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getYpQueryKey() {
@@ -536,12 +520,11 @@ export function injectYp<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getYpQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSocialplatformsQueryKey() {
@@ -591,12 +574,11 @@ export function injectSocialplatforms<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSocialplatformsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getVideoVariantsQueryKey() {
@@ -646,12 +628,11 @@ export function injectVideoVariants<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getVideoVariantsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPingQueryKey() {
@@ -693,12 +674,11 @@ export function injectPing<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getPingQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostRemotefollowMutationKey() {
@@ -739,7 +719,6 @@ export function injectPostRemotefollow<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -751,7 +730,7 @@ export function injectPostRemotefollow<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getFollowersQueryKey(args: InferRequestType<typeof client.followers.$get>) {
@@ -800,12 +779,11 @@ export function injectFollowers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getFollowersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMetricsCmcdQueryKey(args: InferRequestType<typeof client.metrics.cmcd.$get>) {
@@ -854,12 +832,11 @@ export function injectMetricsCmcd<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMetricsCmcdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostMetricsCmcdMutationKey() {
@@ -899,7 +876,6 @@ export function injectPostMetricsCmcd<TError = DefaultError, TOnMutateResult = u
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -911,7 +887,7 @@ export function injectPostMetricsCmcd<TError = DefaultError, TOnMutateResult = u
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsMetricsCmcdMutationKey() {
@@ -956,7 +932,6 @@ export function injectOptionsMetricsCmcd<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -968,7 +943,7 @@ export function injectOptionsMetricsCmcd<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostMetricsPlaybackMutationKey() {
@@ -1011,7 +986,6 @@ export function injectPostMetricsPlayback<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1023,7 +997,7 @@ export function injectPostMetricsPlayback<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostNotificationsRegisterMutationKey() {
@@ -1068,7 +1042,6 @@ export function injectPostNotificationsRegister<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1080,7 +1053,7 @@ export function injectPostNotificationsRegister<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminStatusQueryKey() {
@@ -1128,12 +1101,11 @@ export function injectAdminStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminStatusQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminStatusMutationKey() {
@@ -1178,7 +1150,6 @@ export function injectOptionsAdminStatus<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1190,7 +1161,7 @@ export function injectOptionsAdminStatus<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminDisconnectMutationKey() {
@@ -1233,7 +1204,6 @@ export function injectPostAdminDisconnect<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1245,7 +1215,7 @@ export function injectPostAdminDisconnect<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminDisconnectMutationKey() {
@@ -1292,7 +1262,6 @@ export function injectOptionsAdminDisconnect<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1304,7 +1273,7 @@ export function injectOptionsAdminDisconnect<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminServerconfigQueryKey() {
@@ -1359,12 +1328,11 @@ export function injectAdminServerconfig<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminServerconfigQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminServerconfigMutationKey() {
@@ -1411,7 +1379,6 @@ export function injectOptionsAdminServerconfig<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1423,7 +1390,7 @@ export function injectOptionsAdminServerconfig<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminViewersOverTimeQueryKey(
@@ -1483,7 +1450,6 @@ export function injectAdminViewersOverTime<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1491,7 +1457,7 @@ export function injectAdminViewersOverTime<
       ...getAdminViewersOverTimeQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminViewersOverTimeMutationKey() {
@@ -1540,7 +1506,6 @@ export function injectOptionsAdminViewersOverTime<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1552,7 +1517,7 @@ export function injectOptionsAdminViewersOverTime<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminViewersQueryKey() {
@@ -1602,12 +1567,11 @@ export function injectAdminViewers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminViewersQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminViewersMutationKey() {
@@ -1652,7 +1616,6 @@ export function injectOptionsAdminViewers<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1664,7 +1627,7 @@ export function injectOptionsAdminViewers<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminViewersPlaybackQueryKey() {
@@ -1721,12 +1684,11 @@ export function injectAdminViewersPlayback<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminViewersPlaybackQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminViewersPlaybackMutationKey() {
@@ -1775,7 +1737,6 @@ export function injectOptionsAdminViewersPlayback<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1787,7 +1748,7 @@ export function injectOptionsAdminViewersPlayback<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminHardwarestatsQueryKey() {
@@ -1842,12 +1803,11 @@ export function injectAdminHardwarestats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminHardwarestatsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminHardwarestatsMutationKey() {
@@ -1894,7 +1854,6 @@ export function injectOptionsAdminHardwarestats<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1906,7 +1865,7 @@ export function injectOptionsAdminHardwarestats<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminChatClientsQueryKey() {
@@ -1961,12 +1920,11 @@ export function injectAdminChatClients<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminChatClientsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatClientsMutationKey() {
@@ -2013,7 +1971,6 @@ export function injectOptionsAdminChatClients<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2025,7 +1982,7 @@ export function injectOptionsAdminChatClients<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminChatMessagesQueryKey() {
@@ -2080,12 +2037,11 @@ export function injectAdminChatMessages<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminChatMessagesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatMessagesMutationKey() {
@@ -2132,7 +2088,6 @@ export function injectOptionsAdminChatMessages<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2144,7 +2099,7 @@ export function injectOptionsAdminChatMessages<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminChatMessagevisibilityMutationKey() {
@@ -2194,7 +2149,6 @@ export function injectPostAdminChatMessagevisibility<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2207,7 +2161,7 @@ export function injectPostAdminChatMessagevisibility<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatMessagevisibilityMutationKey() {
@@ -2261,7 +2215,6 @@ export function injectOptionsAdminChatMessagevisibility<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2274,7 +2227,7 @@ export function injectOptionsAdminChatMessagevisibility<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminChatUsersSetenabledMutationKey() {
@@ -2324,7 +2277,6 @@ export function injectPostAdminChatUsersSetenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2337,7 +2289,7 @@ export function injectPostAdminChatUsersSetenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatUsersSetenabledMutationKey() {
@@ -2391,7 +2343,6 @@ export function injectOptionsAdminChatUsersSetenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2404,7 +2355,7 @@ export function injectOptionsAdminChatUsersSetenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminChatUsersDisabledQueryKey() {
@@ -2465,12 +2416,11 @@ export function injectAdminChatUsersDisabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminChatUsersDisabledQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatUsersDisabledMutationKey() {
@@ -2524,7 +2474,6 @@ export function injectOptionsAdminChatUsersDisabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2537,7 +2486,7 @@ export function injectOptionsAdminChatUsersDisabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminChatUsersIpbansCreateMutationKey() {
@@ -2589,7 +2538,6 @@ export function injectPostAdminChatUsersIpbansCreate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2602,7 +2550,7 @@ export function injectPostAdminChatUsersIpbansCreate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatUsersIpbansCreateMutationKey() {
@@ -2656,7 +2604,6 @@ export function injectOptionsAdminChatUsersIpbansCreate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2669,7 +2616,7 @@ export function injectOptionsAdminChatUsersIpbansCreate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminChatUsersIpbansRemoveMutationKey() {
@@ -2721,7 +2668,6 @@ export function injectPostAdminChatUsersIpbansRemove<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2734,7 +2680,7 @@ export function injectPostAdminChatUsersIpbansRemove<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatUsersIpbansRemoveMutationKey() {
@@ -2788,7 +2734,6 @@ export function injectOptionsAdminChatUsersIpbansRemove<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2801,7 +2746,7 @@ export function injectOptionsAdminChatUsersIpbansRemove<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminChatUsersIpbansQueryKey() {
@@ -2862,12 +2807,11 @@ export function injectAdminChatUsersIpbans<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminChatUsersIpbansQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatUsersIpbansMutationKey() {
@@ -2916,7 +2860,6 @@ export function injectOptionsAdminChatUsersIpbans<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2928,7 +2871,7 @@ export function injectOptionsAdminChatUsersIpbans<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminChatUsersSetmoderatorMutationKey() {
@@ -2978,7 +2921,6 @@ export function injectPostAdminChatUsersSetmoderator<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2991,7 +2933,7 @@ export function injectPostAdminChatUsersSetmoderator<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatUsersSetmoderatorMutationKey() {
@@ -3045,7 +2987,6 @@ export function injectOptionsAdminChatUsersSetmoderator<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3058,7 +2999,7 @@ export function injectOptionsAdminChatUsersSetmoderator<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminChatUsersModeratorsQueryKey() {
@@ -3121,12 +3062,11 @@ export function injectAdminChatUsersModerators<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminChatUsersModeratorsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminChatUsersModeratorsMutationKey() {
@@ -3180,7 +3120,6 @@ export function injectOptionsAdminChatUsersModerators<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3193,7 +3132,7 @@ export function injectOptionsAdminChatUsersModerators<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminUsersQueryKey(args: InferRequestType<typeof client.admin.users.$get>) {
@@ -3242,12 +3181,11 @@ export function injectAdminUsers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminUsersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminUsersMutationKey() {
@@ -3292,7 +3230,6 @@ export function injectOptionsAdminUsers<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3304,7 +3241,7 @@ export function injectOptionsAdminUsers<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminUsersDeleteMutationKey() {
@@ -3347,7 +3284,6 @@ export function injectPostAdminUsersDelete<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3359,7 +3295,7 @@ export function injectPostAdminUsersDelete<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminUsersDeleteMutationKey() {
@@ -3406,7 +3342,6 @@ export function injectOptionsAdminUsersDelete<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3418,7 +3353,7 @@ export function injectOptionsAdminUsersDelete<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminLogsQueryKey() {
@@ -3466,12 +3401,11 @@ export function injectAdminLogs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminLogsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminLogsMutationKey() {
@@ -3514,7 +3448,6 @@ export function injectOptionsAdminLogs<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3526,7 +3459,7 @@ export function injectOptionsAdminLogs<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminLogsWarningsQueryKey() {
@@ -3581,12 +3514,11 @@ export function injectAdminLogsWarnings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminLogsWarningsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminLogsWarningsMutationKey() {
@@ -3633,7 +3565,6 @@ export function injectOptionsAdminLogsWarnings<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3645,7 +3576,7 @@ export function injectOptionsAdminLogsWarnings<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminFollowersQueryKey(
@@ -3698,12 +3629,11 @@ export function injectAdminFollowers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminFollowersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFollowersMutationKey() {
@@ -3750,7 +3680,6 @@ export function injectOptionsAdminFollowers<TError = DefaultError, TOnMutateResu
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3762,7 +3691,7 @@ export function injectOptionsAdminFollowers<TError = DefaultError, TOnMutateResu
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminFollowersPendingQueryKey() {
@@ -3823,12 +3752,11 @@ export function injectAdminFollowersPending<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminFollowersPendingQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFollowersPendingMutationKey() {
@@ -3880,7 +3808,6 @@ export function injectOptionsAdminFollowersPending<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3893,7 +3820,7 @@ export function injectOptionsAdminFollowersPending<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminFollowersBlockedQueryKey() {
@@ -3954,12 +3881,11 @@ export function injectAdminFollowersBlocked<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminFollowersBlockedQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFollowersBlockedMutationKey() {
@@ -4011,7 +3937,6 @@ export function injectOptionsAdminFollowersBlocked<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4024,7 +3949,7 @@ export function injectOptionsAdminFollowersBlocked<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminFollowersDirectoryQueryKey() {
@@ -4085,12 +4010,11 @@ export function injectAdminFollowersDirectory<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminFollowersDirectoryQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFollowersDirectoryMutationKey() {
@@ -4144,7 +4068,6 @@ export function injectOptionsAdminFollowersDirectory<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4157,7 +4080,7 @@ export function injectOptionsAdminFollowersDirectory<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminFollowersApproveMutationKey() {
@@ -4202,7 +4125,6 @@ export function injectPostAdminFollowersApprove<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4214,7 +4136,7 @@ export function injectPostAdminFollowersApprove<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFollowersApproveMutationKey() {
@@ -4266,7 +4188,6 @@ export function injectOptionsAdminFollowersApprove<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4279,7 +4200,7 @@ export function injectOptionsAdminFollowersApprove<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminFollowersRemoveMutationKey() {
@@ -4324,7 +4245,6 @@ export function injectPostAdminFollowersRemove<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4336,7 +4256,7 @@ export function injectPostAdminFollowersRemove<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFollowersRemoveMutationKey() {
@@ -4385,7 +4305,6 @@ export function injectOptionsAdminFollowersRemove<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4397,7 +4316,7 @@ export function injectOptionsAdminFollowersRemove<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminEmojiUploadMutationKey() {
@@ -4440,7 +4359,6 @@ export function injectPostAdminEmojiUpload<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4452,7 +4370,7 @@ export function injectPostAdminEmojiUpload<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminEmojiUploadMutationKey() {
@@ -4499,7 +4417,6 @@ export function injectOptionsAdminEmojiUpload<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4511,7 +4428,7 @@ export function injectOptionsAdminEmojiUpload<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminEmojiDeleteMutationKey() {
@@ -4554,7 +4471,6 @@ export function injectPostAdminEmojiDelete<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4566,7 +4482,7 @@ export function injectPostAdminEmojiDelete<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminEmojiDeleteMutationKey() {
@@ -4613,7 +4529,6 @@ export function injectOptionsAdminEmojiDelete<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4625,7 +4540,7 @@ export function injectOptionsAdminEmojiDelete<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigAdminpassMutationKey() {
@@ -4670,7 +4585,6 @@ export function injectPostAdminConfigAdminpass<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4682,7 +4596,7 @@ export function injectPostAdminConfigAdminpass<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigAdminpassMutationKey() {
@@ -4731,7 +4645,6 @@ export function injectOptionsAdminConfigAdminpass<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4743,7 +4656,7 @@ export function injectOptionsAdminConfigAdminpass<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigStreamkeysMutationKey() {
@@ -4788,7 +4701,6 @@ export function injectPostAdminConfigStreamkeys<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4800,7 +4712,7 @@ export function injectPostAdminConfigStreamkeys<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigStreamkeysMutationKey() {
@@ -4852,7 +4764,6 @@ export function injectOptionsAdminConfigStreamkeys<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4865,7 +4776,7 @@ export function injectOptionsAdminConfigStreamkeys<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigPagecontentMutationKey() {
@@ -4910,7 +4821,6 @@ export function injectPostAdminConfigPagecontent<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4922,7 +4832,7 @@ export function injectPostAdminConfigPagecontent<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigPagecontentMutationKey() {
@@ -4974,7 +4884,6 @@ export function injectOptionsAdminConfigPagecontent<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -4987,7 +4896,7 @@ export function injectOptionsAdminConfigPagecontent<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigStreamtitleMutationKey() {
@@ -5032,7 +4941,6 @@ export function injectPostAdminConfigStreamtitle<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5044,7 +4952,7 @@ export function injectPostAdminConfigStreamtitle<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigStreamtitleMutationKey() {
@@ -5096,7 +5004,6 @@ export function injectOptionsAdminConfigStreamtitle<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5109,7 +5016,7 @@ export function injectOptionsAdminConfigStreamtitle<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigNameMutationKey() {
@@ -5152,7 +5059,6 @@ export function injectPostAdminConfigName<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5164,7 +5070,7 @@ export function injectPostAdminConfigName<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigNameMutationKey() {
@@ -5211,7 +5117,6 @@ export function injectOptionsAdminConfigName<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5223,7 +5128,7 @@ export function injectOptionsAdminConfigName<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigServersummaryMutationKey() {
@@ -5273,7 +5178,6 @@ export function injectPostAdminConfigServersummary<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5286,7 +5190,7 @@ export function injectPostAdminConfigServersummary<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigServersummaryMutationKey() {
@@ -5340,7 +5244,6 @@ export function injectOptionsAdminConfigServersummary<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5353,7 +5256,7 @@ export function injectOptionsAdminConfigServersummary<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigOfflinemessageMutationKey() {
@@ -5403,7 +5306,6 @@ export function injectPostAdminConfigOfflinemessage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5416,7 +5318,7 @@ export function injectPostAdminConfigOfflinemessage<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigOfflinemessageMutationKey() {
@@ -5470,7 +5372,6 @@ export function injectOptionsAdminConfigOfflinemessage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5483,7 +5384,7 @@ export function injectOptionsAdminConfigOfflinemessage<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigWelcomemessageMutationKey() {
@@ -5533,7 +5434,6 @@ export function injectPostAdminConfigWelcomemessage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5546,7 +5446,7 @@ export function injectPostAdminConfigWelcomemessage<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigWelcomemessageMutationKey() {
@@ -5600,7 +5500,6 @@ export function injectOptionsAdminConfigWelcomemessage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5613,7 +5512,7 @@ export function injectOptionsAdminConfigWelcomemessage<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigChatDisableMutationKey() {
@@ -5658,7 +5557,6 @@ export function injectPostAdminConfigChatDisable<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5670,7 +5568,7 @@ export function injectPostAdminConfigChatDisable<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigChatDisableMutationKey() {
@@ -5724,7 +5622,6 @@ export function injectOptionsAdminConfigChatDisable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5737,7 +5634,7 @@ export function injectOptionsAdminConfigChatDisable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigChatJoinmessagesenabledMutationKey() {
@@ -5791,7 +5688,6 @@ export function injectPostAdminConfigChatJoinmessagesenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5804,7 +5700,7 @@ export function injectPostAdminConfigChatJoinmessagesenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigChatJoinmessagesenabledMutationKey() {
@@ -5860,7 +5756,6 @@ export function injectOptionsAdminConfigChatJoinmessagesenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5873,7 +5768,7 @@ export function injectOptionsAdminConfigChatJoinmessagesenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigChatEstablishedusermodeMutationKey() {
@@ -5927,7 +5822,6 @@ export function injectPostAdminConfigChatEstablishedusermode<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -5940,7 +5834,7 @@ export function injectPostAdminConfigChatEstablishedusermode<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigChatEstablishedusermodeMutationKey() {
@@ -5996,7 +5890,6 @@ export function injectOptionsAdminConfigChatEstablishedusermode<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6009,7 +5902,7 @@ export function injectOptionsAdminConfigChatEstablishedusermode<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigChatForbiddenusernamesMutationKey() {
@@ -6063,7 +5956,6 @@ export function injectPostAdminConfigChatForbiddenusernames<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6076,7 +5968,7 @@ export function injectPostAdminConfigChatForbiddenusernames<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigChatForbiddenusernamesMutationKey() {
@@ -6130,7 +6022,6 @@ export function injectOptionsAdminConfigChatForbiddenusernames<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6143,7 +6034,7 @@ export function injectOptionsAdminConfigChatForbiddenusernames<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigChatSuggestedusernamesMutationKey() {
@@ -6197,7 +6088,6 @@ export function injectPostAdminConfigChatSuggestedusernames<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6210,7 +6100,7 @@ export function injectPostAdminConfigChatSuggestedusernames<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigChatSuggestedusernamesMutationKey() {
@@ -6264,7 +6154,6 @@ export function injectOptionsAdminConfigChatSuggestedusernames<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6277,7 +6166,7 @@ export function injectOptionsAdminConfigChatSuggestedusernames<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigChatSpamprotectionenabledMutationKey() {
@@ -6331,7 +6220,6 @@ export function injectPostAdminConfigChatSpamprotectionenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6344,7 +6232,7 @@ export function injectPostAdminConfigChatSpamprotectionenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigChatSpamprotectionenabledMutationKey() {
@@ -6400,7 +6288,6 @@ export function injectOptionsAdminConfigChatSpamprotectionenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6413,7 +6300,7 @@ export function injectOptionsAdminConfigChatSpamprotectionenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigChatSlurfilterenabledMutationKey() {
@@ -6467,7 +6354,6 @@ export function injectPostAdminConfigChatSlurfilterenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6480,7 +6366,7 @@ export function injectPostAdminConfigChatSlurfilterenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigChatSlurfilterenabledMutationKey() {
@@ -6534,7 +6420,6 @@ export function injectOptionsAdminConfigChatSlurfilterenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6547,7 +6432,7 @@ export function injectOptionsAdminConfigChatSlurfilterenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigChatRequireauthenticationMutationKey() {
@@ -6601,7 +6486,6 @@ export function injectPostAdminConfigChatRequireauthentication<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6614,7 +6498,7 @@ export function injectPostAdminConfigChatRequireauthentication<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigChatRequireauthenticationMutationKey() {
@@ -6670,7 +6554,6 @@ export function injectOptionsAdminConfigChatRequireauthentication<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6683,7 +6566,7 @@ export function injectOptionsAdminConfigChatRequireauthentication<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigVideoCodecMutationKey() {
@@ -6728,7 +6611,6 @@ export function injectPostAdminConfigVideoCodec<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6740,7 +6622,7 @@ export function injectPostAdminConfigVideoCodec<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigVideoCodecMutationKey() {
@@ -6792,7 +6674,6 @@ export function injectOptionsAdminConfigVideoCodec<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6805,7 +6686,7 @@ export function injectOptionsAdminConfigVideoCodec<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigVideoStreamlatencylevelMutationKey() {
@@ -6859,7 +6740,6 @@ export function injectPostAdminConfigVideoStreamlatencylevel<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6872,7 +6752,7 @@ export function injectPostAdminConfigVideoStreamlatencylevel<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigVideoStreamlatencylevelMutationKey() {
@@ -6928,7 +6808,6 @@ export function injectOptionsAdminConfigVideoStreamlatencylevel<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -6941,7 +6820,7 @@ export function injectOptionsAdminConfigVideoStreamlatencylevel<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigVideoStreamoutputvariantsMutationKey() {
@@ -6995,7 +6874,6 @@ export function injectPostAdminConfigVideoStreamoutputvariants<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7008,7 +6886,7 @@ export function injectPostAdminConfigVideoStreamoutputvariants<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigVideoStreamoutputvariantsMutationKey() {
@@ -7064,7 +6942,6 @@ export function injectOptionsAdminConfigVideoStreamoutputvariants<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7077,7 +6954,7 @@ export function injectOptionsAdminConfigVideoStreamoutputvariants<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigAppearanceMutationKey() {
@@ -7122,7 +6999,6 @@ export function injectPostAdminConfigAppearance<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7134,7 +7010,7 @@ export function injectPostAdminConfigAppearance<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigAppearanceMutationKey() {
@@ -7186,7 +7062,6 @@ export function injectOptionsAdminConfigAppearance<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7199,7 +7074,7 @@ export function injectOptionsAdminConfigAppearance<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigLogoMutationKey() {
@@ -7242,7 +7117,6 @@ export function injectPostAdminConfigLogo<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7254,7 +7128,7 @@ export function injectPostAdminConfigLogo<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigLogoMutationKey() {
@@ -7301,7 +7175,6 @@ export function injectOptionsAdminConfigLogo<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7313,7 +7186,7 @@ export function injectOptionsAdminConfigLogo<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFaviconMutationKey() {
@@ -7358,7 +7231,6 @@ export function injectPostAdminConfigFavicon<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7370,7 +7242,7 @@ export function injectPostAdminConfigFavicon<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteAdminConfigFaviconMutationKey() {
@@ -7415,7 +7287,6 @@ export function injectDeleteAdminConfigFavicon<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7427,7 +7298,7 @@ export function injectDeleteAdminConfigFavicon<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFaviconMutationKey() {
@@ -7474,7 +7345,6 @@ export function injectOptionsAdminConfigFavicon<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7486,7 +7356,7 @@ export function injectOptionsAdminConfigFavicon<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigTagsMutationKey() {
@@ -7529,7 +7399,6 @@ export function injectPostAdminConfigTags<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7541,7 +7410,7 @@ export function injectPostAdminConfigTags<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigTagsMutationKey() {
@@ -7588,7 +7457,6 @@ export function injectOptionsAdminConfigTags<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7600,7 +7468,7 @@ export function injectOptionsAdminConfigTags<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFfmpegpathMutationKey() {
@@ -7645,7 +7513,6 @@ export function injectPostAdminConfigFfmpegpath<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7657,7 +7524,7 @@ export function injectPostAdminConfigFfmpegpath<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFfmpegpathMutationKey() {
@@ -7709,7 +7576,6 @@ export function injectOptionsAdminConfigFfmpegpath<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7722,7 +7588,7 @@ export function injectOptionsAdminConfigFfmpegpath<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigWebserverportMutationKey() {
@@ -7772,7 +7638,6 @@ export function injectPostAdminConfigWebserverport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7785,7 +7650,7 @@ export function injectPostAdminConfigWebserverport<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigWebserverportMutationKey() {
@@ -7839,7 +7704,6 @@ export function injectOptionsAdminConfigWebserverport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7852,7 +7716,7 @@ export function injectOptionsAdminConfigWebserverport<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigWebserveripMutationKey() {
@@ -7897,7 +7761,6 @@ export function injectPostAdminConfigWebserverip<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7909,7 +7772,7 @@ export function injectPostAdminConfigWebserverip<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigWebserveripMutationKey() {
@@ -7961,7 +7824,6 @@ export function injectOptionsAdminConfigWebserverip<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -7974,7 +7836,7 @@ export function injectOptionsAdminConfigWebserverip<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigRtmpserverportMutationKey() {
@@ -8024,7 +7886,6 @@ export function injectPostAdminConfigRtmpserverport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8037,7 +7898,7 @@ export function injectPostAdminConfigRtmpserverport<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigRtmpserverportMutationKey() {
@@ -8091,7 +7952,6 @@ export function injectOptionsAdminConfigRtmpserverport<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8104,7 +7964,7 @@ export function injectOptionsAdminConfigRtmpserverport<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigRtmpserverbindaddressMutationKey() {
@@ -8158,7 +8018,6 @@ export function injectPostAdminConfigRtmpserverbindaddress<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8171,7 +8030,7 @@ export function injectPostAdminConfigRtmpserverbindaddress<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigRtmpserverbindaddressMutationKey() {
@@ -8225,7 +8084,6 @@ export function injectOptionsAdminConfigRtmpserverbindaddress<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8238,7 +8096,7 @@ export function injectOptionsAdminConfigRtmpserverbindaddress<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigSockethostoverrideMutationKey() {
@@ -8290,7 +8148,6 @@ export function injectPostAdminConfigSockethostoverride<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8303,7 +8160,7 @@ export function injectPostAdminConfigSockethostoverride<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigSockethostoverrideMutationKey() {
@@ -8357,7 +8214,6 @@ export function injectOptionsAdminConfigSockethostoverride<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8370,7 +8226,7 @@ export function injectOptionsAdminConfigSockethostoverride<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigVideoservingendpointMutationKey() {
@@ -8424,7 +8280,6 @@ export function injectPostAdminConfigVideoservingendpoint<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8437,7 +8292,7 @@ export function injectPostAdminConfigVideoservingendpoint<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigVideoservingendpointMutationKey() {
@@ -8491,7 +8346,6 @@ export function injectOptionsAdminConfigVideoservingendpoint<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8504,7 +8358,7 @@ export function injectOptionsAdminConfigVideoservingendpoint<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigNsfwMutationKey() {
@@ -8547,7 +8401,6 @@ export function injectPostAdminConfigNsfw<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8559,7 +8412,7 @@ export function injectPostAdminConfigNsfw<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigNsfwMutationKey() {
@@ -8606,7 +8459,6 @@ export function injectOptionsAdminConfigNsfw<TError = DefaultError, TOnMutateRes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8618,7 +8470,7 @@ export function injectOptionsAdminConfigNsfw<TError = DefaultError, TOnMutateRes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigAutoplayMutationKey() {
@@ -8663,7 +8515,6 @@ export function injectPostAdminConfigAutoplay<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8675,7 +8526,7 @@ export function injectPostAdminConfigAutoplay<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigAutoplayMutationKey() {
@@ -8724,7 +8575,6 @@ export function injectOptionsAdminConfigAutoplay<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8736,7 +8586,7 @@ export function injectOptionsAdminConfigAutoplay<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigDirectoryenabledMutationKey() {
@@ -8786,7 +8636,6 @@ export function injectPostAdminConfigDirectoryenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8799,7 +8648,7 @@ export function injectPostAdminConfigDirectoryenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigDirectoryenabledMutationKey() {
@@ -8853,7 +8702,6 @@ export function injectOptionsAdminConfigDirectoryenabled<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8866,7 +8714,7 @@ export function injectOptionsAdminConfigDirectoryenabled<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigSocialhandlesMutationKey() {
@@ -8916,7 +8764,6 @@ export function injectPostAdminConfigSocialhandles<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8929,7 +8776,7 @@ export function injectPostAdminConfigSocialhandles<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigSocialhandlesMutationKey() {
@@ -8983,7 +8830,6 @@ export function injectOptionsAdminConfigSocialhandles<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -8996,7 +8842,7 @@ export function injectOptionsAdminConfigSocialhandles<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigS3MutationKey() {
@@ -9037,7 +8883,6 @@ export function injectPostAdminConfigS3<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9049,7 +8894,7 @@ export function injectPostAdminConfigS3<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigS3MutationKey() {
@@ -9096,7 +8941,6 @@ export function injectOptionsAdminConfigS3<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9108,7 +8952,7 @@ export function injectOptionsAdminConfigS3<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigServerurlMutationKey() {
@@ -9153,7 +8997,6 @@ export function injectPostAdminConfigServerurl<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9165,7 +9008,7 @@ export function injectPostAdminConfigServerurl<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigServerurlMutationKey() {
@@ -9214,7 +9057,6 @@ export function injectOptionsAdminConfigServerurl<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9226,7 +9068,7 @@ export function injectOptionsAdminConfigServerurl<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigExternalactionsMutationKey() {
@@ -9276,7 +9118,6 @@ export function injectPostAdminConfigExternalactions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9289,7 +9130,7 @@ export function injectPostAdminConfigExternalactions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigExternalactionsMutationKey() {
@@ -9343,7 +9184,6 @@ export function injectOptionsAdminConfigExternalactions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9356,7 +9196,7 @@ export function injectOptionsAdminConfigExternalactions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigCustomstylesMutationKey() {
@@ -9401,7 +9241,6 @@ export function injectPostAdminConfigCustomstyles<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9413,7 +9252,7 @@ export function injectPostAdminConfigCustomstyles<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigCustomstylesMutationKey() {
@@ -9467,7 +9306,6 @@ export function injectOptionsAdminConfigCustomstyles<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9480,7 +9318,7 @@ export function injectOptionsAdminConfigCustomstyles<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigCustomjavascriptMutationKey() {
@@ -9530,7 +9368,6 @@ export function injectPostAdminConfigCustomjavascript<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9543,7 +9380,7 @@ export function injectPostAdminConfigCustomjavascript<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigCustomjavascriptMutationKey() {
@@ -9597,7 +9434,6 @@ export function injectOptionsAdminConfigCustomjavascript<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9610,7 +9446,7 @@ export function injectOptionsAdminConfigCustomjavascript<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigHideviewercountMutationKey() {
@@ -9660,7 +9496,6 @@ export function injectPostAdminConfigHideviewercount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9673,7 +9508,7 @@ export function injectPostAdminConfigHideviewercount<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigHideviewercountMutationKey() {
@@ -9727,7 +9562,6 @@ export function injectOptionsAdminConfigHideviewercount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9740,7 +9574,7 @@ export function injectOptionsAdminConfigHideviewercount<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigDisablesearchindexingMutationKey() {
@@ -9794,7 +9628,6 @@ export function injectPostAdminConfigDisablesearchindexing<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9807,7 +9640,7 @@ export function injectPostAdminConfigDisablesearchindexing<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigDisablesearchindexingMutationKey() {
@@ -9861,7 +9694,6 @@ export function injectOptionsAdminConfigDisablesearchindexing<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9874,7 +9706,7 @@ export function injectOptionsAdminConfigDisablesearchindexing<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFederationEnableMutationKey() {
@@ -9926,7 +9758,6 @@ export function injectPostAdminConfigFederationEnable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -9939,7 +9770,7 @@ export function injectPostAdminConfigFederationEnable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFederationEnableMutationKey() {
@@ -9993,7 +9824,6 @@ export function injectOptionsAdminConfigFederationEnable<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10006,7 +9836,7 @@ export function injectOptionsAdminConfigFederationEnable<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFederationPrivateMutationKey() {
@@ -10058,7 +9888,6 @@ export function injectPostAdminConfigFederationPrivate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10071,7 +9900,7 @@ export function injectPostAdminConfigFederationPrivate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFederationPrivateMutationKey() {
@@ -10125,7 +9954,6 @@ export function injectOptionsAdminConfigFederationPrivate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10138,7 +9966,7 @@ export function injectOptionsAdminConfigFederationPrivate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFederationShowengagementMutationKey() {
@@ -10192,7 +10020,6 @@ export function injectPostAdminConfigFederationShowengagement<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10205,7 +10032,7 @@ export function injectPostAdminConfigFederationShowengagement<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFederationShowengagementMutationKey() {
@@ -10261,7 +10088,6 @@ export function injectOptionsAdminConfigFederationShowengagement<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10274,7 +10100,7 @@ export function injectOptionsAdminConfigFederationShowengagement<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFederationEnablequotesMutationKey() {
@@ -10328,7 +10154,6 @@ export function injectPostAdminConfigFederationEnablequotes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10341,7 +10166,7 @@ export function injectPostAdminConfigFederationEnablequotes<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFederationEnablequotesMutationKey() {
@@ -10395,7 +10220,6 @@ export function injectOptionsAdminConfigFederationEnablequotes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10408,7 +10232,7 @@ export function injectOptionsAdminConfigFederationEnablequotes<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFederationHidefollowersMutationKey() {
@@ -10462,7 +10286,6 @@ export function injectPostAdminConfigFederationHidefollowers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10475,7 +10298,7 @@ export function injectPostAdminConfigFederationHidefollowers<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFederationHidefollowersMutationKey() {
@@ -10531,7 +10354,6 @@ export function injectOptionsAdminConfigFederationHidefollowers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10544,7 +10366,7 @@ export function injectOptionsAdminConfigFederationHidefollowers<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFederationUsernameMutationKey() {
@@ -10596,7 +10418,6 @@ export function injectPostAdminConfigFederationUsername<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10609,7 +10430,7 @@ export function injectPostAdminConfigFederationUsername<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFederationUsernameMutationKey() {
@@ -10663,7 +10484,6 @@ export function injectOptionsAdminConfigFederationUsername<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10676,7 +10496,7 @@ export function injectOptionsAdminConfigFederationUsername<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFederationLivemessageMutationKey() {
@@ -10730,7 +10550,6 @@ export function injectPostAdminConfigFederationLivemessage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10743,7 +10562,7 @@ export function injectPostAdminConfigFederationLivemessage<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFederationLivemessageMutationKey() {
@@ -10797,7 +10616,6 @@ export function injectOptionsAdminConfigFederationLivemessage<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10810,7 +10628,7 @@ export function injectOptionsAdminConfigFederationLivemessage<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigFederationBlockdomainsMutationKey() {
@@ -10864,7 +10682,6 @@ export function injectPostAdminConfigFederationBlockdomains<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10877,7 +10694,7 @@ export function injectPostAdminConfigFederationBlockdomains<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigFederationBlockdomainsMutationKey() {
@@ -10931,7 +10748,6 @@ export function injectOptionsAdminConfigFederationBlockdomains<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -10944,7 +10760,7 @@ export function injectOptionsAdminConfigFederationBlockdomains<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getFederationServersQueryKey() {
@@ -10999,12 +10815,11 @@ export function injectFederationServers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getFederationServersQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getAdminFederationServersQueryKey() {
@@ -11065,12 +10880,11 @@ export function injectAdminFederationServers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminFederationServersQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminFederationServersMutationKey() {
@@ -11115,7 +10929,6 @@ export function injectPostAdminFederationServers<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11127,7 +10940,7 @@ export function injectPostAdminFederationServers<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFederationServersMutationKey() {
@@ -11179,7 +10992,6 @@ export function injectOptionsAdminFederationServers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11192,7 +11004,7 @@ export function injectOptionsAdminFederationServers<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteAdminFederationServersIdMutationKey() {
@@ -11246,7 +11058,6 @@ export function injectDeleteAdminFederationServersId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11259,7 +11070,7 @@ export function injectDeleteAdminFederationServersId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFederationServersIdMutationKey() {
@@ -11315,7 +11126,6 @@ export function injectOptionsAdminFederationServersId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11328,7 +11138,7 @@ export function injectOptionsAdminFederationServersId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutAdminFederationServersIdReorderMutationKey() {
@@ -11384,7 +11194,6 @@ export function injectPutAdminFederationServersIdReorder<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11397,7 +11206,7 @@ export function injectPutAdminFederationServersIdReorder<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFederationServersIdReorderMutationKey() {
@@ -11459,7 +11268,6 @@ export function injectOptionsAdminFederationServersIdReorder<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11472,7 +11280,7 @@ export function injectOptionsAdminFederationServersIdReorder<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminFederationFeatureRequestsQueryKey() {
@@ -11541,7 +11349,6 @@ export function injectAdminFederationFeatureRequests<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -11549,7 +11356,7 @@ export function injectAdminFederationFeatureRequests<
       ...getAdminFederationFeatureRequestsQueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigNotificationsDiscordMutationKey() {
@@ -11603,7 +11410,6 @@ export function injectPostAdminConfigNotificationsDiscord<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11616,7 +11422,7 @@ export function injectPostAdminConfigNotificationsDiscord<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigNotificationsDiscordMutationKey() {
@@ -11670,7 +11476,6 @@ export function injectOptionsAdminConfigNotificationsDiscord<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11683,7 +11488,7 @@ export function injectOptionsAdminConfigNotificationsDiscord<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminConfigNotificationsBrowserMutationKey() {
@@ -11737,7 +11542,6 @@ export function injectPostAdminConfigNotificationsBrowser<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11750,7 +11554,7 @@ export function injectPostAdminConfigNotificationsBrowser<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminConfigNotificationsBrowserMutationKey() {
@@ -11804,7 +11608,6 @@ export function injectOptionsAdminConfigNotificationsBrowser<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11817,7 +11620,7 @@ export function injectOptionsAdminConfigNotificationsBrowser<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminWebhooksQueryKey() {
@@ -11867,12 +11670,11 @@ export function injectAdminWebhooks<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminWebhooksQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminWebhooksMutationKey() {
@@ -11917,7 +11719,6 @@ export function injectOptionsAdminWebhooks<TError = DefaultError, TOnMutateResul
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11929,7 +11730,7 @@ export function injectOptionsAdminWebhooks<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminWebhooksDeleteMutationKey() {
@@ -11974,7 +11775,6 @@ export function injectPostAdminWebhooksDelete<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -11986,7 +11786,7 @@ export function injectPostAdminWebhooksDelete<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminWebhooksDeleteMutationKey() {
@@ -12035,7 +11835,6 @@ export function injectOptionsAdminWebhooksDelete<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12047,7 +11846,7 @@ export function injectOptionsAdminWebhooksDelete<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminWebhooksCreateMutationKey() {
@@ -12092,7 +11891,6 @@ export function injectPostAdminWebhooksCreate<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12104,7 +11902,7 @@ export function injectPostAdminWebhooksCreate<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminWebhooksCreateMutationKey() {
@@ -12153,7 +11951,6 @@ export function injectOptionsAdminWebhooksCreate<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12165,7 +11962,7 @@ export function injectOptionsAdminWebhooksCreate<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminAccesstokensQueryKey() {
@@ -12220,12 +12017,11 @@ export function injectAdminAccesstokens<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminAccesstokensQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminAccesstokensMutationKey() {
@@ -12272,7 +12068,6 @@ export function injectOptionsAdminAccesstokens<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12284,7 +12079,7 @@ export function injectOptionsAdminAccesstokens<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminAccesstokensDeleteMutationKey() {
@@ -12329,7 +12124,6 @@ export function injectPostAdminAccesstokensDelete<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12341,7 +12135,7 @@ export function injectPostAdminAccesstokensDelete<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminAccesstokensDeleteMutationKey() {
@@ -12395,7 +12189,6 @@ export function injectOptionsAdminAccesstokensDelete<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12408,7 +12201,7 @@ export function injectOptionsAdminAccesstokensDelete<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminAccesstokensCreateMutationKey() {
@@ -12453,7 +12246,6 @@ export function injectPostAdminAccesstokensCreate<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12465,7 +12257,7 @@ export function injectPostAdminAccesstokensCreate<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminAccesstokensCreateMutationKey() {
@@ -12519,7 +12311,6 @@ export function injectOptionsAdminAccesstokensCreate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12532,7 +12323,7 @@ export function injectOptionsAdminAccesstokensCreate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminYpResetMutationKey() {
@@ -12573,7 +12364,6 @@ export function injectPostAdminYpReset<TError = DefaultError, TOnMutateResult = 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12585,7 +12375,7 @@ export function injectPostAdminYpReset<TError = DefaultError, TOnMutateResult = 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminYpResetMutationKey() {
@@ -12630,7 +12420,6 @@ export function injectOptionsAdminYpReset<TError = DefaultError, TOnMutateResult
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12642,7 +12431,7 @@ export function injectOptionsAdminYpReset<TError = DefaultError, TOnMutateResult
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminMetricsVideoQueryKey() {
@@ -12697,12 +12486,11 @@ export function injectAdminMetricsVideo<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getAdminMetricsVideoQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminMetricsVideoMutationKey() {
@@ -12749,7 +12537,6 @@ export function injectOptionsAdminMetricsVideo<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12761,7 +12548,7 @@ export function injectOptionsAdminMetricsVideo<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAdminFederationSendMutationKey() {
@@ -12806,7 +12593,6 @@ export function injectPostAdminFederationSend<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12818,7 +12604,7 @@ export function injectPostAdminFederationSend<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFederationSendMutationKey() {
@@ -12867,7 +12653,6 @@ export function injectOptionsAdminFederationSend<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -12879,7 +12664,7 @@ export function injectOptionsAdminFederationSend<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAdminFederationActionsQueryKey(
@@ -12946,7 +12731,6 @@ export function injectAdminFederationActions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -12954,7 +12738,7 @@ export function injectAdminFederationActions<
       ...getAdminFederationActionsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsAdminFederationActionsMutationKey() {
@@ -13006,7 +12790,6 @@ export function injectOptionsAdminFederationActions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13019,7 +12802,7 @@ export function injectOptionsAdminFederationActions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIntegrationsChatSystemMutationKey() {
@@ -13064,7 +12847,6 @@ export function injectPostIntegrationsChatSystem<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13076,7 +12858,7 @@ export function injectPostIntegrationsChatSystem<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsChatSystemMutationKey() {
@@ -13128,7 +12910,6 @@ export function injectOptionsIntegrationsChatSystem<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13141,7 +12922,7 @@ export function injectOptionsIntegrationsChatSystem<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIntegrationsChatSystemClientClientIdMutationKey() {
@@ -13197,7 +12978,6 @@ export function injectPostIntegrationsChatSystemClientClientId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13210,7 +12990,7 @@ export function injectPostIntegrationsChatSystemClientClientId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsChatSystemClientClientIdMutationKey() {
@@ -13276,7 +13056,6 @@ export function injectOptionsIntegrationsChatSystemClientClientId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13289,7 +13068,7 @@ export function injectOptionsIntegrationsChatSystemClientClientId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIntegrationsChatUserMutationKey() {
@@ -13334,7 +13113,6 @@ export function injectPostIntegrationsChatUser<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13346,7 +13124,7 @@ export function injectPostIntegrationsChatUser<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsChatUserMutationKey() {
@@ -13395,7 +13173,6 @@ export function injectOptionsIntegrationsChatUser<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13407,7 +13184,7 @@ export function injectOptionsIntegrationsChatUser<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIntegrationsChatSendMutationKey() {
@@ -13452,7 +13229,6 @@ export function injectPostIntegrationsChatSend<TError = DefaultError, TOnMutateR
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13464,7 +13240,7 @@ export function injectPostIntegrationsChatSend<TError = DefaultError, TOnMutateR
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsChatSendMutationKey() {
@@ -13513,7 +13289,6 @@ export function injectOptionsIntegrationsChatSend<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13525,7 +13300,7 @@ export function injectOptionsIntegrationsChatSend<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIntegrationsChatActionMutationKey() {
@@ -13570,7 +13345,6 @@ export function injectPostIntegrationsChatAction<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13582,7 +13356,7 @@ export function injectPostIntegrationsChatAction<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsChatActionMutationKey() {
@@ -13634,7 +13408,6 @@ export function injectOptionsIntegrationsChatAction<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13647,7 +13420,7 @@ export function injectOptionsIntegrationsChatAction<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostIntegrationsChatMessagevisibilityMutationKey() {
@@ -13701,7 +13474,6 @@ export function injectPostIntegrationsChatMessagevisibility<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13714,7 +13486,7 @@ export function injectPostIntegrationsChatMessagevisibility<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsChatMessagevisibilityMutationKey() {
@@ -13768,7 +13540,6 @@ export function injectOptionsIntegrationsChatMessagevisibility<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13781,7 +13552,7 @@ export function injectOptionsIntegrationsChatMessagevisibility<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIntegrationsStatusQueryKey() {
@@ -13836,12 +13607,11 @@ export function injectIntegrationsStatus<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIntegrationsStatusQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostIntegrationsStreamtitleMutationKey() {
@@ -13886,7 +13656,6 @@ export function injectPostIntegrationsStreamtitle<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13898,7 +13667,7 @@ export function injectPostIntegrationsStreamtitle<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsStreamtitleMutationKey() {
@@ -13950,7 +13719,6 @@ export function injectOptionsIntegrationsStreamtitle<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -13963,7 +13731,7 @@ export function injectOptionsIntegrationsStreamtitle<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIntegrationsChatQueryKey() {
@@ -14018,12 +13786,11 @@ export function injectIntegrationsChat<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIntegrationsChatQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsChatMutationKey() {
@@ -14070,7 +13837,6 @@ export function injectOptionsIntegrationsChat<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14082,7 +13848,7 @@ export function injectOptionsIntegrationsChat<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIntegrationsClientsQueryKey() {
@@ -14137,12 +13903,11 @@ export function injectIntegrationsClients<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getIntegrationsClientsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getOptionsIntegrationsClientsMutationKey() {
@@ -14189,7 +13954,6 @@ export function injectOptionsIntegrationsClients<TError = DefaultError, TOnMutat
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14201,7 +13965,7 @@ export function injectOptionsIntegrationsClients<TError = DefaultError, TOnMutat
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getIntegrationsModerationChatUserUserIdQueryKey(
@@ -14280,7 +14044,6 @@ export function injectIntegrationsModerationChatUserUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14288,7 +14051,7 @@ export function injectIntegrationsModerationChatUserUserId<
       ...getIntegrationsModerationChatUserUserIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getModerationChatUserUserIdQueryKey(
@@ -14363,7 +14126,6 @@ export function injectModerationChatUserUserId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14371,7 +14133,7 @@ export function injectModerationChatUserUserId<
       ...getModerationChatUserUserIdQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAuthIndieauthMutationKey() {
@@ -14412,7 +14174,6 @@ export function injectPostAuthIndieauth<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14424,7 +14185,7 @@ export function injectPostAuthIndieauth<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAuthIndieauthCallbackQueryKey(
@@ -14491,7 +14252,6 @@ export function injectAuthIndieauthCallback<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14499,7 +14259,7 @@ export function injectAuthIndieauthCallback<
       ...getAuthIndieauthCallbackQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAuthProviderIndieauthQueryKey(
@@ -14566,7 +14326,6 @@ export function injectAuthProviderIndieauth<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -14574,7 +14333,7 @@ export function injectAuthProviderIndieauth<
       ...getAuthProviderIndieauthQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAuthProviderIndieauthMutationKey() {
@@ -14619,7 +14378,6 @@ export function injectPostAuthProviderIndieauth<TError = DefaultError, TOnMutate
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14631,7 +14389,7 @@ export function injectPostAuthProviderIndieauth<TError = DefaultError, TOnMutate
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAuthFediverseMutationKey() {
@@ -14672,7 +14430,6 @@ export function injectPostAuthFediverse<TError = DefaultError, TOnMutateResult =
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14684,7 +14441,7 @@ export function injectPostAuthFediverse<TError = DefaultError, TOnMutateResult =
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAuthFediverseVerifyMutationKey() {
@@ -14729,7 +14486,6 @@ export function injectPostAuthFediverseVerify<TError = DefaultError, TOnMutateRe
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -14741,5 +14497,5 @@ export function injectPostAuthFediverseVerify<TError = DefaultError, TOnMutateRe
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }

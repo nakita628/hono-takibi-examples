@@ -146635,6 +146635,12 @@ The API accepts the same parameters and request body as the synchronous query AP
 |» » column_metadata|body|object|false|When enabled, column metadata is added to the query response as additional `_meta` properties.<br>Currently, only `_meta.bucket` is added for columns corresponding to the `BUCKET` function, containing the bucket interval and unit for queries where it can be determined.|
 |» » » *oneOf*|body|boolean|false|none|
 |» » » *oneOf*|body|string|false|none|
+|» » unmapped_fields|body|object|false|Determines how fields that are present in documents but not defined in the index mapping are treated.<br>This is the request body equivalent of `SET unmapped_fields`, which is available in earlier versions.<br>The values are case-insensitive.|
+|» » wildcards_match_views|body|boolean|false|Whether a wildcard in `FROM` also matches views.<br>When `false`, a wildcard does not match a view, and a view is reached by its exact name.<br>Other abstractions that a wildcard matches are unaffected.|
+|» » wildcards_match_datasets|body|boolean|false|Whether a wildcard in `FROM` also matches datasets.<br>When `false`, a wildcard does not match a dataset, and a dataset is reached by its exact name.<br>Other abstractions that a wildcard matches are unaffected.|
+|» » exemplars|body|object|false|When enabled, a `TS ... \| STATS` or `PROMQL` query is not executed. Instead, exemplars considered relevant to the query are returned.<br>It can be a boolean that toggles exemplars with default settings, or a map that enables them with custom settings.|
+|» » » *oneOf*|body|boolean|false|none|
+|» » » *oneOf*|body|[esql._types.EsqlExemplarsSettings](#schemaesql._types.esqlexemplarssettings)|false|none|
 
 #### Enumerated Values
 
@@ -148349,6 +148355,12 @@ Get search results for an ES|QL (Elasticsearch query language) query.
 |» » column_metadata|body|object|false|When enabled, column metadata is added to the query response as additional `_meta` properties.<br>Currently, only `_meta.bucket` is added for columns corresponding to the `BUCKET` function, containing the bucket interval and unit for queries where it can be determined.|
 |» » » *oneOf*|body|boolean|false|none|
 |» » » *oneOf*|body|string|false|none|
+|» » unmapped_fields|body|object|false|Determines how fields that are present in documents but not defined in the index mapping are treated.<br>This is the request body equivalent of `SET unmapped_fields`, which is available in earlier versions.<br>The values are case-insensitive.|
+|» » wildcards_match_views|body|boolean|false|Whether a wildcard in `FROM` also matches views.<br>When `false`, a wildcard does not match a view, and a view is reached by its exact name.<br>Other abstractions that a wildcard matches are unaffected.|
+|» » wildcards_match_datasets|body|boolean|false|Whether a wildcard in `FROM` also matches datasets.<br>When `false`, a wildcard does not match a dataset, and a dataset is reached by its exact name.<br>Other abstractions that a wildcard matches are unaffected.|
+|» » exemplars|body|object|false|When enabled, a `TS ... \| STATS` or `PROMQL` query is not executed. Instead, exemplars considered relevant to the query are returned.<br>It can be a boolean that toggles exemplars with default settings, or a map that enables them with custom settings.|
+|» » » *oneOf*|body|boolean|false|none|
+|» » » *oneOf*|body|[esql._types.EsqlExemplarsSettings](#schemaesql._types.esqlexemplarssettings)|false|none|
 
 #### Enumerated Values
 
@@ -364154,14 +364166,20 @@ Exactly one of `value`, `identifier`, or `pattern` must be set.
 {
   "time_zone": "string",
   "approximation": {},
-  "column_metadata": false
+  "column_metadata": false,
+  "unmapped_fields": "DEFAULT",
+  "wildcards_match_views": false,
+  "wildcards_match_datasets": false,
+  "exemplars": {}
 }
 ```
 
 Per-query settings supplied through the request body.
-This is the request-body equivalent of the in-query `SET` command.
+This is the request-body equivalent of the in-query `SET` command, and each key is the name of the `SET` setting.
+A `SET` in the query overrides the same setting here, which overrides the cluster-wide default (`esql.query.settings.<setting_name>`) for that setting, if one is configured.
+A setting with a map value can combine the values from several places instead of replacing them.
 Only settings that are exposed as request-body parameters can be set here; other `SET`-only
-settings (such as `unmapped_fields`) must be supplied in the query itself.
+settings (such as `time_series_reduce_per_index`) must be supplied in the query itself.
 
 ### Properties
 
@@ -364170,6 +364188,10 @@ settings (such as `unmapped_fields`) must be supplied in the query itself.
 |time_zone|string|false|none|The default timezone to be used in the query.<br>It defaults to UTC and overrides the `time_zone` request parameter.|
 |approximation|object|false|none|Enables query approximation if possible for the query.<br>`false` (the default) disables query approximation and `true` enables it with default settings.<br>A map value enables query approximation with custom settings.|
 |column_metadata|object|false|none|When enabled, column metadata is added to the query response as additional `_meta` properties.<br>Currently, only `_meta.bucket` is added for columns corresponding to the `BUCKET` function, containing the bucket interval and unit for queries where it can be determined.|
+|unmapped_fields|object|false|none|Determines how fields that are present in documents but not defined in the index mapping are treated.<br>This is the request body equivalent of `SET unmapped_fields`, which is available in earlier versions.<br>The values are case-insensitive.|
+|wildcards_match_views|boolean|false|none|Whether a wildcard in `FROM` also matches views.<br>When `false`, a wildcard does not match a view, and a view is reached by its exact name.<br>Other abstractions that a wildcard matches are unaffected.|
+|wildcards_match_datasets|boolean|false|none|Whether a wildcard in `FROM` also matches datasets.<br>When `false`, a wildcard does not match a dataset, and a dataset is reached by its exact name.<br>Other abstractions that a wildcard matches are unaffected.|
+|exemplars|object|false|none|When enabled, a `TS ... \| STATS` or `PROMQL` query is not executed. Instead, exemplars considered relevant to the query are returned.<br>It can be a boolean that toggles exemplars with default settings, or a map that enables them with custom settings.|
 
 <h2 id="tocS_esql._types.EsqlApproximation">esql._types.EsqlApproximation</h2>
 <!-- backwards compatibility -->
@@ -364212,6 +364234,59 @@ It can be a boolean that toggles query approximation with default settings, or a
 |---|---|---|---|---|
 |rows|number|false|none|The number of sampled rows used for approximating the query.<br>It must be at least 10,000. A null value uses the system default.|
 |confidence_level|number|false|none|The confidence level of the computed confidence intervals.<br>A null value disables computing confidence intervals.|
+
+<h2 id="tocS_esql._types.EsqlUnmappedFields">esql._types.EsqlUnmappedFields</h2>
+<!-- backwards compatibility -->
+<a id="schemaesql._types.esqlunmappedfields"></a>
+<a id="schema_esql._types.EsqlUnmappedFields"></a>
+<a id="tocSesql._types.esqlunmappedfields"></a>
+<a id="tocsesql._types.esqlunmappedfields"></a>
+
+```json
+"DEFAULT"
+```
+
+<h2 id="tocS_esql._types.EsqlExemplars">esql._types.EsqlExemplars</h2>
+<!-- backwards compatibility -->
+<a id="schemaesql._types.esqlexemplars"></a>
+<a id="schema_esql._types.EsqlExemplars"></a>
+<a id="tocSesql._types.esqlexemplars"></a>
+<a id="tocsesql._types.esqlexemplars"></a>
+
+```json
+true
+```
+
+The `exemplars` query setting.
+It can be a boolean that toggles exemplars with default settings, or a map that enables them with custom settings.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|boolean|false|none|none|
+|*oneOf*|[esql._types.EsqlExemplarsSettings](#schemaesql._types.esqlexemplarssettings)|false|none|none|
+
+<h2 id="tocS_esql._types.EsqlExemplarsSettings">esql._types.EsqlExemplarsSettings</h2>
+<!-- backwards compatibility -->
+<a id="schemaesql._types.esqlexemplarssettings"></a>
+<a id="schema_esql._types.EsqlExemplarsSettings"></a>
+<a id="tocSesql._types.esqlexemplarssettings"></a>
+<a id="tocsesql._types.esqlexemplarssettings"></a>
+
+```json
+{
+  "limit": 0,
+  "include_timeseries": false
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|limit|number|false|none|The maximum number of exemplars to return.<br>Without it, the default limit of a regular query applies.|
+|include_timeseries|boolean|false|none|When enabled, a `_timeseries` column is returned, holding the dimensions that identify the series each exemplar belongs to.|
 
 <h2 id="tocS_esql._types.AsyncEsqlResult">esql._types.AsyncEsqlResult</h2>
 <!-- backwards compatibility -->

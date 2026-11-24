@@ -9,6 +9,11 @@
         "etag": "W/\"4512a3f4edd33dd302f1529dc69ddcf960568451f952fbee0e45629f70561871\"",
         "sha256": "142f9f4811020dfbb260d2546e14c4b537ac1cdadb12a2e0fb68a1e15fb4a206"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.6",
+      "date": "2026-11-24",
+      "error": "Missing $ref pointer \"#/components/responses/403\". Token \"403\" does not exist."
     }
   }
 }

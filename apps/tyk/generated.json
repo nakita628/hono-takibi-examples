@@ -1,7 +1,7 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "4baf24607a3e2f95b35a0bc9a23a140a4e7f20205b7b38e631a8471629231ded",
     "sources": {
@@ -11,14 +11,15 @@
       },
       "https://raw.githubusercontent.com/TykTechnologies/tyk/refs/heads/master/apidef/oas/schema/3.0.json": {
         "etag": "W/\"2423c815765a7b129ed71cfcdf51798e6c24309f161e7a23e601ebecce3999c9\"",
-        "sha256": "7a0db7311a69d8b7f2505f59c5d4cbb58539a0961df0c05724a07538014822cf"
+        "sha256": "7a0db7311a69d8b7f2505f59c5d4cbb58539a0961df0c05724a07538014822cf",
+        "canonical": "307f56e54c13daea31bdfc56938a9ffc0c1d9b1d90891c63300dc94e433b89c3"
       }
     },
     "typecheck": {
       "errors": 1,
       "where": "`routes.ts`",
       "codes": "TS2375 ×1",
-      "issue": "`CallbackSchema` is a lazy `z.looseObject({})` with `superRefine` (an object with only `patternProperties`), whose output `{ [x: string]: unknown }` does not satisfy its annotation `z.ZodType<CallbackType>` (not filed yet), [#527](https://github.com/nakita628/hono-takibi/issues/527) (closed; still seen)"
+      "issue": "`CallbackSchema` (patternProperties + `additionalProperties: PathItem` in a cycle) is a lazy `z.looseObject({})` whose output does not satisfy its annotation `z.ZodType<CallbackType>` ([#629](https://github.com/nakita628/hono-takibi/issues/629))"
     }
   }
 }

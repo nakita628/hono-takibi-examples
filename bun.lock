@@ -395,6 +395,36 @@
         "typescript": "catalog:",
       },
     },
+    "apps/apache-polaris-management": {
+      "name": "@apps/apache-polaris-management",
+      "dependencies": {
+        "@angular/common": "catalog:",
+        "@angular/core": "catalog:",
+        "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query": "catalog:",
+        "@tanstack/preact-query": "catalog:",
+        "@tanstack/react-query": "catalog:",
+        "@tanstack/solid-query": "catalog:",
+        "@tanstack/svelte-query": "catalog:",
+        "@tanstack/vue-query": "catalog:",
+        "hono": "catalog:",
+        "preact": "catalog:",
+        "react": "catalog:",
+        "rxjs": "catalog:",
+        "solid-js": "catalog:",
+        "svelte": "catalog:",
+        "swr": "catalog:",
+        "vue": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/apideck": {
       "name": "@apps/apideck",
       "dependencies": {
@@ -461,6 +491,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/angular-query-experimental": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
@@ -2141,7 +2172,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -2231,7 +2262,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -2562,6 +2593,36 @@
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
         "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/preact-query": "catalog:",
+        "@tanstack/react-query": "catalog:",
+        "@tanstack/solid-query": "catalog:",
+        "@tanstack/svelte-query": "catalog:",
+        "@tanstack/vue-query": "catalog:",
+        "hono": "catalog:",
+        "preact": "catalog:",
+        "react": "catalog:",
+        "rxjs": "catalog:",
+        "solid-js": "catalog:",
+        "svelte": "catalog:",
+        "swr": "catalog:",
+        "vue": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
+    "apps/ga4gh-drs": {
+      "name": "@apps/ga4gh-drs",
+      "dependencies": {
+        "@angular/common": "catalog:",
+        "@angular/core": "catalog:",
+        "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -3251,7 +3312,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -3431,7 +3492,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -3461,7 +3522,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -4661,6 +4722,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/angular-query-experimental": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
@@ -5615,6 +5677,36 @@
         "typescript": "catalog:",
       },
     },
+    "apps/open-banking-uk-pisp": {
+      "name": "@apps/open-banking-uk-pisp",
+      "dependencies": {
+        "@angular/common": "catalog:",
+        "@angular/core": "catalog:",
+        "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query": "catalog:",
+        "@tanstack/preact-query": "catalog:",
+        "@tanstack/react-query": "catalog:",
+        "@tanstack/solid-query": "catalog:",
+        "@tanstack/svelte-query": "catalog:",
+        "@tanstack/vue-query": "catalog:",
+        "hono": "catalog:",
+        "preact": "catalog:",
+        "react": "catalog:",
+        "rxjs": "catalog:",
+        "solid-js": "catalog:",
+        "svelte": "catalog:",
+        "swr": "catalog:",
+        "vue": "catalog:",
+        "zod": "catalog:",
+      },
+      "devDependencies": {
+        "@packages/tsconfig": "workspace:*",
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "hono-takibi": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "apps/openai": {
       "name": "@apps/openai",
       "dependencies": {
@@ -5831,7 +5923,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -6071,7 +6163,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -6341,7 +6433,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -6791,6 +6883,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/angular-query-experimental": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
@@ -7901,7 +7994,7 @@
         "@angular/common": "catalog:",
         "@angular/core": "catalog:",
         "@hono/zod-openapi": "catalog:",
-        "@tanstack/angular-query-experimental": "catalog:",
+        "@tanstack/angular-query": "catalog:",
         "@tanstack/preact-query": "catalog:",
         "@tanstack/react-query": "catalog:",
         "@tanstack/solid-query": "catalog:",
@@ -8507,6 +8600,7 @@
     "@angular/common": "^22.3.0",
     "@angular/core": "^22.3.0",
     "@hono/zod-openapi": "^1.6.3",
+    "@tanstack/angular-query": "^5.108.4",
     "@tanstack/angular-query-experimental": "^5.107.2",
     "@tanstack/preact-query": "^5.108.2",
     "@tanstack/react-query": "^5.108.2",
@@ -8516,7 +8610,7 @@
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "hono": "^4.13.13",
-    "hono-takibi": "^0.33.7",
+    "hono-takibi": "^0.35.6",
     "preact": "^11.2.0",
     "react": "^19.3.1",
     "rxjs": "^7.8.2",
@@ -8565,6 +8659,8 @@
     "@apps/alpaca-trading": ["@apps/alpaca-trading@workspace:apps/alpaca-trading"],
 
     "@apps/amadeus": ["@apps/amadeus@workspace:apps/amadeus"],
+
+    "@apps/apache-polaris-management": ["@apps/apache-polaris-management@workspace:apps/apache-polaris-management"],
 
     "@apps/apideck": ["@apps/apideck@workspace:apps/apideck"],
 
@@ -8711,6 +8807,8 @@
     "@apps/frigate": ["@apps/frigate@workspace:apps/frigate"],
 
     "@apps/fusionauth": ["@apps/fusionauth@workspace:apps/fusionauth"],
+
+    "@apps/ga4gh-drs": ["@apps/ga4gh-drs@workspace:apps/ga4gh-drs"],
 
     "@apps/getbible": ["@apps/getbible@workspace:apps/getbible"],
 
@@ -8913,6 +9011,8 @@
     "@apps/onepassword-connect": ["@apps/onepassword-connect@workspace:apps/onepassword-connect"],
 
     "@apps/open-banking-uk-aisp": ["@apps/open-banking-uk-aisp@workspace:apps/open-banking-uk-aisp"],
+
+    "@apps/open-banking-uk-pisp": ["@apps/open-banking-uk-pisp@workspace:apps/open-banking-uk-pisp"],
 
     "@apps/openai": ["@apps/openai@workspace:apps/openai"],
 
@@ -9274,6 +9374,8 @@
 
     "@swc/helpers": ["@swc/helpers@0.5.24", "", {}, "sha512-6tcXo4kA8HgGO7AVmawB57RYi/piBPYVHVcO6dXjX+SZw8GoHmi262sp4v2Ha2kNP9Cx84qei27yT+fjS1lxgg=="],
 
+    "@tanstack/angular-query": ["@tanstack/angular-query@5.108.4", "", { "dependencies": { "@tanstack/query-core": "5.108.4" }, "peerDependencies": { "@angular-devkit/schematics": ">=20.1.0", "@angular/common": ">=20.1.0", "@angular/core": ">=20.1.0", "@schematics/angular": ">=20.1.0", "typescript": "^5.8.0 || ^6.0.0" }, "optionalPeers": ["@angular-devkit/schematics", "@schematics/angular", "typescript"] }, "sha512-jfBsHUqoBlCaKt9ohO8oPy1ScN4knfpgO5Qfc1FlHKnrzwY+zdohss8l6Qg/T/DVPntfO9GEeNqDiLZIZ5dROw=="],
+
     "@tanstack/angular-query-experimental": ["@tanstack/angular-query-experimental@5.107.2", "", { "dependencies": { "@tanstack/query-core": "5.107.2" }, "optionalDependencies": { "@tanstack/query-devtools": "5.107.2" }, "peerDependencies": { "@angular/common": ">=16.0.0", "@angular/core": ">=16.0.0" } }, "sha512-UHVoFnilJypC2DVy8tGm6tmSDqpNcsOpjVzE5RkyehlHZ0YmXo2CiqNjXUbxs8HNOIzVE+GbIT14cGFIbUdP0Q=="],
 
     "@tanstack/match-sorter-utils": ["@tanstack/match-sorter-utils@9.2.6", "", { "dependencies": { "remove-accents": "0.5.0" } }, "sha512-DIpUSOhPfQ7u/qfUi/Wgm0wBO56MyBYXGvnlI0NcauDRPqdBUlAZZjW2Dxm92m+k1UWVhKw8YJ4f47+75Aujyw=="],
@@ -9446,7 +9548,7 @@
 
     "hono": ["hono@4.13.14", "", {}, "sha512-yhRLQ21U6qa9Hsu2N7Qcbh8tE+WKEcoErjIo56LeSGiGXGp9sA7UpE86Ui9uexb61KakiGwuHMn2QdV7w6i6kQ=="],
 
-    "hono-takibi": ["hono-takibi@0.33.7", "", { "dependencies": { "@apidevtools/swagger-parser": "^13.1.0", "@effect/platform-node": "4.1.4", "@typespec/compiler": "^1.17.0", "@typespec/openapi3": "^1.17.0", "effect": "4.1.4", "oxc-parser": "^0.158.0", "oxfmt": "^0.78.0" }, "bin": { "hono-takibi": "dist/cli.js" } }, "sha512-4Y+u9PCDmg3XNSTRmviJ/iSgChGQSoj0PknkTnx1FPJgru11czjo/d5OjOPx14PHSGu+H01/rz/nwE8APnLXNA=="],
+    "hono-takibi": ["hono-takibi@0.35.6", "", { "dependencies": { "@apidevtools/swagger-parser": "^13.1.0", "@effect/platform-node": "4.1.4", "@typespec/compiler": "^1.17.0", "@typespec/openapi3": "^1.17.0", "effect": "4.1.4", "oxc-parser": "^0.158.0", "oxfmt": "^0.78.0" }, "bin": { "hono-takibi": "dist/cli.js" } }, "sha512-lOKHKIsDzQjg5qZ9mLKLnWLYZiyxlxGmRadRZ6o9lImjdqu6HTbe5+XBfxWoqRN5qNVoFsJOrGYSHi+ed1b+8w=="],
 
     "is-reference": ["is-reference@3.0.3", "", { "dependencies": { "@types/estree": "^1.0.6" } }, "sha512-ixkJoqQvAP88E6wLydLGGqCJsrFUnqoH6HnaczB8XmDH1oaWU+xxdptvikTgaEhtZ53Ky6YXiBuUI2WXLMCwjw=="],
 
@@ -9601,6 +9703,8 @@
     "@scalar/openapi-validator/@scalar/types": ["@scalar/types@0.26.0", "", { "dependencies": { "@scalar/helpers": "0.16.4", "nanoid": "^5.1.16", "type-fest": "^5.10.0", "zod": "^4.6.7" } }, "sha512-T78Dj1Q+W0E1RsMyPoydfR+L+p9IUIkntBCRYlWaRibM98jAxABRYGQoU/qDHX0PR1IAFdE+d7ZqslypZbJzcg=="],
 
     "@scalar/types/@scalar/helpers": ["@scalar/helpers@0.11.3", "", {}, "sha512-4zPzuNTXObDUtZS93xzAoK83ddHDgBGifv/vKFe6bHqEl5i+IMLTTtEHOaaOZK4dusPEXcXsU5TBSaY/I6Mi+A=="],
+
+    "@tanstack/angular-query/@tanstack/query-core": ["@tanstack/query-core@5.108.4", "", {}, "sha512-2Ks5dlLWz4eXJrthOyG0qW3SLt3xx0RrQmAmN0rnmogiaaOYuWiAe6HAm9KE2b2v8nig+vraNz8fsfZ6fF6zFg=="],
 
     "@tanstack/preact-query/@tanstack/query-core": ["@tanstack/query-core@5.108.2", "", {}, "sha512-0l+0xDKqn71hfJBKaAvFP/X7WYM0TbscEk6nK1pHaWQUWUEA+WJD0VlT8wF+HIJANMV9B/DouPWwDnX3w/l9BA=="],
 

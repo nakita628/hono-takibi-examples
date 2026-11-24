@@ -1,7 +1,7 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "03552a9855f56959c115351d66924b57ca8125cbf897b6507efd8a33935fc0ee",
     "sources": {

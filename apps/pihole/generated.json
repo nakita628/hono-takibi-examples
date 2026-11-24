@@ -1,7 +1,7 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.6",
+    "date": "2026-11-24",
     "generated": true,
     "config": "a1227cc8d2371f86e5b1ca85c076f897b87b942360bcc82519dcf65e6a12b80b",
     "sources": {
@@ -95,10 +95,7 @@
       }
     },
     "typecheck": {
-      "errors": 8,
-      "where": "`index.ts`",
-      "codes": "TS2724 ×7, TS2305 ×1",
-      "issue": "[#544](https://github.com/nakita628/hono-takibi/issues/544) (4 operations lose their `responses` to YAML merge keys), [#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   }
 }

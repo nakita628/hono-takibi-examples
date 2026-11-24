@@ -23,10 +23,6 @@ import {
   getDhcpLeasesRoute,
   getDnsBlockingRoute,
   getDocsRoute,
-  getDomainsRoute,
-  getDomainsTypeKindDomainRoute,
-  getDomainsTypeKindRoute,
-  getDomainsTypeRoute,
   getEndpointsRoute,
   getGroupsNameRoute,
   getGroupsRoute,
@@ -117,10 +113,6 @@ import {
   getDhcpLeasesRouteHandler,
   getDnsBlockingRouteHandler,
   getDocsRouteHandler,
-  getDomainsRouteHandler,
-  getDomainsTypeKindDomainRouteHandler,
-  getDomainsTypeKindRouteHandler,
-  getDomainsTypeRouteHandler,
   getEndpointsRouteHandler,
   getGroupsNameRouteHandler,
   getGroupsRouteHandler,
@@ -217,13 +209,9 @@ export const api = app
   .openapi(getQueriesSuggestionsRoute, getQueriesSuggestionsRouteHandler)
   .openapi(getDnsBlockingRoute, getDnsBlockingRouteHandler)
   .openapi(postDnsBlockingRoute, postDnsBlockingRouteHandler)
-  .openapi(getDomainsTypeKindDomainRoute, getDomainsTypeKindDomainRouteHandler)
   .openapi(putDomainsTypeKindDomainRoute, putDomainsTypeKindDomainRouteHandler)
   .openapi(deleteDomainsTypeKindDomainRoute, deleteDomainsTypeKindDomainRouteHandler)
-  .openapi(getDomainsTypeKindRoute, getDomainsTypeKindRouteHandler)
   .openapi(postDomainsTypeKindRoute, postDomainsTypeKindRouteHandler)
-  .openapi(getDomainsTypeRoute, getDomainsTypeRouteHandler)
-  .openapi(getDomainsRoute, getDomainsRouteHandler)
   .openapi(postDomainsBatchDeleteRoute, postDomainsBatchDeleteRouteHandler)
   .openapi(getGroupsNameRoute, getGroupsNameRouteHandler)
   .openapi(putGroupsNameRoute, putGroupsNameRouteHandler)

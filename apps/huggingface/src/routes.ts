@@ -250,9 +250,16 @@ export const getApiNotificationsRoute = createRoute({
         }),
       articleId: z
         .string()
+        .regex(/^[0-9a-fA-F]{24}$/)
+        .length(24)
         .exactOptional()
         .openapi({
-          param: { name: 'articleId', in: 'query', schema: { type: 'string' }, required: false },
+          param: {
+            name: 'articleId',
+            in: 'query',
+            schema: { type: 'string', minLength: 24, maxLength: 24, pattern: '^[0-9a-fA-F]{24}$' },
+            required: false,
+          },
         }),
       mention: z
         .enum(['all', 'participating', 'mentions'])
@@ -3568,6 +3575,7 @@ export const getApiOrganizationsNameAuditLogExportRoute = createRoute({
                   'org.service_account.trusted_publisher.create',
                   'org.service_account.trusted_publisher.delete',
                   'oauth.token',
+                  'oauth.token.revoke',
                   'oauth.app.create',
                   'oauth.app.update',
                   'oauth.app.secret.rotate',
@@ -12811,14 +12819,14 @@ export const getApiOrganizationsNameBillingUsageByResourceGroupRoute = createRou
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-23T09:11:57.043Z')
+        .default('2026-11-23T15:23:20.940Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-23T09:11:57.043Z',
+              default: '2026-11-23T15:23:20.940Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -12925,14 +12933,14 @@ export const getApiOrganizationsNameBillingUsageByInferenceSessionRoute = create
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-23T09:11:57.044Z')
+        .default('2026-11-23T15:23:20.940Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-23T09:11:57.044Z',
+              default: '2026-11-23T15:23:20.940Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -13021,14 +13029,14 @@ export const getApiOrganizationsNameBillingUsageInferenceRoute = createRoute({
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-23T09:11:57.044Z')
+        .default('2026-11-23T15:23:20.941Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-23T09:11:57.044Z',
+              default: '2026-11-23T15:23:20.941Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -13339,14 +13347,14 @@ export const getApiSettingsBillingUsageByInferenceSessionRoute = createRoute({
         .regex(
           /^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z))$/,
         )
-        .default('2026-11-23T09:11:57.044Z')
+        .default('2026-11-23T15:23:20.941Z')
         .exactOptional()
         .openapi({
           param: {
             name: 'endDate',
             in: 'query',
             schema: {
-              default: '2026-11-23T09:11:57.044Z',
+              default: '2026-11-23T15:23:20.941Z',
               type: 'string',
               format: 'date-time',
               pattern:
@@ -29142,6 +29150,7 @@ export const getApiQuicksearchRoute = createRoute({
             'aadya-neural',
             'acestep',
             'adapter-transformers',
+            'akeratos',
             'alkove',
             'allennlp',
             'aneforge',
@@ -29153,6 +29162,7 @@ export const getApiQuicksearchRoute = createRoute({
             'audiocraft',
             'audioseal',
             'bagel-mot',
+            'basalt',
             'basedecision',
             'bboxmaskpose',
             'ben2',
@@ -29204,6 +29214,7 @@ export const getApiQuicksearchRoute = createRoute({
             'docking-at-home',
             'doctr',
             'drinkme',
+            'duo-world-model',
             'edsnlp',
             'egohand',
             'elm',
@@ -29252,6 +29263,8 @@ export const getApiQuicksearchRoute = createRoute({
             'infinitetalk',
             'infinite-you',
             'intellifold',
+            'inworld-sava',
+            'inworld-voice-isolation',
             'ising-decoding',
             'jev-style',
             'keras',
@@ -29289,6 +29302,7 @@ export const getApiQuicksearchRoute = createRoute({
             'manas-1',
             'mars5-tts',
             'matanyone',
+            'mediapipe',
             'memra',
             'mesh-anything',
             'merlin',
@@ -29310,6 +29324,7 @@ export const getApiQuicksearchRoute = createRoute({
             'mtvcraft',
             'multimolecule',
             'nemo',
+            'neurobrix',
             'ninfer',
             'nobg',
             'nv-medtech',
@@ -29341,6 +29356,7 @@ export const getApiQuicksearchRoute = createRoute({
             'quantumpeer',
             'qwen3_tts',
             'recurrentgemma',
+            'redefiner',
             'relik',
             'refiners',
             'renderformer',
@@ -29350,6 +29366,7 @@ export const getApiQuicksearchRoute = createRoute({
             'routee-powertrain',
             'rt-detr-hand-detector-v1',
             'rwkv',
+            's1s2',
             'saelens',
             'sage-music',
             'scail-2',
@@ -29451,6 +29468,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'aadya-neural',
                     'acestep',
                     'adapter-transformers',
+                    'akeratos',
                     'alkove',
                     'allennlp',
                     'aneforge',
@@ -29462,6 +29480,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'audiocraft',
                     'audioseal',
                     'bagel-mot',
+                    'basalt',
                     'basedecision',
                     'bboxmaskpose',
                     'ben2',
@@ -29513,6 +29532,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'docking-at-home',
                     'doctr',
                     'drinkme',
+                    'duo-world-model',
                     'edsnlp',
                     'egohand',
                     'elm',
@@ -29561,6 +29581,8 @@ export const getApiQuicksearchRoute = createRoute({
                     'infinitetalk',
                     'infinite-you',
                     'intellifold',
+                    'inworld-sava',
+                    'inworld-voice-isolation',
                     'ising-decoding',
                     'jev-style',
                     'keras',
@@ -29598,6 +29620,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'manas-1',
                     'mars5-tts',
                     'matanyone',
+                    'mediapipe',
                     'memra',
                     'mesh-anything',
                     'merlin',
@@ -29619,6 +29642,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'mtvcraft',
                     'multimolecule',
                     'nemo',
+                    'neurobrix',
                     'ninfer',
                     'nobg',
                     'nv-medtech',
@@ -29650,6 +29674,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'quantumpeer',
                     'qwen3_tts',
                     'recurrentgemma',
+                    'redefiner',
                     'relik',
                     'refiners',
                     'renderformer',
@@ -29659,6 +29684,7 @@ export const getApiQuicksearchRoute = createRoute({
                     'routee-powertrain',
                     'rt-detr-hand-detector-v1',
                     'rwkv',
+                    's1s2',
                     'saelens',
                     'sage-music',
                     'scail-2',
@@ -30744,6 +30770,7 @@ export const postApiQuicksearchRoute = createRoute({
             'aadya-neural',
             'acestep',
             'adapter-transformers',
+            'akeratos',
             'alkove',
             'allennlp',
             'aneforge',
@@ -30755,6 +30782,7 @@ export const postApiQuicksearchRoute = createRoute({
             'audiocraft',
             'audioseal',
             'bagel-mot',
+            'basalt',
             'basedecision',
             'bboxmaskpose',
             'ben2',
@@ -30806,6 +30834,7 @@ export const postApiQuicksearchRoute = createRoute({
             'docking-at-home',
             'doctr',
             'drinkme',
+            'duo-world-model',
             'edsnlp',
             'egohand',
             'elm',
@@ -30854,6 +30883,8 @@ export const postApiQuicksearchRoute = createRoute({
             'infinitetalk',
             'infinite-you',
             'intellifold',
+            'inworld-sava',
+            'inworld-voice-isolation',
             'ising-decoding',
             'jev-style',
             'keras',
@@ -30891,6 +30922,7 @@ export const postApiQuicksearchRoute = createRoute({
             'manas-1',
             'mars5-tts',
             'matanyone',
+            'mediapipe',
             'memra',
             'mesh-anything',
             'merlin',
@@ -30912,6 +30944,7 @@ export const postApiQuicksearchRoute = createRoute({
             'mtvcraft',
             'multimolecule',
             'nemo',
+            'neurobrix',
             'ninfer',
             'nobg',
             'nv-medtech',
@@ -30943,6 +30976,7 @@ export const postApiQuicksearchRoute = createRoute({
             'quantumpeer',
             'qwen3_tts',
             'recurrentgemma',
+            'redefiner',
             'relik',
             'refiners',
             'renderformer',
@@ -30952,6 +30986,7 @@ export const postApiQuicksearchRoute = createRoute({
             'routee-powertrain',
             'rt-detr-hand-detector-v1',
             'rwkv',
+            's1s2',
             'saelens',
             'sage-music',
             'scail-2',
@@ -31053,6 +31088,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'aadya-neural',
                     'acestep',
                     'adapter-transformers',
+                    'akeratos',
                     'alkove',
                     'allennlp',
                     'aneforge',
@@ -31064,6 +31100,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'audiocraft',
                     'audioseal',
                     'bagel-mot',
+                    'basalt',
                     'basedecision',
                     'bboxmaskpose',
                     'ben2',
@@ -31115,6 +31152,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'docking-at-home',
                     'doctr',
                     'drinkme',
+                    'duo-world-model',
                     'edsnlp',
                     'egohand',
                     'elm',
@@ -31163,6 +31201,8 @@ export const postApiQuicksearchRoute = createRoute({
                     'infinitetalk',
                     'infinite-you',
                     'intellifold',
+                    'inworld-sava',
+                    'inworld-voice-isolation',
                     'ising-decoding',
                     'jev-style',
                     'keras',
@@ -31200,6 +31240,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'manas-1',
                     'mars5-tts',
                     'matanyone',
+                    'mediapipe',
                     'memra',
                     'mesh-anything',
                     'merlin',
@@ -31221,6 +31262,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'mtvcraft',
                     'multimolecule',
                     'nemo',
+                    'neurobrix',
                     'ninfer',
                     'nobg',
                     'nv-medtech',
@@ -31252,6 +31294,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'quantumpeer',
                     'qwen3_tts',
                     'recurrentgemma',
+                    'redefiner',
                     'relik',
                     'refiners',
                     'renderformer',
@@ -31261,6 +31304,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'routee-powertrain',
                     'rt-detr-hand-detector-v1',
                     'rwkv',
+                    's1s2',
                     'saelens',
                     'sage-music',
                     'scail-2',
@@ -31924,6 +31968,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'aadya-neural',
                     'acestep',
                     'adapter-transformers',
+                    'akeratos',
                     'alkove',
                     'allennlp',
                     'aneforge',
@@ -31935,6 +31980,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'audiocraft',
                     'audioseal',
                     'bagel-mot',
+                    'basalt',
                     'basedecision',
                     'bboxmaskpose',
                     'ben2',
@@ -31986,6 +32032,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'docking-at-home',
                     'doctr',
                     'drinkme',
+                    'duo-world-model',
                     'edsnlp',
                     'egohand',
                     'elm',
@@ -32034,6 +32081,8 @@ export const postApiQuicksearchRoute = createRoute({
                     'infinitetalk',
                     'infinite-you',
                     'intellifold',
+                    'inworld-sava',
+                    'inworld-voice-isolation',
                     'ising-decoding',
                     'jev-style',
                     'keras',
@@ -32071,6 +32120,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'manas-1',
                     'mars5-tts',
                     'matanyone',
+                    'mediapipe',
                     'memra',
                     'mesh-anything',
                     'merlin',
@@ -32092,6 +32142,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'mtvcraft',
                     'multimolecule',
                     'nemo',
+                    'neurobrix',
                     'ninfer',
                     'nobg',
                     'nv-medtech',
@@ -32123,6 +32174,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'quantumpeer',
                     'qwen3_tts',
                     'recurrentgemma',
+                    'redefiner',
                     'relik',
                     'refiners',
                     'renderformer',
@@ -32132,6 +32184,7 @@ export const postApiQuicksearchRoute = createRoute({
                     'routee-powertrain',
                     'rt-detr-hand-detector-v1',
                     'rwkv',
+                    's1s2',
                     'saelens',
                     'sage-music',
                     'scail-2',

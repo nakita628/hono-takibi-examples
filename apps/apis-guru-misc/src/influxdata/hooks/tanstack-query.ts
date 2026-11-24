@@ -72,7 +72,7 @@ export function getOrgsKey() {
   return ['orgs'] as const
 }
 
-export function getQueryKey() {
+export function getQueryKey2() {
   return ['query'] as const
 }
 

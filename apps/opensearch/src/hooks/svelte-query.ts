@@ -213,7 +213,7 @@ export function getWlmKey() {
   return ['_wlm'] as const
 }
 
-export function getAliasKey() {
+export function getAliasKey2() {
   return ['{alias}'] as const
 }
 
