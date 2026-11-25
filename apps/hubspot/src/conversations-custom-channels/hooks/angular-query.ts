@@ -1,17 +1,9 @@
-import {
-  injectQuery,
-  injectMutation,
-  queryOptions,
-  mutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, injectMutation, queryOptions, mutationOptions } from '@tanstack/angular-query'
 import type {
   CreateQueryOptions,
   CreateMutationOptions,
   DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+} from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -94,7 +86,6 @@ export function injectConversationsCustomChannels202609<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -102,7 +93,7 @@ export function injectConversationsCustomChannels202609<
       ...getConversationsCustomChannels202609QueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostConversationsCustomChannels202609MutationKey() {
@@ -158,7 +149,6 @@ export function injectPostConversationsCustomChannels202609<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -171,7 +161,7 @@ export function injectPostConversationsCustomChannels202609<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConversationsCustomChannels202609ChannelIdQueryKey(
@@ -268,7 +258,6 @@ export function injectConversationsCustomChannels202609ChannelId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -279,7 +268,7 @@ export function injectConversationsCustomChannels202609ChannelId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteConversationsCustomChannels202609ChannelIdMutationKey() {
@@ -351,7 +340,6 @@ export function injectDeleteConversationsCustomChannels202609ChannelId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -364,7 +352,7 @@ export function injectDeleteConversationsCustomChannels202609ChannelId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchConversationsCustomChannels202609ChannelIdMutationKey() {
@@ -434,7 +422,6 @@ export function injectPatchConversationsCustomChannels202609ChannelId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -447,7 +434,7 @@ export function injectPatchConversationsCustomChannels202609ChannelId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchConversationsCustomChannels202609ChannelIdChannelAccountStagingTokensAccountTokenMutationKey() {
@@ -524,7 +511,6 @@ export function injectPatchConversationsCustomChannels202609ChannelIdChannelAcco
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -538,7 +524,7 @@ export function injectPatchConversationsCustomChannels202609ChannelIdChannelAcco
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConversationsCustomChannels202609ChannelIdChannelAccountsQueryKey(
@@ -639,7 +625,6 @@ export function injectConversationsCustomChannels202609ChannelIdChannelAccounts<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -650,7 +635,7 @@ export function injectConversationsCustomChannels202609ChannelIdChannelAccounts<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostConversationsCustomChannels202609ChannelIdChannelAccountsMutationKey() {
@@ -727,7 +712,6 @@ export function injectPostConversationsCustomChannels202609ChannelIdChannelAccou
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -741,7 +725,7 @@ export function injectPostConversationsCustomChannels202609ChannelIdChannelAccou
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConversationsCustomChannels202609ChannelIdChannelAccountsChannelAccountIdQueryKey(
@@ -846,7 +830,6 @@ export function injectConversationsCustomChannels202609ChannelIdChannelAccountsC
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -857,7 +840,7 @@ export function injectConversationsCustomChannels202609ChannelIdChannelAccountsC
       >(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchConversationsCustomChannels202609ChannelIdChannelAccountsChannelAccountIdMutationKey() {
@@ -934,7 +917,6 @@ export function injectPatchConversationsCustomChannels202609ChannelIdChannelAcco
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -948,7 +930,7 @@ export function injectPatchConversationsCustomChannels202609ChannelIdChannelAcco
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostConversationsCustomChannels202609ChannelIdMessagesMutationKey() {
@@ -1025,7 +1007,6 @@ export function injectPostConversationsCustomChannels202609ChannelIdMessages<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1039,7 +1020,7 @@ export function injectPostConversationsCustomChannels202609ChannelIdMessages<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getConversationsCustomChannels202609ChannelIdMessagesMessageIdQueryKey(
@@ -1139,7 +1120,6 @@ export function injectConversationsCustomChannels202609ChannelIdMessagesMessageI
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1150,7 +1130,7 @@ export function injectConversationsCustomChannels202609ChannelIdMessagesMessageI
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchConversationsCustomChannels202609ChannelIdMessagesMessageIdMutationKey() {
@@ -1226,7 +1206,6 @@ export function injectPatchConversationsCustomChannels202609ChannelIdMessagesMes
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1240,5 +1219,5 @@ export function injectPatchConversationsCustomChannels202609ChannelIdMessagesMes
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }

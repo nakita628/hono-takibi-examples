@@ -1477,7 +1477,9 @@ const Oauth2SecurityScheme = {
       scopes: {
         automation: '',
         'workflows.delete': '',
+        'workflows.publish': '',
         'workflows.read': '',
+        'workflows.trigger': '',
         'workflows.write': '',
       },
     },
@@ -1485,7 +1487,9 @@ const Oauth2SecurityScheme = {
   'x-hubspot-app-availability': {
     automation: { portal: ['public', 'private'], developer: false },
     'workflows.delete': { user: ['public', 'private'], developer: false },
+    'workflows.publish': { user: ['public', 'private'], developer: false },
     'workflows.read': { user: ['public', 'private'], developer: false },
+    'workflows.trigger': { user: ['public', 'private'], developer: false },
     'workflows.write': { user: ['public', 'private'], developer: false },
   },
 }
@@ -2805,7 +2809,9 @@ export const postAutomationActionsCallbacks202609CompleteRoute = createRoute({
   responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['automation'] },
+    { oauth2: ['workflows.trigger'] },
     { oauth2: ['workflows.write'] },
+    { oauth2: ['workflows.publish'] },
     { oauth2: ['workflows.delete'] },
     { oauth2: ['workflows.read'] },
   ],
@@ -2843,7 +2849,9 @@ export const postAutomationActionsCallbacks202609CallbackIdCompleteRoute = creat
   responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['automation'] },
+    { oauth2: ['workflows.trigger'] },
     { oauth2: ['workflows.write'] },
+    { oauth2: ['workflows.publish'] },
     { oauth2: ['workflows.delete'] },
     { oauth2: ['workflows.read'] },
   ],

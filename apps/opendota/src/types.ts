@@ -12,7 +12,7 @@ type MatchResponse = {
       }[]
     | undefined
   cluster?: number | undefined
-  cosmetics?: { [x: string]: number } | undefined
+  cosmetics?: { [key: string]: number } | undefined
   dire_score?: number | undefined
   draft_timings?:
     | {
@@ -34,7 +34,7 @@ type MatchResponse = {
   lobby_type?: number | undefined
   match_seq_num?: number | undefined
   negative_votes?: number | undefined
-  objectives?: { [x: string]: unknown }[] | undefined
+  objectives?: { [key: string]: unknown }[] | undefined
   picks_bans?:
     | {
         is_pick?: boolean | undefined
@@ -49,28 +49,28 @@ type MatchResponse = {
   radiant_win?: (boolean | null) | undefined
   radiant_xp_adv?: number[] | undefined
   start_time?: number | undefined
-  teamfights?: ({ [x: string]: unknown }[] | null) | undefined
+  teamfights?: ({ [key: string]: unknown }[] | null) | undefined
   tower_status_dire?: number | undefined
   tower_status_radiant?: number | undefined
   version?: number | undefined
   replay_salt?: number | undefined
   series_id?: number | undefined
   series_type?: number | undefined
-  radiant_team?: { [x: string]: unknown } | undefined
-  dire_team?: { [x: string]: unknown } | undefined
-  league?: { [x: string]: unknown } | undefined
+  radiant_team?: { [key: string]: unknown } | undefined
+  dire_team?: { [key: string]: unknown } | undefined
+  league?: { [key: string]: unknown } | undefined
   skill?: (number | null) | undefined
   players?:
     | {
         match_id?: number | undefined
         player_slot?: (number | null) | undefined
         ability_upgrades_arr?: number[] | undefined
-        ability_uses?: { [x: string]: unknown } | undefined
-        ability_targets?: { [x: string]: unknown } | undefined
-        damage_targets?: { [x: string]: unknown } | undefined
+        ability_uses?: { [key: string]: unknown } | undefined
+        ability_targets?: { [key: string]: unknown } | undefined
+        damage_targets?: { [key: string]: unknown } | undefined
         account_id?: number | undefined
-        actions?: { [x: string]: unknown } | undefined
-        additional_units?: ({ [x: string]: unknown }[] | null) | undefined
+        actions?: { [key: string]: unknown } | undefined
+        additional_units?: ({ [key: string]: unknown }[] | null) | undefined
         assists?: number | undefined
         backpack_0?: number | undefined
         backpack_1?: number | undefined
@@ -92,16 +92,16 @@ type MatchResponse = {
             }[]
           | undefined
         creeps_stacked?: number | undefined
-        damage?: { [x: string]: unknown } | undefined
-        damage_inflictor?: { [x: string]: unknown } | undefined
-        damage_inflictor_received?: { [x: string]: unknown } | undefined
-        damage_taken?: { [x: string]: unknown } | undefined
+        damage?: { [key: string]: unknown } | undefined
+        damage_inflictor?: { [key: string]: unknown } | undefined
+        damage_inflictor_received?: { [key: string]: unknown } | undefined
+        damage_taken?: { [key: string]: unknown } | undefined
         deaths?: number | undefined
         denies?: number | undefined
         dn_t?: number[] | undefined
         gold?: number | undefined
         gold_per_min?: number | undefined
-        gold_reasons?: { [x: string]: unknown } | undefined
+        gold_reasons?: { [key: string]: unknown } | undefined
         gold_spent?: number | undefined
         gold_t?: number[] | undefined
         hero_damage?: number | undefined
@@ -109,7 +109,7 @@ type MatchResponse = {
         hero_healing?: number | undefined
         hero_healing_t?: number[] | undefined
         tower_damage_t?: number[] | undefined
-        hero_hits?: { [x: string]: unknown } | undefined
+        hero_hits?: { [key: string]: unknown } | undefined
         hero_id?: number | undefined
         item_0?: number | undefined
         item_1?: number | undefined
@@ -117,10 +117,10 @@ type MatchResponse = {
         item_3?: number | undefined
         item_4?: number | undefined
         item_5?: number | undefined
-        item_uses?: { [x: string]: unknown } | undefined
-        kill_streaks?: { [x: string]: unknown } | undefined
-        killed?: { [x: string]: unknown } | undefined
-        killed_by?: { [x: string]: unknown } | undefined
+        item_uses?: { [key: string]: unknown } | undefined
+        kill_streaks?: { [key: string]: unknown } | undefined
+        killed?: { [key: string]: unknown } | undefined
+        killed_by?: { [key: string]: unknown } | undefined
         kills?: number | undefined
         kills_log?: { time?: number | undefined; key?: string | undefined }[] | undefined
         assists_log?:
@@ -140,38 +140,38 @@ type MatchResponse = {
               time_dead?: number | undefined
             }[]
           | undefined
-        lane_pos?: { [x: string]: unknown } | undefined
+        lane_pos?: { [key: string]: unknown } | undefined
         last_hits?: number | undefined
         leaver_status?: number | undefined
         level?: number | undefined
         lh_t?: number[] | undefined
-        life_state?: { [x: string]: unknown } | undefined
-        max_hero_hit?: { [x: string]: unknown } | undefined
-        multi_kills?: { [x: string]: unknown } | undefined
-        obs?: { [x: string]: unknown } | undefined
-        obs_left_log?: { [x: string]: unknown }[] | undefined
-        obs_log?: { [x: string]: unknown }[] | undefined
+        life_state?: { [key: string]: unknown } | undefined
+        max_hero_hit?: { [key: string]: unknown } | undefined
+        multi_kills?: { [key: string]: unknown } | undefined
+        obs?: { [key: string]: unknown } | undefined
+        obs_left_log?: { [key: string]: unknown }[] | undefined
+        obs_log?: { [key: string]: unknown }[] | undefined
         obs_placed?: number | undefined
         party_id?: number | undefined
-        permanent_buffs?: { [x: string]: unknown }[] | undefined
+        permanent_buffs?: { [key: string]: unknown }[] | undefined
         hero_variant?: number | undefined
         pings?: number | undefined
-        purchase?: { [x: string]: unknown } | undefined
+        purchase?: { [key: string]: unknown } | undefined
         purchase_log?:
           | { time?: number | undefined; key?: string | undefined; charges?: number | undefined }[]
           | undefined
         rune_pickups?: number | undefined
-        runes?: { [x: string]: number } | undefined
+        runes?: { [key: string]: number } | undefined
         runes_log?: { time?: number | undefined; key?: number | undefined }[] | undefined
-        sen?: { [x: string]: unknown } | undefined
-        sen_left_log?: { [x: string]: unknown }[] | undefined
-        sen_log?: { [x: string]: unknown }[] | undefined
+        sen?: { [key: string]: unknown } | undefined
+        sen_left_log?: { [key: string]: unknown }[] | undefined
+        sen_log?: { [key: string]: unknown }[] | undefined
         sen_placed?: number | undefined
         stuns?: number | undefined
         times?: number[] | undefined
         tower_damage?: number | undefined
         xp_per_min?: number | undefined
-        xp_reasons?: { [x: string]: unknown } | undefined
+        xp_reasons?: { [key: string]: unknown } | undefined
         xp_t?: number[] | undefined
         personaname?: (string | null) | undefined
         name?: (string | null) | undefined
@@ -211,10 +211,10 @@ type MatchResponse = {
         lane_role?: (number | null) | undefined
         is_roaming?: (boolean | null) | undefined
         position_est?: (number | null) | undefined
-        purchase_time?: { [x: string]: unknown } | undefined
-        first_purchase_time?: { [x: string]: unknown } | undefined
-        item_win?: { [x: string]: unknown } | undefined
-        item_usage?: { [x: string]: unknown } | undefined
+        purchase_time?: { [key: string]: unknown } | undefined
+        first_purchase_time?: { [key: string]: unknown } | undefined
+        item_win?: { [key: string]: unknown } | undefined
+        item_usage?: { [key: string]: unknown } | undefined
         purchase_tpscroll?: number | undefined
         actions_per_min?: number | undefined
         life_state_dead?: number | undefined
@@ -234,7 +234,7 @@ type MatchResponse = {
               used_by_heroes?: (string | null) | undefined
             }[]
           | undefined
-        benchmarks?: { [x: string]: unknown } | undefined
+        benchmarks?: { [key: string]: unknown } | undefined
         neutral_tokens_log?: { time?: number | undefined; key?: string | undefined }[] | undefined
         neutral_item_history?:
           | {
@@ -247,8 +247,8 @@ type MatchResponse = {
     | undefined
   patch?: number | undefined
   region?: number | undefined
-  all_word_counts?: { [x: string]: unknown } | undefined
-  my_word_counts?: { [x: string]: unknown } | undefined
+  all_word_counts?: { [key: string]: unknown } | undefined
+  my_word_counts?: { [key: string]: unknown } | undefined
   throw?: number | undefined
   comeback?: number | undefined
   loss?: number | undefined
@@ -367,20 +367,20 @@ type PlayerTotalsResponse = {
   sum?: number | undefined
 }
 type PlayerCountsResponse = {
-  leaver_status?: { [x: string]: unknown } | undefined
-  game_mode?: { [x: string]: unknown } | undefined
-  lobby_type?: { [x: string]: unknown } | undefined
-  lane_role?: { [x: string]: unknown } | undefined
-  region?: { [x: string]: unknown } | undefined
-  patch?: { [x: string]: unknown } | undefined
+  leaver_status?: { [key: string]: unknown } | undefined
+  game_mode?: { [key: string]: unknown } | undefined
+  lobby_type?: { [key: string]: unknown } | undefined
+  lane_role?: { [key: string]: unknown } | undefined
+  region?: { [key: string]: unknown } | undefined
+  patch?: { [key: string]: unknown } | undefined
 }
 type PlayerWardMapResponse = {
-  obs?: { [x: string]: unknown } | undefined
-  sen?: { [x: string]: unknown } | undefined
+  obs?: { [key: string]: unknown } | undefined
+  sen?: { [key: string]: unknown } | undefined
 }
 type PlayerWordCloudResponse = {
-  my_word_counts?: { [x: string]: unknown } | undefined
-  all_word_counts?: { [x: string]: unknown } | undefined
+  my_word_counts?: { [key: string]: unknown } | undefined
+  all_word_counts?: { [key: string]: unknown } | undefined
 }
 type PlayerRatingsResponse = {
   account_id?: number | undefined
@@ -450,7 +450,7 @@ type PublicMatchesResponse = {
   dire_team?: number[] | undefined
 }
 type ParsedMatchesResponse = { match_id?: number | undefined }
-type MetadataResponse = { banner?: ({ [x: string]: unknown } | null) | undefined }
+type MetadataResponse = { banner?: ({ [key: string]: unknown } | null) | undefined }
 type DistributionsResponse = {
   ranks?:
     | {
@@ -600,6 +600,15 @@ type HeroDurationsResponse = {
   games_played?: number | undefined
   wins?: number | undefined
 }
+type HeroPlayersResponse = {
+  account_id?: number | undefined
+  name?: (string | null) | undefined
+  team_id?: (number | null) | undefined
+  team_name?: (string | null) | undefined
+  team_tag?: (string | null) | undefined
+  games_played?: number | undefined
+  wins?: number | undefined
+}
 type HeroItemPopularityResponse = {
   start_game_items?: { item?: number | undefined } | undefined
   early_game_items?: { item?: number | undefined } | undefined
@@ -687,427 +696,421 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   {
     '/matches/:match_id': {
       $get: {
-        input: { param: { match_id: number } }
+        input: { param: { match_id: unknown } }
         output: MatchResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id': {
       $get: {
-        input: { param: { account_id: number } }
+        input: { param: { account_id: unknown } }
         output: PlayersResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/wl': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
         output: PlayerWinLossResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/recentMatches': {
       $get: {
-        input: { param: { account_id: number } }
-        output: { [x: string]: unknown }[]
-        outputFormat: 'text'
+        input: { param: { account_id: unknown } }
+        output: { [key: string]: unknown }[]
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/matches': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
-            project?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
+            project?: string
           }
         }
         output: PlayerMatchesResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/heroes': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
         output: PlayerHeroesResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/peers': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
         output: PlayerPeersResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/pros': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
         output: PlayerProsResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/totals': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
         output: PlayerTotalsResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/counts': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
         output: PlayerCountsResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/histograms/:field': {
       $get: {
-        input: { param: { account_id: number; field: string } } & {
+        input: { param: { account_id: unknown; field: string } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
-        output: { [x: string]: unknown }[]
-        outputFormat: 'text'
+        output: { [key: string]: unknown }[]
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/wardmap': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
         output: PlayerWardMapResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/wordcloud': {
       $get: {
-        input: { param: { account_id: number } } & {
+        input: { param: { account_id: unknown } } & {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            win?: number | undefined
-            patch?: number | undefined
-            game_mode?: number | undefined
-            lobby_type?: number | undefined
-            region?: number | undefined
-            date?: number | undefined
-            lane_role?: number | undefined
-            hero_id?: number | undefined
-            is_radiant?: number | undefined
-            included_account_id?: number | undefined
-            excluded_account_id?: number | undefined
-            with_hero_id?: number | undefined
-            against_hero_id?: number | undefined
-            significant?: number | undefined
-            having?: number | undefined
-            sort?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            win?: unknown
+            patch?: unknown
+            game_mode?: unknown
+            lobby_type?: unknown
+            region?: unknown
+            date?: unknown
+            lane_role?: unknown
+            hero_id?: unknown
+            is_radiant?: unknown
+            included_account_id?: unknown
+            excluded_account_id?: unknown
+            with_hero_id?: unknown
+            against_hero_id?: unknown
+            significant?: unknown
+            having?: unknown
+            sort?: string
           }
         }
         output: PlayerWordCloudResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/ratings': {
       $get: {
-        input: { param: { account_id: number } }
+        input: { param: { account_id: unknown } }
         output: PlayerRatingsResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/rankings': {
       $get: {
-        input: { param: { account_id: number } }
+        input: { param: { account_id: unknown } }
         output: PlayerRankingsResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/players/:account_id/refresh': {
       $post: {
-        input: { param: { account_id: number } }
-        output: { [x: string]: unknown }
-        outputFormat: 'text'
+        input: { param: { account_id: unknown } }
+        output: any
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/topPlayers': {
       $get: {
-        input: { query: { turbo?: number | undefined } }
+        input: { query: { turbo?: unknown } }
         output: PlayerObjectResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/proPlayers': {
-      $get: { input: {}; output: PlayerObjectResponse[]; outputFormat: 'text'; status: 200 }
+      $get: { input: {}; output: PlayerObjectResponse[]; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/proMatches': {
       $get: {
-        input: { query: { less_than_match_id?: number | undefined } }
+        input: { query: { less_than_match_id?: unknown } }
         output: MatchObjectResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/publicMatches': {
       $get: {
-        input: {
-          query: {
-            less_than_match_id?: number | undefined
-            min_rank?: number | undefined
-            max_rank?: number | undefined
-          }
-        }
+        input: { query: { less_than_match_id?: unknown; min_rank?: unknown; max_rank?: unknown } }
         output: PublicMatchesResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/parsedMatches': {
       $get: {
-        input: { query: { less_than_match_id?: number | undefined } }
+        input: { query: { less_than_match_id?: unknown } }
         output: ParsedMatchesResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/explorer': {
       $get: {
-        input: { query: { sql?: string | undefined } }
-        output: { [x: string]: unknown }
-        outputFormat: 'text'
+        input: { query: { sql?: string } }
+        output: { [key: string]: unknown }
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/metadata': {
-      $get: { input: {}; output: MetadataResponse; outputFormat: 'text'; status: 200 }
+      $get: { input: {}; output: MetadataResponse; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/distributions': {
-      $get: { input: {}; output: DistributionsResponse; outputFormat: 'text'; status: 200 }
+      $get: { input: {}; output: DistributionsResponse; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/search': {
       $get: {
         input: { query: { q: string } }
         output: SearchResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
@@ -1116,191 +1119,185 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get: {
         input: { query: { hero_id: string } }
         output: RankingsResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/benchmarks': {
       $get: {
-        input: {
-          query: {
-            hero_id: string
-            bracket?: number | undefined
-            role?: 'core' | 'support' | undefined
-          }
-        }
+        input: { query: { hero_id: string; bracket?: unknown; role?: 'core' | 'support' } }
         output: BenchmarksResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/health': {
-      $get: { input: {}; output: { [x: string]: unknown }; outputFormat: 'text'; status: 200 }
+      $get: { input: {}; output: { [key: string]: unknown }; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/request/:jobId': {
       $get: {
         input: { param: { jobId: string } }
-        output: { [x: string]: unknown }
-        outputFormat: 'text'
+        output: { [key: string]: unknown }
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/request/:match_id': {
       $post: {
-        input: { param: { match_id: number } }
-        output: { [x: string]: unknown }
-        outputFormat: 'text'
+        input: { param: { match_id: unknown } }
+        output: { [key: string]: unknown }
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/findMatches': {
       $get: {
-        input: { query: { teamA?: number[] | undefined; teamB?: number[] | undefined } }
-        output: { [x: string]: unknown }[]
-        outputFormat: 'text'
+        input: { query: { teamA?: unknown; teamB?: unknown } }
+        output: { [key: string]: unknown }[]
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/heroes': {
-      $get: { input: {}; output: HeroObjectResponse[]; outputFormat: 'text'; status: 200 }
+      $get: { input: {}; output: HeroObjectResponse[]; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/heroStats': {
-      $get: { input: {}; output: HeroStatsResponse[]; outputFormat: 'text'; status: 200 }
+      $get: { input: {}; output: HeroStatsResponse[]; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/heroes/:hero_id/matches': {
       $get: {
-        input: { param: { hero_id: number } }
+        input: { param: { hero_id: unknown } }
         output: MatchObjectResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/heroes/:hero_id/matchups': {
       $get: {
-        input: { param: { hero_id: number } }
+        input: { param: { hero_id: unknown } }
         output: HeroMatchupsResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/heroes/:hero_id/durations': {
       $get: {
-        input: { param: { hero_id: number } }
+        input: { param: { hero_id: unknown } }
         output: HeroDurationsResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/heroes/:hero_id/players': {
       $get: {
-        input: { param: { hero_id: number } }
-        output: PlayerObjectResponse[][]
-        outputFormat: 'text'
+        input: { param: { hero_id: unknown } }
+        output: HeroPlayersResponse[]
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/heroes/:hero_id/itemPopularity': {
       $get: {
-        input: { param: { hero_id: number } }
+        input: { param: { hero_id: unknown } }
         output: HeroItemPopularityResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/leagues': {
-      $get: { input: {}; output: LeagueObjectResponse[]; outputFormat: 'text'; status: 200 }
+      $get: { input: {}; output: LeagueObjectResponse[]; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/leagues/:league_id': {
       $get: {
-        input: { param: { league_id: number } }
+        input: { param: { league_id: unknown } }
         output: LeagueObjectResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/leagues/:league_id/matches': {
       $get: {
-        input: { param: { league_id: number } }
+        input: { param: { league_id: unknown } }
         output: MatchObjectResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/leagues/:league_id/matchIds': {
       $get: {
-        input: { param: { league_id: number } }
+        input: { param: { league_id: unknown } }
         output: string[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/leagues/:league_id/teams': {
       $get: {
-        input: { param: { league_id: number } }
+        input: { param: { league_id: unknown } }
         output: TeamObjectResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/teams': {
       $get: {
-        input: { query: { page?: number | undefined } }
+        input: { query: { page?: unknown } }
         output: TeamObjectResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/teams/:team_id': {
       $get: {
-        input: { param: { team_id: number } }
+        input: { param: { team_id: unknown } }
         output: TeamObjectResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/teams/:team_id/matches': {
       $get: {
-        input: { param: { team_id: number } }
+        input: { param: { team_id: unknown } }
         output: TeamMatchObjectResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/teams/:team_id/players': {
       $get: {
-        input: { param: { team_id: number } }
+        input: { param: { team_id: unknown } }
         output: TeamPlayersResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/teams/:team_id/heroes': {
       $get: {
-        input: { param: { team_id: number } }
+        input: { param: { team_id: unknown } }
         output: TeamHeroesResponse
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
@@ -1309,51 +1306,49 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get: {
         input: { param: { field: string } }
         output: RecordsResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/live': {
-      $get: { input: {}; output: { [x: string]: unknown }[]; outputFormat: 'text'; status: 200 }
+      $get: { input: {}; output: { [key: string]: unknown }[]; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/scenarios/itemTimings': {
       $get: {
-        input: { query: { item?: string | undefined; hero_id?: number | undefined } }
+        input: { query: { item?: string; hero_id?: unknown } }
         output: ScenarioItemTimingsResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/scenarios/laneRoles': {
       $get: {
-        input: { query: { lane_role?: string | undefined; hero_id?: number | undefined } }
+        input: { query: { lane_role?: string; hero_id?: unknown } }
         output: ScenarioLaneRolesResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
     '/scenarios/misc': {
       $get: {
-        input: { query: { scenario?: string | undefined } }
+        input: { query: { scenario?: string } }
         output: ScenarioMiscResponse[]
-        outputFormat: 'text'
+        outputFormat: 'json'
         status: 200
       }
     }
   } & {
-    '/schema': { $get: { input: {}; output: SchemaResponse[]; outputFormat: 'text'; status: 200 } }
+    '/schema': { $get: { input: {}; output: SchemaResponse[]; outputFormat: 'json'; status: 200 } }
   } & {
     '/constants/:resource': {
       $get: {
         input: { param: { resource: string } }
-        output:
-          | { [x: string]: { [x: string]: unknown } }
-          | ({ [x: string]: { [x: string]: unknown } } | number)[]
-        outputFormat: 'text'
+        output: ({ [key: string]: any } | ({ [key: string]: any } | number)[]) | null
+        outputFormat: 'json'
         status: 200
       }
     }

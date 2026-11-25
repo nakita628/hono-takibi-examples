@@ -1780,6 +1780,7 @@ const SubscriptionPatchRequestSchema = z
           'A boolean indicating whether the subscription is active. If true, the subscription is active; if false, it is inactive.',
         example: null,
       }),
+    enabled: z.boolean().exactOptional().openapi({ example: null }),
   })
   .openapi({ example: null, required: [] })
   .openapi('SubscriptionPatchRequest')

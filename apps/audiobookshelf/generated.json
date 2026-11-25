@@ -1,0 +1,18 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
+    "generated": true,
+    "config": "b48ab047fb0694d8e634105eefa841e0ed2947fbd6df88424ee02323caebe393",
+    "sources": {
+      "https://raw.githubusercontent.com/advplyr/audiobookshelf/master/docs/openapi.json": {
+        "etag": "W/\"aed473d64cff9cff0d6df687c1f63fcd2d9b453e50ed0ae27ac92c6f15be54eb\"",
+        "sha256": "eefd4aa5ac2765645f111ef3d646d82664c288857c70a023354b73b9b0e09588",
+        "canonical": "0f688866862ce4e089cdc376dcc5e5366c04d1392a8fb6c9556189a97880fd15"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

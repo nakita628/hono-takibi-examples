@@ -1,11 +1,5 @@
-import { injectQuery, queryOptions } from '@tanstack/angular-query-experimental'
-import type {
-  CreateQueryOptions,
-  DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, queryOptions } from '@tanstack/angular-query'
+import type { CreateQueryOptions, DefaultError } from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -102,7 +96,6 @@ export function injectAccountInfo202609ActivityAuditLogs<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -110,7 +103,7 @@ export function injectAccountInfo202609ActivityAuditLogs<
       ...getAccountInfo202609ActivityAuditLogsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAccountInfo202609ActivityLoginQueryKey(
@@ -191,7 +184,6 @@ export function injectAccountInfo202609ActivityLogin<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -199,7 +191,7 @@ export function injectAccountInfo202609ActivityLogin<
       ...getAccountInfo202609ActivityLoginQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAccountInfo202609ActivitySecurityQueryKey(
@@ -290,7 +282,6 @@ export function injectAccountInfo202609ActivitySecurity<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -298,5 +289,5 @@ export function injectAccountInfo202609ActivitySecurity<
       ...getAccountInfo202609ActivitySecurityQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }

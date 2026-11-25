@@ -14,22 +14,6 @@ type CollectionResponsePublicApiUserActionEventForwardPaging = {
   paging?: ForwardPaging | undefined
   results: PublicApiUserActionEvent[]
 }
-type ErrorDetail = {
-  code?: string | undefined
-  context?: { [x: string]: string[] } | undefined
-  in?: string | undefined
-  message: string
-  subCategory?: string | undefined
-}
-type Error = {
-  category: string
-  context?: { [x: string]: string[] } | undefined
-  correlationId: string
-  errors?: ErrorDetail[] | undefined
-  links?: { [x: string]: string } | undefined
-  message: string
-  subCategory?: string | undefined
-}
 type PublicLoginAudit = {
   countryCode?: string | undefined
   email?: string | undefined
@@ -127,6 +111,8 @@ type HydratedCriticalAction = {
     | 'JOINED_PORTAL_VIA_DOMAIN_BASED_INVITE'
     | 'LEGAL_BASIS_REQUIREMENT_DISABLED'
     | 'LEGAL_BASIS_REQUIREMENT_ENABLED'
+    | 'LIVE_CHAT_SENSITIVE_DATA_DISABLED'
+    | 'LIVE_CHAT_SENSITIVE_DATA_ENABLED'
     | 'MANUAL_PASSWORD_RESET_EMAIL_SEND'
     | 'MANUAL_REGISTRATION_EMAIL_SEND'
     | 'MARKETING_CONTACTS_APP_SETTINGS_DISABLED'
@@ -224,13 +210,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                actingUserId?: number[] | undefined
-                after?: string | undefined
-                fillFinalTimestamp?: boolean | undefined
-                limit?: number | undefined
-                occurredAfter?: string | undefined
-                occurredBefore?: string | undefined
-                sort?: string[] | undefined
+                actingUserId?: unknown
+                after?: string
+                fillFinalTimestamp?: string
+                limit?: unknown
+                occurredAfter?: string
+                occurredBefore?: string
+                sort?: unknown
               }
             }
             output: CollectionResponsePublicApiUserActionEventForwardPaging
@@ -240,17 +226,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                actingUserId?: number[] | undefined
-                after?: string | undefined
-                fillFinalTimestamp?: boolean | undefined
-                limit?: number | undefined
-                occurredAfter?: string | undefined
-                occurredBefore?: string | undefined
-                sort?: string[] | undefined
+                actingUserId?: unknown
+                after?: string
+                fillFinalTimestamp?: string
+                limit?: unknown
+                occurredAfter?: string
+                occurredBefore?: string
+                sort?: unknown
               }
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -258,27 +244,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/account-info/2026-09/activity/login': {
       $get:
         | {
-            input: {
-              query: {
-                after?: string | undefined
-                limit?: number | undefined
-                userId?: number | undefined
-              }
-            }
+            input: { query: { after?: string; limit?: unknown; userId?: unknown } }
             output: CollectionResponsePublicLoginAuditForwardPaging
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                after?: string | undefined
-                limit?: number | undefined
-                userId?: number | undefined
-              }
-            }
-            output: Error
-            outputFormat: 'text'
+            input: { query: { after?: string; limit?: unknown; userId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -288,11 +262,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                after?: string | undefined
-                fromTimestamp?: bigint | undefined
-                limit?: number | undefined
-                toTimestamp?: bigint | undefined
-                userId?: number | undefined
+                after?: string
+                fromTimestamp?: unknown
+                limit?: unknown
+                toTimestamp?: unknown
+                userId?: unknown
               }
             }
             output: CollectionResponseHydratedCriticalActionForwardPaging
@@ -302,15 +276,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                after?: string | undefined
-                fromTimestamp?: bigint | undefined
-                limit?: number | undefined
-                toTimestamp?: bigint | undefined
-                userId?: number | undefined
+                after?: string
+                fromTimestamp?: unknown
+                limit?: unknown
+                toTimestamp?: unknown
+                userId?: unknown
               }
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
     }

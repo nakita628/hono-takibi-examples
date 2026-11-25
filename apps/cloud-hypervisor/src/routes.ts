@@ -1260,21 +1260,43 @@ const VmCoredumpDataSchema = z
   .openapi({ required: ['destination_url'] })
   .openapi('VmCoredumpData')
 
+const SnapshotClockModeSchema = z
+  .enum(['Advance', 'Preserve'])
+  .default('Advance')
+  .openapi({
+    description:
+      'Whether to advance the guest clock by elapsed wall time when supported (Advance) or restore it without that adjustment (Preserve).\n',
+  })
+  .openapi('SnapshotClockMode')
+
 const MemoryRestoreModeSchema = z
   .enum(['Copy', 'OnDemand', 'OnDemandNoBackgroundFetchPages', 'CopyOnWrite'])
   .default('Copy')
   .openapi('MemoryRestoreMode')
 
+const ExternalFdDeviceIdSchema = z
+  .object({ id: z.string() })
+  .openapi({ required: ['id'] })
+  .openapi('ExternalFdDeviceId')
+
+const ExternalFdNetTargetSchema = z
+  .object({ Net: ExternalFdDeviceIdSchema })
+  .openapi({ required: ['Net'] })
+  .openapi('ExternalFdNetTarget')
+
+const ExternalFdVfioTargetSchema = z
+  .object({ Vfio: ExternalFdDeviceIdSchema })
+  .openapi({ required: ['Vfio'] })
+  .openapi('ExternalFdVfioTarget')
+
+const ExternalFdDeviceTargetSchema = z
+  .xor([ExternalFdNetTargetSchema, ExternalFdVfioTargetSchema])
+  .openapi('ExternalFdDeviceTarget')
+
+const ExternalFdVmTargetSchema = z.literal('Iommu').openapi('ExternalFdVmTarget')
+
 const ExternalFdTargetSchema = z
-  .xor([
-    z
-      .object({ Net: z.object({ id: z.string() }).openapi({ required: ['id'] }) })
-      .openapi({ required: ['Net'] }),
-    z
-      .object({ Vfio: z.object({ id: z.string() }).openapi({ required: ['id'] }) })
-      .openapi({ required: ['Vfio'] }),
-    z.literal('Iommu'),
-  ])
+  .xor([ExternalFdDeviceTargetSchema, ExternalFdVmTargetSchema])
   .openapi('ExternalFdTarget')
 
 const RestoredNetConfigSchema = z
@@ -1344,6 +1366,7 @@ const RestoreConfigSchema = z
         description: 'Deprecated: use external_fds with an Iommu target instead.\n',
       }),
     resume: z.boolean().exactOptional(),
+    clock_restore_mode: SnapshotClockModeSchema.exactOptional(),
     zone_updates: z.array(VmMemoryZoneUpdateDataSchema).exactOptional(),
     serial: SerialConfigSchema.exactOptional().openapi({
       description: 'New output of the serial console, in the mode of the snapshot.',
@@ -1386,6 +1409,7 @@ const RestoreConfigSchema = z
 const ReceiveMigrationDataSchema = z
   .object({
     receiver_url: z.string(),
+    clock_restore_mode: SnapshotClockModeSchema.exactOptional(),
     vfio_fds: z
       .array(RestoredVfioConfigSchema)
       .exactOptional()

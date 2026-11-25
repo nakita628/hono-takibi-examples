@@ -10,10 +10,10 @@ Base URLs:
 
 # Authentication
 
-- oAuth2 authentication. Uses OAuth 2 with client credentials flow
+- oAuth2 authentication. The OAuth 2 client credentials flow below uses the Polaris token endpoint. When authenticating with an external identity provider, use its token URL.
 
-    - Flow: implicit
-    - Authorization URL = [{scheme}://{host}/api/v1/oauth/tokens]({scheme}://{host}/api/v1/oauth/tokens)
+    - Flow: clientCredentials
+    - Token URL = [/api/catalog/v1/oauth/tokens](/api/catalog/v1/oauth/tokens)
 
 <h1 id="polaris-management-service-default">Default</h1>
 

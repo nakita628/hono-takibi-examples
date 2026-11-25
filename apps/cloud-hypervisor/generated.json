@@ -1,13 +1,13 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "44aac760d7fff491aa2d16dea828c782ea52a10567f5365cab5936ce1dbc3e66",
     "sources": {
       "https://raw.githubusercontent.com/cloud-hypervisor/cloud-hypervisor/main/vmm/src/api/openapi/cloud-hypervisor.yaml": {
-        "etag": "W/\"f9223fb79ea690d1c8f8722cf1000f6551118ea5aac2eacdd0d2c3b9b0408216\"",
-        "sha256": "c9e235a3ab059e1e579cc992d7d06c0d9e9687a870102b20508b8c1cc9e8bcc6"
+        "etag": "W/\"13aed574e3e9a88fbbc9a973b4057d1538c74c1ec798e4704ff3f9b5e2849f7a\"",
+        "sha256": "54a8b0a3478c55b502d7abad5504f0e1f331aafaa3eaa09b9ce26a0f80f31fde"
       }
     },
     "typecheck": {

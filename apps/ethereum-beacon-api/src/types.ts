@@ -34,12 +34,23 @@ type ValidatorResponse = {
   status: ValidatorStatus
   validator: ValidatorResponseValidator
 }
+type ValidatorStatusInput =
+  | 'pending_initialized'
+  | 'pending_queued'
+  | 'active_ongoing'
+  | 'active_exiting'
+  | 'active_slashed'
+  | 'exited_unslashed'
+  | 'exited_slashed'
+  | 'withdrawal_possible'
+  | 'withdrawal_done'
 type ValidatorBalanceResponse = { index: Uint64; balance: Uint64 }
 type ValidatorIdentityResponse = {
   index: Uint64
   pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
   activation_epoch: Uint64
 }
+type BuilderStatusInput = 'pending' | 'active' | 'exited'
 type BuilderStatus = 'pending' | 'active' | 'exited'
 type GloasBeaconStateCurrentEpochParticipationItems = string
 type ExecutionAddress = string
@@ -52,6 +63,7 @@ type GloasBuilder = {
   withdrawable_epoch: Uint64
 }
 type BuilderResponse = { index: Uint64; status: BuilderStatus; builder: GloasBuilder }
+type Uint64Input = string
 type Committee = { index: Uint64; slot: Uint64; validators: Uint64[] }
 type AltairSyncCommitteeValidators = Uint64[]
 type AltairSyncCommittee = {
@@ -100,19 +112,597 @@ type GloasBuilderPendingPayment = {
   proposer_index: Uint64
 }
 type GloasBuilderPendingPayments = GloasBuilderPendingPayment[]
-type GloasBeaconStateLatestBlockHeader = {
+type RootInput = string
+type Phase0BeaconBlockAllOf0 = {
   slot: Uint64
   proposer_index: Uint64
   parent_root: Root
   state_root: Root
-  body_root: Root
 }
+type GloasBeaconStateLatestBlockHeader = Phase0BeaconBlockAllOf0 & { body_root: Root }
 type Phase0SignedBeaconBlockHeader = {
   message: GloasBeaconStateLatestBlockHeader
   signature: Signature
 }
-type BroadcastValidation = 'gossip' | 'consensus' | 'consensus_and_equivocation'
+type BroadcastValidationInput = 'gossip' | 'consensus' | 'consensus_and_equivocation'
+type GloasBeaconBlockAllOf0Input = {
+  slot: Uint64Input
+  proposer_index: Uint64Input
+  parent_root: RootInput
+  state_root: RootInput
+}
+type SignatureInput = string
+type GloasBeaconStateLatestBlockHashInput = string
+type GloasBeaconStateEth1DataInput = {
+  deposit_root: RootInput
+  deposit_count: Uint64Input
+  block_hash: GloasBeaconStateLatestBlockHashInput
+}
+type GraffitiInput = string
+type Phase0BeaconBlockAllOf0Input = {
+  slot: Uint64Input
+  proposer_index: Uint64Input
+  parent_root: RootInput
+  state_root: RootInput
+}
+type GloasBeaconStateLatestBlockHeaderInput = Phase0BeaconBlockAllOf0Input & {
+  body_root: RootInput
+}
+type Phase0SignedBeaconBlockHeaderInput = {
+  message: GloasBeaconStateLatestBlockHeaderInput
+  signature: SignatureInput
+}
+type Phase0ProposerSlashingInput = {
+  signed_header_1: Phase0SignedBeaconBlockHeaderInput
+  signed_header_2: Phase0SignedBeaconBlockHeaderInput
+}
+type CheckpointInput = { epoch: Uint64Input; root: RootInput }
+type Phase0AttestationDataInput = {
+  slot: Uint64Input
+  index: Uint64Input
+  beacon_block_root: RootInput
+  source: CheckpointInput
+  target: CheckpointInput
+}
+type ElectraAttesterSlashingAttestation1Input = {
+  attesting_indices: Uint64Input[]
+  data: Phase0AttestationDataInput
+  signature: SignatureInput
+}
+type ElectraAttesterSlashingInput = {
+  attestation_1: ElectraAttesterSlashingAttestation1Input
+  attestation_2: ElectraAttesterSlashingAttestation1Input
+}
+type Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsInput = string
+type GloasBeaconStateJustificationBitsInput = string
+type ElectraAttestationInput = {
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsInput
+  data: Phase0AttestationDataInput
+  signature: SignatureInput
+  committee_bits: GloasBeaconStateJustificationBitsInput
+}
+type GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input = string
+type GloasBeaconBlockAllOf1BodyDepositsItemsInput = {
+  proof: RootInput[]
+  data: {
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
+    withdrawal_credentials: RootInput
+    amount: Uint64Input
+    signature: SignatureInput
+  }
+}
+type Phase0SignedVoluntaryExitInput = {
+  message: { epoch: Uint64Input; validator_index: Uint64Input }
+  signature: SignatureInput
+}
+type GloasLightClientFinalityUpdateSyncAggregateInput = {
+  sync_committee_bits: GloasBeaconStateJustificationBitsInput
+  sync_committee_signature: SignatureInput
+}
+type ExecutionAddressInput = string
+type CapellaSignedBLSToExecutionChangeInput = {
+  message: {
+    validator_index: Uint64Input
+    from_bls_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
+    to_execution_address: ExecutionAddressInput
+  }
+  signature: SignatureInput
+}
+type FuluDataColumnSidecarsItemsKzgCommitmentsItemsInput = string
+type ElectraBlindedBeaconBlockAllOf1BodyAllOf0Input = {
+  randao_reveal: SignatureInput
+  eth1_data: GloasBeaconStateEth1DataInput
+  graffiti: GraffitiInput
+  proposer_slashings: Phase0ProposerSlashingInput[]
+  attester_slashings: ElectraAttesterSlashingInput[]
+  attestations: ElectraAttestationInput[]
+  deposits: GloasBeaconBlockAllOf1BodyDepositsItemsInput[]
+  voluntary_exits: Phase0SignedVoluntaryExitInput[]
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateInput
+  bls_to_execution_changes: CapellaSignedBLSToExecutionChangeInput[]
+  blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItemsInput[]
+}
+type GloasExecutionPayloadLogsBloomInput = string
+type GloasBeaconStateRandaoMixesItemsInput = string
+type GloasExecutionPayloadExtraDataInput = string
+type FuluBeaconStateLatestExecutionPayloadHeaderAllOf0Input = {
+  parent_hash: GloasBeaconStateLatestBlockHashInput
+  fee_recipient: ExecutionAddressInput
+  state_root: RootInput
+  receipts_root: RootInput
+  logs_bloom: GloasExecutionPayloadLogsBloomInput
+  prev_randao: GloasBeaconStateRandaoMixesItemsInput
+  block_number: Uint64Input
+  gas_limit: Uint64Input
+  gas_used: Uint64Input
+  timestamp: Uint64Input
+  extra_data: GloasExecutionPayloadExtraDataInput
+  base_fee_per_gas: string
+  blob_gas_used: Uint64Input
+  excess_blob_gas: Uint64Input
+  block_hash: GloasBeaconStateLatestBlockHashInput
+}
+type FuluBeaconStateLatestExecutionPayloadHeaderInput =
+  FuluBeaconStateLatestExecutionPayloadHeaderAllOf0Input & {
+    transactions_root: RootInput
+    withdrawals_root: RootInput
+  }
+type GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItemsInput = {
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
+  withdrawal_credentials: RootInput
+  amount: Uint64Input
+  signature: SignatureInput
+  index: Uint64Input
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItemsInput = {
+  source_address: ExecutionAddressInput
+  validator_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
+  amount: Uint64Input
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItemsInput = {
+  source_address: ExecutionAddressInput
+  source_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
+  target_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
+}
+type ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequestsInput = {
+  deposits: GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItemsInput[]
+  withdrawals: GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItemsInput[]
+  consolidations: GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItemsInput[]
+}
+type ElectraBlindedBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: ElectraBlindedBeaconBlockAllOf1BodyAllOf0Input & {
+    execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeaderInput
+    execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequestsInput
+  }
+}
+type ElectraSignedBlindedBeaconBlockInput = {
+  message: ElectraBlindedBeaconBlockInput
+  signature: SignatureInput
+}
+type Phase0AttesterSlashingAttestation1Input = {
+  attesting_indices: Uint64Input[]
+  data: Phase0AttestationDataInput
+  signature: SignatureInput
+}
+type Phase0AttesterSlashingInput = {
+  attestation_1: Phase0AttesterSlashingAttestation1Input
+  attestation_2: Phase0AttesterSlashingAttestation1Input
+}
+type Phase0AttestationInput = {
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsInput
+  data: Phase0AttestationDataInput
+  signature: SignatureInput
+}
+type DenebBlindedBeaconBlockAllOf1BodyAllOf0Input = {
+  randao_reveal: SignatureInput
+  eth1_data: GloasBeaconStateEth1DataInput
+  graffiti: GraffitiInput
+  proposer_slashings: Phase0ProposerSlashingInput[]
+  attester_slashings: Phase0AttesterSlashingInput[]
+  attestations: Phase0AttestationInput[]
+  deposits: GloasBeaconBlockAllOf1BodyDepositsItemsInput[]
+  voluntary_exits: Phase0SignedVoluntaryExitInput[]
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateInput
+  bls_to_execution_changes: CapellaSignedBLSToExecutionChangeInput[]
+  blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItemsInput[]
+}
+type DenebBlindedBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: DenebBlindedBeaconBlockAllOf1BodyAllOf0Input & {
+    execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeaderInput
+  }
+}
+type DenebSignedBlindedBeaconBlockInput = {
+  message: DenebBlindedBeaconBlockInput
+  signature: SignatureInput
+}
+type CapellaBeaconBlockAllOf1BodyAllOf0Input = {
+  randao_reveal: SignatureInput
+  eth1_data: GloasBeaconStateEth1DataInput
+  graffiti: GraffitiInput
+  proposer_slashings: Phase0ProposerSlashingInput[]
+  attester_slashings: Phase0AttesterSlashingInput[]
+  attestations: Phase0AttestationInput[]
+  deposits: GloasBeaconBlockAllOf1BodyDepositsItemsInput[]
+  voluntary_exits: Phase0SignedVoluntaryExitInput[]
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateInput
+  bls_to_execution_changes: CapellaSignedBLSToExecutionChangeInput[]
+}
+type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Input = {
+  parent_hash: GloasBeaconStateLatestBlockHashInput
+  fee_recipient: ExecutionAddressInput
+  state_root: RootInput
+  receipts_root: RootInput
+  logs_bloom: GloasExecutionPayloadLogsBloomInput
+  prev_randao: GloasBeaconStateRandaoMixesItemsInput
+  block_number: Uint64Input
+  gas_limit: Uint64Input
+  gas_used: Uint64Input
+  timestamp: Uint64Input
+  extra_data: GloasExecutionPayloadExtraDataInput
+  base_fee_per_gas: string
+  block_hash: GloasBeaconStateLatestBlockHashInput
+}
+type CapellaBeaconStateLatestExecutionPayloadHeaderInput =
+  CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Input & {
+    transactions_root: RootInput
+    withdrawals_root: RootInput
+  }
+type CapellaBlindedBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: CapellaBeaconBlockAllOf1BodyAllOf0Input & {
+    execution_payload_header: CapellaBeaconStateLatestExecutionPayloadHeaderInput
+  }
+}
+type CapellaSignedBlindedBeaconBlockInput = {
+  message: CapellaBlindedBeaconBlockInput
+  signature: SignatureInput
+}
+type BellatrixBeaconBlockAllOf1BodyAllOf0Input = {
+  randao_reveal: SignatureInput
+  eth1_data: GloasBeaconStateEth1DataInput
+  graffiti: GraffitiInput
+  proposer_slashings: Phase0ProposerSlashingInput[]
+  attester_slashings: Phase0AttesterSlashingInput[]
+  attestations: Phase0AttestationInput[]
+  deposits: GloasBeaconBlockAllOf1BodyDepositsItemsInput[]
+  voluntary_exits: Phase0SignedVoluntaryExitInput[]
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateInput
+}
+type BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Input = {
+  parent_hash: GloasBeaconStateLatestBlockHashInput
+  fee_recipient: ExecutionAddressInput
+  state_root: RootInput
+  receipts_root: RootInput
+  logs_bloom: GloasExecutionPayloadLogsBloomInput
+  prev_randao: GloasBeaconStateRandaoMixesItemsInput
+  block_number: Uint64Input
+  gas_limit: Uint64Input
+  gas_used: Uint64Input
+  timestamp: Uint64Input
+  extra_data: GloasExecutionPayloadExtraDataInput
+  base_fee_per_gas: string
+  block_hash: GloasBeaconStateLatestBlockHashInput
+}
+type BellatrixBeaconStateLatestExecutionPayloadHeaderInput =
+  BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Input & { transactions_root: RootInput }
+type BellatrixBlindedBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: BellatrixBeaconBlockAllOf1BodyAllOf0Input & {
+    execution_payload_header: BellatrixBeaconStateLatestExecutionPayloadHeaderInput
+  }
+}
+type BellatrixSignedBlindedBeaconBlockInput = {
+  message: BellatrixBlindedBeaconBlockInput
+  signature: SignatureInput
+}
+type AltairBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: {
+    randao_reveal: SignatureInput
+    eth1_data: GloasBeaconStateEth1DataInput
+    graffiti: GraffitiInput
+    proposer_slashings: Phase0ProposerSlashingInput[]
+    attester_slashings: Phase0AttesterSlashingInput[]
+    attestations: Phase0AttestationInput[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItemsInput[]
+    voluntary_exits: Phase0SignedVoluntaryExitInput[]
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateInput
+  }
+}
+type AltairSignedBeaconBlockInput = { message: AltairBeaconBlockInput; signature: SignatureInput }
+type Phase0BeaconBlockInput = Phase0BeaconBlockAllOf0Input & {
+  body: {
+    randao_reveal: SignatureInput
+    eth1_data: GloasBeaconStateEth1DataInput
+    graffiti: GraffitiInput
+    proposer_slashings: Phase0ProposerSlashingInput[]
+    attester_slashings: Phase0AttesterSlashingInput[]
+    attestations: Phase0AttestationInput[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItemsInput[]
+    voluntary_exits: Phase0SignedVoluntaryExitInput[]
+  }
+}
+type Phase0SignedBeaconBlockInput = { message: Phase0BeaconBlockInput; signature: SignatureInput }
+type ConsensusVersionInput =
+  | 'phase0'
+  | 'altair'
+  | 'bellatrix'
+  | 'capella'
+  | 'deneb'
+  | 'electra'
+  | 'fulu'
+  | 'gloas'
+type GloasAttesterSlashingAttestation1Input = {
+  attesting_indices: Uint64Input[]
+  data: Phase0AttestationDataInput
+  signature: SignatureInput
+}
+type GloasAttesterSlashingInput = {
+  attestation_1: GloasAttesterSlashingAttestation1Input
+  attestation_2: GloasAttesterSlashingAttestation1Input
+}
+type GloasAttestationInput = {
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsInput
+  data: Phase0AttestationDataInput
+  signature: SignatureInput
+  committee_bits: GloasBeaconStateJustificationBitsInput
+}
+type GloasExecutionPayloadBidInput = {
+  parent_block_hash: GloasBeaconStateLatestBlockHashInput
+  parent_block_root: RootInput
+  block_hash: GloasBeaconStateLatestBlockHashInput
+  prev_randao: GloasBeaconStateRandaoMixesItemsInput
+  fee_recipient: ExecutionAddressInput
+  gas_limit: Uint64Input
+  builder_index: Uint64Input
+  slot: Uint64Input
+  value: Uint64Input
+  execution_payment: Uint64Input
+  blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItemsInput[]
+  execution_requests_root: RootInput
+}
+type GloasSignedExecutionPayloadBidInput = {
+  message: GloasExecutionPayloadBidInput
+  signature: SignatureInput
+}
+type GloasPayloadAttestationDataInput = {
+  beacon_block_root: RootInput
+  slot: Uint64Input
+  payload_present: boolean
+  blob_data_available: boolean
+}
+type GloasPayloadAttestationInput = {
+  aggregation_bits: GloasBeaconStateJustificationBitsInput
+  data: GloasPayloadAttestationDataInput
+  signature: SignatureInput
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsInput = {
+  deposits: GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItemsInput[]
+  withdrawals: GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItemsInput[]
+  consolidations: GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItemsInput[]
+  builder_deposits: {
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
+    withdrawal_credentials: GloasBeaconStateRandaoMixesItemsInput
+    amount: Uint64Input
+    signature: SignatureInput
+  }[]
+  builder_exits: {
+    source_address: ExecutionAddressInput
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
+  }[]
+}
+type GloasBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: {
+    randao_reveal: SignatureInput
+    eth1_data: GloasBeaconStateEth1DataInput
+    graffiti: GraffitiInput
+    proposer_slashings: Phase0ProposerSlashingInput[]
+    attester_slashings: GloasAttesterSlashingInput[]
+    attestations: GloasAttestationInput[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItemsInput[]
+    voluntary_exits: Phase0SignedVoluntaryExitInput[]
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateInput
+    bls_to_execution_changes: CapellaSignedBLSToExecutionChangeInput[]
+    signed_execution_payload_bid: GloasSignedExecutionPayloadBidInput
+    payload_attestations: GloasPayloadAttestationInput[]
+    parent_execution_requests: GloasExecutionPayloadEnvelopeExecutionRequestsInput
+  }
+}
+type GloasSignedBeaconBlockInput = { message: GloasBeaconBlockInput; signature: SignatureInput }
+type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1TransactionsInput = string[]
+type CapellaWithdrawalInput = {
+  index: Uint64Input
+  validator_index: Uint64Input
+  address: ExecutionAddressInput
+  amount: Uint64Input
+}
+type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1WithdrawalsInput =
+  CapellaWithdrawalInput[]
+type FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayloadInput =
+  FuluBeaconStateLatestExecutionPayloadHeaderAllOf0Input & {
+    transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1TransactionsInput
+    withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1WithdrawalsInput
+  }
+type FuluBlockContentsBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: ElectraBlindedBeaconBlockAllOf1BodyAllOf0Input & {
+    execution_payload: FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayloadInput
+    execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequestsInput
+  }
+}
+type ElectraSignedBeaconBlockInput = {
+  message: FuluBlockContentsBlockInput
+  signature: SignatureInput
+}
+type GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItemsInput = string
+type GloasSignedExecutionPayloadEnvelopeContentsKzgProofsInput =
+  GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItemsInput[]
+type BlobInput = string
+type BlobsInput = BlobInput[]
+type FuluSignedBlockContentsInput = {
+  signed_block: ElectraSignedBeaconBlockInput
+  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofsInput
+  blobs: BlobsInput
+}
+type ElectraSignedBlockContentsKzgProofsInput =
+  GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItemsInput[]
+type ElectraSignedBlockContentsInput = {
+  signed_block: ElectraSignedBeaconBlockInput
+  kzg_proofs: ElectraSignedBlockContentsKzgProofsInput
+  blobs: BlobsInput
+}
+type DenebBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: DenebBlindedBeaconBlockAllOf1BodyAllOf0Input & {
+    execution_payload: FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayloadInput
+  }
+}
+type DenebSignedBeaconBlockInput = { message: DenebBeaconBlockInput; signature: SignatureInput }
+type DenebSignedBlockContentsInput = {
+  signed_block: DenebSignedBeaconBlockInput
+  kzg_proofs: ElectraSignedBlockContentsKzgProofsInput
+  blobs: BlobsInput
+}
+type CapellaBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: CapellaBeaconBlockAllOf1BodyAllOf0Input & {
+    execution_payload: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Input & {
+      transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1TransactionsInput
+      withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1WithdrawalsInput
+    }
+  }
+}
+type CapellaSignedBeaconBlockInput = { message: CapellaBeaconBlockInput; signature: SignatureInput }
+type BellatrixBeaconBlockInput = GloasBeaconBlockAllOf0Input & {
+  body: BellatrixBeaconBlockAllOf1BodyAllOf0Input & {
+    execution_payload: BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Input & {
+      transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1TransactionsInput
+    }
+  }
+}
+type BellatrixSignedBeaconBlockInput = {
+  message: BellatrixBeaconBlockInput
+  signature: SignatureInput
+}
+type GloasExecutionPayloadInput = {
+  parent_hash: GloasBeaconStateLatestBlockHashInput
+  fee_recipient: ExecutionAddressInput
+  state_root: GloasBeaconStateRandaoMixesItemsInput
+  receipts_root: GloasBeaconStateRandaoMixesItemsInput
+  logs_bloom: GloasExecutionPayloadLogsBloomInput
+  prev_randao: GloasBeaconStateRandaoMixesItemsInput
+  block_number: Uint64Input
+  gas_limit: Uint64Input
+  gas_used: Uint64Input
+  timestamp: Uint64Input
+  extra_data: GloasExecutionPayloadExtraDataInput
+  base_fee_per_gas: string
+  block_hash: GloasBeaconStateLatestBlockHashInput
+  transactions: string[]
+  withdrawals: CapellaWithdrawalInput[]
+  blob_gas_used: Uint64Input
+  excess_blob_gas: Uint64Input
+  block_access_list: string
+  slot_number: Uint64Input
+}
+type GloasExecutionPayloadEnvelopeInput = {
+  payload: GloasExecutionPayloadInput
+  execution_requests: GloasExecutionPayloadEnvelopeExecutionRequestsInput
+  builder_index: Uint64Input
+  beacon_block_root: RootInput
+  parent_beacon_block_root: RootInput
+}
+type GloasSignedExecutionPayloadEnvelopeInput = {
+  message: GloasExecutionPayloadEnvelopeInput
+  signature: SignatureInput
+}
+type GloasSignedExecutionPayloadEnvelopeContentsInput = {
+  signed_execution_payload_envelope: GloasSignedExecutionPayloadEnvelopeInput
+  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofsInput
+  blobs: BlobsInput
+}
 type GloasBeaconStateLatestBlockHash = string
+type GloasBeaconStateRandaoMixesItems = string
+type GloasExecutionPayloadLogsBloom = string
+type GloasExecutionPayloadExtraData = string
+type CapellaWithdrawal = {
+  index: Uint64
+  validator_index: Uint64
+  address: ExecutionAddress
+  amount: Uint64
+}
+type GloasExecutionPayload = {
+  parent_hash: GloasBeaconStateLatestBlockHash
+  fee_recipient: ExecutionAddress
+  state_root: GloasBeaconStateRandaoMixesItems
+  receipts_root: GloasBeaconStateRandaoMixesItems
+  logs_bloom: GloasExecutionPayloadLogsBloom
+  prev_randao: GloasBeaconStateRandaoMixesItems
+  block_number: Uint64
+  gas_limit: Uint64
+  gas_used: Uint64
+  timestamp: Uint64
+  extra_data: GloasExecutionPayloadExtraData
+  base_fee_per_gas: string
+  block_hash: GloasBeaconStateLatestBlockHash
+  transactions: string[]
+  withdrawals: CapellaWithdrawal[]
+  blob_gas_used: Uint64
+  excess_blob_gas: Uint64
+  block_access_list: string
+  slot_number: Uint64
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems = {
+  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  withdrawal_credentials: Root
+  amount: Uint64
+  signature: Signature
+  index: Uint64
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems = {
+  source_address: ExecutionAddress
+  validator_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  amount: Uint64
+}
+type GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems = {
+  source_address: ExecutionAddress
+  source_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  target_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+}
+type GloasExecutionPayloadEnvelopeExecutionRequests = {
+  deposits: GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems[]
+  withdrawals: GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems[]
+  consolidations: GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems[]
+  builder_deposits: {
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+    withdrawal_credentials: GloasBeaconStateRandaoMixesItems
+    amount: Uint64
+    signature: Signature
+  }[]
+  builder_exits: {
+    source_address: ExecutionAddress
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+  }[]
+}
+type GloasExecutionPayloadEnvelope = {
+  payload: GloasExecutionPayload
+  execution_requests: GloasExecutionPayloadEnvelopeExecutionRequests
+  builder_index: Uint64
+  beacon_block_root: Root
+  parent_beacon_block_root: Root
+}
+type GloasSignedExecutionPayloadEnvelope = {
+  message: GloasExecutionPayloadEnvelope
+  signature: Signature
+}
+type GloasProposerPreferences = {
+  dependent_root: Root
+  proposal_slot: Uint64
+  validator_index: Uint64
+  fee_recipient: ExecutionAddress
+  target_gas_limit: Uint64
+}
+type GloasSignedProposerPreferences = { message: GloasProposerPreferences; signature: Signature }
+type GloasBeaconBlockAllOf0 = {
+  slot: Uint64
+  proposer_index: Uint64
+  parent_root: Root
+  state_root: Root
+}
 type GloasBeaconStateEth1Data = {
   deposit_root: Root
   deposit_count: Uint64
@@ -130,18 +720,18 @@ type Phase0AttestationData = {
   source: Checkpoint
   target: Checkpoint
 }
-type ElectraAttesterSlashingAttestation1 = {
+type GloasAttesterSlashingAttestation1 = {
   attesting_indices: Uint64[]
   data: Phase0AttestationData
   signature: Signature
 }
-type ElectraAttesterSlashing = {
-  attestation_1: ElectraAttesterSlashingAttestation1
-  attestation_2: ElectraAttesterSlashingAttestation1
+type GloasAttesterSlashing = {
+  attestation_1: GloasAttesterSlashingAttestation1
+  attestation_2: GloasAttesterSlashingAttestation1
 }
 type Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits = string
 type GloasBeaconStateJustificationBits = string
-type ElectraAttestation = {
+type GloasAttestation = {
   aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
   data: Phase0AttestationData
   signature: Signature
@@ -173,232 +763,6 @@ type CapellaSignedBLSToExecutionChange = {
   signature: Signature
 }
 type FuluDataColumnSidecarsItemsKzgCommitmentsItems = string
-type GloasExecutionPayloadLogsBloom = string
-type GloasBeaconStateRandaoMixesItems = string
-type GloasExecutionPayloadExtraData = string
-type FuluBeaconStateLatestExecutionPayloadHeader = {
-  parent_hash: GloasBeaconStateLatestBlockHash
-  fee_recipient: ExecutionAddress
-  state_root: Root
-  receipts_root: Root
-  logs_bloom: GloasExecutionPayloadLogsBloom
-  prev_randao: GloasBeaconStateRandaoMixesItems
-  block_number: Uint64
-  gas_limit: Uint64
-  gas_used: Uint64
-  timestamp: Uint64
-  extra_data: GloasExecutionPayloadExtraData
-  base_fee_per_gas: string
-  blob_gas_used: Uint64
-  excess_blob_gas: Uint64
-  block_hash: GloasBeaconStateLatestBlockHash
-  transactions_root: Root
-  withdrawals_root: Root
-}
-type GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems = {
-  pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
-  withdrawal_credentials: Root
-  amount: Uint64
-  signature: Signature
-  index: Uint64
-}
-type GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems = {
-  source_address: ExecutionAddress
-  validator_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
-  amount: Uint64
-}
-type GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems = {
-  source_address: ExecutionAddress
-  source_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
-  target_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
-}
-type ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests = {
-  deposits: GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems[]
-  withdrawals: GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems[]
-  consolidations: GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems[]
-}
-type ElectraBlindedBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: {}
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: ElectraAttesterSlashing[]
-    attestations: ElectraAttestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-    bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
-    execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
-    execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests
-  }
-}
-type ElectraSignedBlindedBeaconBlock = { message: ElectraBlindedBeaconBlock; signature: Signature }
-type Phase0AttesterSlashingAttestation1 = {
-  attesting_indices: Uint64[]
-  data: Phase0AttestationData
-  signature: Signature
-}
-type Phase0AttesterSlashing = {
-  attestation_1: Phase0AttesterSlashingAttestation1
-  attestation_2: Phase0AttesterSlashingAttestation1
-}
-type Phase0Attestation = {
-  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
-  data: Phase0AttestationData
-  signature: Signature
-}
-type DenebBlindedBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: {}
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: Phase0AttesterSlashing[]
-    attestations: Phase0Attestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-    bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
-    execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
-  }
-}
-type DenebSignedBlindedBeaconBlock = { message: DenebBlindedBeaconBlock; signature: Signature }
-type CapellaBeaconStateLatestExecutionPayloadHeader = {
-  parent_hash: GloasBeaconStateLatestBlockHash
-  fee_recipient: ExecutionAddress
-  state_root: Root
-  receipts_root: Root
-  logs_bloom: GloasExecutionPayloadLogsBloom
-  prev_randao: GloasBeaconStateRandaoMixesItems
-  block_number: Uint64
-  gas_limit: Uint64
-  gas_used: Uint64
-  timestamp: Uint64
-  extra_data: GloasExecutionPayloadExtraData
-  base_fee_per_gas: string
-  block_hash: GloasBeaconStateLatestBlockHash
-  transactions_root: Root
-  withdrawals_root: Root
-}
-type CapellaBlindedBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: Signature
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: Phase0AttesterSlashing[]
-    attestations: Phase0Attestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-    bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    execution_payload_header: CapellaBeaconStateLatestExecutionPayloadHeader
-  }
-}
-type CapellaSignedBlindedBeaconBlock = { message: CapellaBlindedBeaconBlock; signature: Signature }
-type BellatrixBeaconStateLatestExecutionPayloadHeader = {
-  parent_hash: GloasBeaconStateLatestBlockHash
-  fee_recipient: ExecutionAddress
-  state_root: Root
-  receipts_root: Root
-  logs_bloom: GloasExecutionPayloadLogsBloom
-  prev_randao: GloasBeaconStateRandaoMixesItems
-  block_number: Uint64
-  gas_limit: Uint64
-  gas_used: Uint64
-  timestamp: Uint64
-  extra_data: GloasExecutionPayloadExtraData
-  base_fee_per_gas: string
-  block_hash: GloasBeaconStateLatestBlockHash
-  transactions_root: Root
-}
-type BellatrixBlindedBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: Signature
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: Phase0AttesterSlashing[]
-    attestations: Phase0Attestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-    execution_payload_header: BellatrixBeaconStateLatestExecutionPayloadHeader
-  }
-}
-type BellatrixSignedBlindedBeaconBlock = {
-  message: BellatrixBlindedBeaconBlock
-  signature: Signature
-}
-type AltairBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: Signature
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: Phase0AttesterSlashing[]
-    attestations: Phase0Attestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-  }
-}
-type AltairSignedBeaconBlock = { message: AltairBeaconBlock; signature: Signature }
-type Phase0BeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: Signature
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: Phase0AttesterSlashing[]
-    attestations: Phase0Attestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-  }
-}
-type Phase0SignedBeaconBlock = { message: Phase0BeaconBlock; signature: Signature }
-type GloasAttesterSlashingAttestation1 = {
-  attesting_indices: Uint64[]
-  data: Phase0AttestationData
-  signature: Signature
-}
-type GloasAttesterSlashing = {
-  attestation_1: GloasAttesterSlashingAttestation1
-  attestation_2: GloasAttesterSlashingAttestation1
-}
-type GloasAttestation = {
-  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
-  data: Phase0AttestationData
-  signature: Signature
-  committee_bits: GloasBeaconStateJustificationBits
-}
 type GloasExecutionPayloadBid = {
   parent_block_hash: GloasBeaconStateLatestBlockHash
   parent_block_root: Root
@@ -425,26 +789,7 @@ type GloasPayloadAttestation = {
   data: GloasPayloadAttestationData
   signature: Signature
 }
-type GloasExecutionPayloadEnvelopeExecutionRequests = {
-  deposits: GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems[]
-  withdrawals: GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems[]
-  consolidations: GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems[]
-  builder_deposits: {
-    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
-    withdrawal_credentials: GloasBeaconStateRandaoMixesItems
-    amount: Uint64
-    signature: Signature
-  }[]
-  builder_exits: {
-    source_address: ExecutionAddress
-    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
-  }[]
-}
-type GloasBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
+type GloasBeaconBlock = GloasBeaconBlockAllOf0 & {
   body: {
     randao_reveal: Signature
     eth1_data: GloasBeaconStateEth1Data
@@ -462,15 +807,35 @@ type GloasBeaconBlock = {
   }
 }
 type GloasSignedBeaconBlock = { message: GloasBeaconBlock; signature: Signature }
-type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions = string[]
-type CapellaWithdrawal = {
-  index: Uint64
-  validator_index: Uint64
-  address: ExecutionAddress
-  amount: Uint64
+type ElectraAttesterSlashingAttestation1 = {
+  attesting_indices: Uint64[]
+  data: Phase0AttestationData
+  signature: Signature
 }
-type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals = CapellaWithdrawal[]
-type FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload = {
+type ElectraAttesterSlashing = {
+  attestation_1: ElectraAttesterSlashingAttestation1
+  attestation_2: ElectraAttesterSlashingAttestation1
+}
+type ElectraAttestation = {
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
+  data: Phase0AttestationData
+  signature: Signature
+  committee_bits: GloasBeaconStateJustificationBits
+}
+type ElectraBlindedBeaconBlockAllOf1BodyAllOf0 = {
+  randao_reveal: Signature
+  eth1_data: GloasBeaconStateEth1Data
+  graffiti: Graffiti
+  proposer_slashings: Phase0ProposerSlashing[]
+  attester_slashings: ElectraAttesterSlashing[]
+  attestations: ElectraAttestation[]
+  deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
+  voluntary_exits: Phase0SignedVoluntaryExit[]
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
+  bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
+  blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+}
+type FuluBeaconStateLatestExecutionPayloadHeaderAllOf0 = {
   parent_hash: GloasBeaconStateLatestBlockHash
   fee_recipient: ExecutionAddress
   state_root: Root
@@ -486,149 +851,76 @@ type FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload = {
   blob_gas_used: Uint64
   excess_blob_gas: Uint64
   block_hash: GloasBeaconStateLatestBlockHash
-  transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
-  withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals
 }
-type FuluBlockContentsBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: {}
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: ElectraAttesterSlashing[]
-    attestations: ElectraAttestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-    bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions = string[]
+type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals = CapellaWithdrawal[]
+type FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload =
+  FuluBeaconStateLatestExecutionPayloadHeaderAllOf0 & {
+    transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
+    withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals
+  }
+type ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests = {
+  deposits: GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems[]
+  withdrawals: GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems[]
+  consolidations: GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems[]
+}
+type FuluBlockContentsBlock = GloasBeaconBlockAllOf0 & {
+  body: ElectraBlindedBeaconBlockAllOf1BodyAllOf0 & {
     execution_payload: FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload
     execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests
   }
 }
 type ElectraSignedBeaconBlock = { message: FuluBlockContentsBlock; signature: Signature }
-type GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems = string
-type GloasSignedExecutionPayloadEnvelopeContentsKzgProofs =
-  GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems[]
-type Blob = string
-type Blobs = Blob[]
-type FuluSignedBlockContents = {
-  signed_block: ElectraSignedBeaconBlock
-  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofs
-  blobs: Blobs
+type Phase0AttesterSlashingAttestation1 = {
+  attesting_indices: Uint64[]
+  data: Phase0AttestationData
+  signature: Signature
 }
-type ElectraSignedBlockContentsKzgProofs =
-  GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems[]
-type ElectraSignedBlockContents = {
-  signed_block: ElectraSignedBeaconBlock
-  kzg_proofs: ElectraSignedBlockContentsKzgProofs
-  blobs: Blobs
+type Phase0AttesterSlashing = {
+  attestation_1: Phase0AttesterSlashingAttestation1
+  attestation_2: Phase0AttesterSlashingAttestation1
 }
-type DenebBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: {}
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: Phase0AttesterSlashing[]
-    attestations: Phase0Attestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-    bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+type Phase0Attestation = {
+  aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits
+  data: Phase0AttestationData
+  signature: Signature
+}
+type DenebBlindedBeaconBlockAllOf1BodyAllOf0 = {
+  randao_reveal: Signature
+  eth1_data: GloasBeaconStateEth1Data
+  graffiti: Graffiti
+  proposer_slashings: Phase0ProposerSlashing[]
+  attester_slashings: Phase0AttesterSlashing[]
+  attestations: Phase0Attestation[]
+  deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
+  voluntary_exits: Phase0SignedVoluntaryExit[]
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
+  bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
+  blob_kzg_commitments: FuluDataColumnSidecarsItemsKzgCommitmentsItems[]
+}
+type DenebBeaconBlock = GloasBeaconBlockAllOf0 & {
+  body: DenebBlindedBeaconBlockAllOf1BodyAllOf0 & {
     execution_payload: FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload
   }
 }
 type DenebSignedBeaconBlock = { message: DenebBeaconBlock; signature: Signature }
-type DenebSignedBlockContents = {
-  signed_block: DenebSignedBeaconBlock
-  kzg_proofs: ElectraSignedBlockContentsKzgProofs
-  blobs: Blobs
+type CapellaBeaconBlockAllOf1BodyAllOf0 = {
+  randao_reveal: Signature
+  eth1_data: GloasBeaconStateEth1Data
+  graffiti: Graffiti
+  proposer_slashings: Phase0ProposerSlashing[]
+  attester_slashings: Phase0AttesterSlashing[]
+  attestations: Phase0Attestation[]
+  deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
+  voluntary_exits: Phase0SignedVoluntaryExit[]
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
+  bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
 }
-type CapellaBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: Signature
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: Phase0AttesterSlashing[]
-    attestations: Phase0Attestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-    bls_to_execution_changes: CapellaSignedBLSToExecutionChange[]
-    execution_payload: {
-      parent_hash: GloasBeaconStateLatestBlockHash
-      fee_recipient: ExecutionAddress
-      state_root: Root
-      receipts_root: Root
-      logs_bloom: GloasExecutionPayloadLogsBloom
-      prev_randao: GloasBeaconStateRandaoMixesItems
-      block_number: Uint64
-      gas_limit: Uint64
-      gas_used: Uint64
-      timestamp: Uint64
-      extra_data: GloasExecutionPayloadExtraData
-      base_fee_per_gas: string
-      block_hash: GloasBeaconStateLatestBlockHash
-      transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
-      withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals
-    }
-  }
-}
-type CapellaSignedBeaconBlock = { message: CapellaBeaconBlock; signature: Signature }
-type BellatrixBeaconBlock = {
-  slot: Uint64
-  proposer_index: Uint64
-  parent_root: Root
-  state_root: Root
-  body: {
-    randao_reveal: Signature
-    eth1_data: GloasBeaconStateEth1Data
-    graffiti: Graffiti
-    proposer_slashings: Phase0ProposerSlashing[]
-    attester_slashings: Phase0AttesterSlashing[]
-    attestations: Phase0Attestation[]
-    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
-    voluntary_exits: Phase0SignedVoluntaryExit[]
-    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
-    execution_payload: {
-      parent_hash: GloasBeaconStateLatestBlockHash
-      fee_recipient: ExecutionAddress
-      state_root: Root
-      receipts_root: Root
-      logs_bloom: GloasExecutionPayloadLogsBloom
-      prev_randao: GloasBeaconStateRandaoMixesItems
-      block_number: Uint64
-      gas_limit: Uint64
-      gas_used: Uint64
-      timestamp: Uint64
-      extra_data: GloasExecutionPayloadExtraData
-      base_fee_per_gas: string
-      block_hash: GloasBeaconStateLatestBlockHash
-      transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
-    }
-  }
-}
-type BellatrixSignedBeaconBlock = { message: BellatrixBeaconBlock; signature: Signature }
-type GloasExecutionPayload = {
+type CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0 = {
   parent_hash: GloasBeaconStateLatestBlockHash
   fee_recipient: ExecutionAddress
-  state_root: GloasBeaconStateRandaoMixesItems
-  receipts_root: GloasBeaconStateRandaoMixesItems
+  state_root: Root
+  receipts_root: Root
   logs_bloom: GloasExecutionPayloadLogsBloom
   prev_randao: GloasBeaconStateRandaoMixesItems
   block_number: Uint64
@@ -638,39 +930,81 @@ type GloasExecutionPayload = {
   extra_data: GloasExecutionPayloadExtraData
   base_fee_per_gas: string
   block_hash: GloasBeaconStateLatestBlockHash
-  transactions: string[]
-  withdrawals: CapellaWithdrawal[]
-  blob_gas_used: Uint64
-  excess_blob_gas: Uint64
-  block_access_list: string
-  slot_number: Uint64
 }
-type GloasExecutionPayloadEnvelope = {
-  payload: GloasExecutionPayload
-  execution_requests: GloasExecutionPayloadEnvelopeExecutionRequests
-  builder_index: Uint64
-  beacon_block_root: Root
-  parent_beacon_block_root: Root
+type CapellaBeaconBlock = GloasBeaconBlockAllOf0 & {
+  body: CapellaBeaconBlockAllOf1BodyAllOf0 & {
+    execution_payload: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0 & {
+      transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
+      withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals
+    }
+  }
 }
-type GloasSignedExecutionPayloadEnvelope = {
-  message: GloasExecutionPayloadEnvelope
-  signature: Signature
+type CapellaSignedBeaconBlock = { message: CapellaBeaconBlock; signature: Signature }
+type BellatrixBeaconBlockAllOf1BodyAllOf0 = {
+  randao_reveal: Signature
+  eth1_data: GloasBeaconStateEth1Data
+  graffiti: Graffiti
+  proposer_slashings: Phase0ProposerSlashing[]
+  attester_slashings: Phase0AttesterSlashing[]
+  attestations: Phase0Attestation[]
+  deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
+  voluntary_exits: Phase0SignedVoluntaryExit[]
+  sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
 }
-type GloasSignedExecutionPayloadEnvelopeContents = {
-  signed_execution_payload_envelope: GloasSignedExecutionPayloadEnvelope
-  kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofs
-  blobs: Blobs
-}
-type GloasProposerPreferences = {
-  dependent_root: Root
-  proposal_slot: Uint64
-  validator_index: Uint64
+type BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0 = {
+  parent_hash: GloasBeaconStateLatestBlockHash
   fee_recipient: ExecutionAddress
-  target_gas_limit: Uint64
+  state_root: Root
+  receipts_root: Root
+  logs_bloom: GloasExecutionPayloadLogsBloom
+  prev_randao: GloasBeaconStateRandaoMixesItems
+  block_number: Uint64
+  gas_limit: Uint64
+  gas_used: Uint64
+  timestamp: Uint64
+  extra_data: GloasExecutionPayloadExtraData
+  base_fee_per_gas: string
+  block_hash: GloasBeaconStateLatestBlockHash
 }
-type GloasSignedProposerPreferences = { message: GloasProposerPreferences; signature: Signature }
-type VersionedHash = string
+type BellatrixBeaconBlock = GloasBeaconBlockAllOf0 & {
+  body: BellatrixBeaconBlockAllOf1BodyAllOf0 & {
+    execution_payload: BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0 & {
+      transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions
+    }
+  }
+}
+type BellatrixSignedBeaconBlock = { message: BellatrixBeaconBlock; signature: Signature }
+type AltairBeaconBlock = GloasBeaconBlockAllOf0 & {
+  body: {
+    randao_reveal: Signature
+    eth1_data: GloasBeaconStateEth1Data
+    graffiti: Graffiti
+    proposer_slashings: Phase0ProposerSlashing[]
+    attester_slashings: Phase0AttesterSlashing[]
+    attestations: Phase0Attestation[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
+    voluntary_exits: Phase0SignedVoluntaryExit[]
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
+  }
+}
+type AltairSignedBeaconBlock = { message: AltairBeaconBlock; signature: Signature }
+type Phase0BeaconBlock = Phase0BeaconBlockAllOf0 & {
+  body: {
+    randao_reveal: Signature
+    eth1_data: GloasBeaconStateEth1Data
+    graffiti: Graffiti
+    proposer_slashings: Phase0ProposerSlashing[]
+    attester_slashings: Phase0AttesterSlashing[]
+    attestations: Phase0Attestation[]
+    deposits: GloasBeaconBlockAllOf1BodyDepositsItems[]
+    voluntary_exits: Phase0SignedVoluntaryExit[]
+  }
+}
+type Phase0SignedBeaconBlock = { message: Phase0BeaconBlock; signature: Signature }
+type Blob = string
+type Blobs = Blob[]
 type GloasDataColumnSidecarsItemsColumnItems = string
+type GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems = string
 type GloasDataColumnSidecars = {
   index: Uint64
   column: GloasDataColumnSidecarsItemsColumnItems[]
@@ -713,6 +1047,46 @@ type AttestationsRewards = {
     inclusion_delay?: Uint64 | undefined
     inactivity: SyncCommitteeRewardsItemsReward
   }[]
+}
+type FuluBeaconStateLatestExecutionPayloadHeader =
+  FuluBeaconStateLatestExecutionPayloadHeaderAllOf0 & {
+    transactions_root: Root
+    withdrawals_root: Root
+  }
+type ElectraBlindedBeaconBlock = GloasBeaconBlockAllOf0 & {
+  body: ElectraBlindedBeaconBlockAllOf1BodyAllOf0 & {
+    execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
+    execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests
+  }
+}
+type ElectraSignedBlindedBeaconBlock = { message: ElectraBlindedBeaconBlock; signature: Signature }
+type DenebBlindedBeaconBlock = GloasBeaconBlockAllOf0 & {
+  body: DenebBlindedBeaconBlockAllOf1BodyAllOf0 & {
+    execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeader
+  }
+}
+type DenebSignedBlindedBeaconBlock = { message: DenebBlindedBeaconBlock; signature: Signature }
+type CapellaBeaconStateLatestExecutionPayloadHeader =
+  CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0 & {
+    transactions_root: Root
+    withdrawals_root: Root
+  }
+type CapellaBlindedBeaconBlock = GloasBeaconBlockAllOf0 & {
+  body: CapellaBeaconBlockAllOf1BodyAllOf0 & {
+    execution_payload_header: CapellaBeaconStateLatestExecutionPayloadHeader
+  }
+}
+type CapellaSignedBlindedBeaconBlock = { message: CapellaBlindedBeaconBlock; signature: Signature }
+type BellatrixBeaconStateLatestExecutionPayloadHeader =
+  BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0 & { transactions_root: Root }
+type BellatrixBlindedBeaconBlock = GloasBeaconBlockAllOf0 & {
+  body: BellatrixBeaconBlockAllOf1BodyAllOf0 & {
+    execution_payload_header: BellatrixBeaconStateLatestExecutionPayloadHeader
+  }
+}
+type BellatrixSignedBlindedBeaconBlock = {
+  message: BellatrixBlindedBeaconBlock
+  signature: Signature
 }
 type GloasLightClientBootstrapHeader = {
   beacon: GloasBeaconStateLatestBlockHeader
@@ -870,27 +1244,27 @@ type AltairLightClientOptimisticUpdate = {
   sync_aggregate: GloasLightClientFinalityUpdateSyncAggregate
   signature_slot: Uint64
 }
-type ElectraSingleAttestation = {
-  committee_index: Uint64
-  attester_index: Uint64
-  data: Phase0AttestationData
-  signature: Signature
+type ElectraSingleAttestationInput = {
+  committee_index: Uint64Input
+  attester_index: Uint64Input
+  data: Phase0AttestationDataInput
+  signature: SignatureInput
 }
 type IndexedErrorMessage = {
   code: number
   message: string
   failures: { index: number; message: string }[]
 }
-type GloasPayloadAttestationMessage = {
-  validator_index: Uint64
-  data: GloasPayloadAttestationData
-  signature: Signature
+type GloasPayloadAttestationMessageInput = {
+  validator_index: Uint64Input
+  data: GloasPayloadAttestationDataInput
+  signature: SignatureInput
 }
-type AltairSyncCommitteeSignature = {
-  slot: Uint64
-  beacon_block_root: Root
-  validator_index: Uint64
-  signature: Signature
+type AltairSyncCommitteeSignatureInput = {
+  slot: Uint64Input
+  beacon_block_root: RootInput
+  validator_index: Uint64Input
+  signature: SignatureInput
 }
 type GloasBeaconStateHistoricalSummariesItems = {
   block_summary_root: Root
@@ -1166,7 +1540,7 @@ type Phase0BeaconState = {
   current_justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
 }
-type ExtraData = { [x: string]: unknown }
+type ExtraData = { [key: string]: unknown }
 type Node = {
   slot: Uint64
   block_root: Root
@@ -1183,7 +1557,7 @@ type NodeV2 = {
   block_root: Root
   payload_status: 'pending' | 'empty' | 'full'
   parent_root: Root
-  parent_payload_status: ({ [x: string]: unknown } | null) | 'pending' | 'empty' | 'full'
+  parent_payload_status: null | 'pending' | 'empty' | 'full'
   justified_checkpoint: Checkpoint
   finalized_checkpoint: Checkpoint
   weight: Uint64
@@ -1213,14 +1587,32 @@ type PeerConnectionState = 'disconnected' | 'connecting' | 'connected' | 'discon
 type PeerConnectionDirection = 'inbound' | 'outbound'
 type Peer = {
   peer_id: PeerId
-  enr: ({ [x: string]: unknown } | null) | NetworkIdentityEnr
+  enr: null | NetworkIdentityEnr
   last_seen_p2p_address: NetworkIdentityP2pAddressesItems
   state: PeerConnectionState
   direction: PeerConnectionDirection
 }
+type PeerIdInput = string
 type Version = string
 type ClientVersionV1 = {
-  code: 'BU' | 'EJ' | 'EG' | 'GE' | 'GR' | 'LH' | 'LS' | 'NM' | 'NB' | 'TE' | 'TK' | 'PM' | 'RH'
+  code:
+    | 'BU'
+    | 'CN'
+    | 'EJ'
+    | 'EG'
+    | 'EX'
+    | 'GE'
+    | 'GR'
+    | 'LA'
+    | 'LH'
+    | 'LS'
+    | 'NM'
+    | 'NB'
+    | 'NE'
+    | 'TE'
+    | 'TK'
+    | 'PM'
+    | 'RH'
   name: string
   version: string
   commit: string
@@ -1250,11 +1642,15 @@ type PtcDuty = {
   validator_index: Uint64
   slot: Uint64
 }
+type GloasSignedExecutionPayloadEnvelopeContentsKzgProofs =
+  GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems[]
 type FuluBlockContents = {
   block: FuluBlockContentsBlock
   kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofs
   blobs: Blobs
 }
+type ElectraSignedBlockContentsKzgProofs =
+  GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems[]
 type ElectraBlockContents = {
   block: FuluBlockContentsBlock
   kzg_proofs: ElectraSignedBlockContentsKzgProofs
@@ -1265,38 +1661,57 @@ type DenebBlockContents = {
   kzg_proofs: ElectraSignedBlockContentsKzgProofs
   blobs: Blobs
 }
-type GloasBuilderRequestAuth = { data: string; slot: {} }
-type GloasBuilderEntry = {
-  url: string
-  auth: { message: GloasBuilderRequestAuth; signature: Signature }
-  builder_pubkeys: {}[]
-  max_execution_payment: {}
-  min_bid: {}
-  builder_boost_factor: {}
+type GloasBuilderRequestAuthInput = { data: string; slot: Uint64Input }
+type GloasSignedBuilderRequestAuthInput = {
+  message: GloasBuilderRequestAuthInput
+  signature: SignatureInput
 }
-type GloasBuilderConfig = { min_bid: {}; builder_boost_factor: {}; builders: GloasBuilderEntry[] }
+type GloasBuilderEntryInput = {
+  url: string
+  auth: GloasSignedBuilderRequestAuthInput
+  builder_pubkeys: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input[]
+  max_execution_payment: Uint64Input
+  min_bid: Uint64Input
+  builder_boost_factor: Uint64Input
+}
+type GloasBuilderConfigInput = {
+  min_bid: Uint64Input
+  builder_boost_factor: Uint64Input
+  builders: GloasBuilderEntryInput[]
+}
 type GloasBlockContents = {
   block: GloasBeaconBlock
   execution_payload_envelope: GloasExecutionPayloadEnvelope
   kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofs
   blobs: Blobs
 }
-type GloasSignedAggregateAndProof = {
-  message: { aggregator_index: Uint64; aggregate: GloasAttestation; selection_proof: Signature }
-  signature: Signature
+type GloasSignedAggregateAndProofInput = {
+  message: { aggregator_index: Uint64Input; aggregate: GloasAttestationInput } & {
+    selection_proof: SignatureInput
+  }
+  signature: SignatureInput
 }
-type ElectraSignedAggregateAndProof = {
-  message: { aggregator_index: Uint64; aggregate: ElectraAttestation; selection_proof: Signature }
-  signature: Signature
+type ElectraSignedAggregateAndProofInput = {
+  message: { aggregator_index: Uint64Input; aggregate: ElectraAttestationInput } & {
+    selection_proof: SignatureInput
+  }
+  signature: SignatureInput
 }
-type Phase0SignedAggregateAndProof = {
-  message: { aggregator_index: Uint64; aggregate: Phase0Attestation; selection_proof: Signature }
-  signature: Signature
+type Phase0SignedAggregateAndProofInput = {
+  message: { aggregator_index: Uint64Input; aggregate: Phase0AttestationInput } & {
+    selection_proof: SignatureInput
+  }
+  signature: SignatureInput
 }
-type AltairSyncCommitteeSubscription = {
-  validator_index: Uint64
-  sync_committee_indices: Uint64[]
-  until_epoch: Uint64
+type AltairSyncCommitteeSubscriptionInput = {
+  validator_index: Uint64Input
+  sync_committee_indices: Uint64Input[]
+  until_epoch: Uint64Input
+}
+type BeaconCommitteeSelectionInput = {
+  validator_index: Uint64Input
+  slot: Uint64Input
+  selection_proof: SignatureInput
 }
 type BeaconCommitteeSelection = {
   validator_index: Uint64
@@ -1310,35 +1725,59 @@ type AltairSyncCommitteeContribution = {
   aggregation_bits: GloasBeaconStateJustificationBits
   signature: Signature
 }
+type SyncCommitteeSelectionInput = {
+  validator_index: Uint64Input
+  slot: Uint64Input
+  subcommittee_index: Uint64Input
+  selection_proof: SignatureInput
+}
 type SyncCommitteeSelection = {
   validator_index: Uint64
   slot: Uint64
   subcommittee_index: Uint64
   selection_proof: Signature
 }
-type AltairContributionAndProof = {
-  aggregator_index: Uint64
-  selection_proof: Signature
-  contribution: AltairSyncCommitteeContribution
+type AltairSyncCommitteeContributionInput = {
+  slot: Uint64Input
+  beacon_block_root: RootInput
+  subcommittee_index: Uint64Input
+  aggregation_bits: GloasBeaconStateJustificationBitsInput
+  signature: SignatureInput
 }
-type AltairSignedContributionAndProof = {
-  message: AltairContributionAndProof
-  signature: Signature
+type AltairContributionAndProofInput = {
+  aggregator_index: Uint64Input
+  selection_proof: SignatureInput
+  contribution: AltairSyncCommitteeContributionInput
 }
-type SignedValidatorRegistration = {
+type AltairSignedContributionAndProofInput = {
+  message: AltairContributionAndProofInput
+  signature: SignatureInput
+}
+type SignedValidatorRegistrationInput = {
   message: {
-    fee_recipient: ExecutionAddress
-    gas_limit: Uint64
-    timestamp: Uint64
-    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0
+    fee_recipient: ExecutionAddressInput
+    gas_limit: Uint64Input
+    timestamp: Uint64Input
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
   }
-  signature: Signature
+  signature: SignatureInput
 }
-type GloasBuilderPreferencesEntry = {
-  proposer_pubkey: {}
+type GloasProposerPreferencesInput = {
+  dependent_root: RootInput
+  proposal_slot: Uint64Input
+  validator_index: Uint64Input
+  fee_recipient: ExecutionAddressInput
+  target_gas_limit: Uint64Input
+}
+type GloasSignedProposerPreferencesInput = {
+  message: GloasProposerPreferencesInput
+  signature: SignatureInput
+}
+type GloasBuilderPreferencesEntryInput = {
+  proposer_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Input
   url: string
-  auth: { message: GloasBuilderRequestAuth; signature: Signature }
-  max_execution_payment: {}
+  auth: GloasSignedBuilderRequestAuthInput
+  max_execution_payment: Uint64Input
 }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
@@ -1465,14 +1904,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/states/:state_id/validators': {
       $get:
         | {
-            input: { param: { state_id: string } } & {
-              query: {
-                id?: string[] | undefined
-                status?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
-              }
-            }
+            input: { param: { state_id: string } } & { query: { id?: unknown; status?: unknown } }
             output: {
               execution_optimistic: ExecutionOptimistic
               finalized: Finalized
@@ -1482,53 +1914,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { state_id: string } } & {
-              query: {
-                id?: string[] | undefined
-                status?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
-              }
-            }
+            input: { param: { state_id: string } } & { query: { id?: unknown; status?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { state_id: string } } & {
-              query: {
-                id?: string[] | undefined
-                status?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
-              }
-            }
+            input: { param: { state_id: string } } & { query: { id?: unknown; status?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { state_id: string } } & {
-              query: {
-                id?: string[] | undefined
-                status?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
-              }
-            }
+            input: { param: { state_id: string } } & { query: { id?: unknown; status?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 414
           }
         | {
-            input: { param: { state_id: string } } & {
-              query: {
-                id?: string[] | undefined
-                status?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
-              }
-            }
+            input: { param: { state_id: string } } & { query: { id?: unknown; status?: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -1537,10 +1941,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { state_id: string } } & {
               json: {
-                ids?: string[] | undefined
-                statuses?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
+                ids?: string[]
+                statuses?: (ValidatorStatusInput | 'active' | 'pending' | 'exited' | 'withdrawal')[]
               }
             }
             output: {
@@ -1554,10 +1956,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { state_id: string } } & {
               json: {
-                ids?: string[] | undefined
-                statuses?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
+                ids?: string[]
+                statuses?: (ValidatorStatusInput | 'active' | 'pending' | 'exited' | 'withdrawal')[]
               }
             }
             output: ErrorMessage
@@ -1567,10 +1967,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { state_id: string } } & {
               json: {
-                ids?: string[] | undefined
-                statuses?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
+                ids?: string[]
+                statuses?: (ValidatorStatusInput | 'active' | 'pending' | 'exited' | 'withdrawal')[]
               }
             }
             output: ErrorMessage
@@ -1580,10 +1978,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { state_id: string } } & {
               json: {
-                ids?: string[] | undefined
-                statuses?:
-                  | (ValidatorStatus | 'active' | 'pending' | 'exited' | 'withdrawal')[]
-                  | undefined
+                ids?: string[]
+                statuses?: (ValidatorStatusInput | 'active' | 'pending' | 'exited' | 'withdrawal')[]
               }
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -1627,7 +2023,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/states/:state_id/validator_balances': {
       $get:
         | {
-            input: { param: { state_id: string } } & { query: { id?: string[] | undefined } }
+            input: { param: { state_id: string } } & { query: { id?: unknown } }
             output: {
               execution_optimistic: ExecutionOptimistic
               finalized: Finalized
@@ -1637,37 +2033,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { state_id: string } } & { query: { id?: string[] | undefined } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { param: { state_id: string } } & { query: { id?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { state_id: string } } & { query: { id?: string[] | undefined } }
+            input: { param: { state_id: string } } & { query: { id?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { state_id: string } } & { query: { id?: string[] | undefined } }
+            input: { param: { state_id: string } } & { query: { id?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { state_id: string } } & { query: { id?: string[] | undefined } }
+            input: { param: { state_id: string } } & { query: { id?: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { param: { state_id: string } } & { query: { id?: string[] | undefined } }
+            input: { param: { state_id: string } } & { query: { id?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 414
           }
         | {
-            input: { param: { state_id: string } } & { query: { id?: string[] | undefined } }
+            input: { param: { state_id: string } } & { query: { id?: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -1685,8 +2081,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { state_id: string } } & { json: string[] }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
@@ -1729,8 +2125,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { state_id: string } } & { json: string[] }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
@@ -1763,7 +2159,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { state_id: string } } & {
-              json: { ids?: string[] | undefined; statuses?: BuilderStatus[] | undefined }
+              json: { ids?: string[]; statuses?: BuilderStatusInput[] }
             }
             output: {
               execution_optimistic: ExecutionOptimistic
@@ -1775,7 +2171,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { state_id: string } } & {
-              json: { ids?: string[] | undefined; statuses?: BuilderStatus[] | undefined }
+              json: { ids?: string[]; statuses?: BuilderStatusInput[] }
             }
             output: ErrorMessage
             outputFormat: 'json'
@@ -1783,7 +2179,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { state_id: string } } & {
-              json: { ids?: string[] | undefined; statuses?: BuilderStatus[] | undefined }
+              json: { ids?: string[]; statuses?: BuilderStatusInput[] }
             }
             output: ErrorMessage
             outputFormat: 'json'
@@ -1791,7 +2187,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { state_id: string } } & {
-              json: { ids?: string[] | undefined; statuses?: BuilderStatus[] | undefined }
+              json: { ids?: string[]; statuses?: BuilderStatusInput[] }
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -1803,11 +2199,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { state_id: string } } & {
-              query: {
-                epoch?: Uint64 | undefined
-                index?: Uint64 | undefined
-                slot?: Uint64 | undefined
-              }
+              query: { epoch?: Uint64Input; index?: Uint64Input; slot?: Uint64Input }
             }
             output: {
               execution_optimistic: ExecutionOptimistic
@@ -1819,11 +2211,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { state_id: string } } & {
-              query: {
-                epoch?: Uint64 | undefined
-                index?: Uint64 | undefined
-                slot?: Uint64 | undefined
-              }
+              query: { epoch?: Uint64Input; index?: Uint64Input; slot?: Uint64Input }
             }
             output: ErrorMessage
             outputFormat: 'json'
@@ -1831,11 +2219,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { state_id: string } } & {
-              query: {
-                epoch?: Uint64 | undefined
-                index?: Uint64 | undefined
-                slot?: Uint64 | undefined
-              }
+              query: { epoch?: Uint64Input; index?: Uint64Input; slot?: Uint64Input }
             }
             output: ErrorMessage
             outputFormat: 'json'
@@ -1843,11 +2227,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { state_id: string } } & {
-              query: {
-                epoch?: Uint64 | undefined
-                index?: Uint64 | undefined
-                slot?: Uint64 | undefined
-              }
+              query: { epoch?: Uint64Input; index?: Uint64Input; slot?: Uint64Input }
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -1858,7 +2238,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/states/:state_id/sync_committees': {
       $get:
         | {
-            input: { param: { state_id: string } } & { query: { epoch?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { epoch?: Uint64Input } }
             output: {
               execution_optimistic: ExecutionOptimistic
               finalized: Finalized
@@ -1868,19 +2248,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { state_id: string } } & { query: { epoch?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { epoch?: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { state_id: string } } & { query: { epoch?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { epoch?: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { state_id: string } } & { query: { epoch?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { epoch?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -1890,7 +2270,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/states/:state_id/ptc': {
       $get:
         | {
-            input: { param: { state_id: string } } & { query: { slot?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { slot?: Uint64Input } }
             output: {
               execution_optimistic: ExecutionOptimistic
               finalized: Finalized
@@ -1900,31 +2280,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { state_id: string } } & { query: { slot?: Uint64 | undefined } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { param: { state_id: string } } & { query: { slot?: Uint64Input } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { state_id: string } } & { query: { slot?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { slot?: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { state_id: string } } & { query: { slot?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { slot?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { state_id: string } } & { query: { slot?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { slot?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { param: { state_id: string } } & { query: { slot?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { slot?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -1934,7 +2314,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/states/:state_id/randao': {
       $get:
         | {
-            input: { param: { state_id: string } } & { query: { epoch?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { epoch?: Uint64Input } }
             output: {
               execution_optimistic: ExecutionOptimistic
               finalized: Finalized
@@ -1944,19 +2324,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { state_id: string } } & { query: { epoch?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { epoch?: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { state_id: string } } & { query: { epoch?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { epoch?: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { state_id: string } } & { query: { epoch?: Uint64 | undefined } }
+            input: { param: { state_id: string } } & { query: { epoch?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -1976,12 +2356,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { state_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { state_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { state_id: string } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -2021,12 +2396,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { state_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { state_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { state_id: string } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -2066,12 +2436,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { state_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { state_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { state_id: string } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -2111,12 +2476,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { state_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { state_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { state_id: string } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -2156,12 +2516,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { state_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { state_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { state_id: string } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -2201,12 +2556,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { state_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { state_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { state_id: string } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -2236,7 +2586,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/headers': {
       $get:
         | {
-            input: { query: { slot?: Uint64 | undefined; parent_root?: Root | undefined } }
+            input: { query: { slot?: Uint64Input; parent_root?: RootInput } }
             output: {
               execution_optimistic: ExecutionOptimistic
               finalized: Finalized
@@ -2246,13 +2596,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { query: { slot?: Uint64 | undefined; parent_root?: Root | undefined } }
+            input: { query: { slot?: Uint64Input; parent_root?: RootInput } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { slot?: Uint64 | undefined; parent_root?: Root | undefined } }
+            input: { query: { slot?: Uint64Input; parent_root?: RootInput } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -2294,7 +2644,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v2/beacon/blinded_blocks': {
       $post:
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
                 'Eth-Consensus-Version':
                   | 'phase0'
@@ -2307,20 +2657,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               json:
-                | ElectraSignedBlindedBeaconBlock
-                | DenebSignedBlindedBeaconBlock
-                | CapellaSignedBlindedBeaconBlock
-                | BellatrixSignedBlindedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | ElectraSignedBlindedBeaconBlockInput
+                | DenebSignedBlindedBeaconBlockInput
+                | CapellaSignedBlindedBeaconBlockInput
+                | BellatrixSignedBlindedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
                 'Eth-Consensus-Version':
                   | 'phase0'
@@ -2333,20 +2682,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               json:
-                | ElectraSignedBlindedBeaconBlock
-                | DenebSignedBlindedBeaconBlock
-                | CapellaSignedBlindedBeaconBlock
-                | BellatrixSignedBlindedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | ElectraSignedBlindedBeaconBlockInput
+                | DenebSignedBlindedBeaconBlockInput
+                | CapellaSignedBlindedBeaconBlockInput
+                | BellatrixSignedBlindedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: {}
             outputFormat: string
             status: 202
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
                 'Eth-Consensus-Version':
                   | 'phase0'
@@ -2359,20 +2707,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               json:
-                | ElectraSignedBlindedBeaconBlock
-                | DenebSignedBlindedBeaconBlock
-                | CapellaSignedBlindedBeaconBlock
-                | BellatrixSignedBlindedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | ElectraSignedBlindedBeaconBlockInput
+                | DenebSignedBlindedBeaconBlockInput
+                | CapellaSignedBlindedBeaconBlockInput
+                | BellatrixSignedBlindedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
                 'Eth-Consensus-Version':
                   | 'phase0'
@@ -2385,20 +2732,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               json:
-                | ElectraSignedBlindedBeaconBlock
-                | DenebSignedBlindedBeaconBlock
-                | CapellaSignedBlindedBeaconBlock
-                | BellatrixSignedBlindedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | ElectraSignedBlindedBeaconBlockInput
+                | DenebSignedBlindedBeaconBlockInput
+                | CapellaSignedBlindedBeaconBlockInput
+                | BellatrixSignedBlindedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
                 'Eth-Consensus-Version':
                   | 'phase0'
@@ -2411,20 +2757,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               json:
-                | ElectraSignedBlindedBeaconBlock
-                | DenebSignedBlindedBeaconBlock
-                | CapellaSignedBlindedBeaconBlock
-                | BellatrixSignedBlindedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | ElectraSignedBlindedBeaconBlockInput
+                | DenebSignedBlindedBeaconBlockInput
+                | CapellaSignedBlindedBeaconBlockInput
+                | BellatrixSignedBlindedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
                 'Eth-Consensus-Version':
                   | 'phase0'
@@ -2437,13 +2782,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               json:
-                | ElectraSignedBlindedBeaconBlock
-                | DenebSignedBlindedBeaconBlock
-                | CapellaSignedBlindedBeaconBlock
-                | BellatrixSignedBlindedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | ElectraSignedBlindedBeaconBlockInput
+                | DenebSignedBlindedBeaconBlockInput
+                | CapellaSignedBlindedBeaconBlockInput
+                | BellatrixSignedBlindedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -2454,132 +2798,108 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v2/beacon/blocks': {
       $post:
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
-              header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Builder-Url'?: string | undefined
-              }
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
+              header: { 'Eth-Consensus-Version': ConsensusVersionInput; 'Eth-Builder-Url'?: string }
             } & {
               json:
-                | GloasSignedBeaconBlock
-                | FuluSignedBlockContents
-                | ElectraSignedBlockContents
-                | DenebSignedBlockContents
-                | CapellaSignedBeaconBlock
-                | BellatrixSignedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | GloasSignedBeaconBlockInput
+                | FuluSignedBlockContentsInput
+                | ElectraSignedBlockContentsInput
+                | DenebSignedBlockContentsInput
+                | CapellaSignedBeaconBlockInput
+                | BellatrixSignedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
-              header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Builder-Url'?: string | undefined
-              }
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
+              header: { 'Eth-Consensus-Version': ConsensusVersionInput; 'Eth-Builder-Url'?: string }
             } & {
               json:
-                | GloasSignedBeaconBlock
-                | FuluSignedBlockContents
-                | ElectraSignedBlockContents
-                | DenebSignedBlockContents
-                | CapellaSignedBeaconBlock
-                | BellatrixSignedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | GloasSignedBeaconBlockInput
+                | FuluSignedBlockContentsInput
+                | ElectraSignedBlockContentsInput
+                | DenebSignedBlockContentsInput
+                | CapellaSignedBeaconBlockInput
+                | BellatrixSignedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: {}
             outputFormat: string
             status: 202
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
-              header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Builder-Url'?: string | undefined
-              }
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
+              header: { 'Eth-Consensus-Version': ConsensusVersionInput; 'Eth-Builder-Url'?: string }
             } & {
               json:
-                | GloasSignedBeaconBlock
-                | FuluSignedBlockContents
-                | ElectraSignedBlockContents
-                | DenebSignedBlockContents
-                | CapellaSignedBeaconBlock
-                | BellatrixSignedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | GloasSignedBeaconBlockInput
+                | FuluSignedBlockContentsInput
+                | ElectraSignedBlockContentsInput
+                | DenebSignedBlockContentsInput
+                | CapellaSignedBeaconBlockInput
+                | BellatrixSignedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
-              header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Builder-Url'?: string | undefined
-              }
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
+              header: { 'Eth-Consensus-Version': ConsensusVersionInput; 'Eth-Builder-Url'?: string }
             } & {
               json:
-                | GloasSignedBeaconBlock
-                | FuluSignedBlockContents
-                | ElectraSignedBlockContents
-                | DenebSignedBlockContents
-                | CapellaSignedBeaconBlock
-                | BellatrixSignedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | GloasSignedBeaconBlockInput
+                | FuluSignedBlockContentsInput
+                | ElectraSignedBlockContentsInput
+                | DenebSignedBlockContentsInput
+                | CapellaSignedBeaconBlockInput
+                | BellatrixSignedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
-              header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Builder-Url'?: string | undefined
-              }
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
+              header: { 'Eth-Consensus-Version': ConsensusVersionInput; 'Eth-Builder-Url'?: string }
             } & {
               json:
-                | GloasSignedBeaconBlock
-                | FuluSignedBlockContents
-                | ElectraSignedBlockContents
-                | DenebSignedBlockContents
-                | CapellaSignedBeaconBlock
-                | BellatrixSignedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | GloasSignedBeaconBlockInput
+                | FuluSignedBlockContentsInput
+                | ElectraSignedBlockContentsInput
+                | DenebSignedBlockContentsInput
+                | CapellaSignedBeaconBlockInput
+                | BellatrixSignedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
-              header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Builder-Url'?: string | undefined
-              }
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
+              header: { 'Eth-Consensus-Version': ConsensusVersionInput; 'Eth-Builder-Url'?: string }
             } & {
               json:
-                | GloasSignedBeaconBlock
-                | FuluSignedBlockContents
-                | ElectraSignedBlockContents
-                | DenebSignedBlockContents
-                | CapellaSignedBeaconBlock
-                | BellatrixSignedBeaconBlock
-                | AltairSignedBeaconBlock
-                | Phase0SignedBeaconBlock
-                | { [x: string]: unknown }
+                | GloasSignedBeaconBlockInput
+                | FuluSignedBlockContentsInput
+                | ElectraSignedBlockContentsInput
+                | DenebSignedBlockContentsInput
+                | CapellaSignedBeaconBlockInput
+                | BellatrixSignedBeaconBlockInput
+                | AltairSignedBeaconBlockInput
+                | Phase0SignedBeaconBlockInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -2590,32 +2910,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/execution_payload_bids': {
       $post:
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasSignedExecutionPayloadBid | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasSignedExecutionPayloadBidInput
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasSignedExecutionPayloadBid | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasSignedExecutionPayloadBidInput
             }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasSignedExecutionPayloadBid | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasSignedExecutionPayloadBidInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasSignedExecutionPayloadBid | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasSignedExecutionPayloadBidInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -2626,96 +2946,90 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/execution_payload_envelopes': {
       $post:
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Blob-Data-Included': boolean
+                'Eth-Consensus-Version': ConsensusVersionInput
+                'Eth-Blob-Data-Included': string
               }
             } & {
               json:
-                | GloasSignedExecutionPayloadEnvelopeContents
-                | GloasSignedExecutionPayloadEnvelope
-                | { [x: string]: unknown }
+                | GloasSignedExecutionPayloadEnvelopeContentsInput
+                | GloasSignedExecutionPayloadEnvelopeInput
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Blob-Data-Included': boolean
+                'Eth-Consensus-Version': ConsensusVersionInput
+                'Eth-Blob-Data-Included': string
               }
             } & {
               json:
-                | GloasSignedExecutionPayloadEnvelopeContents
-                | GloasSignedExecutionPayloadEnvelope
-                | { [x: string]: unknown }
+                | GloasSignedExecutionPayloadEnvelopeContentsInput
+                | GloasSignedExecutionPayloadEnvelopeInput
             }
             output: {}
             outputFormat: string
             status: 202
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Blob-Data-Included': boolean
+                'Eth-Consensus-Version': ConsensusVersionInput
+                'Eth-Blob-Data-Included': string
               }
             } & {
               json:
-                | GloasSignedExecutionPayloadEnvelopeContents
-                | GloasSignedExecutionPayloadEnvelope
-                | { [x: string]: unknown }
+                | GloasSignedExecutionPayloadEnvelopeContentsInput
+                | GloasSignedExecutionPayloadEnvelopeInput
             }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Blob-Data-Included': boolean
+                'Eth-Consensus-Version': ConsensusVersionInput
+                'Eth-Blob-Data-Included': string
               }
             } & {
               json:
-                | GloasSignedExecutionPayloadEnvelopeContents
-                | GloasSignedExecutionPayloadEnvelope
-                | { [x: string]: unknown }
+                | GloasSignedExecutionPayloadEnvelopeContentsInput
+                | GloasSignedExecutionPayloadEnvelopeInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Blob-Data-Included': boolean
+                'Eth-Consensus-Version': ConsensusVersionInput
+                'Eth-Blob-Data-Included': string
               }
             } & {
               json:
-                | GloasSignedExecutionPayloadEnvelopeContents
-                | GloasSignedExecutionPayloadEnvelope
-                | { [x: string]: unknown }
+                | GloasSignedExecutionPayloadEnvelopeContentsInput
+                | GloasSignedExecutionPayloadEnvelopeInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { query: { broadcast_validation?: BroadcastValidation | undefined } } & {
+            input: { query: { broadcast_validation?: BroadcastValidationInput } } & {
               header: {
-                'Eth-Consensus-Version': ConsensusVersion
-                'Eth-Blob-Data-Included': boolean
+                'Eth-Consensus-Version': ConsensusVersionInput
+                'Eth-Blob-Data-Included': string
               }
             } & {
               json:
-                | GloasSignedExecutionPayloadEnvelopeContents
-                | GloasSignedExecutionPayloadEnvelope
-                | { [x: string]: unknown }
+                | GloasSignedExecutionPayloadEnvelopeContentsInput
+                | GloasSignedExecutionPayloadEnvelopeInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -2736,12 +3050,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { block_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { block_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { block_id: string } }
             output: ErrorMessage
@@ -2771,25 +3080,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/proposer_preferences': {
       $get:
         | {
-            input: { query: { slot?: Uint64 | undefined; dependent_root?: Root | undefined } }
+            input: { query: { slot?: Uint64Input; dependent_root?: RootInput } }
             output: { version: 'gloas'; data: GloasSignedProposerPreferences[] }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { slot?: Uint64 | undefined; dependent_root?: Root | undefined } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { query: { slot?: Uint64Input; dependent_root?: RootInput } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { query: { slot?: Uint64 | undefined; dependent_root?: Root | undefined } }
+            input: { query: { slot?: Uint64Input; dependent_root?: RootInput } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { slot?: Uint64 | undefined; dependent_root?: Root | undefined } }
+            input: { query: { slot?: Uint64Input; dependent_root?: RootInput } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -2824,12 +3133,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { block_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { block_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { block_id: string } }
             output: ErrorMessage
@@ -2932,49 +3236,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/blobs/:block_id': {
       $get:
         | {
-            input: { param: { block_id: string } } & {
-              query: { versioned_hashes?: VersionedHash[] | undefined }
-            }
+            input: { param: { block_id: string } } & { query: { versioned_hashes?: unknown } }
             output: { execution_optimistic: ExecutionOptimistic; finalized: Finalized; data: Blobs }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { block_id: string } } & {
-              query: { versioned_hashes?: VersionedHash[] | undefined }
-            }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { param: { block_id: string } } & { query: { versioned_hashes?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { block_id: string } } & {
-              query: { versioned_hashes?: VersionedHash[] | undefined }
-            }
+            input: { param: { block_id: string } } & { query: { versioned_hashes?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { block_id: string } } & {
-              query: { versioned_hashes?: VersionedHash[] | undefined }
-            }
+            input: { param: { block_id: string } } & { query: { versioned_hashes?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { block_id: string } } & {
-              query: { versioned_hashes?: VersionedHash[] | undefined }
-            }
+            input: { param: { block_id: string } } & { query: { versioned_hashes?: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { param: { block_id: string } } & {
-              query: { versioned_hashes?: VersionedHash[] | undefined }
-            }
+            input: { param: { block_id: string } } & { query: { versioned_hashes?: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -2984,7 +3276,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/debug/beacon/data_column_sidecars/:block_id': {
       $get:
         | {
-            input: { param: { block_id: string } } & { query: { indices?: Uint64[] | undefined } }
+            input: { param: { block_id: string } } & { query: { indices?: unknown } }
             output: {
               version: 'fulu' | 'gloas'
               execution_optimistic: ExecutionOptimistic
@@ -2995,31 +3287,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { block_id: string } } & { query: { indices?: Uint64[] | undefined } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { param: { block_id: string } } & { query: { indices?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { block_id: string } } & { query: { indices?: Uint64[] | undefined } }
+            input: { param: { block_id: string } } & { query: { indices?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { block_id: string } } & { query: { indices?: Uint64[] | undefined } }
+            input: { param: { block_id: string } } & { query: { indices?: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { block_id: string } } & { query: { indices?: Uint64[] | undefined } }
+            input: { param: { block_id: string } } & { query: { indices?: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { param: { block_id: string } } & { query: { indices?: Uint64[] | undefined } }
+            input: { param: { block_id: string } } & { query: { indices?: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3093,7 +3385,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/rewards/attestations/:epoch': {
       $post:
         | {
-            input: { param: { epoch: Uint64 } } & { json: string[] }
+            input: { param: { epoch: Uint64Input } } & { json: string[] }
             output: {
               execution_optimistic: ExecutionOptimistic
               finalized: Finalized
@@ -3103,19 +3395,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: string[] }
+            input: { param: { epoch: Uint64Input } } & { json: string[] }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: string[] }
+            input: { param: { epoch: Uint64Input } } & { json: string[] }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: string[] }
+            input: { param: { epoch: Uint64Input } } & { json: string[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3141,12 +3433,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { block_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { block_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { block_id: string } }
             output: ErrorMessage
@@ -3176,7 +3463,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/light_client/bootstrap/:block_root': {
       $get:
         | {
-            input: { param: { block_root: Root } }
+            input: { param: { block_root: RootInput } }
             output: {
               version: ConsensusVersion
               data:
@@ -3190,31 +3477,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { block_root: Root } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { param: { block_root: RootInput } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { block_root: Root } }
+            input: { param: { block_root: RootInput } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { block_root: Root } }
+            input: { param: { block_root: RootInput } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { block_root: Root } }
+            input: { param: { block_root: RootInput } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { param: { block_root: Root } }
+            input: { param: { block_root: RootInput } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3224,7 +3511,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/light_client/updates': {
       $get:
         | {
-            input: { query: { start_period: Uint64; count: Uint64 } }
+            input: { query: { start_period: Uint64Input; count: Uint64Input } }
             output: {
               version: ConsensusVersion
               data:
@@ -3238,25 +3525,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { query: { start_period: Uint64; count: Uint64 } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { query: { start_period: Uint64Input; count: Uint64Input } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { query: { start_period: Uint64; count: Uint64 } }
+            input: { query: { start_period: Uint64Input; count: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { start_period: Uint64; count: Uint64 } }
+            input: { query: { start_period: Uint64Input; count: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { query: { start_period: Uint64; count: Uint64 } }
+            input: { query: { start_period: Uint64Input; count: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3279,7 +3566,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
         | { input: {}; output: ErrorMessage; outputFormat: 'json'; status: 404 }
         | {
             input: {}
@@ -3311,7 +3598,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
         | { input: {}; output: ErrorMessage; outputFormat: 'json'; status: 404 }
         | {
             input: {}
@@ -3330,7 +3617,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v2/beacon/pool/attestations': {
       $get:
         | {
-            input: { query: { slot?: Uint64 | undefined; committee_index?: Uint64 | undefined } }
+            input: { query: { slot?: Uint64Input; committee_index?: Uint64Input } }
             output: {
               version:
                 | 'phase0'
@@ -3347,45 +3634,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { query: { slot?: Uint64 | undefined; committee_index?: Uint64 | undefined } }
+            input: { query: { slot?: Uint64Input; committee_index?: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { slot?: Uint64 | undefined; committee_index?: Uint64 | undefined } }
+            input: { query: { slot?: Uint64Input; committee_index?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
       $post:
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: ElectraSingleAttestation[] | Phase0Attestation[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: ElectraSingleAttestationInput[] | Phase0AttestationInput[]
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: ElectraSingleAttestation[] | Phase0Attestation[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: ElectraSingleAttestationInput[] | Phase0AttestationInput[]
             }
             output: IndexedErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: ElectraSingleAttestation[] | Phase0Attestation[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: ElectraSingleAttestationInput[] | Phase0AttestationInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: ElectraSingleAttestation[] | Phase0Attestation[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: ElectraSingleAttestationInput[] | Phase0AttestationInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -3396,57 +3683,57 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/pool/payload_attestations': {
       $get:
         | {
-            input: { query: { slot?: Uint64 | undefined } }
+            input: { query: { slot?: Uint64Input } }
             output: { version: 'gloas'; data: GloasPayloadAttestation[] }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { slot?: Uint64 | undefined } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { query: { slot?: Uint64Input } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { query: { slot?: Uint64 | undefined } }
+            input: { query: { slot?: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { slot?: Uint64 | undefined } }
+            input: { query: { slot?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
       $post:
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasPayloadAttestationMessage[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasPayloadAttestationMessageInput[]
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasPayloadAttestationMessage[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasPayloadAttestationMessageInput[]
             }
             output: IndexedErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasPayloadAttestationMessage[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasPayloadAttestationMessageInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasPayloadAttestationMessage[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasPayloadAttestationMessageInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -3481,24 +3768,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasAttesterSlashing | ElectraAttesterSlashing | Phase0AttesterSlashing
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json:
+                | GloasAttesterSlashingInput
+                | ElectraAttesterSlashingInput
+                | Phase0AttesterSlashingInput
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasAttesterSlashing | ElectraAttesterSlashing | Phase0AttesterSlashing
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json:
+                | GloasAttesterSlashingInput
+                | ElectraAttesterSlashingInput
+                | Phase0AttesterSlashingInput
             }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasAttesterSlashing | ElectraAttesterSlashing | Phase0AttesterSlashing
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json:
+                | GloasAttesterSlashingInput
+                | ElectraAttesterSlashingInput
+                | Phase0AttesterSlashingInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -3521,15 +3817,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $post:
-        | { input: { json: Phase0ProposerSlashing }; output: {}; outputFormat: string; status: 200 }
         | {
-            input: { json: Phase0ProposerSlashing }
+            input: { json: Phase0ProposerSlashingInput }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: Phase0ProposerSlashingInput }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: Phase0ProposerSlashing }
+            input: { json: Phase0ProposerSlashingInput }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3539,19 +3840,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/beacon/pool/sync_committees': {
       $post:
         | {
-            input: { json: AltairSyncCommitteeSignature[] }
+            input: { json: AltairSyncCommitteeSignatureInput[] }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { json: AltairSyncCommitteeSignature[] }
+            input: { json: AltairSyncCommitteeSignatureInput[] }
             output: IndexedErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: AltairSyncCommitteeSignature[] }
+            input: { json: AltairSyncCommitteeSignatureInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3574,19 +3875,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: Phase0SignedVoluntaryExit }
+            input: { json: Phase0SignedVoluntaryExitInput }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { json: Phase0SignedVoluntaryExit }
+            input: { json: Phase0SignedVoluntaryExitInput }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: Phase0SignedVoluntaryExit }
+            input: { json: Phase0SignedVoluntaryExitInput }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3609,19 +3910,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: CapellaSignedBLSToExecutionChange[] }
+            input: { json: CapellaSignedBLSToExecutionChangeInput[] }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { json: CapellaSignedBLSToExecutionChange[] }
+            input: { json: CapellaSignedBLSToExecutionChangeInput[] }
             output: IndexedErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CapellaSignedBLSToExecutionChange[] }
+            input: { json: CapellaSignedBLSToExecutionChangeInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3657,12 +3958,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { state_id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { state_id: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { state_id: string } }
             output: ErrorMessage
@@ -3765,23 +4061,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/node/peers': {
       $get:
         | {
-            input: {
-              query: {
-                state?: PeerConnectionState[] | undefined
-                direction?: PeerConnectionDirection[] | undefined
-              }
-            }
+            input: { query: { state?: unknown; direction?: unknown } }
             output: { data: Peer[]; meta: { count: number } }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                state?: PeerConnectionState[] | undefined
-                direction?: PeerConnectionDirection[] | undefined
-              }
-            }
+            input: { query: { state?: unknown; direction?: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3791,25 +4077,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/node/peers/:peer_id': {
       $get:
         | {
-            input: { param: { peer_id: PeerId } }
+            input: { param: { peer_id: PeerIdInput } }
             output: { data: Peer }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { peer_id: PeerId } }
+            input: { param: { peer_id: PeerIdInput } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { peer_id: PeerId } }
+            input: { param: { peer_id: PeerIdInput } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { peer_id: PeerId } }
+            input: { param: { peer_id: PeerIdInput } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -3895,25 +4181,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/node/health': {
       $get:
         | {
-            input: { query: { syncing_status?: number | undefined } }
+            input: { query: { syncing_status?: unknown } }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { query: { syncing_status?: number | undefined } }
+            input: { query: { syncing_status?: unknown } }
             output: {}
             outputFormat: string
             status: 206
           }
         | {
-            input: { query: { syncing_status?: number | undefined } }
+            input: { query: { syncing_status?: unknown } }
             output: {}
             outputFormat: string
             status: 400
           }
         | {
-            input: { query: { syncing_status?: number | undefined } }
+            input: { query: { syncing_status?: unknown } }
             output: {}
             outputFormat: string
             status: 503
@@ -3935,7 +4221,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {}
-            output: { data: { [x: string]: unknown } }
+            output: { data: { [key: string]: unknown } }
             outputFormat: 'json'
             status: 200
           }
@@ -3966,7 +4252,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/duties/attester/:epoch': {
       $post:
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: {
               dependent_root: DependentRoot
               execution_optimistic: ExecutionOptimistic
@@ -3976,19 +4262,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -3998,7 +4284,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/duties/proposer/:epoch': {
       $get:
         | {
-            input: { param: { epoch: Uint64 } }
+            input: { param: { epoch: Uint64Input } }
             output: {
               dependent_root: DependentRoot
               execution_optimistic: ExecutionOptimistic
@@ -4008,19 +4294,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { epoch: Uint64 } }
+            input: { param: { epoch: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { epoch: Uint64 } }
+            input: { param: { epoch: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { param: { epoch: Uint64 } }
+            input: { param: { epoch: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4030,7 +4316,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v2/validator/duties/proposer/:epoch': {
       $get:
         | {
-            input: { param: { epoch: Uint64 } }
+            input: { param: { epoch: Uint64Input } }
             output: {
               dependent_root: DependentRoot
               execution_optimistic: ExecutionOptimistic
@@ -4040,19 +4326,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { epoch: Uint64 } }
+            input: { param: { epoch: Uint64Input } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { epoch: Uint64 } }
+            input: { param: { epoch: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { param: { epoch: Uint64 } }
+            input: { param: { epoch: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4062,25 +4348,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/duties/sync/:epoch': {
       $post:
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { execution_optimistic: ExecutionOptimistic; data: AltairSyncDuty[] }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4090,7 +4376,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/duties/ptc/:epoch': {
       $post:
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: {
               dependent_root: DependentRoot
               execution_optimistic: ExecutionOptimistic
@@ -4100,19 +4386,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4122,12 +4408,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v3/validator/blocks/:slot': {
       $get:
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                builder_boost_factor?: Uint64 | undefined
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                builder_boost_factor?: Uint64Input
               }
             }
             output: {
@@ -4152,25 +4438,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                builder_boost_factor?: Uint64 | undefined
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                builder_boost_factor?: Uint64Input
               }
             }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                builder_boost_factor?: Uint64 | undefined
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                builder_boost_factor?: Uint64Input
               }
             }
             output: ErrorMessage
@@ -4178,12 +4464,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                builder_boost_factor?: Uint64 | undefined
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                builder_boost_factor?: Uint64Input
               }
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -4191,12 +4477,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 406
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                builder_boost_factor?: Uint64 | undefined
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                builder_boost_factor?: Uint64Input
               }
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -4204,12 +4490,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                builder_boost_factor?: Uint64 | undefined
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                builder_boost_factor?: Uint64Input
               }
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
@@ -4221,15 +4507,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v4/validator/blocks/:slot': {
       $post:
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                include_payload: boolean
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                include_payload: string
               }
-            } & { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderConfig | { [x: string]: unknown }
+            } & { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderConfigInput
             }
             output: {
               version: 'gloas'
@@ -4242,90 +4528,90 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                include_payload: boolean
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                include_payload: string
               }
-            } & { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderConfig | { [x: string]: unknown }
+            } & { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderConfigInput
             }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                include_payload: boolean
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                include_payload: string
               }
-            } & { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderConfig | { [x: string]: unknown }
+            } & { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderConfigInput
             }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                include_payload: boolean
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                include_payload: string
               }
-            } & { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderConfig | { [x: string]: unknown }
+            } & { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderConfigInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                include_payload: boolean
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                include_payload: string
               }
-            } & { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderConfig | { [x: string]: unknown }
+            } & { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderConfigInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                include_payload: boolean
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                include_payload: string
               }
-            } & { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderConfig | { [x: string]: unknown }
+            } & { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderConfigInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { param: { slot: Uint64 } } & {
+            input: { param: { slot: Uint64Input } } & {
               query: {
-                randao_reveal: Signature
-                graffiti?: Graffiti | undefined
-                skip_randao_verification?: string | undefined
-                include_payload: boolean
+                randao_reveal: SignatureInput
+                graffiti?: GraffitiInput
+                skip_randao_verification?: string
+                include_payload: string
               }
-            } & { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderConfig | { [x: string]: unknown }
+            } & { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderConfigInput
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -4336,37 +4622,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/attestation_data': {
       $get:
         | {
-            input: { query: { slot: Uint64; committee_index?: Uint64 | undefined } }
+            input: { query: { slot: Uint64Input; committee_index?: Uint64Input } }
             output: { data: Phase0AttestationData }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { slot: Uint64; committee_index?: Uint64 | undefined } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { query: { slot: Uint64Input; committee_index?: Uint64Input } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { query: { slot: Uint64; committee_index?: Uint64 | undefined } }
+            input: { query: { slot: Uint64Input; committee_index?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { slot: Uint64; committee_index?: Uint64 | undefined } }
+            input: { query: { slot: Uint64Input; committee_index?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { query: { slot: Uint64; committee_index?: Uint64 | undefined } }
+            input: { query: { slot: Uint64Input; committee_index?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { query: { slot: Uint64; committee_index?: Uint64 | undefined } }
+            input: { query: { slot: Uint64Input; committee_index?: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4376,38 +4662,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/payload_attestation_data': {
       $get:
         | {
-            input: { query: { slot: Uint64 } }
+            input: { query: { slot: Uint64Input } }
             output: { version: 'gloas'; data: GloasPayloadAttestationData }
             outputFormat: 'json'
             status: 200
           }
+        | { input: { query: { slot: Uint64Input } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { query: { slot: Uint64Input } }; output: {}; outputFormat: string; status: 204 }
         | {
-            input: { query: { slot: Uint64 } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
-            status: 200
-          }
-        | { input: { query: { slot: Uint64 } }; output: {}; outputFormat: string; status: 204 }
-        | {
-            input: { query: { slot: Uint64 } }
+            input: { query: { slot: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { slot: Uint64 } }
+            input: { query: { slot: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { query: { slot: Uint64 } }
+            input: { query: { slot: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { query: { slot: Uint64 } }
+            input: { query: { slot: Uint64Input } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4417,7 +4698,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v2/validator/aggregate_attestation': {
       $get:
         | {
-            input: { query: { attestation_data_root: Root; slot: Uint64; committee_index: Uint64 } }
+            input: {
+              query: {
+                attestation_data_root: RootInput
+                slot: Uint64Input
+                committee_index: Uint64Input
+              }
+            }
             output: {
               version:
                 | 'phase0'
@@ -4434,37 +4721,73 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { query: { attestation_data_root: Root; slot: Uint64; committee_index: Uint64 } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: {
+              query: {
+                attestation_data_root: RootInput
+                slot: Uint64Input
+                committee_index: Uint64Input
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { query: { attestation_data_root: Root; slot: Uint64; committee_index: Uint64 } }
+            input: {
+              query: {
+                attestation_data_root: RootInput
+                slot: Uint64Input
+                committee_index: Uint64Input
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { attestation_data_root: Root; slot: Uint64; committee_index: Uint64 } }
+            input: {
+              query: {
+                attestation_data_root: RootInput
+                slot: Uint64Input
+                committee_index: Uint64Input
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { query: { attestation_data_root: Root; slot: Uint64; committee_index: Uint64 } }
+            input: {
+              query: {
+                attestation_data_root: RootInput
+                slot: Uint64Input
+                committee_index: Uint64Input
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { query: { attestation_data_root: Root; slot: Uint64; committee_index: Uint64 } }
+            input: {
+              query: {
+                attestation_data_root: RootInput
+                slot: Uint64Input
+                committee_index: Uint64Input
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { query: { attestation_data_root: Root; slot: Uint64; committee_index: Uint64 } }
+            input: {
+              query: {
+                attestation_data_root: RootInput
+                slot: Uint64Input
+                committee_index: Uint64Input
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4474,48 +4797,44 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v2/validator/aggregate_and_proofs': {
       $post:
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
               json:
-                | GloasSignedAggregateAndProof[]
-                | ElectraSignedAggregateAndProof[]
-                | Phase0SignedAggregateAndProof[]
-                | { [x: string]: unknown }
+                | GloasSignedAggregateAndProofInput[]
+                | ElectraSignedAggregateAndProofInput[]
+                | Phase0SignedAggregateAndProofInput[]
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
               json:
-                | GloasSignedAggregateAndProof[]
-                | ElectraSignedAggregateAndProof[]
-                | Phase0SignedAggregateAndProof[]
-                | { [x: string]: unknown }
+                | GloasSignedAggregateAndProofInput[]
+                | ElectraSignedAggregateAndProofInput[]
+                | Phase0SignedAggregateAndProofInput[]
             }
             output: IndexedErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
               json:
-                | GloasSignedAggregateAndProof[]
-                | ElectraSignedAggregateAndProof[]
-                | Phase0SignedAggregateAndProof[]
-                | { [x: string]: unknown }
+                | GloasSignedAggregateAndProofInput[]
+                | ElectraSignedAggregateAndProofInput[]
+                | Phase0SignedAggregateAndProofInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
               json:
-                | GloasSignedAggregateAndProof[]
-                | ElectraSignedAggregateAndProof[]
-                | Phase0SignedAggregateAndProof[]
-                | { [x: string]: unknown }
+                | GloasSignedAggregateAndProofInput[]
+                | ElectraSignedAggregateAndProofInput[]
+                | Phase0SignedAggregateAndProofInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -4528,10 +4847,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                validator_index: Uint64
-                committee_index: Uint64
-                committees_at_slot: Uint64
-                slot: Uint64
+                validator_index: Uint64Input
+                committee_index: Uint64Input
+                committees_at_slot: Uint64Input
+                slot: Uint64Input
                 is_aggregator: boolean
               }[]
             }
@@ -4542,10 +4861,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                validator_index: Uint64
-                committee_index: Uint64
-                committees_at_slot: Uint64
-                slot: Uint64
+                validator_index: Uint64Input
+                committee_index: Uint64Input
+                committees_at_slot: Uint64Input
+                slot: Uint64Input
                 is_aggregator: boolean
               }[]
             }
@@ -4556,10 +4875,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                validator_index: Uint64
-                committee_index: Uint64
-                committees_at_slot: Uint64
-                slot: Uint64
+                validator_index: Uint64Input
+                committee_index: Uint64Input
+                committees_at_slot: Uint64Input
+                slot: Uint64Input
                 is_aggregator: boolean
               }[]
             }
@@ -4570,10 +4889,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                validator_index: Uint64
-                committee_index: Uint64
-                committees_at_slot: Uint64
-                slot: Uint64
+                validator_index: Uint64Input
+                committee_index: Uint64Input
+                committees_at_slot: Uint64Input
+                slot: Uint64Input
                 is_aggregator: boolean
               }[]
             }
@@ -4586,19 +4905,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/sync_committee_subscriptions': {
       $post:
         | {
-            input: { json: AltairSyncCommitteeSubscription[] }
+            input: { json: AltairSyncCommitteeSubscriptionInput[] }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { json: AltairSyncCommitteeSubscription[] }
+            input: { json: AltairSyncCommitteeSubscriptionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: AltairSyncCommitteeSubscription[] }
+            input: { json: AltairSyncCommitteeSubscriptionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -4608,31 +4927,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/beacon_committee_selections': {
       $post:
         | {
-            input: { json: BeaconCommitteeSelection[] }
+            input: { json: BeaconCommitteeSelectionInput[] }
             output: { data: BeaconCommitteeSelection[] }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: BeaconCommitteeSelection[] }
+            input: { json: BeaconCommitteeSelectionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: BeaconCommitteeSelection[] }
+            input: { json: BeaconCommitteeSelectionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { json: BeaconCommitteeSelection[] }
+            input: { json: BeaconCommitteeSelectionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 501
           }
         | {
-            input: { json: BeaconCommitteeSelection[] }
+            input: { json: BeaconCommitteeSelectionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4642,31 +4961,61 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/sync_committee_contribution': {
       $get:
         | {
-            input: { query: { slot: Uint64; subcommittee_index: Uint64; beacon_block_root: Root } }
+            input: {
+              query: {
+                slot: Uint64Input
+                subcommittee_index: Uint64Input
+                beacon_block_root: RootInput
+              }
+            }
             output: { data: AltairSyncCommitteeContribution }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { slot: Uint64; subcommittee_index: Uint64; beacon_block_root: Root } }
+            input: {
+              query: {
+                slot: Uint64Input
+                subcommittee_index: Uint64Input
+                beacon_block_root: RootInput
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { slot: Uint64; subcommittee_index: Uint64; beacon_block_root: Root } }
+            input: {
+              query: {
+                slot: Uint64Input
+                subcommittee_index: Uint64Input
+                beacon_block_root: RootInput
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { query: { slot: Uint64; subcommittee_index: Uint64; beacon_block_root: Root } }
+            input: {
+              query: {
+                slot: Uint64Input
+                subcommittee_index: Uint64Input
+                beacon_block_root: RootInput
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { query: { slot: Uint64; subcommittee_index: Uint64; beacon_block_root: Root } }
+            input: {
+              query: {
+                slot: Uint64Input
+                subcommittee_index: Uint64Input
+                beacon_block_root: RootInput
+              }
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4676,31 +5025,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/sync_committee_selections': {
       $post:
         | {
-            input: { json: SyncCommitteeSelection[] }
+            input: { json: SyncCommitteeSelectionInput[] }
             output: { data: SyncCommitteeSelection[] }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: SyncCommitteeSelection[] }
+            input: { json: SyncCommitteeSelectionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: SyncCommitteeSelection[] }
+            input: { json: SyncCommitteeSelectionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { json: SyncCommitteeSelection[] }
+            input: { json: SyncCommitteeSelectionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 501
           }
         | {
-            input: { json: SyncCommitteeSelection[] }
+            input: { json: SyncCommitteeSelectionInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4710,19 +5059,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/contribution_and_proofs': {
       $post:
         | {
-            input: { json: AltairSignedContributionAndProof[] }
+            input: { json: AltairSignedContributionAndProofInput[] }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { json: AltairSignedContributionAndProof[] }
+            input: { json: AltairSignedContributionAndProofInput[] }
             output: IndexedErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: AltairSignedContributionAndProof[] }
+            input: { json: AltairSignedContributionAndProofInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -4732,19 +5081,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/prepare_beacon_proposer': {
       $post:
         | {
-            input: { json: { validator_index: Uint64; fee_recipient: ExecutionAddress }[] }
+            input: {
+              json: { validator_index: Uint64Input; fee_recipient: ExecutionAddressInput }[]
+            }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { json: { validator_index: Uint64; fee_recipient: ExecutionAddress }[] }
+            input: {
+              json: { validator_index: Uint64Input; fee_recipient: ExecutionAddressInput }[]
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { validator_index: Uint64; fee_recipient: ExecutionAddress }[] }
+            input: {
+              json: { validator_index: Uint64Input; fee_recipient: ExecutionAddressInput }[]
+            }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -4754,25 +5109,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/register_validator': {
       $post:
         | {
-            input: { json: SignedValidatorRegistration[] | { [x: string]: unknown } }
+            input: { json: SignedValidatorRegistrationInput[] }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { json: SignedValidatorRegistration[] | { [x: string]: unknown } }
+            input: { json: SignedValidatorRegistrationInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: SignedValidatorRegistration[] | { [x: string]: unknown } }
+            input: { json: SignedValidatorRegistrationInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { json: SignedValidatorRegistration[] | { [x: string]: unknown } }
+            input: { json: SignedValidatorRegistrationInput[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -4782,32 +5137,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/proposer_preferences': {
       $post:
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasSignedProposerPreferences[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasSignedProposerPreferencesInput[]
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasSignedProposerPreferences[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasSignedProposerPreferencesInput[]
             }
             output: IndexedErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasSignedProposerPreferences[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasSignedProposerPreferencesInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasSignedProposerPreferences[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasSignedProposerPreferencesInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -4818,40 +5173,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/builder_preferences': {
       $post:
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderPreferencesEntry[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderPreferencesEntryInput[]
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderPreferencesEntry[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderPreferencesEntryInput[]
             }
             output: IndexedErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderPreferencesEntry[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderPreferencesEntryInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 415
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderPreferencesEntry[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderPreferencesEntryInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { header: { 'Eth-Consensus-Version': ConsensusVersion } } & {
-              json: GloasBuilderPreferencesEntry[] | { [x: string]: unknown }
+            input: { header: { 'Eth-Consensus-Version': ConsensusVersionInput } } & {
+              json: GloasBuilderPreferencesEntryInput[]
             }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
@@ -4862,25 +5217,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/liveness/:epoch': {
       $post:
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { data: { index: Uint64; is_live: boolean }[] }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
           }
         | {
-            input: { param: { epoch: Uint64 } } & { json: Uint64[] }
+            input: { param: { epoch: Uint64Input } } & { json: Uint64Input[] }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 503
@@ -4890,37 +5245,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/eth/v1/validator/execution_payload_envelopes/:slot/:beacon_block_root': {
       $get:
         | {
-            input: { param: { slot: Uint64; beacon_block_root: Root } }
+            input: { param: { slot: Uint64Input; beacon_block_root: RootInput } }
             output: { version: 'gloas'; data: GloasExecutionPayloadEnvelope }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { slot: Uint64; beacon_block_root: Root } }
-            output: { [x: string]: unknown }
-            outputFormat: 'text'
+            input: { param: { slot: Uint64Input; beacon_block_root: RootInput } }
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { slot: Uint64; beacon_block_root: Root } }
+            input: { param: { slot: Uint64Input; beacon_block_root: RootInput } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { slot: Uint64; beacon_block_root: Root } }
+            input: { param: { slot: Uint64Input; beacon_block_root: RootInput } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { slot: Uint64; beacon_block_root: Root } }
+            input: { param: { slot: Uint64Input; beacon_block_root: RootInput } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 406
           }
         | {
-            input: { param: { slot: Uint64; beacon_block_root: Root } }
+            input: { param: { slot: Uint64Input; beacon_block_root: RootInput } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500
@@ -4929,107 +5284,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/eth/v1/events': {
       $get:
+        | { input: { query: { topics: unknown } }; output: {}; outputFormat: string; status: 200 }
         | {
-            input: {
-              query: {
-                topics: (
-                  | 'head'
-                  | 'head_v2'
-                  | 'block'
-                  | 'block_gossip'
-                  | 'attestation'
-                  | 'single_attestation'
-                  | 'voluntary_exit'
-                  | 'bls_to_execution_change'
-                  | 'proposer_slashing'
-                  | 'attester_slashing'
-                  | 'finalized_checkpoint'
-                  | 'chain_reorg'
-                  | 'contribution_and_proof'
-                  | 'light_client_finality_update'
-                  | 'light_client_optimistic_update'
-                  | 'payload_attributes'
-                  | 'data_column_sidecar'
-                  | 'execution_payload'
-                  | 'execution_payload_gossip'
-                  | 'execution_payload_available'
-                  | 'execution_payload_bid'
-                  | 'payload_attestation_message'
-                  | 'fast_confirmation'
-                  | 'proposer_preferences'
-                )[]
-              }
-            }
-            output: string
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                topics: (
-                  | 'head'
-                  | 'head_v2'
-                  | 'block'
-                  | 'block_gossip'
-                  | 'attestation'
-                  | 'single_attestation'
-                  | 'voluntary_exit'
-                  | 'bls_to_execution_change'
-                  | 'proposer_slashing'
-                  | 'attester_slashing'
-                  | 'finalized_checkpoint'
-                  | 'chain_reorg'
-                  | 'contribution_and_proof'
-                  | 'light_client_finality_update'
-                  | 'light_client_optimistic_update'
-                  | 'payload_attributes'
-                  | 'data_column_sidecar'
-                  | 'execution_payload'
-                  | 'execution_payload_gossip'
-                  | 'execution_payload_available'
-                  | 'execution_payload_bid'
-                  | 'payload_attestation_message'
-                  | 'fast_confirmation'
-                  | 'proposer_preferences'
-                )[]
-              }
-            }
+            input: { query: { topics: unknown } }
             output: ErrorMessage
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                topics: (
-                  | 'head'
-                  | 'head_v2'
-                  | 'block'
-                  | 'block_gossip'
-                  | 'attestation'
-                  | 'single_attestation'
-                  | 'voluntary_exit'
-                  | 'bls_to_execution_change'
-                  | 'proposer_slashing'
-                  | 'attester_slashing'
-                  | 'finalized_checkpoint'
-                  | 'chain_reorg'
-                  | 'contribution_and_proof'
-                  | 'light_client_finality_update'
-                  | 'light_client_optimistic_update'
-                  | 'payload_attributes'
-                  | 'data_column_sidecar'
-                  | 'execution_payload'
-                  | 'execution_payload_gossip'
-                  | 'execution_payload_available'
-                  | 'execution_payload_bid'
-                  | 'payload_attestation_message'
-                  | 'fast_confirmation'
-                  | 'proposer_preferences'
-                )[]
-              }
-            }
+            input: { query: { topics: unknown } }
             output: { code: number; message: string; stacktraces?: string[] | undefined }
             outputFormat: 'json'
             status: 500

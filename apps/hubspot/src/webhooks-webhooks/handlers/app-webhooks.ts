@@ -1,14 +1,14 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAppWebhooks202609AppIdSettingsRoute,
-  deleteAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute,
   getAppWebhooks202609AppIdSettingsRoute,
-  getAppWebhooks202609AppIdSubscriptionsRoute,
-  getAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute,
-  patchAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute,
-  postAppWebhooks202609AppIdSubscriptionsBatchUpdateRoute,
-  postAppWebhooks202609AppIdSubscriptionsRoute,
   putAppWebhooks202609AppIdSettingsRoute,
+  deleteAppWebhooks202609AppIdSettingsRoute,
+  getAppWebhooks202609AppIdSubscriptionsRoute,
+  postAppWebhooks202609AppIdSubscriptionsRoute,
+  postAppWebhooks202609AppIdSubscriptionsBatchUpdateRoute,
+  getAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute,
+  deleteAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute,
+  patchAppWebhooks202609AppIdSubscriptionsSubscriptionIdRoute,
 } from '../routes'
 
 export const getAppWebhooks202609AppIdSettingsRouteHandler: RouteHandler<

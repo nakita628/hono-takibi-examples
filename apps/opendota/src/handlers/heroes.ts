@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getHeroesHeroIdDurationsRoute,
-  getHeroesHeroIdItemPopularityRoute,
+  getHeroesRoute,
   getHeroesHeroIdMatchesRoute,
   getHeroesHeroIdMatchupsRoute,
+  getHeroesHeroIdDurationsRoute,
   getHeroesHeroIdPlayersRoute,
-  getHeroesRoute,
+  getHeroesHeroIdItemPopularityRoute,
 } from '../routes'
 
 export const getHeroesRouteHandler: RouteHandler<typeof getHeroesRoute> = async (c) => {

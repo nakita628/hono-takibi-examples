@@ -6,9 +6,14 @@
     "config": "dadacea6f9c8bc15fe9434f0d87a19fabcd56caea609b7776e775dd0e042c314",
     "sources": {
       "https://raw.githubusercontent.com/wazuh/wazuh/main/api/api/spec/spec.yaml": {
-        "etag": "W/\"f9d63bd25acd399470ec8a3cfd6734474d2525c47b3e53b182adb8f292b0fae1\"",
-        "sha256": "48ce4947931d80ced8cab4fd80665aa1f28e0618fc1c616d949d42ef25445a13"
+        "etag": "W/\"f19942392088174148d68b1e4f76921ffc14938d0c07c25dadbc2734f577a56e\"",
+        "sha256": "5d45d5e3d05b5bd54668c7670dd70441a84032a67947aa6a9284c02ca35df012"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.12",
+      "date": "2026-11-25",
+      "error": "Error parsing https://raw.githubusercontent.com/wazuh/wazuh/main/api/api/spec/spec.yaml: deficient indentation (66:7)"
     }
   }
 }

@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteUrlMappings202609UrlMappingsIdRoute,
-  getUrlMappings202609UrlMappingsIdRoute,
   getUrlMappings202609UrlMappingsRoute,
   postUrlMappings202609UrlMappingsRoute,
+  getUrlMappings202609UrlMappingsIdRoute,
+  deleteUrlMappings202609UrlMappingsIdRoute,
 } from '../routes'
 
 export const getUrlMappings202609UrlMappingsRouteHandler: RouteHandler<

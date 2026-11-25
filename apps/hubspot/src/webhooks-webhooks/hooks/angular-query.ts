@@ -1,17 +1,9 @@
-import {
-  injectQuery,
-  injectMutation,
-  queryOptions,
-  mutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, injectMutation, queryOptions, mutationOptions } from '@tanstack/angular-query'
 import type {
   CreateQueryOptions,
   CreateMutationOptions,
   DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+} from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -106,7 +98,6 @@ export function injectAppWebhooks202609AppIdSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -114,7 +105,7 @@ export function injectAppWebhooks202609AppIdSettings<
       ...getAppWebhooks202609AppIdSettingsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPutAppWebhooks202609AppIdSettingsMutationKey() {
@@ -174,7 +165,6 @@ export function injectPutAppWebhooks202609AppIdSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -187,7 +177,7 @@ export function injectPutAppWebhooks202609AppIdSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteAppWebhooks202609AppIdSettingsMutationKey() {
@@ -257,7 +247,6 @@ export function injectDeleteAppWebhooks202609AppIdSettings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -270,7 +259,7 @@ export function injectDeleteAppWebhooks202609AppIdSettings<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAppWebhooks202609AppIdSubscriptionsQueryKey(
@@ -363,7 +352,6 @@ export function injectAppWebhooks202609AppIdSubscriptions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -371,7 +359,7 @@ export function injectAppWebhooks202609AppIdSubscriptions<
       ...getAppWebhooks202609AppIdSubscriptionsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAppWebhooks202609AppIdSubscriptionsMutationKey() {
@@ -441,7 +429,6 @@ export function injectPostAppWebhooks202609AppIdSubscriptions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -454,7 +441,7 @@ export function injectPostAppWebhooks202609AppIdSubscriptions<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostAppWebhooks202609AppIdSubscriptionsBatchUpdateMutationKey() {
@@ -528,7 +515,6 @@ export function injectPostAppWebhooks202609AppIdSubscriptionsBatchUpdate<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -541,7 +527,7 @@ export function injectPostAppWebhooks202609AppIdSubscriptionsBatchUpdate<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getAppWebhooks202609AppIdSubscriptionsSubscriptionIdQueryKey(
@@ -642,7 +628,6 @@ export function injectAppWebhooks202609AppIdSubscriptionsSubscriptionId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -653,7 +638,7 @@ export function injectAppWebhooks202609AppIdSubscriptionsSubscriptionId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteAppWebhooks202609AppIdSubscriptionsSubscriptionIdMutationKey() {
@@ -732,7 +717,6 @@ export function injectDeleteAppWebhooks202609AppIdSubscriptionsSubscriptionId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -746,7 +730,7 @@ export function injectDeleteAppWebhooks202609AppIdSubscriptionsSubscriptionId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPatchAppWebhooks202609AppIdSubscriptionsSubscriptionIdMutationKey() {
@@ -823,7 +807,6 @@ export function injectPatchAppWebhooks202609AppIdSubscriptionsSubscriptionId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -837,7 +820,7 @@ export function injectPatchAppWebhooks202609AppIdSubscriptionsSubscriptionId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournalLocal202609BatchEarliestCountQueryKey(
@@ -938,7 +921,6 @@ export function injectWebhooksJournalJournalLocal202609BatchEarliestCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -949,7 +931,7 @@ export function injectWebhooksJournalJournalLocal202609BatchEarliestCount<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournalLocal202609BatchLatestCountQueryKey(
@@ -1050,7 +1032,6 @@ export function injectWebhooksJournalJournalLocal202609BatchLatestCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1061,7 +1042,7 @@ export function injectWebhooksJournalJournalLocal202609BatchLatestCount<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWebhooksJournalJournalLocal202609BatchReadMutationKey() {
@@ -1131,7 +1112,6 @@ export function injectPostWebhooksJournalJournalLocal202609BatchRead<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1144,7 +1124,7 @@ export function injectPostWebhooksJournalJournalLocal202609BatchRead<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournalLocal202609BatchOffsetNextCountQueryKey(
@@ -1245,7 +1225,6 @@ export function injectWebhooksJournalJournalLocal202609BatchOffsetNextCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1256,7 +1235,7 @@ export function injectWebhooksJournalJournalLocal202609BatchOffsetNextCount<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournalLocal202609EarliestQueryKey(
@@ -1353,7 +1332,6 @@ export function injectWebhooksJournalJournalLocal202609Earliest<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1364,7 +1342,7 @@ export function injectWebhooksJournalJournalLocal202609Earliest<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournalLocal202609LatestQueryKey(
@@ -1461,7 +1439,6 @@ export function injectWebhooksJournalJournalLocal202609Latest<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1472,7 +1449,7 @@ export function injectWebhooksJournalJournalLocal202609Latest<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournalLocal202609OffsetOffsetNextQueryKey(
@@ -1573,7 +1550,6 @@ export function injectWebhooksJournalJournalLocal202609OffsetOffsetNext<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1584,7 +1560,7 @@ export function injectWebhooksJournalJournalLocal202609OffsetOffsetNext<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournalLocal202609StatusStatusIdQueryKey(
@@ -1685,7 +1661,6 @@ export function injectWebhooksJournalJournalLocal202609StatusStatusId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1696,7 +1671,7 @@ export function injectWebhooksJournalJournalLocal202609StatusStatusId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournal202609BatchEarliestCountQueryKey(
@@ -1797,7 +1772,6 @@ export function injectWebhooksJournalJournal202609BatchEarliestCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1808,7 +1782,7 @@ export function injectWebhooksJournalJournal202609BatchEarliestCount<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournal202609BatchLatestCountQueryKey(
@@ -1909,7 +1883,6 @@ export function injectWebhooksJournalJournal202609BatchLatestCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1920,7 +1893,7 @@ export function injectWebhooksJournalJournal202609BatchLatestCount<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWebhooksJournalJournal202609BatchReadMutationKey() {
@@ -1990,7 +1963,6 @@ export function injectPostWebhooksJournalJournal202609BatchRead<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2003,7 +1975,7 @@ export function injectPostWebhooksJournalJournal202609BatchRead<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournal202609BatchOffsetNextCountQueryKey(
@@ -2104,7 +2076,6 @@ export function injectWebhooksJournalJournal202609BatchOffsetNextCount<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2115,7 +2086,7 @@ export function injectWebhooksJournalJournal202609BatchOffsetNextCount<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournal202609EarliestQueryKey(
@@ -2208,7 +2179,6 @@ export function injectWebhooksJournalJournal202609Earliest<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2216,7 +2186,7 @@ export function injectWebhooksJournalJournal202609Earliest<
       ...getWebhooksJournalJournal202609EarliestQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournal202609LatestQueryKey(
@@ -2307,7 +2277,6 @@ export function injectWebhooksJournalJournal202609Latest<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2315,7 +2284,7 @@ export function injectWebhooksJournalJournal202609Latest<
       ...getWebhooksJournalJournal202609LatestQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournal202609OffsetOffsetNextQueryKey(
@@ -2416,7 +2385,6 @@ export function injectWebhooksJournalJournal202609OffsetOffsetNext<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2427,7 +2395,7 @@ export function injectWebhooksJournalJournal202609OffsetOffsetNext<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalJournal202609StatusStatusIdQueryKey(
@@ -2524,7 +2492,6 @@ export function injectWebhooksJournalJournal202609StatusStatusId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2535,7 +2502,7 @@ export function injectWebhooksJournalJournal202609StatusStatusId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWebhooksJournalSnapshots202609CrmMutationKey() {
@@ -2599,7 +2566,6 @@ export function injectPostWebhooksJournalSnapshots202609Crm<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2612,7 +2578,7 @@ export function injectPostWebhooksJournalSnapshots202609Crm<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalSubscriptions202609QueryKey() {
@@ -2685,7 +2651,6 @@ export function injectWebhooksJournalSubscriptions202609<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2693,7 +2658,7 @@ export function injectWebhooksJournalSubscriptions202609<
       ...getWebhooksJournalSubscriptions202609QueryOptions<TData, TError>(clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWebhooksJournalSubscriptions202609MutationKey() {
@@ -2753,7 +2718,6 @@ export function injectPostWebhooksJournalSubscriptions202609<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2766,7 +2730,7 @@ export function injectPostWebhooksJournalSubscriptions202609<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostWebhooksJournalSubscriptions202609FiltersMutationKey() {
@@ -2836,7 +2800,6 @@ export function injectPostWebhooksJournalSubscriptions202609Filters<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2849,7 +2812,7 @@ export function injectPostWebhooksJournalSubscriptions202609Filters<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalSubscriptions202609FiltersSubscriptionSubscriptionIdQueryKey(
@@ -2953,7 +2916,6 @@ export function injectWebhooksJournalSubscriptions202609FiltersSubscriptionSubsc
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2964,7 +2926,7 @@ export function injectWebhooksJournalSubscriptions202609FiltersSubscriptionSubsc
       >(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalSubscriptions202609FiltersFilterIdQueryKey(
@@ -3065,7 +3027,6 @@ export function injectWebhooksJournalSubscriptions202609FiltersFilterId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3076,7 +3037,7 @@ export function injectWebhooksJournalSubscriptions202609FiltersFilterId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteWebhooksJournalSubscriptions202609FiltersFilterIdMutationKey() {
@@ -3155,7 +3116,6 @@ export function injectDeleteWebhooksJournalSubscriptions202609FiltersFilterId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3169,7 +3129,7 @@ export function injectDeleteWebhooksJournalSubscriptions202609FiltersFilterId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteWebhooksJournalSubscriptions202609PortalsPortalIdMutationKey() {
@@ -3248,7 +3208,6 @@ export function injectDeleteWebhooksJournalSubscriptions202609PortalsPortalId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3262,7 +3221,7 @@ export function injectDeleteWebhooksJournalSubscriptions202609PortalsPortalId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getWebhooksJournalSubscriptions202609SubscriptionIdQueryKey(
@@ -3363,7 +3322,6 @@ export function injectWebhooksJournalSubscriptions202609SubscriptionId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3374,7 +3332,7 @@ export function injectWebhooksJournalSubscriptions202609SubscriptionId<
       ),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getDeleteWebhooksJournalSubscriptions202609SubscriptionIdMutationKey() {
@@ -3453,7 +3411,6 @@ export function injectDeleteWebhooksJournalSubscriptions202609SubscriptionId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -3467,5 +3424,5 @@ export function injectDeleteWebhooksJournalSubscriptions202609SubscriptionId<
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }

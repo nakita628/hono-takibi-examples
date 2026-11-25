@@ -1006,7 +1006,7 @@ type APIDefinitionType = {
   certificate_pinning_disabled?: boolean
   certificates?: string[] | null
   client_certificates?: string[] | null
-  config_data?: { [key: string]: unknown } | null
+  config_data?: { [key: string]: any } | null
   config_data_disabled?: boolean
   custom_middleware?: z.infer<typeof MiddlewareSectionSchema>
   custom_middleware_bundle?: string
@@ -1653,7 +1653,7 @@ type PolicyType = {
   key_expires_in?: bigint
   last_updated?: string
   max_query_depth?: number
-  meta_data?: { [key: string]: unknown } | null
+  meta_data?: { [key: string]: any } | null
   name?: string
   org_id?: string
   partitions?: z.infer<typeof PolicyPartitionsSchema>
@@ -1712,7 +1712,7 @@ type SessionStateType = {
   last_check?: bigint
   last_updated?: string
   max_query_depth?: number
-  meta_data?: { [key: string]: unknown } | null
+  meta_data?: { [key: string]: any } | null
   monitor?: z.infer<typeof MonitorSchema>
   oauth_client_id?: string
   oauth_keys?: { [key: string]: string } | null
@@ -2076,7 +2076,7 @@ type SchemaType = {
   maxProperties?: number
   minProperties?: number
   required?: string[]
-  enum?: unknown[]
+  enum?: any[]
   type?: 'array' | 'boolean' | 'integer' | 'number' | 'object' | 'string'
   not?: SchemaType | { [key: string]: unknown }
   allOf?: (SchemaType | { [key: string]: unknown })[]
@@ -2087,12 +2087,12 @@ type SchemaType = {
   additionalProperties?: SchemaType | { [key: string]: unknown } | boolean
   description?: string
   format?: string
-  default?: unknown
+  default?: any
   nullable?: boolean
   discriminator?: { propertyName: string; mapping?: { [key: string]: string } }
   readOnly?: boolean
   writeOnly?: boolean
-  example?: unknown
+  example?: any
   externalDocs?: { description?: string; url: string }
   deprecated?: boolean
   xml?: {
@@ -2104,76 +2104,46 @@ type SchemaType = {
   }
 }
 
-type Header2Type = unknown & (unknown | (unknown & unknown & unknown & unknown & unknown))
-
-const PathItemSchema: z.ZodType<PathItemType> = z
+const SchemaSchema: z.ZodType<SchemaType> = z
   .lazy(() =>
     z
       .looseObject({
-        $ref: z.string().exactOptional(),
-        summary: z.string().exactOptional(),
-        description: z.string().exactOptional(),
-        servers: z
-          .array(
+        title: z.string().exactOptional(),
+        multipleOf: z.number().positive().exactOptional(),
+        maximum: z.number().exactOptional(),
+        exclusiveMaximum: z.boolean().default(false).exactOptional(),
+        minimum: z.number().exactOptional(),
+        exclusiveMinimum: z.boolean().default(false).exactOptional(),
+        maxLength: z.int().min(0).exactOptional(),
+        minLength: z.int().min(0).default(0).exactOptional(),
+        pattern: z.string().exactOptional(),
+        maxItems: z.int().min(0).exactOptional(),
+        minItems: z.int().min(0).default(0).exactOptional(),
+        uniqueItems: z.boolean().default(false).exactOptional(),
+        maxProperties: z.int().min(0).exactOptional(),
+        minProperties: z.int().min(0).default(0).exactOptional(),
+        required: z
+          .array(z.string())
+          .min(1)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .exactOptional(),
+        enum: z.array(z.any()).min(1).exactOptional(),
+        type: z.enum(['array', 'boolean', 'integer', 'number', 'object', 'string']).exactOptional(),
+        not: z
+          .xor([
+            SchemaSchema,
             z
-              .looseObject({
-                url: z.string(),
-                description: z.string().exactOptional(),
-                variables: z
-                  .record(
-                    z.string(),
-                    z
-                      .looseObject({
-                        enum: z.array(z.string()).exactOptional(),
-                        default: z.string(),
-                        description: z.string().exactOptional(),
-                      })
-                      .superRefine((o, ctx) => {
-                        const keys = Object.keys(o).filter(
-                          (k) =>
-                            !['enum', 'default', 'description'].includes(k) &&
-                            !['^x-'].some((p) => new RegExp(p).test(k)),
-                        )
-                        if (keys.length > 0) {
-                          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-                        }
-                      })
-                      .superRefine((o, ctx) => {
-                        const regex = new RegExp('^x-')
-                        const Schema = z.any()
-                        for (const [k, val] of Object.entries(o)) {
-                          if (!regex.test(k)) {
-                            continue
-                          }
-                          const result = Schema.safeParse(val)
-                          if (!result.success) {
-                            for (const issue of result.error.issues) {
-                              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                            }
-                          }
-                        }
-                      })
-                      .openapi({
-                        ...{ patternProperties: { '^x-': {} } },
-                        additionalProperties: false,
-                        required: ['default'],
-                      }),
-                  )
-                  .exactOptional(),
-              })
+              .looseObject({})
               .superRefine((o, ctx) => {
-                const keys = Object.keys(o).filter(
-                  (k) =>
-                    !['url', 'description', 'variables'].includes(k) &&
-                    !['^x-'].some((p) => new RegExp(p).test(k)),
-                )
-                if (keys.length > 0) {
-                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-                }
-              })
-              .superRefine((o, ctx) => {
-                const regex = new RegExp('^x-')
-                const Schema = z.any()
+                const regex = new RegExp('^\\$ref$')
+                const Schema = z.string()
                 for (const [k, val] of Object.entries(o)) {
                   if (!regex.test(k)) {
                     continue
@@ -2187,441 +2157,17 @@ const PathItemSchema: z.ZodType<PathItemType> = z
                 }
               })
               .openapi({
-                ...{ patternProperties: { '^x-': {} } },
-                additionalProperties: false,
-                required: ['url'],
+                ...{
+                  patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
+                },
+                required: ['$ref'],
               }),
-          )
+          ])
           .exactOptional(),
-        parameters: z
+        allOf: z
           .array(
             z.xor([
-              (() => {
-                const Schema = z
-                  .any()
-                  .refine(
-                    (val) =>
-                      !z
-                        .unknown()
-                        .superRefine((val, ctx) => {
-                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                            if (!Object.hasOwn(val, 'example')) {
-                              ctx.addIssue({ code: 'custom' })
-                            }
-                            if (!Object.hasOwn(val, 'examples')) {
-                              ctx.addIssue({ code: 'custom' })
-                            }
-                          }
-                        })
-                        .openapi({ required: ['example', 'examples'] })
-                        .safeParse(val).success,
-                  )
-                  .openapi({
-                    description: 'Example and examples are mutually exclusive',
-                    not: { required: ['example', 'examples'] },
-                  })
-                  .and(
-                    (() => {
-                      const Schema = z.xor([
-                        z
-                          .unknown()
-                          .superRefine((val, ctx) => {
-                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'schema')) {
-                                ctx.addIssue({ code: 'custom' })
-                              }
-                            }
-                          })
-                          .openapi({ required: ['schema'] }),
-                        z
-                          .any()
-                          .refine(
-                            (val) =>
-                              !z
-                                .unknown()
-                                .superRefine((val, ctx) => {
-                                  if (
-                                    typeof val === 'object' &&
-                                    val !== null &&
-                                    !Array.isArray(val)
-                                  ) {
-                                    if (!Object.hasOwn(val, 'style')) {
-                                      ctx.addIssue({ code: 'custom' })
-                                    }
-                                  }
-                                })
-                                .openapi({ required: ['style'] })
-                                .safeParse(val).success,
-                          )
-                          .openapi({ not: { required: ['style'] } })
-                          .superRefine((val, ctx) => {
-                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'content')) {
-                                ctx.addIssue({ code: 'custom' })
-                              }
-                            }
-                          })
-                          .and(
-                            z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'explode')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['explode'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({ not: { required: ['explode'] } }),
-                          )
-                          .and(
-                            z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'allowReserved')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['allowReserved'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({ not: { required: ['allowReserved'] } }),
-                          )
-                          .and(
-                            z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({ not: { required: ['example'] } }),
-                          )
-                          .and(
-                            z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({ not: { required: ['examples'] } }),
-                          )
-                          .openapi({
-                            required: ['content'],
-                            description: 'Some properties are not allowed if content is present',
-                          }),
-                      ])
-                      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                        const reported = ctx.issues.length
-                        try {
-                          ;((ctx) => {
-                            const val = ctx.value
-                            if (
-                              z
-                                .unknown()
-                                .superRefine((val, ctx) => {
-                                  if (
-                                    typeof val === 'object' &&
-                                    val !== null &&
-                                    !Array.isArray(val)
-                                  ) {
-                                    if (!Object.hasOwn(val, 'schema')) {
-                                      ctx.addIssue({ code: 'custom' })
-                                    }
-                                    if (!Object.hasOwn(val, 'content')) {
-                                      ctx.addIssue({ code: 'custom' })
-                                    }
-                                  }
-                                })
-                                .openapi({ required: ['schema', 'content'] })
-                                .safeParse(val).success
-                            ) {
-                              ctx.issues.push({ code: 'custom', input: val })
-                            }
-                          })(ctx)
-                        } catch (error) {
-                          if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                          ctx.issues.length = reported
-                          return (async (ctx) => {
-                            const val = ctx.value
-                            if (
-                              (
-                                await z
-                                  .unknown()
-                                  .superRefine((val, ctx) => {
-                                    if (
-                                      typeof val === 'object' &&
-                                      val !== null &&
-                                      !Array.isArray(val)
-                                    ) {
-                                      if (!Object.hasOwn(val, 'schema')) {
-                                        ctx.addIssue({ code: 'custom' })
-                                      }
-                                      if (!Object.hasOwn(val, 'content')) {
-                                        ctx.addIssue({ code: 'custom' })
-                                      }
-                                    }
-                                  })
-                                  .openapi({ required: ['schema', 'content'] })
-                                  .safeParseAsync(val)
-                              ).success
-                            ) {
-                              ctx.issues.push({ code: 'custom', input: val })
-                            }
-                          })(ctx).then(() => val)
-                        }
-                        return val
-                      }, Schema)
-                    })().openapi({
-                      description:
-                        'Schema and content are mutually exclusive, at least one is required',
-                      not: { required: ['schema', 'content'] },
-                    }),
-                  )
-                  .and(
-                    z
-                      .xor([
-                        z
-                          .object({
-                            in: z.literal('path').exactOptional(),
-                            style: z
-                              .enum(['matrix', 'label', 'simple'])
-                              .default('simple')
-                              .exactOptional(),
-                            required: z.literal(true),
-                          })
-                          .openapi({ description: 'Parameter in path', required: ['required'] }),
-                        z
-                          .object({
-                            in: z.literal('query').exactOptional(),
-                            style: z
-                              .enum(['form', 'spaceDelimited', 'pipeDelimited', 'deepObject'])
-                              .default('form')
-                              .exactOptional(),
-                          })
-                          .openapi({ description: 'Parameter in query', required: [] }),
-                        z
-                          .object({
-                            in: z.literal('header').exactOptional(),
-                            style: z.literal('simple').default('simple').exactOptional(),
-                          })
-                          .openapi({ description: 'Parameter in header', required: [] }),
-                        z
-                          .object({
-                            in: z.literal('cookie').exactOptional(),
-                            style: z.literal('form').default('form').exactOptional(),
-                          })
-                          .openapi({ description: 'Parameter in cookie', required: [] }),
-                      ])
-                      .openapi({ description: 'Parameter location' }),
-                  )
-                  .and(
-                    z
-                      .object({
-                        name: z.string(),
-                        in: z.string(),
-                        description: z.string().exactOptional(),
-                        required: z.boolean().default(false).exactOptional(),
-                        deprecated: z.boolean().default(false).exactOptional(),
-                        allowEmptyValue: z.boolean().default(false).exactOptional(),
-                        style: z.string().exactOptional(),
-                        explode: z.boolean().exactOptional(),
-                        allowReserved: z.boolean().default(false).exactOptional(),
-                        schema: z
-                          .xor([
-                            SchemaSchema,
-                            z
-                              .looseObject({})
-                              .superRefine((o, ctx) => {
-                                const regex = new RegExp('^\\$ref$')
-                                const Schema = z.string()
-                                for (const [k, val] of Object.entries(o)) {
-                                  if (!regex.test(k)) {
-                                    continue
-                                  }
-                                  const result = Schema.safeParse(val)
-                                  if (!result.success) {
-                                    for (const issue of result.error.issues) {
-                                      ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                                    }
-                                  }
-                                }
-                              })
-                              .openapi({
-                                ...{
-                                  patternProperties: {
-                                    '^\\$ref$': { type: 'string', format: 'uri-reference' },
-                                  },
-                                },
-                                required: ['$ref'],
-                              }),
-                          ])
-                          .exactOptional(),
-                        content: z
-                          .record(z.string(), MediaTypeSchema)
-                          .refine((val) => Object.keys(val).length >= 1)
-                          .refine((val) => Object.keys(val).length <= 1)
-                          .exactOptional(),
-                        example: z.any().exactOptional(),
-                        examples: z
-                          .record(
-                            z.string(),
-                            z.xor([
-                              z
-                                .looseObject({
-                                  summary: z.string().exactOptional(),
-                                  description: z.string().exactOptional(),
-                                  value: z.any().exactOptional(),
-                                  externalValue: z.string().exactOptional(),
-                                })
-                                .superRefine((o, ctx) => {
-                                  const keys = Object.keys(o).filter(
-                                    (k) =>
-                                      ![
-                                        'summary',
-                                        'description',
-                                        'value',
-                                        'externalValue',
-                                      ].includes(k) && !['^x-'].some((p) => new RegExp(p).test(k)),
-                                  )
-                                  if (keys.length > 0) {
-                                    ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-                                  }
-                                })
-                                .superRefine((o, ctx) => {
-                                  const regex = new RegExp('^x-')
-                                  const Schema = z.any()
-                                  for (const [k, val] of Object.entries(o)) {
-                                    if (!regex.test(k)) {
-                                      continue
-                                    }
-                                    const result = Schema.safeParse(val)
-                                    if (!result.success) {
-                                      for (const issue of result.error.issues) {
-                                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                                      }
-                                    }
-                                  }
-                                })
-                                .openapi({
-                                  ...{ patternProperties: { '^x-': {} } },
-                                  additionalProperties: false,
-                                  required: [],
-                                }),
-                              z
-                                .looseObject({})
-                                .superRefine((o, ctx) => {
-                                  const regex = new RegExp('^\\$ref$')
-                                  const Schema = z.string()
-                                  for (const [k, val] of Object.entries(o)) {
-                                    if (!regex.test(k)) {
-                                      continue
-                                    }
-                                    const result = Schema.safeParse(val)
-                                    if (!result.success) {
-                                      for (const issue of result.error.issues) {
-                                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                                      }
-                                    }
-                                  }
-                                })
-                                .openapi({
-                                  ...{
-                                    patternProperties: {
-                                      '^\\$ref$': { type: 'string', format: 'uri-reference' },
-                                    },
-                                  },
-                                  required: ['$ref'],
-                                }),
-                            ]),
-                          )
-                          .exactOptional(),
-                      })
-                      .openapi({ required: ['name', 'in'] }),
-                  )
-                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                  ;((ctx) => {
-                    const o = ctx.value
-                    if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                    for (const k of Object.keys(o)) {
-                      if (
-                        ![
-                          'name',
-                          'in',
-                          'description',
-                          'required',
-                          'deprecated',
-                          'allowEmptyValue',
-                          'style',
-                          'explode',
-                          'allowReserved',
-                          'schema',
-                          'content',
-                          'example',
-                          'examples',
-                        ].includes(k) &&
-                        !['^x-'].some((p) => new RegExp(p).test(k))
-                      ) {
-                        ctx.issues.push({ code: 'custom', path: [k], input: o })
-                      }
-                    }
-                  })(ctx)
-                  return val
-                }, Schema)
-              })()
-                .openapi({ additionalProperties: false })
-                .openapi({
-                  ...{ patternProperties: { '^x-': {} } },
-                  additionalProperties: false,
-                  required: ['name', 'in'],
-                }),
+              SchemaSchema,
               z
                 .looseObject({})
                 .superRefine((o, ctx) => {
@@ -2647,41 +2193,286 @@ const PathItemSchema: z.ZodType<PathItemType> = z
                 }),
             ]),
           )
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
+          .exactOptional(),
+        oneOf: z
+          .array(
+            z.xor([
+              SchemaSchema,
+              z
+                .looseObject({})
+                .superRefine((o, ctx) => {
+                  const regex = new RegExp('^\\$ref$')
+                  const Schema = z.string()
+                  for (const [k, val] of Object.entries(o)) {
+                    if (!regex.test(k)) {
+                      continue
+                    }
+                    const result = Schema.safeParse(val)
+                    if (!result.success) {
+                      for (const issue of result.error.issues) {
+                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                      }
+                    }
+                  }
+                })
+                .openapi({
+                  ...{
+                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
+                  },
+                  required: ['$ref'],
+                }),
+            ]),
+          )
+          .exactOptional(),
+        anyOf: z
+          .array(
+            z.xor([
+              SchemaSchema,
+              z
+                .looseObject({})
+                .superRefine((o, ctx) => {
+                  const regex = new RegExp('^\\$ref$')
+                  const Schema = z.string()
+                  for (const [k, val] of Object.entries(o)) {
+                    if (!regex.test(k)) {
+                      continue
+                    }
+                    const result = Schema.safeParse(val)
+                    if (!result.success) {
+                      for (const issue of result.error.issues) {
+                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                      }
+                    }
+                  }
+                })
+                .openapi({
+                  ...{
+                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
+                  },
+                  required: ['$ref'],
+                }),
+            ]),
+          )
+          .exactOptional(),
+        items: z
+          .xor([
+            SchemaSchema,
+            z
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const regex = new RegExp('^\\$ref$')
+                const Schema = z.string()
+                for (const [k, val] of Object.entries(o)) {
+                  if (!regex.test(k)) {
+                    continue
+                  }
+                  const result = Schema.safeParse(val)
+                  if (!result.success) {
+                    for (const issue of result.error.issues) {
+                      ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                    }
+                  }
+                }
+              })
+              .openapi({
+                ...{
+                  patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
+                },
+                required: ['$ref'],
+              }),
+          ])
+          .exactOptional(),
+        properties: z
+          .record(
+            z.string(),
+            z.xor([
+              SchemaSchema,
+              z
+                .looseObject({})
+                .superRefine((o, ctx) => {
+                  const regex = new RegExp('^\\$ref$')
+                  const Schema = z.string()
+                  for (const [k, val] of Object.entries(o)) {
+                    if (!regex.test(k)) {
+                      continue
+                    }
+                    const result = Schema.safeParse(val)
+                    if (!result.success) {
+                      for (const issue of result.error.issues) {
+                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                      }
+                    }
+                  }
+                })
+                .openapi({
+                  ...{
+                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
+                  },
+                  required: ['$ref'],
+                }),
+            ]),
+          )
+          .exactOptional(),
+        additionalProperties: z
+          .xor([
+            SchemaSchema,
+            z
+              .looseObject({})
+              .superRefine((o, ctx) => {
+                const regex = new RegExp('^\\$ref$')
+                const Schema = z.string()
+                for (const [k, val] of Object.entries(o)) {
+                  if (!regex.test(k)) {
+                    continue
+                  }
+                  const result = Schema.safeParse(val)
+                  if (!result.success) {
+                    for (const issue of result.error.issues) {
+                      ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                    }
+                  }
+                }
+              })
+              .openapi({
+                ...{
+                  patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
+                },
+                required: ['$ref'],
+              }),
+            z.boolean(),
+          ])
+          .default(true)
+          .exactOptional(),
+        description: z.string().exactOptional(),
+        format: z.string().exactOptional(),
+        default: z.any().exactOptional(),
+        nullable: z.boolean().default(false).exactOptional(),
+        discriminator: z
+          .object({
+            propertyName: z.string(),
+            mapping: z.record(z.string(), z.string()).exactOptional(),
+          })
+          .exactOptional()
+          .openapi({ required: ['propertyName'] }),
+        readOnly: z.boolean().default(false).exactOptional(),
+        writeOnly: z.boolean().default(false).exactOptional(),
+        example: z.any().exactOptional(),
+        externalDocs: z
+          .looseObject({ description: z.string().exactOptional(), url: z.string() })
+          .superRefine((o, ctx) => {
+            const keys = Object.keys(o).filter(
+              (k) =>
+                !['description', 'url'].includes(k) && !['^x-'].some((p) => new RegExp(p).test(k)),
+            )
+            if (keys.length > 0) {
+              ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
             }
           })
-          .exactOptional(),
+          .superRefine((o, ctx) => {
+            const regex = new RegExp('^x-')
+            const Schema = z.any()
+            for (const [k, val] of Object.entries(o)) {
+              if (!regex.test(k)) {
+                continue
+              }
+              const result = Schema.safeParse(val)
+              if (!result.success) {
+                for (const issue of result.error.issues) {
+                  ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                }
+              }
+            }
+          })
+          .exactOptional()
+          .openapi({
+            ...{ patternProperties: { '^x-': {} } },
+            additionalProperties: false,
+            required: ['url'],
+          }),
+        deprecated: z.boolean().default(false).exactOptional(),
+        xml: z
+          .looseObject({
+            name: z.string().exactOptional(),
+            namespace: z.url().exactOptional(),
+            prefix: z.string().exactOptional(),
+            attribute: z.boolean().default(false).exactOptional(),
+            wrapped: z.boolean().default(false).exactOptional(),
+          })
+          .superRefine((o, ctx) => {
+            const keys = Object.keys(o).filter(
+              (k) =>
+                !['name', 'namespace', 'prefix', 'attribute', 'wrapped'].includes(k) &&
+                !['^x-'].some((p) => new RegExp(p).test(k)),
+            )
+            if (keys.length > 0) {
+              ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+            }
+          })
+          .superRefine((o, ctx) => {
+            const regex = new RegExp('^x-')
+            const Schema = z.any()
+            for (const [k, val] of Object.entries(o)) {
+              if (!regex.test(k)) {
+                continue
+              }
+              const result = Schema.safeParse(val)
+              if (!result.success) {
+                for (const issue of result.error.issues) {
+                  ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                }
+              }
+            }
+          })
+          .exactOptional()
+          .openapi({
+            ...{ patternProperties: { '^x-': {} } },
+            additionalProperties: false,
+            required: [],
+          }),
       })
       .superRefine((o, ctx) => {
         const keys = Object.keys(o).filter(
           (k) =>
-            !['$ref', 'summary', 'description', 'servers', 'parameters'].includes(k) &&
-            !['^(get|put|post|delete|options|head|patch|trace)$', '^x-'].some((p) =>
-              new RegExp(p).test(k),
-            ),
+            ![
+              'title',
+              'multipleOf',
+              'maximum',
+              'exclusiveMaximum',
+              'minimum',
+              'exclusiveMinimum',
+              'maxLength',
+              'minLength',
+              'pattern',
+              'maxItems',
+              'minItems',
+              'uniqueItems',
+              'maxProperties',
+              'minProperties',
+              'required',
+              'enum',
+              'type',
+              'not',
+              'allOf',
+              'oneOf',
+              'anyOf',
+              'items',
+              'properties',
+              'additionalProperties',
+              'description',
+              'format',
+              'default',
+              'nullable',
+              'discriminator',
+              'readOnly',
+              'writeOnly',
+              'example',
+              'externalDocs',
+              'deprecated',
+              'xml',
+            ].includes(k) && !['^x-'].some((p) => new RegExp(p).test(k)),
         )
         if (keys.length > 0) {
           ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-        }
-      })
-      .superRefine((o, ctx) => {
-        const regex = new RegExp('^(get|put|post|delete|options|head|patch|trace)$')
-        const Schema = Operation2Schema
-        for (const [k, val] of Object.entries(o)) {
-          if (!regex.test(k)) {
-            continue
-          }
-          const result = Schema.safeParse(val)
-          if (!result.success) {
-            for (const issue of result.error.issues) {
-              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-            }
-          }
         }
       })
       .superRefine((o, ctx) => {
@@ -2699,303 +2490,47 @@ const PathItemSchema: z.ZodType<PathItemType> = z
           }
         }
       })
-      .openapi({ required: [] }),
+      .openapi({
+        ...{ patternProperties: { '^x-': {} } },
+        additionalProperties: false,
+        required: [],
+      }),
   )
-  .openapi('PathItem')
+  .openapi('Schema')
 
-type CallbackType = { [key: string]: z.infer<typeof PathItemSchema> }
-
-type MediaTypeType = unknown
-
-const Header2Schema: z.ZodType<Header2Type> = z
+const MediaTypeSchema: z.ZodType<MediaTypeType> = z
   .lazy(() =>
     (() => {
-      const Schema = z
-        .any()
-        .refine(
-          (val) =>
-            !z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'example')) {
-                    ctx.addIssue({ code: 'custom' })
-                  }
-                  if (!Object.hasOwn(val, 'examples')) {
-                    ctx.addIssue({ code: 'custom' })
-                  }
-                }
-              })
-              .openapi({ required: ['example', 'examples'] })
-              .safeParse(val).success,
-        )
-        .openapi({
-          description: 'Example and examples are mutually exclusive',
-          not: { required: ['example', 'examples'] },
-        })
-        .and(
-          (() => {
-            const Schema = z.xor([
-              z
+      const Schema = (() => {
+        const Schema = z
+          .any()
+          .refine(
+            (val) =>
+              !z
                 .unknown()
                 .superRefine((val, ctx) => {
                   if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'schema')) {
+                    if (!Object.hasOwn(val, 'example')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                    if (!Object.hasOwn(val, 'examples')) {
                       ctx.addIssue({ code: 'custom' })
                     }
                   }
                 })
-                .openapi({ required: ['schema'] }),
-              z
-                .any()
-                .refine(
-                  (val) =>
-                    !z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'style')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                        }
-                      })
-                      .openapi({ required: ['style'] })
-                      .safeParse(val).success,
-                )
-                .openapi({ not: { required: ['style'] } })
-                .superRefine((val, ctx) => {
-                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                    if (!Object.hasOwn(val, 'content')) {
-                      ctx.addIssue({ code: 'custom' })
-                    }
-                  }
-                })
-                .and(
-                  z
-                    .any()
-                    .refine(
-                      (val) =>
-                        !z
-                          .unknown()
-                          .superRefine((val, ctx) => {
-                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'explode')) {
-                                ctx.addIssue({ code: 'custom' })
-                              }
-                            }
-                          })
-                          .openapi({ required: ['explode'] })
-                          .safeParse(val).success,
-                    )
-                    .openapi({ not: { required: ['explode'] } }),
-                )
-                .and(
-                  z
-                    .any()
-                    .refine(
-                      (val) =>
-                        !z
-                          .unknown()
-                          .superRefine((val, ctx) => {
-                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'allowReserved')) {
-                                ctx.addIssue({ code: 'custom' })
-                              }
-                            }
-                          })
-                          .openapi({ required: ['allowReserved'] })
-                          .safeParse(val).success,
-                    )
-                    .openapi({ not: { required: ['allowReserved'] } }),
-                )
-                .and(
-                  z
-                    .any()
-                    .refine(
-                      (val) =>
-                        !z
-                          .unknown()
-                          .superRefine((val, ctx) => {
-                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'example')) {
-                                ctx.addIssue({ code: 'custom' })
-                              }
-                            }
-                          })
-                          .openapi({ required: ['example'] })
-                          .safeParse(val).success,
-                    )
-                    .openapi({ not: { required: ['example'] } }),
-                )
-                .and(
-                  z
-                    .any()
-                    .refine(
-                      (val) =>
-                        !z
-                          .unknown()
-                          .superRefine((val, ctx) => {
-                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'examples')) {
-                                ctx.addIssue({ code: 'custom' })
-                              }
-                            }
-                          })
-                          .openapi({ required: ['examples'] })
-                          .safeParse(val).success,
-                    )
-                    .openapi({ not: { required: ['examples'] } }),
-                )
-                .openapi({
-                  required: ['content'],
-                  description: 'Some properties are not allowed if content is present',
-                }),
-            ])
-            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-              const reported = ctx.issues.length
-              try {
-                ;((ctx) => {
-                  const val = ctx.value
-                  if (
-                    z
-                      .unknown()
-                      .superRefine((val, ctx) => {
-                        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                          if (!Object.hasOwn(val, 'schema')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                          if (!Object.hasOwn(val, 'content')) {
-                            ctx.addIssue({ code: 'custom' })
-                          }
-                        }
-                      })
-                      .openapi({ required: ['schema', 'content'] })
-                      .safeParse(val).success
-                  ) {
-                    ctx.issues.push({ code: 'custom', input: val })
-                  }
-                })(ctx)
-              } catch (error) {
-                if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                ctx.issues.length = reported
-                return (async (ctx) => {
-                  const val = ctx.value
-                  if (
-                    (
-                      await z
-                        .unknown()
-                        .superRefine((val, ctx) => {
-                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                            if (!Object.hasOwn(val, 'schema')) {
-                              ctx.addIssue({ code: 'custom' })
-                            }
-                            if (!Object.hasOwn(val, 'content')) {
-                              ctx.addIssue({ code: 'custom' })
-                            }
-                          }
-                        })
-                        .openapi({ required: ['schema', 'content'] })
-                        .safeParseAsync(val)
-                    ).success
-                  ) {
-                    ctx.issues.push({ code: 'custom', input: val })
-                  }
-                })(ctx).then(() => val)
-              }
-              return val
-            }, Schema)
-          })().openapi({
-            description: 'Schema and content are mutually exclusive, at least one is required',
-            not: { required: ['schema', 'content'] },
-          }),
-        )
-        .and(
-          z
-            .object({
-              description: z.string().exactOptional(),
-              required: z.boolean().default(false).exactOptional(),
-              deprecated: z.boolean().default(false).exactOptional(),
-              allowEmptyValue: z.boolean().default(false).exactOptional(),
-              style: z.literal('simple').default('simple').exactOptional(),
-              explode: z.boolean().exactOptional(),
-              allowReserved: z.boolean().default(false).exactOptional(),
-              schema: z
-                .xor([
-                  SchemaSchema,
-                  z
-                    .looseObject({})
-                    .superRefine((o, ctx) => {
-                      const regex = new RegExp('^\\$ref$')
-                      const Schema = z.string()
-                      for (const [k, val] of Object.entries(o)) {
-                        if (!regex.test(k)) {
-                          continue
-                        }
-                        const result = Schema.safeParse(val)
-                        if (!result.success) {
-                          for (const issue of result.error.issues) {
-                            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                          }
-                        }
-                      }
-                    })
-                    .openapi({
-                      ...{
-                        patternProperties: {
-                          '^\\$ref$': { type: 'string', format: 'uri-reference' },
-                        },
-                      },
-                      required: ['$ref'],
-                    }),
-                ])
-                .exactOptional(),
-              content: z
-                .record(z.string(), MediaTypeSchema)
-                .refine((val) => Object.keys(val).length >= 1)
-                .refine((val) => Object.keys(val).length <= 1)
-                .exactOptional(),
-              example: z.any().exactOptional(),
-              examples: z
-                .record(
-                  z.string(),
-                  z.xor([
-                    z
-                      .looseObject({
-                        summary: z.string().exactOptional(),
-                        description: z.string().exactOptional(),
-                        value: z.any().exactOptional(),
-                        externalValue: z.string().exactOptional(),
-                      })
-                      .superRefine((o, ctx) => {
-                        const keys = Object.keys(o).filter(
-                          (k) =>
-                            !['summary', 'description', 'value', 'externalValue'].includes(k) &&
-                            !['^x-'].some((p) => new RegExp(p).test(k)),
-                        )
-                        if (keys.length > 0) {
-                          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-                        }
-                      })
-                      .superRefine((o, ctx) => {
-                        const regex = new RegExp('^x-')
-                        const Schema = z.any()
-                        for (const [k, val] of Object.entries(o)) {
-                          if (!regex.test(k)) {
-                            continue
-                          }
-                          const result = Schema.safeParse(val)
-                          if (!result.success) {
-                            for (const issue of result.error.issues) {
-                              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                            }
-                          }
-                        }
-                      })
-                      .openapi({
-                        ...{ patternProperties: { '^x-': {} } },
-                        additionalProperties: false,
-                        required: [],
-                      }),
+                .openapi({ required: ['example', 'examples'] })
+                .safeParse(val).success,
+          )
+          .openapi({
+            description: 'Example and examples are mutually exclusive',
+            not: { required: ['example', 'examples'] },
+          })
+          .and(
+            z
+              .object({
+                schema: z
+                  .xor([
+                    SchemaSchema,
                     z
                       .looseObject({})
                       .superRefine((o, ctx) => {
@@ -3021,34 +2556,560 @@ const Header2Schema: z.ZodType<Header2Type> = z
                         },
                         required: ['$ref'],
                       }),
-                  ]),
-                )
-                .exactOptional(),
-            })
-            .openapi({ required: [] }),
-        )
+                  ])
+                  .exactOptional(),
+                example: z.any().exactOptional(),
+                examples: z
+                  .record(
+                    z.string(),
+                    z.xor([
+                      z
+                        .looseObject({
+                          summary: z.string().exactOptional(),
+                          description: z.string().exactOptional(),
+                          value: z.any().exactOptional(),
+                          externalValue: z.string().exactOptional(),
+                        })
+                        .superRefine((o, ctx) => {
+                          const keys = Object.keys(o).filter(
+                            (k) =>
+                              !['summary', 'description', 'value', 'externalValue'].includes(k) &&
+                              !['^x-'].some((p) => new RegExp(p).test(k)),
+                          )
+                          if (keys.length > 0) {
+                            ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                          }
+                        })
+                        .superRefine((o, ctx) => {
+                          const regex = new RegExp('^x-')
+                          const Schema = z.any()
+                          for (const [k, val] of Object.entries(o)) {
+                            if (!regex.test(k)) {
+                              continue
+                            }
+                            const result = Schema.safeParse(val)
+                            if (!result.success) {
+                              for (const issue of result.error.issues) {
+                                ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                              }
+                            }
+                          }
+                        })
+                        .openapi({
+                          ...{ patternProperties: { '^x-': {} } },
+                          additionalProperties: false,
+                          required: [],
+                        }),
+                      z
+                        .looseObject({})
+                        .superRefine((o, ctx) => {
+                          const regex = new RegExp('^\\$ref$')
+                          const Schema = z.string()
+                          for (const [k, val] of Object.entries(o)) {
+                            if (!regex.test(k)) {
+                              continue
+                            }
+                            const result = Schema.safeParse(val)
+                            if (!result.success) {
+                              for (const issue of result.error.issues) {
+                                ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                              }
+                            }
+                          }
+                        })
+                        .openapi({
+                          ...{
+                            patternProperties: {
+                              '^\\$ref$': { type: 'string', format: 'uri-reference' },
+                            },
+                          },
+                          required: ['$ref'],
+                        }),
+                    ]),
+                  )
+                  .exactOptional(),
+                encoding: z.record(z.string(), EncodingSchema).exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (
+                !['schema', 'example', 'examples', 'encoding'].includes(k) &&
+                !['^x-'].some((p) => new RegExp(p).test(k))
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })()
       return z.preprocess((val: z.input<typeof Schema>, ctx) => {
         ;((ctx) => {
-          const o = ctx.value
-          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-          for (const k of Object.keys(o)) {
-            if (
-              ![
-                'description',
-                'required',
-                'deprecated',
-                'allowEmptyValue',
-                'style',
-                'explode',
-                'allowReserved',
-                'schema',
-                'content',
-                'example',
-                'examples',
-              ].includes(k) &&
-              !['^x-'].some((p) => new RegExp(p).test(k))
-            ) {
-              ctx.issues.push({ code: 'custom', path: [k], input: o })
+          const val = ctx.value
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            {
+              const Schema = z.any()
+              for (const k of Object.keys(val)) {
+                if (new RegExp('^x-').test(k)) {
+                  if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            }
+          }
+        })(ctx)
+        return val
+      }, Schema)
+    })()
+      .openapi({ additionalProperties: false })
+      .openapi({ ...{ patternProperties: { '^x-': {} } }, additionalProperties: false }),
+  )
+  .openapi('MediaType')
+
+type Header2Type = any &
+  (unknown | (any & any & any & any & any)) & {
+    description?: string
+    required?: boolean
+    deprecated?: boolean
+    allowEmptyValue?: boolean
+    style?: 'simple'
+    explode?: boolean
+    allowReserved?: boolean
+    schema?: z.infer<typeof SchemaSchema> | { [key: string]: unknown }
+    content?: { [key: string]: z.infer<typeof MediaTypeSchema> }
+    example?: any
+    examples?: {
+      [key: string]:
+        | { summary?: string; description?: string; value?: any; externalValue?: string }
+        | { [key: string]: unknown }
+    }
+  }
+
+type CallbackType = { [key: string]: unknown }
+
+const EncodingSchema: z.ZodType<EncodingType> = z
+  .lazy(() =>
+    z
+      .strictObject({
+        contentType: z.string().exactOptional(),
+        headers: z
+          .record(
+            z.string(),
+            z.xor([
+              Header2Schema,
+              z
+                .looseObject({})
+                .superRefine((o, ctx) => {
+                  const regex = new RegExp('^\\$ref$')
+                  const Schema = z.string()
+                  for (const [k, val] of Object.entries(o)) {
+                    if (!regex.test(k)) {
+                      continue
+                    }
+                    const result = Schema.safeParse(val)
+                    if (!result.success) {
+                      for (const issue of result.error.issues) {
+                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                      }
+                    }
+                  }
+                })
+                .openapi({
+                  ...{
+                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
+                  },
+                  required: ['$ref'],
+                }),
+            ]),
+          )
+          .exactOptional(),
+        style: z.enum(['form', 'spaceDelimited', 'pipeDelimited', 'deepObject']).exactOptional(),
+        explode: z.boolean().exactOptional(),
+        allowReserved: z.boolean().default(false).exactOptional(),
+      })
+      .openapi({ required: [] }),
+  )
+  .openapi('Encoding')
+
+type MediaTypeType = any & {
+  schema?: z.infer<typeof SchemaSchema> | { [key: string]: unknown }
+  example?: any
+  examples?: {
+    [key: string]:
+      | { summary?: string; description?: string; value?: any; externalValue?: string }
+      | { [key: string]: unknown }
+  }
+  encoding?: { [key: string]: z.infer<typeof EncodingSchema> }
+}
+
+const Header2Schema: z.ZodType<Header2Type> = z
+  .lazy(() =>
+    (() => {
+      const Schema = (() => {
+        const Schema = z
+          .any()
+          .refine(
+            (val) =>
+              !z
+                .unknown()
+                .superRefine((val, ctx) => {
+                  if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                    if (!Object.hasOwn(val, 'example')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                    if (!Object.hasOwn(val, 'examples')) {
+                      ctx.addIssue({ code: 'custom' })
+                    }
+                  }
+                })
+                .openapi({ required: ['example', 'examples'] })
+                .safeParse(val).success,
+          )
+          .openapi({
+            description: 'Example and examples are mutually exclusive',
+            not: { required: ['example', 'examples'] },
+          })
+          .and(
+            (() => {
+              const Schema = z.xor([
+                z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'schema')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['schema'] }),
+                z
+                  .any()
+                  .refine(
+                    (val) =>
+                      !z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'style')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['style'] })
+                        .safeParse(val).success,
+                  )
+                  .openapi({ not: { required: ['style'] } })
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'content')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .and(
+                    z
+                      .any()
+                      .refine(
+                        (val) =>
+                          !z
+                            .unknown()
+                            .superRefine((val, ctx) => {
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                if (!Object.hasOwn(val, 'explode')) {
+                                  ctx.addIssue({ code: 'custom' })
+                                }
+                              }
+                            })
+                            .openapi({ required: ['explode'] })
+                            .safeParse(val).success,
+                      )
+                      .openapi({ not: { required: ['explode'] } }),
+                  )
+                  .and(
+                    z
+                      .any()
+                      .refine(
+                        (val) =>
+                          !z
+                            .unknown()
+                            .superRefine((val, ctx) => {
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                if (!Object.hasOwn(val, 'allowReserved')) {
+                                  ctx.addIssue({ code: 'custom' })
+                                }
+                              }
+                            })
+                            .openapi({ required: ['allowReserved'] })
+                            .safeParse(val).success,
+                      )
+                      .openapi({ not: { required: ['allowReserved'] } }),
+                  )
+                  .and(
+                    z
+                      .any()
+                      .refine(
+                        (val) =>
+                          !z
+                            .unknown()
+                            .superRefine((val, ctx) => {
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                if (!Object.hasOwn(val, 'example')) {
+                                  ctx.addIssue({ code: 'custom' })
+                                }
+                              }
+                            })
+                            .openapi({ required: ['example'] })
+                            .safeParse(val).success,
+                      )
+                      .openapi({ not: { required: ['example'] } }),
+                  )
+                  .and(
+                    z
+                      .any()
+                      .refine(
+                        (val) =>
+                          !z
+                            .unknown()
+                            .superRefine((val, ctx) => {
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                if (!Object.hasOwn(val, 'examples')) {
+                                  ctx.addIssue({ code: 'custom' })
+                                }
+                              }
+                            })
+                            .openapi({ required: ['examples'] })
+                            .safeParse(val).success,
+                      )
+                      .openapi({ not: { required: ['examples'] } }),
+                  )
+                  .openapi({
+                    required: ['content'],
+                    description: 'Some properties are not allowed if content is present',
+                  }),
+              ])
+              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                const reported = ctx.issues.length
+                try {
+                  ;((ctx) => {
+                    const val = ctx.value
+                    if (
+                      z
+                        .unknown()
+                        .superRefine((val, ctx) => {
+                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                            if (!Object.hasOwn(val, 'schema')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                            if (!Object.hasOwn(val, 'content')) {
+                              ctx.addIssue({ code: 'custom' })
+                            }
+                          }
+                        })
+                        .openapi({ required: ['schema', 'content'] })
+                        .safeParse(val).success
+                    ) {
+                      ctx.issues.push({ code: 'custom', input: val })
+                    }
+                  })(ctx)
+                } catch (error) {
+                  if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                  ctx.issues.length = reported
+                  return (async (ctx) => {
+                    const val = ctx.value
+                    if (
+                      (
+                        await z
+                          .unknown()
+                          .superRefine((val, ctx) => {
+                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                              if (!Object.hasOwn(val, 'schema')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                              if (!Object.hasOwn(val, 'content')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                            }
+                          })
+                          .openapi({ required: ['schema', 'content'] })
+                          .safeParseAsync(val)
+                      ).success
+                    ) {
+                      ctx.issues.push({ code: 'custom', input: val })
+                    }
+                  })(ctx).then(() => val)
+                }
+                return val
+              }, Schema)
+            })().openapi({
+              description: 'Schema and content are mutually exclusive, at least one is required',
+              not: { required: ['schema', 'content'] },
+            }),
+          )
+          .and(
+            z
+              .object({
+                description: z.string().exactOptional(),
+                required: z.boolean().default(false).exactOptional(),
+                deprecated: z.boolean().default(false).exactOptional(),
+                allowEmptyValue: z.boolean().default(false).exactOptional(),
+                style: z.literal('simple').default('simple').exactOptional(),
+                explode: z.boolean().exactOptional(),
+                allowReserved: z.boolean().default(false).exactOptional(),
+                schema: z
+                  .xor([
+                    SchemaSchema,
+                    z
+                      .looseObject({})
+                      .superRefine((o, ctx) => {
+                        const regex = new RegExp('^\\$ref$')
+                        const Schema = z.string()
+                        for (const [k, val] of Object.entries(o)) {
+                          if (!regex.test(k)) {
+                            continue
+                          }
+                          const result = Schema.safeParse(val)
+                          if (!result.success) {
+                            for (const issue of result.error.issues) {
+                              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                            }
+                          }
+                        }
+                      })
+                      .openapi({
+                        ...{
+                          patternProperties: {
+                            '^\\$ref$': { type: 'string', format: 'uri-reference' },
+                          },
+                        },
+                        required: ['$ref'],
+                      }),
+                  ])
+                  .exactOptional(),
+                content: z
+                  .record(z.string(), MediaTypeSchema)
+                  .refine((val) => Object.keys(val).length >= 1)
+                  .refine((val) => Object.keys(val).length <= 1)
+                  .exactOptional(),
+                example: z.any().exactOptional(),
+                examples: z
+                  .record(
+                    z.string(),
+                    z.xor([
+                      z
+                        .looseObject({
+                          summary: z.string().exactOptional(),
+                          description: z.string().exactOptional(),
+                          value: z.any().exactOptional(),
+                          externalValue: z.string().exactOptional(),
+                        })
+                        .superRefine((o, ctx) => {
+                          const keys = Object.keys(o).filter(
+                            (k) =>
+                              !['summary', 'description', 'value', 'externalValue'].includes(k) &&
+                              !['^x-'].some((p) => new RegExp(p).test(k)),
+                          )
+                          if (keys.length > 0) {
+                            ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                          }
+                        })
+                        .superRefine((o, ctx) => {
+                          const regex = new RegExp('^x-')
+                          const Schema = z.any()
+                          for (const [k, val] of Object.entries(o)) {
+                            if (!regex.test(k)) {
+                              continue
+                            }
+                            const result = Schema.safeParse(val)
+                            if (!result.success) {
+                              for (const issue of result.error.issues) {
+                                ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                              }
+                            }
+                          }
+                        })
+                        .openapi({
+                          ...{ patternProperties: { '^x-': {} } },
+                          additionalProperties: false,
+                          required: [],
+                        }),
+                      z
+                        .looseObject({})
+                        .superRefine((o, ctx) => {
+                          const regex = new RegExp('^\\$ref$')
+                          const Schema = z.string()
+                          for (const [k, val] of Object.entries(o)) {
+                            if (!regex.test(k)) {
+                              continue
+                            }
+                            const result = Schema.safeParse(val)
+                            if (!result.success) {
+                              for (const issue of result.error.issues) {
+                                ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                              }
+                            }
+                          }
+                        })
+                        .openapi({
+                          ...{
+                            patternProperties: {
+                              '^\\$ref$': { type: 'string', format: 'uri-reference' },
+                            },
+                          },
+                          required: ['$ref'],
+                        }),
+                    ]),
+                  )
+                  .exactOptional(),
+              })
+              .openapi({ required: [] }),
+          )
+        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+          ;((ctx) => {
+            const o = ctx.value
+            if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+            for (const k of Object.keys(o)) {
+              if (
+                ![
+                  'description',
+                  'required',
+                  'deprecated',
+                  'allowEmptyValue',
+                  'style',
+                  'explode',
+                  'allowReserved',
+                  'schema',
+                  'content',
+                  'example',
+                  'examples',
+                ].includes(k) &&
+                !['^x-'].some((p) => new RegExp(p).test(k))
+              ) {
+                ctx.issues.push({ code: 'custom', path: [k], input: o })
+              }
+            }
+          })(ctx)
+          return val
+        }, Schema)
+      })()
+      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+        ;((ctx) => {
+          const val = ctx.value
+          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+            {
+              const Schema = z.any()
+              for (const k of Object.keys(val)) {
+                if (new RegExp('^x-').test(k)) {
+                  if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
             }
           }
         })(ctx)
@@ -3078,171 +3139,35 @@ type PathItemType = {
     variables?: { [key: string]: { enum?: string[]; default: string; description?: string } }
   }[]
   parameters?: (
-    | (unknown &
-        (unknown | (unknown & unknown & unknown & unknown & unknown)) &
+    | (any &
+        (unknown | (any & any & any & any & any)) &
         (
           | { in?: 'path'; style?: 'matrix' | 'label' | 'simple'; required: true }
           | { in?: 'query'; style?: 'form' | 'spaceDelimited' | 'pipeDelimited' | 'deepObject' }
           | { in?: 'header'; style?: 'simple' }
           | { in?: 'cookie'; style?: 'form' }
-        ))
+        ) & {
+          name: string
+          in: string
+          description?: string
+          required?: boolean
+          deprecated?: boolean
+          allowEmptyValue?: boolean
+          style?: string
+          explode?: boolean
+          allowReserved?: boolean
+          schema?: z.infer<typeof SchemaSchema> | { [key: string]: unknown }
+          content?: { [key: string]: z.infer<typeof MediaTypeSchema> }
+          example?: any
+          examples?: {
+            [key: string]:
+              | { summary?: string; description?: string; value?: any; externalValue?: string }
+              | { [key: string]: unknown }
+          }
+        })
     | { [key: string]: unknown }
   )[]
 }
-
-const MediaTypeSchema: z.ZodType<MediaTypeType> = z
-  .lazy(() =>
-    (() => {
-      const Schema = z
-        .any()
-        .refine(
-          (val) =>
-            !z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'example')) {
-                    ctx.addIssue({ code: 'custom' })
-                  }
-                  if (!Object.hasOwn(val, 'examples')) {
-                    ctx.addIssue({ code: 'custom' })
-                  }
-                }
-              })
-              .openapi({ required: ['example', 'examples'] })
-              .safeParse(val).success,
-        )
-        .openapi({
-          description: 'Example and examples are mutually exclusive',
-          not: { required: ['example', 'examples'] },
-        })
-        .and(
-          z
-            .object({
-              schema: z
-                .xor([
-                  SchemaSchema,
-                  z
-                    .looseObject({})
-                    .superRefine((o, ctx) => {
-                      const regex = new RegExp('^\\$ref$')
-                      const Schema = z.string()
-                      for (const [k, val] of Object.entries(o)) {
-                        if (!regex.test(k)) {
-                          continue
-                        }
-                        const result = Schema.safeParse(val)
-                        if (!result.success) {
-                          for (const issue of result.error.issues) {
-                            ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                          }
-                        }
-                      }
-                    })
-                    .openapi({
-                      ...{
-                        patternProperties: {
-                          '^\\$ref$': { type: 'string', format: 'uri-reference' },
-                        },
-                      },
-                      required: ['$ref'],
-                    }),
-                ])
-                .exactOptional(),
-              example: z.any().exactOptional(),
-              examples: z
-                .record(
-                  z.string(),
-                  z.xor([
-                    z
-                      .looseObject({
-                        summary: z.string().exactOptional(),
-                        description: z.string().exactOptional(),
-                        value: z.any().exactOptional(),
-                        externalValue: z.string().exactOptional(),
-                      })
-                      .superRefine((o, ctx) => {
-                        const keys = Object.keys(o).filter(
-                          (k) =>
-                            !['summary', 'description', 'value', 'externalValue'].includes(k) &&
-                            !['^x-'].some((p) => new RegExp(p).test(k)),
-                        )
-                        if (keys.length > 0) {
-                          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-                        }
-                      })
-                      .superRefine((o, ctx) => {
-                        const regex = new RegExp('^x-')
-                        const Schema = z.any()
-                        for (const [k, val] of Object.entries(o)) {
-                          if (!regex.test(k)) {
-                            continue
-                          }
-                          const result = Schema.safeParse(val)
-                          if (!result.success) {
-                            for (const issue of result.error.issues) {
-                              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                            }
-                          }
-                        }
-                      })
-                      .openapi({
-                        ...{ patternProperties: { '^x-': {} } },
-                        additionalProperties: false,
-                        required: [],
-                      }),
-                    z
-                      .looseObject({})
-                      .superRefine((o, ctx) => {
-                        const regex = new RegExp('^\\$ref$')
-                        const Schema = z.string()
-                        for (const [k, val] of Object.entries(o)) {
-                          if (!regex.test(k)) {
-                            continue
-                          }
-                          const result = Schema.safeParse(val)
-                          if (!result.success) {
-                            for (const issue of result.error.issues) {
-                              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                            }
-                          }
-                        }
-                      })
-                      .openapi({
-                        ...{
-                          patternProperties: {
-                            '^\\$ref$': { type: 'string', format: 'uri-reference' },
-                          },
-                        },
-                        required: ['$ref'],
-                      }),
-                  ]),
-                )
-                .exactOptional(),
-              encoding: z.record(z.string(), EncodingSchema).exactOptional(),
-            })
-            .openapi({ required: [] }),
-        )
-      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-        ;((ctx) => {
-          const o = ctx.value
-          if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-          for (const k of Object.keys(o)) {
-            if (
-              !['schema', 'example', 'examples', 'encoding'].includes(k) &&
-              !['^x-'].some((p) => new RegExp(p).test(k))
-            ) {
-              ctx.issues.push({ code: 'custom', path: [k], input: o })
-            }
-          }
-        })(ctx)
-        return val
-      }, Schema)
-    })()
-      .openapi({ additionalProperties: false })
-      .openapi({ ...{ patternProperties: { '^x-': {} } }, additionalProperties: false }),
-  )
-  .openapi('MediaType')
 
 const CallbackSchema: z.ZodType<CallbackType> = z
   .lazy(() =>
@@ -3286,14 +3211,32 @@ type Operation2Type = {
   externalDocs?: { description?: string; url: string }
   operationId?: string
   parameters?: (
-    | (unknown &
-        (unknown | (unknown & unknown & unknown & unknown & unknown)) &
+    | (any &
+        (unknown | (any & any & any & any & any)) &
         (
           | { in?: 'path'; style?: 'matrix' | 'label' | 'simple'; required: true }
           | { in?: 'query'; style?: 'form' | 'spaceDelimited' | 'pipeDelimited' | 'deepObject' }
           | { in?: 'header'; style?: 'simple' }
           | { in?: 'cookie'; style?: 'form' }
-        ))
+        ) & {
+          name: string
+          in: string
+          description?: string
+          required?: boolean
+          deprecated?: boolean
+          allowEmptyValue?: boolean
+          style?: string
+          explode?: boolean
+          allowReserved?: boolean
+          schema?: z.infer<typeof SchemaSchema> | { [key: string]: unknown }
+          content?: { [key: string]: z.infer<typeof MediaTypeSchema> }
+          example?: any
+          examples?: {
+            [key: string]:
+              | { summary?: string; description?: string; value?: any; externalValue?: string }
+              | { [key: string]: unknown }
+          }
+        })
     | { [key: string]: unknown }
   )[]
   requestBody?:
@@ -3314,8 +3257,8 @@ type Operation2Type = {
               | {
                   operationId?: string
                   operationRef?: string
-                  parameters?: { [key: string]: unknown }
-                  requestBody?: unknown
+                  parameters?: { [key: string]: any }
+                  requestBody?: any
                   description?: string
                   server?: {
                     url: string
@@ -3964,27 +3907,568 @@ const TraceHttpRequestSchema = z
   .openapi({ required: [] })
   .openapi('TraceHttpRequest')
 
-const SchemaSchema: z.ZodType<SchemaType> = z
+const PathItemSchema: z.ZodType<PathItemType> = z
   .lazy(() =>
     z
       .looseObject({
-        title: z.string().exactOptional(),
-        multipleOf: z.number().positive().exactOptional(),
-        maximum: z.number().exactOptional(),
-        exclusiveMaximum: z.boolean().default(false).exactOptional(),
-        minimum: z.number().exactOptional(),
-        exclusiveMinimum: z.boolean().default(false).exactOptional(),
-        maxLength: z.int().min(0).exactOptional(),
-        minLength: z.int().min(0).default(0).exactOptional(),
-        pattern: z.string().exactOptional(),
-        maxItems: z.int().min(0).exactOptional(),
-        minItems: z.int().min(0).default(0).exactOptional(),
-        uniqueItems: z.boolean().default(false).exactOptional(),
-        maxProperties: z.int().min(0).exactOptional(),
-        minProperties: z.int().min(0).default(0).exactOptional(),
-        required: z
-          .array(z.string())
-          .min(1)
+        $ref: z.string().exactOptional(),
+        summary: z.string().exactOptional(),
+        description: z.string().exactOptional(),
+        servers: z
+          .array(
+            z
+              .looseObject({
+                url: z.string(),
+                description: z.string().exactOptional(),
+                variables: z
+                  .record(
+                    z.string(),
+                    z
+                      .looseObject({
+                        enum: z.array(z.string()).exactOptional(),
+                        default: z.string(),
+                        description: z.string().exactOptional(),
+                      })
+                      .superRefine((o, ctx) => {
+                        const keys = Object.keys(o).filter(
+                          (k) =>
+                            !['enum', 'default', 'description'].includes(k) &&
+                            !['^x-'].some((p) => new RegExp(p).test(k)),
+                        )
+                        if (keys.length > 0) {
+                          ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                        }
+                      })
+                      .superRefine((o, ctx) => {
+                        const regex = new RegExp('^x-')
+                        const Schema = z.any()
+                        for (const [k, val] of Object.entries(o)) {
+                          if (!regex.test(k)) {
+                            continue
+                          }
+                          const result = Schema.safeParse(val)
+                          if (!result.success) {
+                            for (const issue of result.error.issues) {
+                              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                            }
+                          }
+                        }
+                      })
+                      .openapi({
+                        ...{ patternProperties: { '^x-': {} } },
+                        additionalProperties: false,
+                        required: ['default'],
+                      }),
+                  )
+                  .exactOptional(),
+              })
+              .superRefine((o, ctx) => {
+                const keys = Object.keys(o).filter(
+                  (k) =>
+                    !['url', 'description', 'variables'].includes(k) &&
+                    !['^x-'].some((p) => new RegExp(p).test(k)),
+                )
+                if (keys.length > 0) {
+                  ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                }
+              })
+              .superRefine((o, ctx) => {
+                const regex = new RegExp('^x-')
+                const Schema = z.any()
+                for (const [k, val] of Object.entries(o)) {
+                  if (!regex.test(k)) {
+                    continue
+                  }
+                  const result = Schema.safeParse(val)
+                  if (!result.success) {
+                    for (const issue of result.error.issues) {
+                      ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                    }
+                  }
+                }
+              })
+              .openapi({
+                ...{ patternProperties: { '^x-': {} } },
+                additionalProperties: false,
+                required: ['url'],
+              }),
+          )
+          .exactOptional(),
+        parameters: z
+          .array(
+            z.xor([
+              (() => {
+                const Schema = (() => {
+                  const Schema = z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
+                          .unknown()
+                          .superRefine((val, ctx) => {
+                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                              if (!Object.hasOwn(val, 'example')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                              if (!Object.hasOwn(val, 'examples')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                            }
+                          })
+                          .openapi({ required: ['example', 'examples'] })
+                          .safeParse(val).success,
+                    )
+                    .openapi({
+                      description: 'Example and examples are mutually exclusive',
+                      not: { required: ['example', 'examples'] },
+                    })
+                    .and(
+                      (() => {
+                        const Schema = z.xor([
+                          z
+                            .unknown()
+                            .superRefine((val, ctx) => {
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                if (!Object.hasOwn(val, 'schema')) {
+                                  ctx.addIssue({ code: 'custom' })
+                                }
+                              }
+                            })
+                            .openapi({ required: ['schema'] }),
+                          z
+                            .any()
+                            .refine(
+                              (val) =>
+                                !z
+                                  .unknown()
+                                  .superRefine((val, ctx) => {
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      if (!Object.hasOwn(val, 'style')) {
+                                        ctx.addIssue({ code: 'custom' })
+                                      }
+                                    }
+                                  })
+                                  .openapi({ required: ['style'] })
+                                  .safeParse(val).success,
+                            )
+                            .openapi({ not: { required: ['style'] } })
+                            .superRefine((val, ctx) => {
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                if (!Object.hasOwn(val, 'content')) {
+                                  ctx.addIssue({ code: 'custom' })
+                                }
+                              }
+                            })
+                            .and(
+                              z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'explode')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['explode'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({ not: { required: ['explode'] } }),
+                            )
+                            .and(
+                              z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'allowReserved')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['allowReserved'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({ not: { required: ['allowReserved'] } }),
+                            )
+                            .and(
+                              z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['example'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({ not: { required: ['example'] } }),
+                            )
+                            .and(
+                              z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'examples')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({ not: { required: ['examples'] } }),
+                            )
+                            .openapi({
+                              required: ['content'],
+                              description: 'Some properties are not allowed if content is present',
+                            }),
+                        ])
+                        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                          const reported = ctx.issues.length
+                          try {
+                            ;((ctx) => {
+                              const val = ctx.value
+                              if (
+                                z
+                                  .unknown()
+                                  .superRefine((val, ctx) => {
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      if (!Object.hasOwn(val, 'schema')) {
+                                        ctx.addIssue({ code: 'custom' })
+                                      }
+                                      if (!Object.hasOwn(val, 'content')) {
+                                        ctx.addIssue({ code: 'custom' })
+                                      }
+                                    }
+                                  })
+                                  .openapi({ required: ['schema', 'content'] })
+                                  .safeParse(val).success
+                              ) {
+                                ctx.issues.push({ code: 'custom', input: val })
+                              }
+                            })(ctx)
+                          } catch (error) {
+                            if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                            ctx.issues.length = reported
+                            return (async (ctx) => {
+                              const val = ctx.value
+                              if (
+                                (
+                                  await z
+                                    .unknown()
+                                    .superRefine((val, ctx) => {
+                                      if (
+                                        typeof val === 'object' &&
+                                        val !== null &&
+                                        !Array.isArray(val)
+                                      ) {
+                                        if (!Object.hasOwn(val, 'schema')) {
+                                          ctx.addIssue({ code: 'custom' })
+                                        }
+                                        if (!Object.hasOwn(val, 'content')) {
+                                          ctx.addIssue({ code: 'custom' })
+                                        }
+                                      }
+                                    })
+                                    .openapi({ required: ['schema', 'content'] })
+                                    .safeParseAsync(val)
+                                ).success
+                              ) {
+                                ctx.issues.push({ code: 'custom', input: val })
+                              }
+                            })(ctx).then(() => val)
+                          }
+                          return val
+                        }, Schema)
+                      })().openapi({
+                        description:
+                          'Schema and content are mutually exclusive, at least one is required',
+                        not: { required: ['schema', 'content'] },
+                      }),
+                    )
+                    .and(
+                      z
+                        .xor([
+                          z
+                            .object({
+                              in: z.literal('path').exactOptional(),
+                              style: z
+                                .enum(['matrix', 'label', 'simple'])
+                                .default('simple')
+                                .exactOptional(),
+                              required: z.literal(true),
+                            })
+                            .openapi({ description: 'Parameter in path', required: ['required'] }),
+                          z
+                            .object({
+                              in: z.literal('query').exactOptional(),
+                              style: z
+                                .enum(['form', 'spaceDelimited', 'pipeDelimited', 'deepObject'])
+                                .default('form')
+                                .exactOptional(),
+                            })
+                            .openapi({ description: 'Parameter in query', required: [] }),
+                          z
+                            .object({
+                              in: z.literal('header').exactOptional(),
+                              style: z.literal('simple').default('simple').exactOptional(),
+                            })
+                            .openapi({ description: 'Parameter in header', required: [] }),
+                          z
+                            .object({
+                              in: z.literal('cookie').exactOptional(),
+                              style: z.literal('form').default('form').exactOptional(),
+                            })
+                            .openapi({ description: 'Parameter in cookie', required: [] }),
+                        ])
+                        .openapi({ description: 'Parameter location' }),
+                    )
+                    .and(
+                      z
+                        .object({
+                          name: z.string(),
+                          in: z.string(),
+                          description: z.string().exactOptional(),
+                          required: z.boolean().default(false).exactOptional(),
+                          deprecated: z.boolean().default(false).exactOptional(),
+                          allowEmptyValue: z.boolean().default(false).exactOptional(),
+                          style: z.string().exactOptional(),
+                          explode: z.boolean().exactOptional(),
+                          allowReserved: z.boolean().default(false).exactOptional(),
+                          schema: z
+                            .xor([
+                              SchemaSchema,
+                              z
+                                .looseObject({})
+                                .superRefine((o, ctx) => {
+                                  const regex = new RegExp('^\\$ref$')
+                                  const Schema = z.string()
+                                  for (const [k, val] of Object.entries(o)) {
+                                    if (!regex.test(k)) {
+                                      continue
+                                    }
+                                    const result = Schema.safeParse(val)
+                                    if (!result.success) {
+                                      for (const issue of result.error.issues) {
+                                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                                      }
+                                    }
+                                  }
+                                })
+                                .openapi({
+                                  ...{
+                                    patternProperties: {
+                                      '^\\$ref$': { type: 'string', format: 'uri-reference' },
+                                    },
+                                  },
+                                  required: ['$ref'],
+                                }),
+                            ])
+                            .exactOptional(),
+                          content: z
+                            .record(z.string(), MediaTypeSchema)
+                            .refine((val) => Object.keys(val).length >= 1)
+                            .refine((val) => Object.keys(val).length <= 1)
+                            .exactOptional(),
+                          example: z.any().exactOptional(),
+                          examples: z
+                            .record(
+                              z.string(),
+                              z.xor([
+                                z
+                                  .looseObject({
+                                    summary: z.string().exactOptional(),
+                                    description: z.string().exactOptional(),
+                                    value: z.any().exactOptional(),
+                                    externalValue: z.string().exactOptional(),
+                                  })
+                                  .superRefine((o, ctx) => {
+                                    const keys = Object.keys(o).filter(
+                                      (k) =>
+                                        ![
+                                          'summary',
+                                          'description',
+                                          'value',
+                                          'externalValue',
+                                        ].includes(k) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k)),
+                                    )
+                                    if (keys.length > 0) {
+                                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                                    }
+                                  })
+                                  .superRefine((o, ctx) => {
+                                    const regex = new RegExp('^x-')
+                                    const Schema = z.any()
+                                    for (const [k, val] of Object.entries(o)) {
+                                      if (!regex.test(k)) {
+                                        continue
+                                      }
+                                      const result = Schema.safeParse(val)
+                                      if (!result.success) {
+                                        for (const issue of result.error.issues) {
+                                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                                        }
+                                      }
+                                    }
+                                  })
+                                  .openapi({
+                                    ...{ patternProperties: { '^x-': {} } },
+                                    additionalProperties: false,
+                                    required: [],
+                                  }),
+                                z
+                                  .looseObject({})
+                                  .superRefine((o, ctx) => {
+                                    const regex = new RegExp('^\\$ref$')
+                                    const Schema = z.string()
+                                    for (const [k, val] of Object.entries(o)) {
+                                      if (!regex.test(k)) {
+                                        continue
+                                      }
+                                      const result = Schema.safeParse(val)
+                                      if (!result.success) {
+                                        for (const issue of result.error.issues) {
+                                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                                        }
+                                      }
+                                    }
+                                  })
+                                  .openapi({
+                                    ...{
+                                      patternProperties: {
+                                        '^\\$ref$': { type: 'string', format: 'uri-reference' },
+                                      },
+                                    },
+                                    required: ['$ref'],
+                                  }),
+                              ]),
+                            )
+                            .exactOptional(),
+                        })
+                        .openapi({ required: ['name', 'in'] }),
+                    )
+                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                    ;((ctx) => {
+                      const o = ctx.value
+                      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                      for (const k of Object.keys(o)) {
+                        if (
+                          ![
+                            'name',
+                            'in',
+                            'description',
+                            'required',
+                            'deprecated',
+                            'allowEmptyValue',
+                            'style',
+                            'explode',
+                            'allowReserved',
+                            'schema',
+                            'content',
+                            'example',
+                            'examples',
+                          ].includes(k) &&
+                          !['^x-'].some((p) => new RegExp(p).test(k))
+                        ) {
+                          ctx.issues.push({ code: 'custom', path: [k], input: o })
+                        }
+                      }
+                    })(ctx)
+                    return val
+                  }, Schema)
+                })()
+                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                  ;((ctx) => {
+                    const val = ctx.value
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      {
+                        const Schema = z.any()
+                        for (const k of Object.keys(val)) {
+                          if (new RegExp('^x-').test(k)) {
+                            if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                              ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                            }
+                          }
+                        }
+                      }
+                    }
+                  })(ctx)
+                  return val
+                }, Schema)
+              })()
+                .openapi({ additionalProperties: false })
+                .openapi({
+                  ...{ patternProperties: { '^x-': {} } },
+                  additionalProperties: false,
+                  required: ['name', 'in'],
+                }),
+              z
+                .looseObject({})
+                .superRefine((o, ctx) => {
+                  const regex = new RegExp('^\\$ref$')
+                  const Schema = z.string()
+                  for (const [k, val] of Object.entries(o)) {
+                    if (!regex.test(k)) {
+                      continue
+                    }
+                    const result = Schema.safeParse(val)
+                    if (!result.success) {
+                      for (const issue of result.error.issues) {
+                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                      }
+                    }
+                  }
+                })
+                .openapi({
+                  ...{
+                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
+                  },
+                  required: ['$ref'],
+                }),
+            ]),
+          )
           .superRefine((items, ctx) => {
             const seen = new Map()
             for (const [i, val] of items.entries()) {
@@ -3994,345 +4478,32 @@ const SchemaSchema: z.ZodType<SchemaType> = z
             }
           })
           .exactOptional(),
-        enum: z.array(z.any()).min(1).exactOptional(),
-        type: z.enum(['array', 'boolean', 'integer', 'number', 'object', 'string']).exactOptional(),
-        not: z
-          .xor([
-            SchemaSchema,
-            z
-              .looseObject({})
-              .superRefine((o, ctx) => {
-                const regex = new RegExp('^\\$ref$')
-                const Schema = z.string()
-                for (const [k, val] of Object.entries(o)) {
-                  if (!regex.test(k)) {
-                    continue
-                  }
-                  const result = Schema.safeParse(val)
-                  if (!result.success) {
-                    for (const issue of result.error.issues) {
-                      ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                    }
-                  }
-                }
-              })
-              .openapi({
-                ...{
-                  patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
-                },
-                required: ['$ref'],
-              }),
-          ])
-          .exactOptional(),
-        allOf: z
-          .array(
-            z.xor([
-              SchemaSchema,
-              z
-                .looseObject({})
-                .superRefine((o, ctx) => {
-                  const regex = new RegExp('^\\$ref$')
-                  const Schema = z.string()
-                  for (const [k, val] of Object.entries(o)) {
-                    if (!regex.test(k)) {
-                      continue
-                    }
-                    const result = Schema.safeParse(val)
-                    if (!result.success) {
-                      for (const issue of result.error.issues) {
-                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                      }
-                    }
-                  }
-                })
-                .openapi({
-                  ...{
-                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
-                  },
-                  required: ['$ref'],
-                }),
-            ]),
-          )
-          .exactOptional(),
-        oneOf: z
-          .array(
-            z.xor([
-              SchemaSchema,
-              z
-                .looseObject({})
-                .superRefine((o, ctx) => {
-                  const regex = new RegExp('^\\$ref$')
-                  const Schema = z.string()
-                  for (const [k, val] of Object.entries(o)) {
-                    if (!regex.test(k)) {
-                      continue
-                    }
-                    const result = Schema.safeParse(val)
-                    if (!result.success) {
-                      for (const issue of result.error.issues) {
-                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                      }
-                    }
-                  }
-                })
-                .openapi({
-                  ...{
-                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
-                  },
-                  required: ['$ref'],
-                }),
-            ]),
-          )
-          .exactOptional(),
-        anyOf: z
-          .array(
-            z.xor([
-              SchemaSchema,
-              z
-                .looseObject({})
-                .superRefine((o, ctx) => {
-                  const regex = new RegExp('^\\$ref$')
-                  const Schema = z.string()
-                  for (const [k, val] of Object.entries(o)) {
-                    if (!regex.test(k)) {
-                      continue
-                    }
-                    const result = Schema.safeParse(val)
-                    if (!result.success) {
-                      for (const issue of result.error.issues) {
-                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                      }
-                    }
-                  }
-                })
-                .openapi({
-                  ...{
-                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
-                  },
-                  required: ['$ref'],
-                }),
-            ]),
-          )
-          .exactOptional(),
-        items: z
-          .xor([
-            SchemaSchema,
-            z
-              .looseObject({})
-              .superRefine((o, ctx) => {
-                const regex = new RegExp('^\\$ref$')
-                const Schema = z.string()
-                for (const [k, val] of Object.entries(o)) {
-                  if (!regex.test(k)) {
-                    continue
-                  }
-                  const result = Schema.safeParse(val)
-                  if (!result.success) {
-                    for (const issue of result.error.issues) {
-                      ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                    }
-                  }
-                }
-              })
-              .openapi({
-                ...{
-                  patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
-                },
-                required: ['$ref'],
-              }),
-          ])
-          .exactOptional(),
-        properties: z
-          .record(
-            z.string(),
-            z.xor([
-              SchemaSchema,
-              z
-                .looseObject({})
-                .superRefine((o, ctx) => {
-                  const regex = new RegExp('^\\$ref$')
-                  const Schema = z.string()
-                  for (const [k, val] of Object.entries(o)) {
-                    if (!regex.test(k)) {
-                      continue
-                    }
-                    const result = Schema.safeParse(val)
-                    if (!result.success) {
-                      for (const issue of result.error.issues) {
-                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                      }
-                    }
-                  }
-                })
-                .openapi({
-                  ...{
-                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
-                  },
-                  required: ['$ref'],
-                }),
-            ]),
-          )
-          .exactOptional(),
-        additionalProperties: z
-          .xor([
-            SchemaSchema,
-            z
-              .looseObject({})
-              .superRefine((o, ctx) => {
-                const regex = new RegExp('^\\$ref$')
-                const Schema = z.string()
-                for (const [k, val] of Object.entries(o)) {
-                  if (!regex.test(k)) {
-                    continue
-                  }
-                  const result = Schema.safeParse(val)
-                  if (!result.success) {
-                    for (const issue of result.error.issues) {
-                      ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                    }
-                  }
-                }
-              })
-              .openapi({
-                ...{
-                  patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
-                },
-                required: ['$ref'],
-              }),
-            z.boolean(),
-          ])
-          .default(true)
-          .exactOptional(),
-        description: z.string().exactOptional(),
-        format: z.string().exactOptional(),
-        default: z.any().exactOptional(),
-        nullable: z.boolean().default(false).exactOptional(),
-        discriminator: z
-          .object({
-            propertyName: z.string(),
-            mapping: z.record(z.string(), z.string()).exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: ['propertyName'] }),
-        readOnly: z.boolean().default(false).exactOptional(),
-        writeOnly: z.boolean().default(false).exactOptional(),
-        example: z.any().exactOptional(),
-        externalDocs: z
-          .looseObject({ description: z.string().exactOptional(), url: z.string() })
-          .superRefine((o, ctx) => {
-            const keys = Object.keys(o).filter(
-              (k) =>
-                !['description', 'url'].includes(k) && !['^x-'].some((p) => new RegExp(p).test(k)),
-            )
-            if (keys.length > 0) {
-              ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-            }
-          })
-          .superRefine((o, ctx) => {
-            const regex = new RegExp('^x-')
-            const Schema = z.any()
-            for (const [k, val] of Object.entries(o)) {
-              if (!regex.test(k)) {
-                continue
-              }
-              const result = Schema.safeParse(val)
-              if (!result.success) {
-                for (const issue of result.error.issues) {
-                  ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                }
-              }
-            }
-          })
-          .exactOptional()
-          .openapi({
-            ...{ patternProperties: { '^x-': {} } },
-            additionalProperties: false,
-            required: ['url'],
-          }),
-        deprecated: z.boolean().default(false).exactOptional(),
-        xml: z
-          .looseObject({
-            name: z.string().exactOptional(),
-            namespace: z.url().exactOptional(),
-            prefix: z.string().exactOptional(),
-            attribute: z.boolean().default(false).exactOptional(),
-            wrapped: z.boolean().default(false).exactOptional(),
-          })
-          .superRefine((o, ctx) => {
-            const keys = Object.keys(o).filter(
-              (k) =>
-                !['name', 'namespace', 'prefix', 'attribute', 'wrapped'].includes(k) &&
-                !['^x-'].some((p) => new RegExp(p).test(k)),
-            )
-            if (keys.length > 0) {
-              ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-            }
-          })
-          .superRefine((o, ctx) => {
-            const regex = new RegExp('^x-')
-            const Schema = z.any()
-            for (const [k, val] of Object.entries(o)) {
-              if (!regex.test(k)) {
-                continue
-              }
-              const result = Schema.safeParse(val)
-              if (!result.success) {
-                for (const issue of result.error.issues) {
-                  ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                }
-              }
-            }
-          })
-          .exactOptional()
-          .openapi({
-            ...{ patternProperties: { '^x-': {} } },
-            additionalProperties: false,
-            required: [],
-          }),
       })
       .superRefine((o, ctx) => {
         const keys = Object.keys(o).filter(
           (k) =>
-            ![
-              'title',
-              'multipleOf',
-              'maximum',
-              'exclusiveMaximum',
-              'minimum',
-              'exclusiveMinimum',
-              'maxLength',
-              'minLength',
-              'pattern',
-              'maxItems',
-              'minItems',
-              'uniqueItems',
-              'maxProperties',
-              'minProperties',
-              'required',
-              'enum',
-              'type',
-              'not',
-              'allOf',
-              'oneOf',
-              'anyOf',
-              'items',
-              'properties',
-              'additionalProperties',
-              'description',
-              'format',
-              'default',
-              'nullable',
-              'discriminator',
-              'readOnly',
-              'writeOnly',
-              'example',
-              'externalDocs',
-              'deprecated',
-              'xml',
-            ].includes(k) && !['^x-'].some((p) => new RegExp(p).test(k)),
+            !['$ref', 'summary', 'description', 'servers', 'parameters'].includes(k) &&
+            !['^(get|put|post|delete|options|head|patch|trace)$', '^x-'].some((p) =>
+              new RegExp(p).test(k),
+            ),
         )
         if (keys.length > 0) {
           ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+        }
+      })
+      .superRefine((o, ctx) => {
+        const regex = new RegExp('^(get|put|post|delete|options|head|patch|trace)$')
+        const Schema = Operation2Schema
+        for (const [k, val] of Object.entries(o)) {
+          if (!regex.test(k)) {
+            continue
+          }
+          const result = Schema.safeParse(val)
+          if (!result.success) {
+            for (const issue of result.error.issues) {
+              ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+            }
+          }
         }
       })
       .superRefine((o, ctx) => {
@@ -4350,13 +4521,9 @@ const SchemaSchema: z.ZodType<SchemaType> = z
           }
         }
       })
-      .openapi({
-        ...{ patternProperties: { '^x-': {} } },
-        additionalProperties: false,
-        required: [],
-      }),
+      .openapi({ required: [] }),
   )
-  .openapi('Schema')
+  .openapi('PathItem')
 
 const TykVendorExtensionSchema: z.ZodType<TykVendorExtensionType> = z
   .object({ 'x-tyk-api-gateway': XTykAPIGatewaySchema.exactOptional() })
@@ -6921,37 +7088,12 @@ const TraceRequestSchema: z.ZodType<TraceRequestType> = z
                               required: ['$ref'],
                             }),
                           (() => {
-                            const Schema = z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example', 'examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({
-                                description: 'Example and examples are mutually exclusive',
-                                not: { required: ['example', 'examples'] },
-                              })
-                              .and(
-                                (() => {
-                                  const Schema = z.xor([
-                                    z
+                            const Schema = (() => {
+                              const Schema = z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
                                       .unknown()
                                       .superRefine((val, ctx) => {
                                         if (
@@ -6959,178 +7101,175 @@ const TraceRequestSchema: z.ZodType<TraceRequestType> = z
                                           val !== null &&
                                           !Array.isArray(val)
                                         ) {
-                                          if (!Object.hasOwn(val, 'schema')) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                          if (!Object.hasOwn(val, 'examples')) {
                                             ctx.addIssue({ code: 'custom' })
                                           }
                                         }
                                       })
-                                      .openapi({ required: ['schema'] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'style')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                      .openapi({ required: ['example', 'examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({
+                                  description: 'Example and examples are mutually exclusive',
+                                  not: { required: ['example', 'examples'] },
+                                })
+                                .and(
+                                  (() => {
+                                    const Schema = z.xor([
+                                      z
+                                        .unknown()
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'schema')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                          }
+                                        })
+                                        .openapi({ required: ['schema'] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'style')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['style'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({ not: { required: ['style'] } })
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'content')) {
-                                            ctx.addIssue({ code: 'custom' })
+                                              })
+                                              .openapi({ required: ['style'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({ not: { required: ['style'] } })
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'content')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
                                           }
-                                        }
-                                      })
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'explode')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['explode'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['explode'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'allowReserved')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['allowReserved'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['allowReserved'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'example')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['example'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['example'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'examples')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['examples'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['examples'] } }),
-                                      )
-                                      .openapi({
-                                        required: ['content'],
-                                        description:
-                                          'Some properties are not allowed if content is present',
-                                      }),
-                                  ])
-                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                    const reported = ctx.issues.length
-                                    try {
-                                      ;((ctx) => {
-                                        const val = ctx.value
-                                        if (
+                                        })
+                                        .and(
                                           z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'schema')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                                if (!Object.hasOwn(val, 'content')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                              }
-                                            })
-                                            .openapi({ required: ['schema', 'content'] })
-                                            .safeParse(val).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx)
-                                    } catch (error) {
-                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                      ctx.issues.length = reported
-                                      return (async (ctx) => {
-                                        const val = ctx.value
-                                        if (
-                                          (
-                                            await z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'explode')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['explode'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['explode'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'allowReserved')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['allowReserved'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['allowReserved'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'example')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['example'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['example'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'examples')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['examples'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['examples'] } }),
+                                        )
+                                        .openapi({
+                                          required: ['content'],
+                                          description:
+                                            'Some properties are not allowed if content is present',
+                                        }),
+                                    ])
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      const reported = ctx.issues.length
+                                      try {
+                                        ;((ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            z
                                               .unknown()
                                               .superRefine((val, ctx) => {
                                                 if (
@@ -7147,182 +7286,122 @@ const TraceRequestSchema: z.ZodType<TraceRequestType> = z
                                                 }
                                               })
                                               .openapi({ required: ['schema', 'content'] })
-                                              .safeParseAsync(val)
-                                          ).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx).then(() => val)
-                                    }
-                                    return val
-                                  }, Schema)
-                                })().openapi({
-                                  description:
-                                    'Schema and content are mutually exclusive, at least one is required',
-                                  not: { required: ['schema', 'content'] },
-                                }),
-                              )
-                              .and(
-                                z
-                                  .xor([
-                                    z
-                                      .object({
-                                        in: z.literal('path').exactOptional(),
-                                        style: z
-                                          .enum(['matrix', 'label', 'simple'])
-                                          .default('simple')
-                                          .exactOptional(),
-                                        required: z.literal(true),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in path',
-                                        required: ['required'],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('query').exactOptional(),
-                                        style: z
-                                          .enum([
-                                            'form',
-                                            'spaceDelimited',
-                                            'pipeDelimited',
-                                            'deepObject',
-                                          ])
-                                          .default('form')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Parameter in query', required: [] }),
-                                    z
-                                      .object({
-                                        in: z.literal('header').exactOptional(),
-                                        style: z
-                                          .literal('simple')
-                                          .default('simple')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in header',
-                                        required: [],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('cookie').exactOptional(),
-                                        style: z.literal('form').default('form').exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in cookie',
-                                        required: [],
-                                      }),
-                                  ])
-                                  .openapi({ description: 'Parameter location' }),
-                              )
-                              .and(
-                                z
-                                  .object({
-                                    name: z.string(),
-                                    in: z.string(),
-                                    description: z.string().exactOptional(),
-                                    required: z.boolean().default(false).exactOptional(),
-                                    deprecated: z.boolean().default(false).exactOptional(),
-                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                    style: z.string().exactOptional(),
-                                    explode: z.boolean().exactOptional(),
-                                    allowReserved: z.boolean().default(false).exactOptional(),
-                                    schema: z
-                                      .xor([
-                                        SchemaSchema,
-                                        z
-                                          .looseObject({})
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^\\$ref$')
-                                            const Schema = z.string()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
-                                                }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{
-                                              patternProperties: {
-                                                '^\\$ref$': {
-                                                  type: 'string',
-                                                  format: 'uri-reference',
-                                                },
-                                              },
-                                            },
-                                            required: ['$ref'],
-                                          }),
-                                      ])
-                                      .exactOptional(),
-                                    content: z
-                                      .record(z.string(), MediaTypeSchema)
-                                      .refine((val) => Object.keys(val).length >= 1)
-                                      .refine((val) => Object.keys(val).length <= 1)
-                                      .exactOptional(),
-                                    example: z.any().exactOptional(),
-                                    examples: z
-                                      .record(
-                                        z.string(),
-                                        z.xor([
-                                          z
-                                            .looseObject({
-                                              summary: z.string().exactOptional(),
-                                              description: z.string().exactOptional(),
-                                              value: z.any().exactOptional(),
-                                              externalValue: z.string().exactOptional(),
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const keys = Object.keys(o).filter(
-                                                (k) =>
-                                                  ![
-                                                    'summary',
-                                                    'description',
-                                                    'value',
-                                                    'externalValue',
-                                                  ].includes(k) &&
-                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
-                                              )
-                                              if (keys.length > 0) {
-                                                ctx.addIssue({
-                                                  code: 'unrecognized_keys',
-                                                  keys,
-                                                  input: o,
-                                                })
-                                              }
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^x-')
-                                              const Schema = z.any()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
+                                              .safeParse(val).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx)
+                                      } catch (error) {
+                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                        ctx.issues.length = reported
+                                        return (async (ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            (
+                                              await z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'schema')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                    if (!Object.hasOwn(val, 'content')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{ patternProperties: { '^x-': {} } },
-                                              additionalProperties: false,
-                                              required: [],
-                                            }),
+                                                })
+                                                .openapi({ required: ['schema', 'content'] })
+                                                .safeParseAsync(val)
+                                            ).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx).then(() => val)
+                                      }
+                                      return val
+                                    }, Schema)
+                                  })().openapi({
+                                    description:
+                                      'Schema and content are mutually exclusive, at least one is required',
+                                    not: { required: ['schema', 'content'] },
+                                  }),
+                                )
+                                .and(
+                                  z
+                                    .xor([
+                                      z
+                                        .object({
+                                          in: z.literal('path').exactOptional(),
+                                          style: z
+                                            .enum(['matrix', 'label', 'simple'])
+                                            .default('simple')
+                                            .exactOptional(),
+                                          required: z.literal(true),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in path',
+                                          required: ['required'],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('query').exactOptional(),
+                                          style: z
+                                            .enum([
+                                              'form',
+                                              'spaceDelimited',
+                                              'pipeDelimited',
+                                              'deepObject',
+                                            ])
+                                            .default('form')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in query',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('header').exactOptional(),
+                                          style: z
+                                            .literal('simple')
+                                            .default('simple')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in header',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('cookie').exactOptional(),
+                                          style: z.literal('form').default('form').exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in cookie',
+                                          required: [],
+                                        }),
+                                    ])
+                                    .openapi({ description: 'Parameter location' }),
+                                )
+                                .and(
+                                  z
+                                    .object({
+                                      name: z.string(),
+                                      in: z.string(),
+                                      description: z.string().exactOptional(),
+                                      required: z.boolean().default(false).exactOptional(),
+                                      deprecated: z.boolean().default(false).exactOptional(),
+                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                      style: z.string().exactOptional(),
+                                      explode: z.boolean().exactOptional(),
+                                      allowReserved: z.boolean().default(false).exactOptional(),
+                                      schema: z
+                                        .xor([
+                                          SchemaSchema,
                                           z
                                             .looseObject({})
                                             .superRefine((o, ctx) => {
@@ -7354,36 +7433,152 @@ const TraceRequestSchema: z.ZodType<TraceRequestType> = z
                                               },
                                               required: ['$ref'],
                                             }),
-                                        ]),
-                                      )
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ required: ['name', 'in'] }),
-                              )
+                                        ])
+                                        .exactOptional(),
+                                      content: z
+                                        .record(z.string(), MediaTypeSchema)
+                                        .refine((val) => Object.keys(val).length >= 1)
+                                        .refine((val) => Object.keys(val).length <= 1)
+                                        .exactOptional(),
+                                      example: z.any().exactOptional(),
+                                      examples: z
+                                        .record(
+                                          z.string(),
+                                          z.xor([
+                                            z
+                                              .looseObject({
+                                                summary: z.string().exactOptional(),
+                                                description: z.string().exactOptional(),
+                                                value: z.any().exactOptional(),
+                                                externalValue: z.string().exactOptional(),
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const keys = Object.keys(o).filter(
+                                                  (k) =>
+                                                    ![
+                                                      'summary',
+                                                      'description',
+                                                      'value',
+                                                      'externalValue',
+                                                    ].includes(k) &&
+                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                )
+                                                if (keys.length > 0) {
+                                                  ctx.addIssue({
+                                                    code: 'unrecognized_keys',
+                                                    keys,
+                                                    input: o,
+                                                  })
+                                                }
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^x-')
+                                                const Schema = z.any()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{ patternProperties: { '^x-': {} } },
+                                                additionalProperties: false,
+                                                required: [],
+                                              }),
+                                            z
+                                              .looseObject({})
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^\\$ref$')
+                                                const Schema = z.string()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{
+                                                  patternProperties: {
+                                                    '^\\$ref$': {
+                                                      type: 'string',
+                                                      format: 'uri-reference',
+                                                    },
+                                                  },
+                                                },
+                                                required: ['$ref'],
+                                              }),
+                                          ]),
+                                        )
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ required: ['name', 'in'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      ![
+                                        'name',
+                                        'in',
+                                        'description',
+                                        'required',
+                                        'deprecated',
+                                        'allowEmptyValue',
+                                        'style',
+                                        'explode',
+                                        'allowReserved',
+                                        'schema',
+                                        'content',
+                                        'example',
+                                        'examples',
+                                      ].includes(k) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    ![
-                                      'name',
-                                      'in',
-                                      'description',
-                                      'required',
-                                      'deprecated',
-                                      'allowEmptyValue',
-                                      'style',
-                                      'explode',
-                                      'allowReserved',
-                                      'schema',
-                                      'content',
-                                      'example',
-                                      'examples',
-                                    ].includes(k) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -10222,64 +10417,88 @@ const TraceRequestSchema: z.ZodType<TraceRequestType> = z
                                 required: ['type', 'name', 'in'],
                               }),
                             (() => {
-                              const Schema = z
-                                .xor([
-                                  z
-                                    .object({
-                                      scheme: z
-                                        .string()
-                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Bearer', required: [] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                ctx.addIssue({ code: 'custom' })
+                              const Schema = (() => {
+                                const Schema = z
+                                  .xor([
+                                    z
+                                      .object({
+                                        scheme: z
+                                          .string()
+                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Bearer', required: [] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['bearerFormat'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({
-                                      description: 'Non Bearer',
-                                      not: { required: ['bearerFormat'] },
-                                    }),
-                                ])
-                                .and(
-                                  z
-                                    .object({
-                                      scheme: z.string(),
-                                      bearerFormat: z.string().exactOptional(),
-                                      description: z.string().exactOptional(),
-                                      type: z.literal('http'),
-                                    })
-                                    .openapi({ required: ['scheme', 'type'] }),
-                                )
+                                            })
+                                            .openapi({ required: ['bearerFormat'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({
+                                        description: 'Non Bearer',
+                                        not: { required: ['bearerFormat'] },
+                                      }),
+                                  ])
+                                  .and(
+                                    z
+                                      .object({
+                                        scheme: z.string(),
+                                        bearerFormat: z.string().exactOptional(),
+                                        description: z.string().exactOptional(),
+                                        type: z.literal('http'),
+                                      })
+                                      .openapi({ required: ['scheme', 'type'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                          k,
+                                        ) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                        k,
-                                      ) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -11206,50 +11425,6 @@ const VersionMetasSchema = z
   .openapi({ required: [] })
   .openapi('VersionMetas')
 
-const EncodingSchema: z.ZodType<EncodingType> = z
-  .lazy(() =>
-    z
-      .strictObject({
-        contentType: z.string().exactOptional(),
-        headers: z
-          .record(
-            z.string(),
-            z.xor([
-              Header2Schema,
-              z
-                .looseObject({})
-                .superRefine((o, ctx) => {
-                  const regex = new RegExp('^\\$ref$')
-                  const Schema = z.string()
-                  for (const [k, val] of Object.entries(o)) {
-                    if (!regex.test(k)) {
-                      continue
-                    }
-                    const result = Schema.safeParse(val)
-                    if (!result.success) {
-                      for (const issue of result.error.issues) {
-                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                      }
-                    }
-                  }
-                })
-                .openapi({
-                  ...{
-                    patternProperties: { '^\\$ref$': { type: 'string', format: 'uri-reference' } },
-                  },
-                  required: ['$ref'],
-                }),
-            ]),
-          )
-          .exactOptional(),
-        style: z.enum(['form', 'spaceDelimited', 'pipeDelimited', 'deepObject']).exactOptional(),
-        explode: z.boolean().exactOptional(),
-        allowReserved: z.boolean().default(false).exactOptional(),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Encoding')
-
 const Operation2Schema: z.ZodType<Operation2Type> = z
   .lazy(() =>
     z
@@ -11294,203 +11469,175 @@ const Operation2Schema: z.ZodType<Operation2Type> = z
           .array(
             z.xor([
               (() => {
-                const Schema = z
-                  .any()
-                  .refine(
-                    (val) =>
-                      !z
-                        .unknown()
-                        .superRefine((val, ctx) => {
-                          if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                            if (!Object.hasOwn(val, 'example')) {
-                              ctx.addIssue({ code: 'custom' })
-                            }
-                            if (!Object.hasOwn(val, 'examples')) {
-                              ctx.addIssue({ code: 'custom' })
-                            }
-                          }
-                        })
-                        .openapi({ required: ['example', 'examples'] })
-                        .safeParse(val).success,
-                  )
-                  .openapi({
-                    description: 'Example and examples are mutually exclusive',
-                    not: { required: ['example', 'examples'] },
-                  })
-                  .and(
-                    (() => {
-                      const Schema = z.xor([
-                        z
+                const Schema = (() => {
+                  const Schema = z
+                    .any()
+                    .refine(
+                      (val) =>
+                        !z
                           .unknown()
                           .superRefine((val, ctx) => {
                             if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'schema')) {
+                              if (!Object.hasOwn(val, 'example')) {
+                                ctx.addIssue({ code: 'custom' })
+                              }
+                              if (!Object.hasOwn(val, 'examples')) {
                                 ctx.addIssue({ code: 'custom' })
                               }
                             }
                           })
-                          .openapi({ required: ['schema'] }),
-                        z
-                          .any()
-                          .refine(
-                            (val) =>
-                              !z
-                                .unknown()
-                                .superRefine((val, ctx) => {
-                                  if (
-                                    typeof val === 'object' &&
-                                    val !== null &&
-                                    !Array.isArray(val)
-                                  ) {
-                                    if (!Object.hasOwn(val, 'style')) {
-                                      ctx.addIssue({ code: 'custom' })
+                          .openapi({ required: ['example', 'examples'] })
+                          .safeParse(val).success,
+                    )
+                    .openapi({
+                      description: 'Example and examples are mutually exclusive',
+                      not: { required: ['example', 'examples'] },
+                    })
+                    .and(
+                      (() => {
+                        const Schema = z.xor([
+                          z
+                            .unknown()
+                            .superRefine((val, ctx) => {
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                if (!Object.hasOwn(val, 'schema')) {
+                                  ctx.addIssue({ code: 'custom' })
+                                }
+                              }
+                            })
+                            .openapi({ required: ['schema'] }),
+                          z
+                            .any()
+                            .refine(
+                              (val) =>
+                                !z
+                                  .unknown()
+                                  .superRefine((val, ctx) => {
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      if (!Object.hasOwn(val, 'style')) {
+                                        ctx.addIssue({ code: 'custom' })
+                                      }
                                     }
-                                  }
-                                })
-                                .openapi({ required: ['style'] })
-                                .safeParse(val).success,
-                          )
-                          .openapi({ not: { required: ['style'] } })
-                          .superRefine((val, ctx) => {
-                            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                              if (!Object.hasOwn(val, 'content')) {
-                                ctx.addIssue({ code: 'custom' })
+                                  })
+                                  .openapi({ required: ['style'] })
+                                  .safeParse(val).success,
+                            )
+                            .openapi({ not: { required: ['style'] } })
+                            .superRefine((val, ctx) => {
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                if (!Object.hasOwn(val, 'content')) {
+                                  ctx.addIssue({ code: 'custom' })
+                                }
                               }
-                            }
-                          })
-                          .and(
-                            z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'explode')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['explode'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({ not: { required: ['explode'] } }),
-                          )
-                          .and(
-                            z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'allowReserved')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['allowReserved'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({ not: { required: ['allowReserved'] } }),
-                          )
-                          .and(
-                            z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({ not: { required: ['example'] } }),
-                          )
-                          .and(
-                            z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({ not: { required: ['examples'] } }),
-                          )
-                          .openapi({
-                            required: ['content'],
-                            description: 'Some properties are not allowed if content is present',
-                          }),
-                      ])
-                      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                        const reported = ctx.issues.length
-                        try {
-                          ;((ctx) => {
-                            const val = ctx.value
-                            if (
+                            })
+                            .and(
                               z
-                                .unknown()
-                                .superRefine((val, ctx) => {
-                                  if (
-                                    typeof val === 'object' &&
-                                    val !== null &&
-                                    !Array.isArray(val)
-                                  ) {
-                                    if (!Object.hasOwn(val, 'schema')) {
-                                      ctx.addIssue({ code: 'custom' })
-                                    }
-                                    if (!Object.hasOwn(val, 'content')) {
-                                      ctx.addIssue({ code: 'custom' })
-                                    }
-                                  }
-                                })
-                                .openapi({ required: ['schema', 'content'] })
-                                .safeParse(val).success
-                            ) {
-                              ctx.issues.push({ code: 'custom', input: val })
-                            }
-                          })(ctx)
-                        } catch (error) {
-                          if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                          ctx.issues.length = reported
-                          return (async (ctx) => {
-                            const val = ctx.value
-                            if (
-                              (
-                                await z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'explode')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['explode'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({ not: { required: ['explode'] } }),
+                            )
+                            .and(
+                              z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'allowReserved')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['allowReserved'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({ not: { required: ['allowReserved'] } }),
+                            )
+                            .and(
+                              z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['example'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({ not: { required: ['example'] } }),
+                            )
+                            .and(
+                              z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'examples')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({ not: { required: ['examples'] } }),
+                            )
+                            .openapi({
+                              required: ['content'],
+                              description: 'Some properties are not allowed if content is present',
+                            }),
+                        ])
+                        return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                          const reported = ctx.issues.length
+                          try {
+                            ;((ctx) => {
+                              const val = ctx.value
+                              if (
+                                z
                                   .unknown()
                                   .superRefine((val, ctx) => {
                                     if (
@@ -11507,151 +11654,102 @@ const Operation2Schema: z.ZodType<Operation2Type> = z
                                     }
                                   })
                                   .openapi({ required: ['schema', 'content'] })
-                                  .safeParseAsync(val)
-                              ).success
-                            ) {
-                              ctx.issues.push({ code: 'custom', input: val })
-                            }
-                          })(ctx).then(() => val)
-                        }
-                        return val
-                      }, Schema)
-                    })().openapi({
-                      description:
-                        'Schema and content are mutually exclusive, at least one is required',
-                      not: { required: ['schema', 'content'] },
-                    }),
-                  )
-                  .and(
-                    z
-                      .xor([
-                        z
-                          .object({
-                            in: z.literal('path').exactOptional(),
-                            style: z
-                              .enum(['matrix', 'label', 'simple'])
-                              .default('simple')
-                              .exactOptional(),
-                            required: z.literal(true),
-                          })
-                          .openapi({ description: 'Parameter in path', required: ['required'] }),
-                        z
-                          .object({
-                            in: z.literal('query').exactOptional(),
-                            style: z
-                              .enum(['form', 'spaceDelimited', 'pipeDelimited', 'deepObject'])
-                              .default('form')
-                              .exactOptional(),
-                          })
-                          .openapi({ description: 'Parameter in query', required: [] }),
-                        z
-                          .object({
-                            in: z.literal('header').exactOptional(),
-                            style: z.literal('simple').default('simple').exactOptional(),
-                          })
-                          .openapi({ description: 'Parameter in header', required: [] }),
-                        z
-                          .object({
-                            in: z.literal('cookie').exactOptional(),
-                            style: z.literal('form').default('form').exactOptional(),
-                          })
-                          .openapi({ description: 'Parameter in cookie', required: [] }),
-                      ])
-                      .openapi({ description: 'Parameter location' }),
-                  )
-                  .and(
-                    z
-                      .object({
-                        name: z.string(),
-                        in: z.string(),
-                        description: z.string().exactOptional(),
-                        required: z.boolean().default(false).exactOptional(),
-                        deprecated: z.boolean().default(false).exactOptional(),
-                        allowEmptyValue: z.boolean().default(false).exactOptional(),
-                        style: z.string().exactOptional(),
-                        explode: z.boolean().exactOptional(),
-                        allowReserved: z.boolean().default(false).exactOptional(),
-                        schema: z
-                          .xor([
-                            SchemaSchema,
-                            z
-                              .looseObject({})
-                              .superRefine((o, ctx) => {
-                                const regex = new RegExp('^\\$ref$')
-                                const Schema = z.string()
-                                for (const [k, val] of Object.entries(o)) {
-                                  if (!regex.test(k)) {
-                                    continue
-                                  }
-                                  const result = Schema.safeParse(val)
-                                  if (!result.success) {
-                                    for (const issue of result.error.issues) {
-                                      ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                                    }
-                                  }
-                                }
-                              })
-                              .openapi({
-                                ...{
-                                  patternProperties: {
-                                    '^\\$ref$': { type: 'string', format: 'uri-reference' },
-                                  },
-                                },
-                                required: ['$ref'],
-                              }),
-                          ])
-                          .exactOptional(),
-                        content: z
-                          .record(z.string(), MediaTypeSchema)
-                          .refine((val) => Object.keys(val).length >= 1)
-                          .refine((val) => Object.keys(val).length <= 1)
-                          .exactOptional(),
-                        example: z.any().exactOptional(),
-                        examples: z
-                          .record(
-                            z.string(),
-                            z.xor([
-                              z
-                                .looseObject({
-                                  summary: z.string().exactOptional(),
-                                  description: z.string().exactOptional(),
-                                  value: z.any().exactOptional(),
-                                  externalValue: z.string().exactOptional(),
-                                })
-                                .superRefine((o, ctx) => {
-                                  const keys = Object.keys(o).filter(
-                                    (k) =>
-                                      ![
-                                        'summary',
-                                        'description',
-                                        'value',
-                                        'externalValue',
-                                      ].includes(k) && !['^x-'].some((p) => new RegExp(p).test(k)),
-                                  )
-                                  if (keys.length > 0) {
-                                    ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
-                                  }
-                                })
-                                .superRefine((o, ctx) => {
-                                  const regex = new RegExp('^x-')
-                                  const Schema = z.any()
-                                  for (const [k, val] of Object.entries(o)) {
-                                    if (!regex.test(k)) {
-                                      continue
-                                    }
-                                    const result = Schema.safeParse(val)
-                                    if (!result.success) {
-                                      for (const issue of result.error.issues) {
-                                        ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                                  .safeParse(val).success
+                              ) {
+                                ctx.issues.push({ code: 'custom', input: val })
+                              }
+                            })(ctx)
+                          } catch (error) {
+                            if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                            ctx.issues.length = reported
+                            return (async (ctx) => {
+                              const val = ctx.value
+                              if (
+                                (
+                                  await z
+                                    .unknown()
+                                    .superRefine((val, ctx) => {
+                                      if (
+                                        typeof val === 'object' &&
+                                        val !== null &&
+                                        !Array.isArray(val)
+                                      ) {
+                                        if (!Object.hasOwn(val, 'schema')) {
+                                          ctx.addIssue({ code: 'custom' })
+                                        }
+                                        if (!Object.hasOwn(val, 'content')) {
+                                          ctx.addIssue({ code: 'custom' })
+                                        }
                                       }
-                                    }
-                                  }
-                                })
-                                .openapi({
-                                  ...{ patternProperties: { '^x-': {} } },
-                                  additionalProperties: false,
-                                  required: [],
-                                }),
+                                    })
+                                    .openapi({ required: ['schema', 'content'] })
+                                    .safeParseAsync(val)
+                                ).success
+                              ) {
+                                ctx.issues.push({ code: 'custom', input: val })
+                              }
+                            })(ctx).then(() => val)
+                          }
+                          return val
+                        }, Schema)
+                      })().openapi({
+                        description:
+                          'Schema and content are mutually exclusive, at least one is required',
+                        not: { required: ['schema', 'content'] },
+                      }),
+                    )
+                    .and(
+                      z
+                        .xor([
+                          z
+                            .object({
+                              in: z.literal('path').exactOptional(),
+                              style: z
+                                .enum(['matrix', 'label', 'simple'])
+                                .default('simple')
+                                .exactOptional(),
+                              required: z.literal(true),
+                            })
+                            .openapi({ description: 'Parameter in path', required: ['required'] }),
+                          z
+                            .object({
+                              in: z.literal('query').exactOptional(),
+                              style: z
+                                .enum(['form', 'spaceDelimited', 'pipeDelimited', 'deepObject'])
+                                .default('form')
+                                .exactOptional(),
+                            })
+                            .openapi({ description: 'Parameter in query', required: [] }),
+                          z
+                            .object({
+                              in: z.literal('header').exactOptional(),
+                              style: z.literal('simple').default('simple').exactOptional(),
+                            })
+                            .openapi({ description: 'Parameter in header', required: [] }),
+                          z
+                            .object({
+                              in: z.literal('cookie').exactOptional(),
+                              style: z.literal('form').default('form').exactOptional(),
+                            })
+                            .openapi({ description: 'Parameter in cookie', required: [] }),
+                        ])
+                        .openapi({ description: 'Parameter location' }),
+                    )
+                    .and(
+                      z
+                        .object({
+                          name: z.string(),
+                          in: z.string(),
+                          description: z.string().exactOptional(),
+                          required: z.boolean().default(false).exactOptional(),
+                          deprecated: z.boolean().default(false).exactOptional(),
+                          allowEmptyValue: z.boolean().default(false).exactOptional(),
+                          style: z.string().exactOptional(),
+                          explode: z.boolean().exactOptional(),
+                          allowReserved: z.boolean().default(false).exactOptional(),
+                          schema: z
+                            .xor([
+                              SchemaSchema,
                               z
                                 .looseObject({})
                                 .superRefine((o, ctx) => {
@@ -11677,36 +11775,134 @@ const Operation2Schema: z.ZodType<Operation2Type> = z
                                   },
                                   required: ['$ref'],
                                 }),
-                            ]),
-                          )
-                          .exactOptional(),
-                      })
-                      .openapi({ required: ['name', 'in'] }),
-                  )
+                            ])
+                            .exactOptional(),
+                          content: z
+                            .record(z.string(), MediaTypeSchema)
+                            .refine((val) => Object.keys(val).length >= 1)
+                            .refine((val) => Object.keys(val).length <= 1)
+                            .exactOptional(),
+                          example: z.any().exactOptional(),
+                          examples: z
+                            .record(
+                              z.string(),
+                              z.xor([
+                                z
+                                  .looseObject({
+                                    summary: z.string().exactOptional(),
+                                    description: z.string().exactOptional(),
+                                    value: z.any().exactOptional(),
+                                    externalValue: z.string().exactOptional(),
+                                  })
+                                  .superRefine((o, ctx) => {
+                                    const keys = Object.keys(o).filter(
+                                      (k) =>
+                                        ![
+                                          'summary',
+                                          'description',
+                                          'value',
+                                          'externalValue',
+                                        ].includes(k) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k)),
+                                    )
+                                    if (keys.length > 0) {
+                                      ctx.addIssue({ code: 'unrecognized_keys', keys, input: o })
+                                    }
+                                  })
+                                  .superRefine((o, ctx) => {
+                                    const regex = new RegExp('^x-')
+                                    const Schema = z.any()
+                                    for (const [k, val] of Object.entries(o)) {
+                                      if (!regex.test(k)) {
+                                        continue
+                                      }
+                                      const result = Schema.safeParse(val)
+                                      if (!result.success) {
+                                        for (const issue of result.error.issues) {
+                                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                                        }
+                                      }
+                                    }
+                                  })
+                                  .openapi({
+                                    ...{ patternProperties: { '^x-': {} } },
+                                    additionalProperties: false,
+                                    required: [],
+                                  }),
+                                z
+                                  .looseObject({})
+                                  .superRefine((o, ctx) => {
+                                    const regex = new RegExp('^\\$ref$')
+                                    const Schema = z.string()
+                                    for (const [k, val] of Object.entries(o)) {
+                                      if (!regex.test(k)) {
+                                        continue
+                                      }
+                                      const result = Schema.safeParse(val)
+                                      if (!result.success) {
+                                        for (const issue of result.error.issues) {
+                                          ctx.addIssue({ ...issue, path: [k, ...issue.path] })
+                                        }
+                                      }
+                                    }
+                                  })
+                                  .openapi({
+                                    ...{
+                                      patternProperties: {
+                                        '^\\$ref$': { type: 'string', format: 'uri-reference' },
+                                      },
+                                    },
+                                    required: ['$ref'],
+                                  }),
+                              ]),
+                            )
+                            .exactOptional(),
+                        })
+                        .openapi({ required: ['name', 'in'] }),
+                    )
+                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                    ;((ctx) => {
+                      const o = ctx.value
+                      if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                      for (const k of Object.keys(o)) {
+                        if (
+                          ![
+                            'name',
+                            'in',
+                            'description',
+                            'required',
+                            'deprecated',
+                            'allowEmptyValue',
+                            'style',
+                            'explode',
+                            'allowReserved',
+                            'schema',
+                            'content',
+                            'example',
+                            'examples',
+                          ].includes(k) &&
+                          !['^x-'].some((p) => new RegExp(p).test(k))
+                        ) {
+                          ctx.issues.push({ code: 'custom', path: [k], input: o })
+                        }
+                      }
+                    })(ctx)
+                    return val
+                  }, Schema)
+                })()
                 return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                   ;((ctx) => {
-                    const o = ctx.value
-                    if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                    for (const k of Object.keys(o)) {
-                      if (
-                        ![
-                          'name',
-                          'in',
-                          'description',
-                          'required',
-                          'deprecated',
-                          'allowEmptyValue',
-                          'style',
-                          'explode',
-                          'allowReserved',
-                          'schema',
-                          'content',
-                          'example',
-                          'examples',
-                        ].includes(k) &&
-                        !['^x-'].some((p) => new RegExp(p).test(k))
-                      ) {
-                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                    const val = ctx.value
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      {
+                        const Schema = z.any()
+                        for (const k of Object.keys(val)) {
+                          if (new RegExp('^x-').test(k)) {
+                            if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                              ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                            }
+                          }
+                        }
                       }
                     }
                   })(ctx)
@@ -17629,37 +17825,12 @@ export const getTykApisOasRoute = createRoute({
                                 required: ['$ref'],
                               }),
                             (() => {
-                              const Schema = z
-                                .any()
-                                .refine(
-                                  (val) =>
-                                    !z
-                                      .unknown()
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'example')) {
-                                            ctx.addIssue({ code: 'custom' })
-                                          }
-                                          if (!Object.hasOwn(val, 'examples')) {
-                                            ctx.addIssue({ code: 'custom' })
-                                          }
-                                        }
-                                      })
-                                      .openapi({ required: ['example', 'examples'] })
-                                      .safeParse(val).success,
-                                )
-                                .openapi({
-                                  description: 'Example and examples are mutually exclusive',
-                                  not: { required: ['example', 'examples'] },
-                                })
-                                .and(
-                                  (() => {
-                                    const Schema = z.xor([
-                                      z
+                              const Schema = (() => {
+                                const Schema = z
+                                  .any()
+                                  .refine(
+                                    (val) =>
+                                      !z
                                         .unknown()
                                         .superRefine((val, ctx) => {
                                           if (
@@ -17667,178 +17838,175 @@ export const getTykApisOasRoute = createRoute({
                                             val !== null &&
                                             !Array.isArray(val)
                                           ) {
-                                            if (!Object.hasOwn(val, 'schema')) {
+                                            if (!Object.hasOwn(val, 'example')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                            if (!Object.hasOwn(val, 'examples')) {
                                               ctx.addIssue({ code: 'custom' })
                                             }
                                           }
                                         })
-                                        .openapi({ required: ['schema'] }),
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'style')) {
-                                                    ctx.addIssue({ code: 'custom' })
+                                        .openapi({ required: ['example', 'examples'] })
+                                        .safeParse(val).success,
+                                  )
+                                  .openapi({
+                                    description: 'Example and examples are mutually exclusive',
+                                    not: { required: ['example', 'examples'] },
+                                  })
+                                  .and(
+                                    (() => {
+                                      const Schema = z.xor([
+                                        z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'schema')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
+                                            }
+                                          })
+                                          .openapi({ required: ['schema'] }),
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'style')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              })
-                                              .openapi({ required: ['style'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['style'] } })
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'content')) {
-                                              ctx.addIssue({ code: 'custom' })
+                                                })
+                                                .openapi({ required: ['style'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['style'] } })
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'content')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
                                             }
-                                          }
-                                        })
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'explode')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['explode'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['explode'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'allowReserved')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['allowReserved'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['allowReserved'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'example')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['example'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['example'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'examples')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['examples'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['examples'] } }),
-                                        )
-                                        .openapi({
-                                          required: ['content'],
-                                          description:
-                                            'Some properties are not allowed if content is present',
-                                        }),
-                                    ])
-                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                      const reported = ctx.issues.length
-                                      try {
-                                        ;((ctx) => {
-                                          const val = ctx.value
-                                          if (
+                                          })
+                                          .and(
                                             z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'schema')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                  if (!Object.hasOwn(val, 'content')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['schema', 'content'] })
-                                              .safeParse(val).success
-                                          ) {
-                                            ctx.issues.push({ code: 'custom', input: val })
-                                          }
-                                        })(ctx)
-                                      } catch (error) {
-                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                        ctx.issues.length = reported
-                                        return (async (ctx) => {
-                                          const val = ctx.value
-                                          if (
-                                            (
-                                              await z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'explode')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['explode'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['explode'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'allowReserved')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['allowReserved'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['allowReserved'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'example')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['example'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['example'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'examples')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['examples'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['examples'] } }),
+                                          )
+                                          .openapi({
+                                            required: ['content'],
+                                            description:
+                                              'Some properties are not allowed if content is present',
+                                          }),
+                                      ])
+                                      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                        const reported = ctx.issues.length
+                                        try {
+                                          ;((ctx) => {
+                                            const val = ctx.value
+                                            if (
+                                              z
                                                 .unknown()
                                                 .superRefine((val, ctx) => {
                                                   if (
@@ -17855,185 +18023,125 @@ export const getTykApisOasRoute = createRoute({
                                                   }
                                                 })
                                                 .openapi({ required: ['schema', 'content'] })
-                                                .safeParseAsync(val)
-                                            ).success
-                                          ) {
-                                            ctx.issues.push({ code: 'custom', input: val })
-                                          }
-                                        })(ctx).then(() => val)
-                                      }
-                                      return val
-                                    }, Schema)
-                                  })().openapi({
-                                    description:
-                                      'Schema and content are mutually exclusive, at least one is required',
-                                    not: { required: ['schema', 'content'] },
-                                  }),
-                                )
-                                .and(
-                                  z
-                                    .xor([
-                                      z
-                                        .object({
-                                          in: z.literal('path').exactOptional(),
-                                          style: z
-                                            .enum(['matrix', 'label', 'simple'])
-                                            .default('simple')
-                                            .exactOptional(),
-                                          required: z.literal(true),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in path',
-                                          required: ['required'],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('query').exactOptional(),
-                                          style: z
-                                            .enum([
-                                              'form',
-                                              'spaceDelimited',
-                                              'pipeDelimited',
-                                              'deepObject',
-                                            ])
-                                            .default('form')
-                                            .exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in query',
-                                          required: [],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('header').exactOptional(),
-                                          style: z
-                                            .literal('simple')
-                                            .default('simple')
-                                            .exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in header',
-                                          required: [],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('cookie').exactOptional(),
-                                          style: z.literal('form').default('form').exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in cookie',
-                                          required: [],
-                                        }),
-                                    ])
-                                    .openapi({ description: 'Parameter location' }),
-                                )
-                                .and(
-                                  z
-                                    .object({
-                                      name: z.string(),
-                                      in: z.string(),
-                                      description: z.string().exactOptional(),
-                                      required: z.boolean().default(false).exactOptional(),
-                                      deprecated: z.boolean().default(false).exactOptional(),
-                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                      style: z.string().exactOptional(),
-                                      explode: z.boolean().exactOptional(),
-                                      allowReserved: z.boolean().default(false).exactOptional(),
-                                      schema: z
-                                        .xor([
-                                          SchemaSchema,
-                                          z
-                                            .looseObject({})
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^\\$ref$')
-                                              const Schema = z.string()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
-                                                  }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{
-                                                patternProperties: {
-                                                  '^\\$ref$': {
-                                                    type: 'string',
-                                                    format: 'uri-reference',
-                                                  },
-                                                },
-                                              },
-                                              required: ['$ref'],
-                                            }),
-                                        ])
-                                        .exactOptional(),
-                                      content: z
-                                        .record(z.string(), MediaTypeSchema)
-                                        .refine((val) => Object.keys(val).length >= 1)
-                                        .refine((val) => Object.keys(val).length <= 1)
-                                        .exactOptional(),
-                                      example: z.any().exactOptional(),
-                                      examples: z
-                                        .record(
-                                          z.string(),
-                                          z.xor([
-                                            z
-                                              .looseObject({
-                                                summary: z.string().exactOptional(),
-                                                description: z.string().exactOptional(),
-                                                value: z.any().exactOptional(),
-                                                externalValue: z.string().exactOptional(),
-                                              })
-                                              .superRefine((o, ctx) => {
-                                                const keys = Object.keys(o).filter(
-                                                  (k) =>
-                                                    ![
-                                                      'summary',
-                                                      'description',
-                                                      'value',
-                                                      'externalValue',
-                                                    ].includes(k) &&
-                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
-                                                )
-                                                if (keys.length > 0) {
-                                                  ctx.addIssue({
-                                                    code: 'unrecognized_keys',
-                                                    keys,
-                                                    input: o,
-                                                  })
-                                                }
-                                              })
-                                              .superRefine((o, ctx) => {
-                                                const regex = new RegExp('^x-')
-                                                const Schema = z.any()
-                                                for (const [k, val] of Object.entries(o)) {
-                                                  if (!regex.test(k)) {
-                                                    continue
-                                                  }
-                                                  const result = Schema.safeParse(val)
-                                                  if (!result.success) {
-                                                    for (const issue of result.error.issues) {
-                                                      ctx.addIssue({
-                                                        ...issue,
-                                                        path: [k, ...issue.path],
-                                                      })
+                                                .safeParse(val).success
+                                            ) {
+                                              ctx.issues.push({ code: 'custom', input: val })
+                                            }
+                                          })(ctx)
+                                        } catch (error) {
+                                          if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                          ctx.issues.length = reported
+                                          return (async (ctx) => {
+                                            const val = ctx.value
+                                            if (
+                                              (
+                                                await z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'schema')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                      if (!Object.hasOwn(val, 'content')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
                                                     }
-                                                  }
-                                                }
-                                              })
-                                              .openapi({
-                                                ...{ patternProperties: { '^x-': {} } },
-                                                additionalProperties: false,
-                                                required: [],
-                                              }),
+                                                  })
+                                                  .openapi({ required: ['schema', 'content'] })
+                                                  .safeParseAsync(val)
+                                              ).success
+                                            ) {
+                                              ctx.issues.push({ code: 'custom', input: val })
+                                            }
+                                          })(ctx).then(() => val)
+                                        }
+                                        return val
+                                      }, Schema)
+                                    })().openapi({
+                                      description:
+                                        'Schema and content are mutually exclusive, at least one is required',
+                                      not: { required: ['schema', 'content'] },
+                                    }),
+                                  )
+                                  .and(
+                                    z
+                                      .xor([
+                                        z
+                                          .object({
+                                            in: z.literal('path').exactOptional(),
+                                            style: z
+                                              .enum(['matrix', 'label', 'simple'])
+                                              .default('simple')
+                                              .exactOptional(),
+                                            required: z.literal(true),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in path',
+                                            required: ['required'],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('query').exactOptional(),
+                                            style: z
+                                              .enum([
+                                                'form',
+                                                'spaceDelimited',
+                                                'pipeDelimited',
+                                                'deepObject',
+                                              ])
+                                              .default('form')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in query',
+                                            required: [],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('header').exactOptional(),
+                                            style: z
+                                              .literal('simple')
+                                              .default('simple')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in header',
+                                            required: [],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('cookie').exactOptional(),
+                                            style: z
+                                              .literal('form')
+                                              .default('form')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in cookie',
+                                            required: [],
+                                          }),
+                                      ])
+                                      .openapi({ description: 'Parameter location' }),
+                                  )
+                                  .and(
+                                    z
+                                      .object({
+                                        name: z.string(),
+                                        in: z.string(),
+                                        description: z.string().exactOptional(),
+                                        required: z.boolean().default(false).exactOptional(),
+                                        deprecated: z.boolean().default(false).exactOptional(),
+                                        allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                        style: z.string().exactOptional(),
+                                        explode: z.boolean().exactOptional(),
+                                        allowReserved: z.boolean().default(false).exactOptional(),
+                                        schema: z
+                                          .xor([
+                                            SchemaSchema,
                                             z
                                               .looseObject({})
                                               .superRefine((o, ctx) => {
@@ -18065,37 +18173,152 @@ export const getTykApisOasRoute = createRoute({
                                                 },
                                                 required: ['$ref'],
                                               }),
-                                          ]),
-                                        )
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ required: ['name', 'in'] }),
-                                )
+                                          ])
+                                          .exactOptional(),
+                                        content: z
+                                          .record(z.string(), MediaTypeSchema)
+                                          .refine((val) => Object.keys(val).length >= 1)
+                                          .refine((val) => Object.keys(val).length <= 1)
+                                          .exactOptional(),
+                                        example: z.any().exactOptional(),
+                                        examples: z
+                                          .record(
+                                            z.string(),
+                                            z.xor([
+                                              z
+                                                .looseObject({
+                                                  summary: z.string().exactOptional(),
+                                                  description: z.string().exactOptional(),
+                                                  value: z.any().exactOptional(),
+                                                  externalValue: z.string().exactOptional(),
+                                                })
+                                                .superRefine((o, ctx) => {
+                                                  const keys = Object.keys(o).filter(
+                                                    (k) =>
+                                                      ![
+                                                        'summary',
+                                                        'description',
+                                                        'value',
+                                                        'externalValue',
+                                                      ].includes(k) &&
+                                                      !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                  )
+                                                  if (keys.length > 0) {
+                                                    ctx.addIssue({
+                                                      code: 'unrecognized_keys',
+                                                      keys,
+                                                      input: o,
+                                                    })
+                                                  }
+                                                })
+                                                .superRefine((o, ctx) => {
+                                                  const regex = new RegExp('^x-')
+                                                  const Schema = z.any()
+                                                  for (const [k, val] of Object.entries(o)) {
+                                                    if (!regex.test(k)) {
+                                                      continue
+                                                    }
+                                                    const result = Schema.safeParse(val)
+                                                    if (!result.success) {
+                                                      for (const issue of result.error.issues) {
+                                                        ctx.addIssue({
+                                                          ...issue,
+                                                          path: [k, ...issue.path],
+                                                        })
+                                                      }
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({
+                                                  ...{ patternProperties: { '^x-': {} } },
+                                                  additionalProperties: false,
+                                                  required: [],
+                                                }),
+                                              z
+                                                .looseObject({})
+                                                .superRefine((o, ctx) => {
+                                                  const regex = new RegExp('^\\$ref$')
+                                                  const Schema = z.string()
+                                                  for (const [k, val] of Object.entries(o)) {
+                                                    if (!regex.test(k)) {
+                                                      continue
+                                                    }
+                                                    const result = Schema.safeParse(val)
+                                                    if (!result.success) {
+                                                      for (const issue of result.error.issues) {
+                                                        ctx.addIssue({
+                                                          ...issue,
+                                                          path: [k, ...issue.path],
+                                                        })
+                                                      }
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({
+                                                  ...{
+                                                    patternProperties: {
+                                                      '^\\$ref$': {
+                                                        type: 'string',
+                                                        format: 'uri-reference',
+                                                      },
+                                                    },
+                                                  },
+                                                  required: ['$ref'],
+                                                }),
+                                            ]),
+                                          )
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ required: ['name', 'in'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        ![
+                                          'name',
+                                          'in',
+                                          'description',
+                                          'required',
+                                          'deprecated',
+                                          'allowEmptyValue',
+                                          'style',
+                                          'explode',
+                                          'allowReserved',
+                                          'schema',
+                                          'content',
+                                          'example',
+                                          'examples',
+                                        ].includes(k) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      ![
-                                        'name',
-                                        'in',
-                                        'description',
-                                        'required',
-                                        'deprecated',
-                                        'allowEmptyValue',
-                                        'style',
-                                        'explode',
-                                        'allowReserved',
-                                        'schema',
-                                        'content',
-                                        'example',
-                                        'examples',
-                                      ].includes(k) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -21018,64 +21241,91 @@ export const getTykApisOasRoute = createRoute({
                                   required: ['type', 'name', 'in'],
                                 }),
                               (() => {
-                                const Schema = z
-                                  .xor([
-                                    z
-                                      .object({
-                                        scheme: z
-                                          .string()
-                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Bearer', required: [] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                const Schema = (() => {
+                                  const Schema = z
+                                    .xor([
+                                      z
+                                        .object({
+                                          scheme: z
+                                            .string()
+                                            .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                            .exactOptional(),
+                                        })
+                                        .openapi({ description: 'Bearer', required: [] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['bearerFormat'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({
-                                        description: 'Non Bearer',
-                                        not: { required: ['bearerFormat'] },
-                                      }),
-                                  ])
-                                  .and(
-                                    z
-                                      .object({
-                                        scheme: z.string(),
-                                        bearerFormat: z.string().exactOptional(),
-                                        description: z.string().exactOptional(),
-                                        type: z.literal('http'),
-                                      })
-                                      .openapi({ required: ['scheme', 'type'] }),
-                                  )
+                                              })
+                                              .openapi({ required: ['bearerFormat'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({
+                                          description: 'Non Bearer',
+                                          not: { required: ['bearerFormat'] },
+                                        }),
+                                    ])
+                                    .and(
+                                      z
+                                        .object({
+                                          scheme: z.string(),
+                                          bearerFormat: z.string().exactOptional(),
+                                          description: z.string().exactOptional(),
+                                          type: z.literal('http'),
+                                        })
+                                        .openapi({ required: ['scheme', 'type'] }),
+                                    )
+                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                    ;((ctx) => {
+                                      const o = ctx.value
+                                      if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                        return
+                                      for (const k of Object.keys(o)) {
+                                        if (
+                                          ![
+                                            'scheme',
+                                            'bearerFormat',
+                                            'description',
+                                            'type',
+                                          ].includes(k) &&
+                                          !['^x-'].some((p) => new RegExp(p).test(k))
+                                        ) {
+                                          ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                        }
+                                      }
+                                    })(ctx)
+                                    return val
+                                  }, Schema)
+                                })()
                                 return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                   ;((ctx) => {
-                                    const o = ctx.value
-                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                      return
-                                    for (const k of Object.keys(o)) {
-                                      if (
-                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                          k,
-                                        ) &&
-                                        !['^x-'].some((p) => new RegExp(p).test(k))
-                                      ) {
-                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    const val = ctx.value
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      {
+                                        const Schema = z.any()
+                                        for (const k of Object.keys(val)) {
+                                          if (new RegExp('^x-').test(k)) {
+                                            if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                              ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                            }
+                                          }
+                                        }
                                       }
                                     }
                                   })(ctx)
@@ -24608,37 +24858,12 @@ export const postTykApisOasRoute = createRoute({
                               required: ['$ref'],
                             }),
                           (() => {
-                            const Schema = z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example', 'examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({
-                                description: 'Example and examples are mutually exclusive',
-                                not: { required: ['example', 'examples'] },
-                              })
-                              .and(
-                                (() => {
-                                  const Schema = z.xor([
-                                    z
+                            const Schema = (() => {
+                              const Schema = z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
                                       .unknown()
                                       .superRefine((val, ctx) => {
                                         if (
@@ -24646,178 +24871,175 @@ export const postTykApisOasRoute = createRoute({
                                           val !== null &&
                                           !Array.isArray(val)
                                         ) {
-                                          if (!Object.hasOwn(val, 'schema')) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                          if (!Object.hasOwn(val, 'examples')) {
                                             ctx.addIssue({ code: 'custom' })
                                           }
                                         }
                                       })
-                                      .openapi({ required: ['schema'] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'style')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                      .openapi({ required: ['example', 'examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({
+                                  description: 'Example and examples are mutually exclusive',
+                                  not: { required: ['example', 'examples'] },
+                                })
+                                .and(
+                                  (() => {
+                                    const Schema = z.xor([
+                                      z
+                                        .unknown()
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'schema')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                          }
+                                        })
+                                        .openapi({ required: ['schema'] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'style')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['style'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({ not: { required: ['style'] } })
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'content')) {
-                                            ctx.addIssue({ code: 'custom' })
+                                              })
+                                              .openapi({ required: ['style'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({ not: { required: ['style'] } })
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'content')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
                                           }
-                                        }
-                                      })
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'explode')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['explode'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['explode'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'allowReserved')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['allowReserved'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['allowReserved'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'example')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['example'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['example'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'examples')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['examples'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['examples'] } }),
-                                      )
-                                      .openapi({
-                                        required: ['content'],
-                                        description:
-                                          'Some properties are not allowed if content is present',
-                                      }),
-                                  ])
-                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                    const reported = ctx.issues.length
-                                    try {
-                                      ;((ctx) => {
-                                        const val = ctx.value
-                                        if (
+                                        })
+                                        .and(
                                           z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'schema')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                                if (!Object.hasOwn(val, 'content')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                              }
-                                            })
-                                            .openapi({ required: ['schema', 'content'] })
-                                            .safeParse(val).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx)
-                                    } catch (error) {
-                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                      ctx.issues.length = reported
-                                      return (async (ctx) => {
-                                        const val = ctx.value
-                                        if (
-                                          (
-                                            await z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'explode')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['explode'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['explode'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'allowReserved')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['allowReserved'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['allowReserved'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'example')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['example'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['example'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'examples')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['examples'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['examples'] } }),
+                                        )
+                                        .openapi({
+                                          required: ['content'],
+                                          description:
+                                            'Some properties are not allowed if content is present',
+                                        }),
+                                    ])
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      const reported = ctx.issues.length
+                                      try {
+                                        ;((ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            z
                                               .unknown()
                                               .superRefine((val, ctx) => {
                                                 if (
@@ -24834,182 +25056,122 @@ export const postTykApisOasRoute = createRoute({
                                                 }
                                               })
                                               .openapi({ required: ['schema', 'content'] })
-                                              .safeParseAsync(val)
-                                          ).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx).then(() => val)
-                                    }
-                                    return val
-                                  }, Schema)
-                                })().openapi({
-                                  description:
-                                    'Schema and content are mutually exclusive, at least one is required',
-                                  not: { required: ['schema', 'content'] },
-                                }),
-                              )
-                              .and(
-                                z
-                                  .xor([
-                                    z
-                                      .object({
-                                        in: z.literal('path').exactOptional(),
-                                        style: z
-                                          .enum(['matrix', 'label', 'simple'])
-                                          .default('simple')
-                                          .exactOptional(),
-                                        required: z.literal(true),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in path',
-                                        required: ['required'],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('query').exactOptional(),
-                                        style: z
-                                          .enum([
-                                            'form',
-                                            'spaceDelimited',
-                                            'pipeDelimited',
-                                            'deepObject',
-                                          ])
-                                          .default('form')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Parameter in query', required: [] }),
-                                    z
-                                      .object({
-                                        in: z.literal('header').exactOptional(),
-                                        style: z
-                                          .literal('simple')
-                                          .default('simple')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in header',
-                                        required: [],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('cookie').exactOptional(),
-                                        style: z.literal('form').default('form').exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in cookie',
-                                        required: [],
-                                      }),
-                                  ])
-                                  .openapi({ description: 'Parameter location' }),
-                              )
-                              .and(
-                                z
-                                  .object({
-                                    name: z.string(),
-                                    in: z.string(),
-                                    description: z.string().exactOptional(),
-                                    required: z.boolean().default(false).exactOptional(),
-                                    deprecated: z.boolean().default(false).exactOptional(),
-                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                    style: z.string().exactOptional(),
-                                    explode: z.boolean().exactOptional(),
-                                    allowReserved: z.boolean().default(false).exactOptional(),
-                                    schema: z
-                                      .xor([
-                                        SchemaSchema,
-                                        z
-                                          .looseObject({})
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^\\$ref$')
-                                            const Schema = z.string()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
-                                                }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{
-                                              patternProperties: {
-                                                '^\\$ref$': {
-                                                  type: 'string',
-                                                  format: 'uri-reference',
-                                                },
-                                              },
-                                            },
-                                            required: ['$ref'],
-                                          }),
-                                      ])
-                                      .exactOptional(),
-                                    content: z
-                                      .record(z.string(), MediaTypeSchema)
-                                      .refine((val) => Object.keys(val).length >= 1)
-                                      .refine((val) => Object.keys(val).length <= 1)
-                                      .exactOptional(),
-                                    example: z.any().exactOptional(),
-                                    examples: z
-                                      .record(
-                                        z.string(),
-                                        z.xor([
-                                          z
-                                            .looseObject({
-                                              summary: z.string().exactOptional(),
-                                              description: z.string().exactOptional(),
-                                              value: z.any().exactOptional(),
-                                              externalValue: z.string().exactOptional(),
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const keys = Object.keys(o).filter(
-                                                (k) =>
-                                                  ![
-                                                    'summary',
-                                                    'description',
-                                                    'value',
-                                                    'externalValue',
-                                                  ].includes(k) &&
-                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
-                                              )
-                                              if (keys.length > 0) {
-                                                ctx.addIssue({
-                                                  code: 'unrecognized_keys',
-                                                  keys,
-                                                  input: o,
-                                                })
-                                              }
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^x-')
-                                              const Schema = z.any()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
+                                              .safeParse(val).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx)
+                                      } catch (error) {
+                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                        ctx.issues.length = reported
+                                        return (async (ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            (
+                                              await z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'schema')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                    if (!Object.hasOwn(val, 'content')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{ patternProperties: { '^x-': {} } },
-                                              additionalProperties: false,
-                                              required: [],
-                                            }),
+                                                })
+                                                .openapi({ required: ['schema', 'content'] })
+                                                .safeParseAsync(val)
+                                            ).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx).then(() => val)
+                                      }
+                                      return val
+                                    }, Schema)
+                                  })().openapi({
+                                    description:
+                                      'Schema and content are mutually exclusive, at least one is required',
+                                    not: { required: ['schema', 'content'] },
+                                  }),
+                                )
+                                .and(
+                                  z
+                                    .xor([
+                                      z
+                                        .object({
+                                          in: z.literal('path').exactOptional(),
+                                          style: z
+                                            .enum(['matrix', 'label', 'simple'])
+                                            .default('simple')
+                                            .exactOptional(),
+                                          required: z.literal(true),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in path',
+                                          required: ['required'],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('query').exactOptional(),
+                                          style: z
+                                            .enum([
+                                              'form',
+                                              'spaceDelimited',
+                                              'pipeDelimited',
+                                              'deepObject',
+                                            ])
+                                            .default('form')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in query',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('header').exactOptional(),
+                                          style: z
+                                            .literal('simple')
+                                            .default('simple')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in header',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('cookie').exactOptional(),
+                                          style: z.literal('form').default('form').exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in cookie',
+                                          required: [],
+                                        }),
+                                    ])
+                                    .openapi({ description: 'Parameter location' }),
+                                )
+                                .and(
+                                  z
+                                    .object({
+                                      name: z.string(),
+                                      in: z.string(),
+                                      description: z.string().exactOptional(),
+                                      required: z.boolean().default(false).exactOptional(),
+                                      deprecated: z.boolean().default(false).exactOptional(),
+                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                      style: z.string().exactOptional(),
+                                      explode: z.boolean().exactOptional(),
+                                      allowReserved: z.boolean().default(false).exactOptional(),
+                                      schema: z
+                                        .xor([
+                                          SchemaSchema,
                                           z
                                             .looseObject({})
                                             .superRefine((o, ctx) => {
@@ -25041,36 +25203,152 @@ export const postTykApisOasRoute = createRoute({
                                               },
                                               required: ['$ref'],
                                             }),
-                                        ]),
-                                      )
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ required: ['name', 'in'] }),
-                              )
+                                        ])
+                                        .exactOptional(),
+                                      content: z
+                                        .record(z.string(), MediaTypeSchema)
+                                        .refine((val) => Object.keys(val).length >= 1)
+                                        .refine((val) => Object.keys(val).length <= 1)
+                                        .exactOptional(),
+                                      example: z.any().exactOptional(),
+                                      examples: z
+                                        .record(
+                                          z.string(),
+                                          z.xor([
+                                            z
+                                              .looseObject({
+                                                summary: z.string().exactOptional(),
+                                                description: z.string().exactOptional(),
+                                                value: z.any().exactOptional(),
+                                                externalValue: z.string().exactOptional(),
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const keys = Object.keys(o).filter(
+                                                  (k) =>
+                                                    ![
+                                                      'summary',
+                                                      'description',
+                                                      'value',
+                                                      'externalValue',
+                                                    ].includes(k) &&
+                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                )
+                                                if (keys.length > 0) {
+                                                  ctx.addIssue({
+                                                    code: 'unrecognized_keys',
+                                                    keys,
+                                                    input: o,
+                                                  })
+                                                }
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^x-')
+                                                const Schema = z.any()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{ patternProperties: { '^x-': {} } },
+                                                additionalProperties: false,
+                                                required: [],
+                                              }),
+                                            z
+                                              .looseObject({})
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^\\$ref$')
+                                                const Schema = z.string()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{
+                                                  patternProperties: {
+                                                    '^\\$ref$': {
+                                                      type: 'string',
+                                                      format: 'uri-reference',
+                                                    },
+                                                  },
+                                                },
+                                                required: ['$ref'],
+                                              }),
+                                          ]),
+                                        )
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ required: ['name', 'in'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      ![
+                                        'name',
+                                        'in',
+                                        'description',
+                                        'required',
+                                        'deprecated',
+                                        'allowEmptyValue',
+                                        'style',
+                                        'explode',
+                                        'allowReserved',
+                                        'schema',
+                                        'content',
+                                        'example',
+                                        'examples',
+                                      ].includes(k) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    ![
-                                      'name',
-                                      'in',
-                                      'description',
-                                      'required',
-                                      'deprecated',
-                                      'allowEmptyValue',
-                                      'style',
-                                      'explode',
-                                      'allowReserved',
-                                      'schema',
-                                      'content',
-                                      'example',
-                                      'examples',
-                                    ].includes(k) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -27909,64 +28187,88 @@ export const postTykApisOasRoute = createRoute({
                                 required: ['type', 'name', 'in'],
                               }),
                             (() => {
-                              const Schema = z
-                                .xor([
-                                  z
-                                    .object({
-                                      scheme: z
-                                        .string()
-                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Bearer', required: [] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                ctx.addIssue({ code: 'custom' })
+                              const Schema = (() => {
+                                const Schema = z
+                                  .xor([
+                                    z
+                                      .object({
+                                        scheme: z
+                                          .string()
+                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Bearer', required: [] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['bearerFormat'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({
-                                      description: 'Non Bearer',
-                                      not: { required: ['bearerFormat'] },
-                                    }),
-                                ])
-                                .and(
-                                  z
-                                    .object({
-                                      scheme: z.string(),
-                                      bearerFormat: z.string().exactOptional(),
-                                      description: z.string().exactOptional(),
-                                      type: z.literal('http'),
-                                    })
-                                    .openapi({ required: ['scheme', 'type'] }),
-                                )
+                                            })
+                                            .openapi({ required: ['bearerFormat'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({
+                                        description: 'Non Bearer',
+                                        not: { required: ['bearerFormat'] },
+                                      }),
+                                  ])
+                                  .and(
+                                    z
+                                      .object({
+                                        scheme: z.string(),
+                                        bearerFormat: z.string().exactOptional(),
+                                        description: z.string().exactOptional(),
+                                        type: z.literal('http'),
+                                      })
+                                      .openapi({ required: ['scheme', 'type'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                          k,
+                                        ) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                        k,
-                                      ) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -31533,37 +31835,12 @@ export const getTykApisOasApiIDRoute = createRoute({
                               required: ['$ref'],
                             }),
                           (() => {
-                            const Schema = z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example', 'examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({
-                                description: 'Example and examples are mutually exclusive',
-                                not: { required: ['example', 'examples'] },
-                              })
-                              .and(
-                                (() => {
-                                  const Schema = z.xor([
-                                    z
+                            const Schema = (() => {
+                              const Schema = z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
                                       .unknown()
                                       .superRefine((val, ctx) => {
                                         if (
@@ -31571,178 +31848,175 @@ export const getTykApisOasApiIDRoute = createRoute({
                                           val !== null &&
                                           !Array.isArray(val)
                                         ) {
-                                          if (!Object.hasOwn(val, 'schema')) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                          if (!Object.hasOwn(val, 'examples')) {
                                             ctx.addIssue({ code: 'custom' })
                                           }
                                         }
                                       })
-                                      .openapi({ required: ['schema'] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'style')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                      .openapi({ required: ['example', 'examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({
+                                  description: 'Example and examples are mutually exclusive',
+                                  not: { required: ['example', 'examples'] },
+                                })
+                                .and(
+                                  (() => {
+                                    const Schema = z.xor([
+                                      z
+                                        .unknown()
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'schema')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                          }
+                                        })
+                                        .openapi({ required: ['schema'] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'style')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['style'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({ not: { required: ['style'] } })
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'content')) {
-                                            ctx.addIssue({ code: 'custom' })
+                                              })
+                                              .openapi({ required: ['style'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({ not: { required: ['style'] } })
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'content')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
                                           }
-                                        }
-                                      })
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'explode')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['explode'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['explode'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'allowReserved')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['allowReserved'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['allowReserved'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'example')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['example'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['example'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'examples')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['examples'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['examples'] } }),
-                                      )
-                                      .openapi({
-                                        required: ['content'],
-                                        description:
-                                          'Some properties are not allowed if content is present',
-                                      }),
-                                  ])
-                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                    const reported = ctx.issues.length
-                                    try {
-                                      ;((ctx) => {
-                                        const val = ctx.value
-                                        if (
+                                        })
+                                        .and(
                                           z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'schema')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                                if (!Object.hasOwn(val, 'content')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                              }
-                                            })
-                                            .openapi({ required: ['schema', 'content'] })
-                                            .safeParse(val).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx)
-                                    } catch (error) {
-                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                      ctx.issues.length = reported
-                                      return (async (ctx) => {
-                                        const val = ctx.value
-                                        if (
-                                          (
-                                            await z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'explode')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['explode'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['explode'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'allowReserved')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['allowReserved'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['allowReserved'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'example')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['example'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['example'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'examples')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['examples'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['examples'] } }),
+                                        )
+                                        .openapi({
+                                          required: ['content'],
+                                          description:
+                                            'Some properties are not allowed if content is present',
+                                        }),
+                                    ])
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      const reported = ctx.issues.length
+                                      try {
+                                        ;((ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            z
                                               .unknown()
                                               .superRefine((val, ctx) => {
                                                 if (
@@ -31759,182 +32033,122 @@ export const getTykApisOasApiIDRoute = createRoute({
                                                 }
                                               })
                                               .openapi({ required: ['schema', 'content'] })
-                                              .safeParseAsync(val)
-                                          ).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx).then(() => val)
-                                    }
-                                    return val
-                                  }, Schema)
-                                })().openapi({
-                                  description:
-                                    'Schema and content are mutually exclusive, at least one is required',
-                                  not: { required: ['schema', 'content'] },
-                                }),
-                              )
-                              .and(
-                                z
-                                  .xor([
-                                    z
-                                      .object({
-                                        in: z.literal('path').exactOptional(),
-                                        style: z
-                                          .enum(['matrix', 'label', 'simple'])
-                                          .default('simple')
-                                          .exactOptional(),
-                                        required: z.literal(true),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in path',
-                                        required: ['required'],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('query').exactOptional(),
-                                        style: z
-                                          .enum([
-                                            'form',
-                                            'spaceDelimited',
-                                            'pipeDelimited',
-                                            'deepObject',
-                                          ])
-                                          .default('form')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Parameter in query', required: [] }),
-                                    z
-                                      .object({
-                                        in: z.literal('header').exactOptional(),
-                                        style: z
-                                          .literal('simple')
-                                          .default('simple')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in header',
-                                        required: [],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('cookie').exactOptional(),
-                                        style: z.literal('form').default('form').exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in cookie',
-                                        required: [],
-                                      }),
-                                  ])
-                                  .openapi({ description: 'Parameter location' }),
-                              )
-                              .and(
-                                z
-                                  .object({
-                                    name: z.string(),
-                                    in: z.string(),
-                                    description: z.string().exactOptional(),
-                                    required: z.boolean().default(false).exactOptional(),
-                                    deprecated: z.boolean().default(false).exactOptional(),
-                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                    style: z.string().exactOptional(),
-                                    explode: z.boolean().exactOptional(),
-                                    allowReserved: z.boolean().default(false).exactOptional(),
-                                    schema: z
-                                      .xor([
-                                        SchemaSchema,
-                                        z
-                                          .looseObject({})
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^\\$ref$')
-                                            const Schema = z.string()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
-                                                }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{
-                                              patternProperties: {
-                                                '^\\$ref$': {
-                                                  type: 'string',
-                                                  format: 'uri-reference',
-                                                },
-                                              },
-                                            },
-                                            required: ['$ref'],
-                                          }),
-                                      ])
-                                      .exactOptional(),
-                                    content: z
-                                      .record(z.string(), MediaTypeSchema)
-                                      .refine((val) => Object.keys(val).length >= 1)
-                                      .refine((val) => Object.keys(val).length <= 1)
-                                      .exactOptional(),
-                                    example: z.any().exactOptional(),
-                                    examples: z
-                                      .record(
-                                        z.string(),
-                                        z.xor([
-                                          z
-                                            .looseObject({
-                                              summary: z.string().exactOptional(),
-                                              description: z.string().exactOptional(),
-                                              value: z.any().exactOptional(),
-                                              externalValue: z.string().exactOptional(),
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const keys = Object.keys(o).filter(
-                                                (k) =>
-                                                  ![
-                                                    'summary',
-                                                    'description',
-                                                    'value',
-                                                    'externalValue',
-                                                  ].includes(k) &&
-                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
-                                              )
-                                              if (keys.length > 0) {
-                                                ctx.addIssue({
-                                                  code: 'unrecognized_keys',
-                                                  keys,
-                                                  input: o,
-                                                })
-                                              }
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^x-')
-                                              const Schema = z.any()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
+                                              .safeParse(val).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx)
+                                      } catch (error) {
+                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                        ctx.issues.length = reported
+                                        return (async (ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            (
+                                              await z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'schema')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                    if (!Object.hasOwn(val, 'content')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{ patternProperties: { '^x-': {} } },
-                                              additionalProperties: false,
-                                              required: [],
-                                            }),
+                                                })
+                                                .openapi({ required: ['schema', 'content'] })
+                                                .safeParseAsync(val)
+                                            ).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx).then(() => val)
+                                      }
+                                      return val
+                                    }, Schema)
+                                  })().openapi({
+                                    description:
+                                      'Schema and content are mutually exclusive, at least one is required',
+                                    not: { required: ['schema', 'content'] },
+                                  }),
+                                )
+                                .and(
+                                  z
+                                    .xor([
+                                      z
+                                        .object({
+                                          in: z.literal('path').exactOptional(),
+                                          style: z
+                                            .enum(['matrix', 'label', 'simple'])
+                                            .default('simple')
+                                            .exactOptional(),
+                                          required: z.literal(true),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in path',
+                                          required: ['required'],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('query').exactOptional(),
+                                          style: z
+                                            .enum([
+                                              'form',
+                                              'spaceDelimited',
+                                              'pipeDelimited',
+                                              'deepObject',
+                                            ])
+                                            .default('form')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in query',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('header').exactOptional(),
+                                          style: z
+                                            .literal('simple')
+                                            .default('simple')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in header',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('cookie').exactOptional(),
+                                          style: z.literal('form').default('form').exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in cookie',
+                                          required: [],
+                                        }),
+                                    ])
+                                    .openapi({ description: 'Parameter location' }),
+                                )
+                                .and(
+                                  z
+                                    .object({
+                                      name: z.string(),
+                                      in: z.string(),
+                                      description: z.string().exactOptional(),
+                                      required: z.boolean().default(false).exactOptional(),
+                                      deprecated: z.boolean().default(false).exactOptional(),
+                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                      style: z.string().exactOptional(),
+                                      explode: z.boolean().exactOptional(),
+                                      allowReserved: z.boolean().default(false).exactOptional(),
+                                      schema: z
+                                        .xor([
+                                          SchemaSchema,
                                           z
                                             .looseObject({})
                                             .superRefine((o, ctx) => {
@@ -31966,36 +32180,152 @@ export const getTykApisOasApiIDRoute = createRoute({
                                               },
                                               required: ['$ref'],
                                             }),
-                                        ]),
-                                      )
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ required: ['name', 'in'] }),
-                              )
+                                        ])
+                                        .exactOptional(),
+                                      content: z
+                                        .record(z.string(), MediaTypeSchema)
+                                        .refine((val) => Object.keys(val).length >= 1)
+                                        .refine((val) => Object.keys(val).length <= 1)
+                                        .exactOptional(),
+                                      example: z.any().exactOptional(),
+                                      examples: z
+                                        .record(
+                                          z.string(),
+                                          z.xor([
+                                            z
+                                              .looseObject({
+                                                summary: z.string().exactOptional(),
+                                                description: z.string().exactOptional(),
+                                                value: z.any().exactOptional(),
+                                                externalValue: z.string().exactOptional(),
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const keys = Object.keys(o).filter(
+                                                  (k) =>
+                                                    ![
+                                                      'summary',
+                                                      'description',
+                                                      'value',
+                                                      'externalValue',
+                                                    ].includes(k) &&
+                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                )
+                                                if (keys.length > 0) {
+                                                  ctx.addIssue({
+                                                    code: 'unrecognized_keys',
+                                                    keys,
+                                                    input: o,
+                                                  })
+                                                }
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^x-')
+                                                const Schema = z.any()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{ patternProperties: { '^x-': {} } },
+                                                additionalProperties: false,
+                                                required: [],
+                                              }),
+                                            z
+                                              .looseObject({})
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^\\$ref$')
+                                                const Schema = z.string()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{
+                                                  patternProperties: {
+                                                    '^\\$ref$': {
+                                                      type: 'string',
+                                                      format: 'uri-reference',
+                                                    },
+                                                  },
+                                                },
+                                                required: ['$ref'],
+                                              }),
+                                          ]),
+                                        )
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ required: ['name', 'in'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      ![
+                                        'name',
+                                        'in',
+                                        'description',
+                                        'required',
+                                        'deprecated',
+                                        'allowEmptyValue',
+                                        'style',
+                                        'explode',
+                                        'allowReserved',
+                                        'schema',
+                                        'content',
+                                        'example',
+                                        'examples',
+                                      ].includes(k) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    ![
-                                      'name',
-                                      'in',
-                                      'description',
-                                      'required',
-                                      'deprecated',
-                                      'allowEmptyValue',
-                                      'style',
-                                      'explode',
-                                      'allowReserved',
-                                      'schema',
-                                      'content',
-                                      'example',
-                                      'examples',
-                                    ].includes(k) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -34834,64 +35164,88 @@ export const getTykApisOasApiIDRoute = createRoute({
                                 required: ['type', 'name', 'in'],
                               }),
                             (() => {
-                              const Schema = z
-                                .xor([
-                                  z
-                                    .object({
-                                      scheme: z
-                                        .string()
-                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Bearer', required: [] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                ctx.addIssue({ code: 'custom' })
+                              const Schema = (() => {
+                                const Schema = z
+                                  .xor([
+                                    z
+                                      .object({
+                                        scheme: z
+                                          .string()
+                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Bearer', required: [] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['bearerFormat'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({
-                                      description: 'Non Bearer',
-                                      not: { required: ['bearerFormat'] },
-                                    }),
-                                ])
-                                .and(
-                                  z
-                                    .object({
-                                      scheme: z.string(),
-                                      bearerFormat: z.string().exactOptional(),
-                                      description: z.string().exactOptional(),
-                                      type: z.literal('http'),
-                                    })
-                                    .openapi({ required: ['scheme', 'type'] }),
-                                )
+                                            })
+                                            .openapi({ required: ['bearerFormat'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({
+                                        description: 'Non Bearer',
+                                        not: { required: ['bearerFormat'] },
+                                      }),
+                                  ])
+                                  .and(
+                                    z
+                                      .object({
+                                        scheme: z.string(),
+                                        bearerFormat: z.string().exactOptional(),
+                                        description: z.string().exactOptional(),
+                                        type: z.literal('http'),
+                                      })
+                                      .openapi({ required: ['scheme', 'type'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                          k,
+                                        ) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                        k,
-                                      ) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -38401,37 +38755,12 @@ export const putTykApisOasApiIDRoute = createRoute({
                               required: ['$ref'],
                             }),
                           (() => {
-                            const Schema = z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example', 'examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({
-                                description: 'Example and examples are mutually exclusive',
-                                not: { required: ['example', 'examples'] },
-                              })
-                              .and(
-                                (() => {
-                                  const Schema = z.xor([
-                                    z
+                            const Schema = (() => {
+                              const Schema = z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
                                       .unknown()
                                       .superRefine((val, ctx) => {
                                         if (
@@ -38439,178 +38768,175 @@ export const putTykApisOasApiIDRoute = createRoute({
                                           val !== null &&
                                           !Array.isArray(val)
                                         ) {
-                                          if (!Object.hasOwn(val, 'schema')) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                          if (!Object.hasOwn(val, 'examples')) {
                                             ctx.addIssue({ code: 'custom' })
                                           }
                                         }
                                       })
-                                      .openapi({ required: ['schema'] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'style')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                      .openapi({ required: ['example', 'examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({
+                                  description: 'Example and examples are mutually exclusive',
+                                  not: { required: ['example', 'examples'] },
+                                })
+                                .and(
+                                  (() => {
+                                    const Schema = z.xor([
+                                      z
+                                        .unknown()
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'schema')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                          }
+                                        })
+                                        .openapi({ required: ['schema'] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'style')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['style'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({ not: { required: ['style'] } })
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'content')) {
-                                            ctx.addIssue({ code: 'custom' })
+                                              })
+                                              .openapi({ required: ['style'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({ not: { required: ['style'] } })
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'content')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
                                           }
-                                        }
-                                      })
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'explode')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['explode'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['explode'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'allowReserved')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['allowReserved'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['allowReserved'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'example')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['example'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['example'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'examples')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['examples'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['examples'] } }),
-                                      )
-                                      .openapi({
-                                        required: ['content'],
-                                        description:
-                                          'Some properties are not allowed if content is present',
-                                      }),
-                                  ])
-                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                    const reported = ctx.issues.length
-                                    try {
-                                      ;((ctx) => {
-                                        const val = ctx.value
-                                        if (
+                                        })
+                                        .and(
                                           z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'schema')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                                if (!Object.hasOwn(val, 'content')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                              }
-                                            })
-                                            .openapi({ required: ['schema', 'content'] })
-                                            .safeParse(val).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx)
-                                    } catch (error) {
-                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                      ctx.issues.length = reported
-                                      return (async (ctx) => {
-                                        const val = ctx.value
-                                        if (
-                                          (
-                                            await z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'explode')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['explode'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['explode'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'allowReserved')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['allowReserved'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['allowReserved'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'example')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['example'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['example'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'examples')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['examples'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['examples'] } }),
+                                        )
+                                        .openapi({
+                                          required: ['content'],
+                                          description:
+                                            'Some properties are not allowed if content is present',
+                                        }),
+                                    ])
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      const reported = ctx.issues.length
+                                      try {
+                                        ;((ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            z
                                               .unknown()
                                               .superRefine((val, ctx) => {
                                                 if (
@@ -38627,182 +38953,122 @@ export const putTykApisOasApiIDRoute = createRoute({
                                                 }
                                               })
                                               .openapi({ required: ['schema', 'content'] })
-                                              .safeParseAsync(val)
-                                          ).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx).then(() => val)
-                                    }
-                                    return val
-                                  }, Schema)
-                                })().openapi({
-                                  description:
-                                    'Schema and content are mutually exclusive, at least one is required',
-                                  not: { required: ['schema', 'content'] },
-                                }),
-                              )
-                              .and(
-                                z
-                                  .xor([
-                                    z
-                                      .object({
-                                        in: z.literal('path').exactOptional(),
-                                        style: z
-                                          .enum(['matrix', 'label', 'simple'])
-                                          .default('simple')
-                                          .exactOptional(),
-                                        required: z.literal(true),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in path',
-                                        required: ['required'],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('query').exactOptional(),
-                                        style: z
-                                          .enum([
-                                            'form',
-                                            'spaceDelimited',
-                                            'pipeDelimited',
-                                            'deepObject',
-                                          ])
-                                          .default('form')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Parameter in query', required: [] }),
-                                    z
-                                      .object({
-                                        in: z.literal('header').exactOptional(),
-                                        style: z
-                                          .literal('simple')
-                                          .default('simple')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in header',
-                                        required: [],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('cookie').exactOptional(),
-                                        style: z.literal('form').default('form').exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in cookie',
-                                        required: [],
-                                      }),
-                                  ])
-                                  .openapi({ description: 'Parameter location' }),
-                              )
-                              .and(
-                                z
-                                  .object({
-                                    name: z.string(),
-                                    in: z.string(),
-                                    description: z.string().exactOptional(),
-                                    required: z.boolean().default(false).exactOptional(),
-                                    deprecated: z.boolean().default(false).exactOptional(),
-                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                    style: z.string().exactOptional(),
-                                    explode: z.boolean().exactOptional(),
-                                    allowReserved: z.boolean().default(false).exactOptional(),
-                                    schema: z
-                                      .xor([
-                                        SchemaSchema,
-                                        z
-                                          .looseObject({})
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^\\$ref$')
-                                            const Schema = z.string()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
-                                                }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{
-                                              patternProperties: {
-                                                '^\\$ref$': {
-                                                  type: 'string',
-                                                  format: 'uri-reference',
-                                                },
-                                              },
-                                            },
-                                            required: ['$ref'],
-                                          }),
-                                      ])
-                                      .exactOptional(),
-                                    content: z
-                                      .record(z.string(), MediaTypeSchema)
-                                      .refine((val) => Object.keys(val).length >= 1)
-                                      .refine((val) => Object.keys(val).length <= 1)
-                                      .exactOptional(),
-                                    example: z.any().exactOptional(),
-                                    examples: z
-                                      .record(
-                                        z.string(),
-                                        z.xor([
-                                          z
-                                            .looseObject({
-                                              summary: z.string().exactOptional(),
-                                              description: z.string().exactOptional(),
-                                              value: z.any().exactOptional(),
-                                              externalValue: z.string().exactOptional(),
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const keys = Object.keys(o).filter(
-                                                (k) =>
-                                                  ![
-                                                    'summary',
-                                                    'description',
-                                                    'value',
-                                                    'externalValue',
-                                                  ].includes(k) &&
-                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
-                                              )
-                                              if (keys.length > 0) {
-                                                ctx.addIssue({
-                                                  code: 'unrecognized_keys',
-                                                  keys,
-                                                  input: o,
-                                                })
-                                              }
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^x-')
-                                              const Schema = z.any()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
+                                              .safeParse(val).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx)
+                                      } catch (error) {
+                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                        ctx.issues.length = reported
+                                        return (async (ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            (
+                                              await z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'schema')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                    if (!Object.hasOwn(val, 'content')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{ patternProperties: { '^x-': {} } },
-                                              additionalProperties: false,
-                                              required: [],
-                                            }),
+                                                })
+                                                .openapi({ required: ['schema', 'content'] })
+                                                .safeParseAsync(val)
+                                            ).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx).then(() => val)
+                                      }
+                                      return val
+                                    }, Schema)
+                                  })().openapi({
+                                    description:
+                                      'Schema and content are mutually exclusive, at least one is required',
+                                    not: { required: ['schema', 'content'] },
+                                  }),
+                                )
+                                .and(
+                                  z
+                                    .xor([
+                                      z
+                                        .object({
+                                          in: z.literal('path').exactOptional(),
+                                          style: z
+                                            .enum(['matrix', 'label', 'simple'])
+                                            .default('simple')
+                                            .exactOptional(),
+                                          required: z.literal(true),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in path',
+                                          required: ['required'],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('query').exactOptional(),
+                                          style: z
+                                            .enum([
+                                              'form',
+                                              'spaceDelimited',
+                                              'pipeDelimited',
+                                              'deepObject',
+                                            ])
+                                            .default('form')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in query',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('header').exactOptional(),
+                                          style: z
+                                            .literal('simple')
+                                            .default('simple')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in header',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('cookie').exactOptional(),
+                                          style: z.literal('form').default('form').exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in cookie',
+                                          required: [],
+                                        }),
+                                    ])
+                                    .openapi({ description: 'Parameter location' }),
+                                )
+                                .and(
+                                  z
+                                    .object({
+                                      name: z.string(),
+                                      in: z.string(),
+                                      description: z.string().exactOptional(),
+                                      required: z.boolean().default(false).exactOptional(),
+                                      deprecated: z.boolean().default(false).exactOptional(),
+                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                      style: z.string().exactOptional(),
+                                      explode: z.boolean().exactOptional(),
+                                      allowReserved: z.boolean().default(false).exactOptional(),
+                                      schema: z
+                                        .xor([
+                                          SchemaSchema,
                                           z
                                             .looseObject({})
                                             .superRefine((o, ctx) => {
@@ -38834,36 +39100,152 @@ export const putTykApisOasApiIDRoute = createRoute({
                                               },
                                               required: ['$ref'],
                                             }),
-                                        ]),
-                                      )
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ required: ['name', 'in'] }),
-                              )
+                                        ])
+                                        .exactOptional(),
+                                      content: z
+                                        .record(z.string(), MediaTypeSchema)
+                                        .refine((val) => Object.keys(val).length >= 1)
+                                        .refine((val) => Object.keys(val).length <= 1)
+                                        .exactOptional(),
+                                      example: z.any().exactOptional(),
+                                      examples: z
+                                        .record(
+                                          z.string(),
+                                          z.xor([
+                                            z
+                                              .looseObject({
+                                                summary: z.string().exactOptional(),
+                                                description: z.string().exactOptional(),
+                                                value: z.any().exactOptional(),
+                                                externalValue: z.string().exactOptional(),
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const keys = Object.keys(o).filter(
+                                                  (k) =>
+                                                    ![
+                                                      'summary',
+                                                      'description',
+                                                      'value',
+                                                      'externalValue',
+                                                    ].includes(k) &&
+                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                )
+                                                if (keys.length > 0) {
+                                                  ctx.addIssue({
+                                                    code: 'unrecognized_keys',
+                                                    keys,
+                                                    input: o,
+                                                  })
+                                                }
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^x-')
+                                                const Schema = z.any()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{ patternProperties: { '^x-': {} } },
+                                                additionalProperties: false,
+                                                required: [],
+                                              }),
+                                            z
+                                              .looseObject({})
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^\\$ref$')
+                                                const Schema = z.string()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{
+                                                  patternProperties: {
+                                                    '^\\$ref$': {
+                                                      type: 'string',
+                                                      format: 'uri-reference',
+                                                    },
+                                                  },
+                                                },
+                                                required: ['$ref'],
+                                              }),
+                                          ]),
+                                        )
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ required: ['name', 'in'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      ![
+                                        'name',
+                                        'in',
+                                        'description',
+                                        'required',
+                                        'deprecated',
+                                        'allowEmptyValue',
+                                        'style',
+                                        'explode',
+                                        'allowReserved',
+                                        'schema',
+                                        'content',
+                                        'example',
+                                        'examples',
+                                      ].includes(k) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    ![
-                                      'name',
-                                      'in',
-                                      'description',
-                                      'required',
-                                      'deprecated',
-                                      'allowEmptyValue',
-                                      'style',
-                                      'explode',
-                                      'allowReserved',
-                                      'schema',
-                                      'content',
-                                      'example',
-                                      'examples',
-                                    ].includes(k) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -41702,64 +42084,88 @@ export const putTykApisOasApiIDRoute = createRoute({
                                 required: ['type', 'name', 'in'],
                               }),
                             (() => {
-                              const Schema = z
-                                .xor([
-                                  z
-                                    .object({
-                                      scheme: z
-                                        .string()
-                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Bearer', required: [] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                ctx.addIssue({ code: 'custom' })
+                              const Schema = (() => {
+                                const Schema = z
+                                  .xor([
+                                    z
+                                      .object({
+                                        scheme: z
+                                          .string()
+                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Bearer', required: [] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['bearerFormat'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({
-                                      description: 'Non Bearer',
-                                      not: { required: ['bearerFormat'] },
-                                    }),
-                                ])
-                                .and(
-                                  z
-                                    .object({
-                                      scheme: z.string(),
-                                      bearerFormat: z.string().exactOptional(),
-                                      description: z.string().exactOptional(),
-                                      type: z.literal('http'),
-                                    })
-                                    .openapi({ required: ['scheme', 'type'] }),
-                                )
+                                            })
+                                            .openapi({ required: ['bearerFormat'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({
+                                        description: 'Non Bearer',
+                                        not: { required: ['bearerFormat'] },
+                                      }),
+                                  ])
+                                  .and(
+                                    z
+                                      .object({
+                                        scheme: z.string(),
+                                        bearerFormat: z.string().exactOptional(),
+                                        description: z.string().exactOptional(),
+                                        type: z.literal('http'),
+                                      })
+                                      .openapi({ required: ['scheme', 'type'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                          k,
+                                        ) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                        k,
-                                      ) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -45343,37 +45749,12 @@ export const patchTykApisOasApiIDRoute = createRoute({
                             required: ['$ref'],
                           }),
                         (() => {
-                          const Schema = z
-                            .any()
-                            .refine(
-                              (val) =>
-                                !z
-                                  .unknown()
-                                  .superRefine((val, ctx) => {
-                                    if (
-                                      typeof val === 'object' &&
-                                      val !== null &&
-                                      !Array.isArray(val)
-                                    ) {
-                                      if (!Object.hasOwn(val, 'example')) {
-                                        ctx.addIssue({ code: 'custom' })
-                                      }
-                                      if (!Object.hasOwn(val, 'examples')) {
-                                        ctx.addIssue({ code: 'custom' })
-                                      }
-                                    }
-                                  })
-                                  .openapi({ required: ['example', 'examples'] })
-                                  .safeParse(val).success,
-                            )
-                            .openapi({
-                              description: 'Example and examples are mutually exclusive',
-                              not: { required: ['example', 'examples'] },
-                            })
-                            .and(
-                              (() => {
-                                const Schema = z.xor([
-                                  z
+                          const Schema = (() => {
+                            const Schema = z
+                              .any()
+                              .refine(
+                                (val) =>
+                                  !z
                                     .unknown()
                                     .superRefine((val, ctx) => {
                                       if (
@@ -45381,178 +45762,175 @@ export const patchTykApisOasApiIDRoute = createRoute({
                                         val !== null &&
                                         !Array.isArray(val)
                                       ) {
-                                        if (!Object.hasOwn(val, 'schema')) {
+                                        if (!Object.hasOwn(val, 'example')) {
+                                          ctx.addIssue({ code: 'custom' })
+                                        }
+                                        if (!Object.hasOwn(val, 'examples')) {
                                           ctx.addIssue({ code: 'custom' })
                                         }
                                       }
                                     })
-                                    .openapi({ required: ['schema'] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'style')) {
-                                                ctx.addIssue({ code: 'custom' })
+                                    .openapi({ required: ['example', 'examples'] })
+                                    .safeParse(val).success,
+                              )
+                              .openapi({
+                                description: 'Example and examples are mutually exclusive',
+                                not: { required: ['example', 'examples'] },
+                              })
+                              .and(
+                                (() => {
+                                  const Schema = z.xor([
+                                    z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'schema')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['schema'] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'style')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['style'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({ not: { required: ['style'] } })
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'content')) {
-                                          ctx.addIssue({ code: 'custom' })
+                                            })
+                                            .openapi({ required: ['style'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({ not: { required: ['style'] } })
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'content')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
                                         }
-                                      }
-                                    })
-                                    .and(
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'explode')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['explode'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['explode'] } }),
-                                    )
-                                    .and(
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'allowReserved')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['allowReserved'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['allowReserved'] } }),
-                                    )
-                                    .and(
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'example')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['example'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['example'] } }),
-                                    )
-                                    .and(
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'examples')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['examples'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['examples'] } }),
-                                    )
-                                    .openapi({
-                                      required: ['content'],
-                                      description:
-                                        'Some properties are not allowed if content is present',
-                                    }),
-                                ])
-                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                  const reported = ctx.issues.length
-                                  try {
-                                    ;((ctx) => {
-                                      const val = ctx.value
-                                      if (
+                                      })
+                                      .and(
                                         z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'schema')) {
-                                                ctx.addIssue({ code: 'custom' })
-                                              }
-                                              if (!Object.hasOwn(val, 'content')) {
-                                                ctx.addIssue({ code: 'custom' })
-                                              }
-                                            }
-                                          })
-                                          .openapi({ required: ['schema', 'content'] })
-                                          .safeParse(val).success
-                                      ) {
-                                        ctx.issues.push({ code: 'custom', input: val })
-                                      }
-                                    })(ctx)
-                                  } catch (error) {
-                                    if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                    ctx.issues.length = reported
-                                    return (async (ctx) => {
-                                      const val = ctx.value
-                                      if (
-                                        (
-                                          await z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'explode')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({ required: ['explode'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['explode'] } }),
+                                      )
+                                      .and(
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'allowReserved')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({ required: ['allowReserved'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['allowReserved'] } }),
+                                      )
+                                      .and(
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'example')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({ required: ['example'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['example'] } }),
+                                      )
+                                      .and(
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'examples')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({ required: ['examples'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['examples'] } }),
+                                      )
+                                      .openapi({
+                                        required: ['content'],
+                                        description:
+                                          'Some properties are not allowed if content is present',
+                                      }),
+                                  ])
+                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                    const reported = ctx.issues.length
+                                    try {
+                                      ;((ctx) => {
+                                        const val = ctx.value
+                                        if (
+                                          z
                                             .unknown()
                                             .superRefine((val, ctx) => {
                                               if (
@@ -45569,170 +45947,119 @@ export const patchTykApisOasApiIDRoute = createRoute({
                                               }
                                             })
                                             .openapi({ required: ['schema', 'content'] })
-                                            .safeParseAsync(val)
-                                        ).success
-                                      ) {
-                                        ctx.issues.push({ code: 'custom', input: val })
-                                      }
-                                    })(ctx).then(() => val)
-                                  }
-                                  return val
-                                }, Schema)
-                              })().openapi({
-                                description:
-                                  'Schema and content are mutually exclusive, at least one is required',
-                                not: { required: ['schema', 'content'] },
-                              }),
-                            )
-                            .and(
-                              z
-                                .xor([
-                                  z
-                                    .object({
-                                      in: z.literal('path').exactOptional(),
-                                      style: z
-                                        .enum(['matrix', 'label', 'simple'])
-                                        .default('simple')
-                                        .exactOptional(),
-                                      required: z.literal(true),
-                                    })
-                                    .openapi({
-                                      description: 'Parameter in path',
-                                      required: ['required'],
-                                    }),
-                                  z
-                                    .object({
-                                      in: z.literal('query').exactOptional(),
-                                      style: z
-                                        .enum([
-                                          'form',
-                                          'spaceDelimited',
-                                          'pipeDelimited',
-                                          'deepObject',
-                                        ])
-                                        .default('form')
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Parameter in query', required: [] }),
-                                  z
-                                    .object({
-                                      in: z.literal('header').exactOptional(),
-                                      style: z.literal('simple').default('simple').exactOptional(),
-                                    })
-                                    .openapi({ description: 'Parameter in header', required: [] }),
-                                  z
-                                    .object({
-                                      in: z.literal('cookie').exactOptional(),
-                                      style: z.literal('form').default('form').exactOptional(),
-                                    })
-                                    .openapi({ description: 'Parameter in cookie', required: [] }),
-                                ])
-                                .openapi({ description: 'Parameter location' }),
-                            )
-                            .and(
-                              z
-                                .object({
-                                  name: z.string(),
-                                  in: z.string(),
-                                  description: z.string().exactOptional(),
-                                  required: z.boolean().default(false).exactOptional(),
-                                  deprecated: z.boolean().default(false).exactOptional(),
-                                  allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                  style: z.string().exactOptional(),
-                                  explode: z.boolean().exactOptional(),
-                                  allowReserved: z.boolean().default(false).exactOptional(),
-                                  schema: z
-                                    .xor([
-                                      SchemaSchema,
-                                      z
-                                        .looseObject({})
-                                        .superRefine((o, ctx) => {
-                                          const regex = new RegExp('^\\$ref$')
-                                          const Schema = z.string()
-                                          for (const [k, val] of Object.entries(o)) {
-                                            if (!regex.test(k)) {
-                                              continue
-                                            }
-                                            const result = Schema.safeParse(val)
-                                            if (!result.success) {
-                                              for (const issue of result.error.issues) {
-                                                ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                                              }
-                                            }
-                                          }
-                                        })
-                                        .openapi({
-                                          ...{
-                                            patternProperties: {
-                                              '^\\$ref$': {
-                                                type: 'string',
-                                                format: 'uri-reference',
-                                              },
-                                            },
-                                          },
-                                          required: ['$ref'],
-                                        }),
-                                    ])
-                                    .exactOptional(),
-                                  content: z
-                                    .record(z.string(), MediaTypeSchema)
-                                    .refine((val) => Object.keys(val).length >= 1)
-                                    .refine((val) => Object.keys(val).length <= 1)
-                                    .exactOptional(),
-                                  example: z.any().exactOptional(),
-                                  examples: z
-                                    .record(
-                                      z.string(),
-                                      z.xor([
-                                        z
-                                          .looseObject({
-                                            summary: z.string().exactOptional(),
-                                            description: z.string().exactOptional(),
-                                            value: z.any().exactOptional(),
-                                            externalValue: z.string().exactOptional(),
-                                          })
-                                          .superRefine((o, ctx) => {
-                                            const keys = Object.keys(o).filter(
-                                              (k) =>
-                                                ![
-                                                  'summary',
-                                                  'description',
-                                                  'value',
-                                                  'externalValue',
-                                                ].includes(k) &&
-                                                !['^x-'].some((p) => new RegExp(p).test(k)),
-                                            )
-                                            if (keys.length > 0) {
-                                              ctx.addIssue({
-                                                code: 'unrecognized_keys',
-                                                keys,
-                                                input: o,
-                                              })
-                                            }
-                                          })
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^x-')
-                                            const Schema = z.any()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
+                                            .safeParse(val).success
+                                        ) {
+                                          ctx.issues.push({ code: 'custom', input: val })
+                                        }
+                                      })(ctx)
+                                    } catch (error) {
+                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                      ctx.issues.length = reported
+                                      return (async (ctx) => {
+                                        const val = ctx.value
+                                        if (
+                                          (
+                                            await z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'schema')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
+                                                  if (!Object.hasOwn(val, 'content')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{ patternProperties: { '^x-': {} } },
-                                            additionalProperties: false,
-                                            required: [],
-                                          }),
+                                              })
+                                              .openapi({ required: ['schema', 'content'] })
+                                              .safeParseAsync(val)
+                                          ).success
+                                        ) {
+                                          ctx.issues.push({ code: 'custom', input: val })
+                                        }
+                                      })(ctx).then(() => val)
+                                    }
+                                    return val
+                                  }, Schema)
+                                })().openapi({
+                                  description:
+                                    'Schema and content are mutually exclusive, at least one is required',
+                                  not: { required: ['schema', 'content'] },
+                                }),
+                              )
+                              .and(
+                                z
+                                  .xor([
+                                    z
+                                      .object({
+                                        in: z.literal('path').exactOptional(),
+                                        style: z
+                                          .enum(['matrix', 'label', 'simple'])
+                                          .default('simple')
+                                          .exactOptional(),
+                                        required: z.literal(true),
+                                      })
+                                      .openapi({
+                                        description: 'Parameter in path',
+                                        required: ['required'],
+                                      }),
+                                    z
+                                      .object({
+                                        in: z.literal('query').exactOptional(),
+                                        style: z
+                                          .enum([
+                                            'form',
+                                            'spaceDelimited',
+                                            'pipeDelimited',
+                                            'deepObject',
+                                          ])
+                                          .default('form')
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Parameter in query', required: [] }),
+                                    z
+                                      .object({
+                                        in: z.literal('header').exactOptional(),
+                                        style: z
+                                          .literal('simple')
+                                          .default('simple')
+                                          .exactOptional(),
+                                      })
+                                      .openapi({
+                                        description: 'Parameter in header',
+                                        required: [],
+                                      }),
+                                    z
+                                      .object({
+                                        in: z.literal('cookie').exactOptional(),
+                                        style: z.literal('form').default('form').exactOptional(),
+                                      })
+                                      .openapi({
+                                        description: 'Parameter in cookie',
+                                        required: [],
+                                      }),
+                                  ])
+                                  .openapi({ description: 'Parameter location' }),
+                              )
+                              .and(
+                                z
+                                  .object({
+                                    name: z.string(),
+                                    in: z.string(),
+                                    description: z.string().exactOptional(),
+                                    required: z.boolean().default(false).exactOptional(),
+                                    deprecated: z.boolean().default(false).exactOptional(),
+                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                    style: z.string().exactOptional(),
+                                    explode: z.boolean().exactOptional(),
+                                    allowReserved: z.boolean().default(false).exactOptional(),
+                                    schema: z
+                                      .xor([
+                                        SchemaSchema,
                                         z
                                           .looseObject({})
                                           .superRefine((o, ctx) => {
@@ -45764,36 +46091,147 @@ export const patchTykApisOasApiIDRoute = createRoute({
                                             },
                                             required: ['$ref'],
                                           }),
-                                      ]),
-                                    )
-                                    .exactOptional(),
-                                })
-                                .openapi({ required: ['name', 'in'] }),
-                            )
+                                      ])
+                                      .exactOptional(),
+                                    content: z
+                                      .record(z.string(), MediaTypeSchema)
+                                      .refine((val) => Object.keys(val).length >= 1)
+                                      .refine((val) => Object.keys(val).length <= 1)
+                                      .exactOptional(),
+                                    example: z.any().exactOptional(),
+                                    examples: z
+                                      .record(
+                                        z.string(),
+                                        z.xor([
+                                          z
+                                            .looseObject({
+                                              summary: z.string().exactOptional(),
+                                              description: z.string().exactOptional(),
+                                              value: z.any().exactOptional(),
+                                              externalValue: z.string().exactOptional(),
+                                            })
+                                            .superRefine((o, ctx) => {
+                                              const keys = Object.keys(o).filter(
+                                                (k) =>
+                                                  ![
+                                                    'summary',
+                                                    'description',
+                                                    'value',
+                                                    'externalValue',
+                                                  ].includes(k) &&
+                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
+                                              )
+                                              if (keys.length > 0) {
+                                                ctx.addIssue({
+                                                  code: 'unrecognized_keys',
+                                                  keys,
+                                                  input: o,
+                                                })
+                                              }
+                                            })
+                                            .superRefine((o, ctx) => {
+                                              const regex = new RegExp('^x-')
+                                              const Schema = z.any()
+                                              for (const [k, val] of Object.entries(o)) {
+                                                if (!regex.test(k)) {
+                                                  continue
+                                                }
+                                                const result = Schema.safeParse(val)
+                                                if (!result.success) {
+                                                  for (const issue of result.error.issues) {
+                                                    ctx.addIssue({
+                                                      ...issue,
+                                                      path: [k, ...issue.path],
+                                                    })
+                                                  }
+                                                }
+                                              }
+                                            })
+                                            .openapi({
+                                              ...{ patternProperties: { '^x-': {} } },
+                                              additionalProperties: false,
+                                              required: [],
+                                            }),
+                                          z
+                                            .looseObject({})
+                                            .superRefine((o, ctx) => {
+                                              const regex = new RegExp('^\\$ref$')
+                                              const Schema = z.string()
+                                              for (const [k, val] of Object.entries(o)) {
+                                                if (!regex.test(k)) {
+                                                  continue
+                                                }
+                                                const result = Schema.safeParse(val)
+                                                if (!result.success) {
+                                                  for (const issue of result.error.issues) {
+                                                    ctx.addIssue({
+                                                      ...issue,
+                                                      path: [k, ...issue.path],
+                                                    })
+                                                  }
+                                                }
+                                              }
+                                            })
+                                            .openapi({
+                                              ...{
+                                                patternProperties: {
+                                                  '^\\$ref$': {
+                                                    type: 'string',
+                                                    format: 'uri-reference',
+                                                  },
+                                                },
+                                              },
+                                              required: ['$ref'],
+                                            }),
+                                        ]),
+                                      )
+                                      .exactOptional(),
+                                  })
+                                  .openapi({ required: ['name', 'in'] }),
+                              )
+                            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                              ;((ctx) => {
+                                const o = ctx.value
+                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                                for (const k of Object.keys(o)) {
+                                  if (
+                                    ![
+                                      'name',
+                                      'in',
+                                      'description',
+                                      'required',
+                                      'deprecated',
+                                      'allowEmptyValue',
+                                      'style',
+                                      'explode',
+                                      'allowReserved',
+                                      'schema',
+                                      'content',
+                                      'example',
+                                      'examples',
+                                    ].includes(k) &&
+                                    !['^x-'].some((p) => new RegExp(p).test(k))
+                                  ) {
+                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  }
+                                }
+                              })(ctx)
+                              return val
+                            }, Schema)
+                          })()
                           return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                             ;((ctx) => {
-                              const o = ctx.value
-                              if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                              for (const k of Object.keys(o)) {
-                                if (
-                                  ![
-                                    'name',
-                                    'in',
-                                    'description',
-                                    'required',
-                                    'deprecated',
-                                    'allowEmptyValue',
-                                    'style',
-                                    'explode',
-                                    'allowReserved',
-                                    'schema',
-                                    'content',
-                                    'example',
-                                    'examples',
-                                  ].includes(k) &&
-                                  !['^x-'].some((p) => new RegExp(p).test(k))
-                                ) {
-                                  ctx.issues.push({ code: 'custom', path: [k], input: o })
+                              const val = ctx.value
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                {
+                                  const Schema = z.any()
+                                  for (const k of Object.keys(val)) {
+                                    if (new RegExp('^x-').test(k)) {
+                                      if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                        ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                      }
+                                    }
+                                  }
                                 }
                               }
                             })(ctx)
@@ -48580,63 +49018,88 @@ export const patchTykApisOasApiIDRoute = createRoute({
                               required: ['type', 'name', 'in'],
                             }),
                           (() => {
-                            const Schema = z
-                              .xor([
-                                z
-                                  .object({
-                                    scheme: z
-                                      .string()
-                                      .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ description: 'Bearer', required: [] }),
-                                z
-                                  .any()
-                                  .refine(
-                                    (val) =>
-                                      !z
-                                        .unknown()
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'bearerFormat')) {
-                                              ctx.addIssue({ code: 'custom' })
+                            const Schema = (() => {
+                              const Schema = z
+                                .xor([
+                                  z
+                                    .object({
+                                      scheme: z
+                                        .string()
+                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ description: 'Bearer', required: [] }),
+                                  z
+                                    .any()
+                                    .refine(
+                                      (val) =>
+                                        !z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
                                             }
-                                          }
-                                        })
-                                        .openapi({ required: ['bearerFormat'] })
-                                        .safeParse(val).success,
-                                  )
-                                  .openapi({
-                                    description: 'Non Bearer',
-                                    not: { required: ['bearerFormat'] },
-                                  }),
-                              ])
-                              .and(
-                                z
-                                  .object({
-                                    scheme: z.string(),
-                                    bearerFormat: z.string().exactOptional(),
-                                    description: z.string().exactOptional(),
-                                    type: z.literal('http'),
-                                  })
-                                  .openapi({ required: ['scheme', 'type'] }),
-                              )
+                                          })
+                                          .openapi({ required: ['bearerFormat'] })
+                                          .safeParse(val).success,
+                                    )
+                                    .openapi({
+                                      description: 'Non Bearer',
+                                      not: { required: ['bearerFormat'] },
+                                    }),
+                                ])
+                                .and(
+                                  z
+                                    .object({
+                                      scheme: z.string(),
+                                      bearerFormat: z.string().exactOptional(),
+                                      description: z.string().exactOptional(),
+                                      type: z.literal('http'),
+                                    })
+                                    .openapi({ required: ['scheme', 'type'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                        k,
+                                      ) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                      k,
-                                    ) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -52348,37 +52811,12 @@ export const postTykApisOasImportRoute = createRoute({
                             required: ['$ref'],
                           }),
                         (() => {
-                          const Schema = z
-                            .any()
-                            .refine(
-                              (val) =>
-                                !z
-                                  .unknown()
-                                  .superRefine((val, ctx) => {
-                                    if (
-                                      typeof val === 'object' &&
-                                      val !== null &&
-                                      !Array.isArray(val)
-                                    ) {
-                                      if (!Object.hasOwn(val, 'example')) {
-                                        ctx.addIssue({ code: 'custom' })
-                                      }
-                                      if (!Object.hasOwn(val, 'examples')) {
-                                        ctx.addIssue({ code: 'custom' })
-                                      }
-                                    }
-                                  })
-                                  .openapi({ required: ['example', 'examples'] })
-                                  .safeParse(val).success,
-                            )
-                            .openapi({
-                              description: 'Example and examples are mutually exclusive',
-                              not: { required: ['example', 'examples'] },
-                            })
-                            .and(
-                              (() => {
-                                const Schema = z.xor([
-                                  z
+                          const Schema = (() => {
+                            const Schema = z
+                              .any()
+                              .refine(
+                                (val) =>
+                                  !z
                                     .unknown()
                                     .superRefine((val, ctx) => {
                                       if (
@@ -52386,178 +52824,175 @@ export const postTykApisOasImportRoute = createRoute({
                                         val !== null &&
                                         !Array.isArray(val)
                                       ) {
-                                        if (!Object.hasOwn(val, 'schema')) {
+                                        if (!Object.hasOwn(val, 'example')) {
+                                          ctx.addIssue({ code: 'custom' })
+                                        }
+                                        if (!Object.hasOwn(val, 'examples')) {
                                           ctx.addIssue({ code: 'custom' })
                                         }
                                       }
                                     })
-                                    .openapi({ required: ['schema'] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'style')) {
-                                                ctx.addIssue({ code: 'custom' })
+                                    .openapi({ required: ['example', 'examples'] })
+                                    .safeParse(val).success,
+                              )
+                              .openapi({
+                                description: 'Example and examples are mutually exclusive',
+                                not: { required: ['example', 'examples'] },
+                              })
+                              .and(
+                                (() => {
+                                  const Schema = z.xor([
+                                    z
+                                      .unknown()
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'schema')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                        }
+                                      })
+                                      .openapi({ required: ['schema'] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'style')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['style'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({ not: { required: ['style'] } })
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'content')) {
-                                          ctx.addIssue({ code: 'custom' })
+                                            })
+                                            .openapi({ required: ['style'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({ not: { required: ['style'] } })
+                                      .superRefine((val, ctx) => {
+                                        if (
+                                          typeof val === 'object' &&
+                                          val !== null &&
+                                          !Array.isArray(val)
+                                        ) {
+                                          if (!Object.hasOwn(val, 'content')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
                                         }
-                                      }
-                                    })
-                                    .and(
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'explode')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['explode'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['explode'] } }),
-                                    )
-                                    .and(
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'allowReserved')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['allowReserved'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['allowReserved'] } }),
-                                    )
-                                    .and(
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'example')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['example'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['example'] } }),
-                                    )
-                                    .and(
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'examples')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['examples'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['examples'] } }),
-                                    )
-                                    .openapi({
-                                      required: ['content'],
-                                      description:
-                                        'Some properties are not allowed if content is present',
-                                    }),
-                                ])
-                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                  const reported = ctx.issues.length
-                                  try {
-                                    ;((ctx) => {
-                                      const val = ctx.value
-                                      if (
+                                      })
+                                      .and(
                                         z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'schema')) {
-                                                ctx.addIssue({ code: 'custom' })
-                                              }
-                                              if (!Object.hasOwn(val, 'content')) {
-                                                ctx.addIssue({ code: 'custom' })
-                                              }
-                                            }
-                                          })
-                                          .openapi({ required: ['schema', 'content'] })
-                                          .safeParse(val).success
-                                      ) {
-                                        ctx.issues.push({ code: 'custom', input: val })
-                                      }
-                                    })(ctx)
-                                  } catch (error) {
-                                    if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                    ctx.issues.length = reported
-                                    return (async (ctx) => {
-                                      const val = ctx.value
-                                      if (
-                                        (
-                                          await z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'explode')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({ required: ['explode'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['explode'] } }),
+                                      )
+                                      .and(
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'allowReserved')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({ required: ['allowReserved'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['allowReserved'] } }),
+                                      )
+                                      .and(
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'example')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({ required: ['example'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['example'] } }),
+                                      )
+                                      .and(
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'examples')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({ required: ['examples'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['examples'] } }),
+                                      )
+                                      .openapi({
+                                        required: ['content'],
+                                        description:
+                                          'Some properties are not allowed if content is present',
+                                      }),
+                                  ])
+                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                    const reported = ctx.issues.length
+                                    try {
+                                      ;((ctx) => {
+                                        const val = ctx.value
+                                        if (
+                                          z
                                             .unknown()
                                             .superRefine((val, ctx) => {
                                               if (
@@ -52574,170 +53009,119 @@ export const postTykApisOasImportRoute = createRoute({
                                               }
                                             })
                                             .openapi({ required: ['schema', 'content'] })
-                                            .safeParseAsync(val)
-                                        ).success
-                                      ) {
-                                        ctx.issues.push({ code: 'custom', input: val })
-                                      }
-                                    })(ctx).then(() => val)
-                                  }
-                                  return val
-                                }, Schema)
-                              })().openapi({
-                                description:
-                                  'Schema and content are mutually exclusive, at least one is required',
-                                not: { required: ['schema', 'content'] },
-                              }),
-                            )
-                            .and(
-                              z
-                                .xor([
-                                  z
-                                    .object({
-                                      in: z.literal('path').exactOptional(),
-                                      style: z
-                                        .enum(['matrix', 'label', 'simple'])
-                                        .default('simple')
-                                        .exactOptional(),
-                                      required: z.literal(true),
-                                    })
-                                    .openapi({
-                                      description: 'Parameter in path',
-                                      required: ['required'],
-                                    }),
-                                  z
-                                    .object({
-                                      in: z.literal('query').exactOptional(),
-                                      style: z
-                                        .enum([
-                                          'form',
-                                          'spaceDelimited',
-                                          'pipeDelimited',
-                                          'deepObject',
-                                        ])
-                                        .default('form')
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Parameter in query', required: [] }),
-                                  z
-                                    .object({
-                                      in: z.literal('header').exactOptional(),
-                                      style: z.literal('simple').default('simple').exactOptional(),
-                                    })
-                                    .openapi({ description: 'Parameter in header', required: [] }),
-                                  z
-                                    .object({
-                                      in: z.literal('cookie').exactOptional(),
-                                      style: z.literal('form').default('form').exactOptional(),
-                                    })
-                                    .openapi({ description: 'Parameter in cookie', required: [] }),
-                                ])
-                                .openapi({ description: 'Parameter location' }),
-                            )
-                            .and(
-                              z
-                                .object({
-                                  name: z.string(),
-                                  in: z.string(),
-                                  description: z.string().exactOptional(),
-                                  required: z.boolean().default(false).exactOptional(),
-                                  deprecated: z.boolean().default(false).exactOptional(),
-                                  allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                  style: z.string().exactOptional(),
-                                  explode: z.boolean().exactOptional(),
-                                  allowReserved: z.boolean().default(false).exactOptional(),
-                                  schema: z
-                                    .xor([
-                                      SchemaSchema,
-                                      z
-                                        .looseObject({})
-                                        .superRefine((o, ctx) => {
-                                          const regex = new RegExp('^\\$ref$')
-                                          const Schema = z.string()
-                                          for (const [k, val] of Object.entries(o)) {
-                                            if (!regex.test(k)) {
-                                              continue
-                                            }
-                                            const result = Schema.safeParse(val)
-                                            if (!result.success) {
-                                              for (const issue of result.error.issues) {
-                                                ctx.addIssue({ ...issue, path: [k, ...issue.path] })
-                                              }
-                                            }
-                                          }
-                                        })
-                                        .openapi({
-                                          ...{
-                                            patternProperties: {
-                                              '^\\$ref$': {
-                                                type: 'string',
-                                                format: 'uri-reference',
-                                              },
-                                            },
-                                          },
-                                          required: ['$ref'],
-                                        }),
-                                    ])
-                                    .exactOptional(),
-                                  content: z
-                                    .record(z.string(), MediaTypeSchema)
-                                    .refine((val) => Object.keys(val).length >= 1)
-                                    .refine((val) => Object.keys(val).length <= 1)
-                                    .exactOptional(),
-                                  example: z.any().exactOptional(),
-                                  examples: z
-                                    .record(
-                                      z.string(),
-                                      z.xor([
-                                        z
-                                          .looseObject({
-                                            summary: z.string().exactOptional(),
-                                            description: z.string().exactOptional(),
-                                            value: z.any().exactOptional(),
-                                            externalValue: z.string().exactOptional(),
-                                          })
-                                          .superRefine((o, ctx) => {
-                                            const keys = Object.keys(o).filter(
-                                              (k) =>
-                                                ![
-                                                  'summary',
-                                                  'description',
-                                                  'value',
-                                                  'externalValue',
-                                                ].includes(k) &&
-                                                !['^x-'].some((p) => new RegExp(p).test(k)),
-                                            )
-                                            if (keys.length > 0) {
-                                              ctx.addIssue({
-                                                code: 'unrecognized_keys',
-                                                keys,
-                                                input: o,
-                                              })
-                                            }
-                                          })
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^x-')
-                                            const Schema = z.any()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
+                                            .safeParse(val).success
+                                        ) {
+                                          ctx.issues.push({ code: 'custom', input: val })
+                                        }
+                                      })(ctx)
+                                    } catch (error) {
+                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                      ctx.issues.length = reported
+                                      return (async (ctx) => {
+                                        const val = ctx.value
+                                        if (
+                                          (
+                                            await z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'schema')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
+                                                  if (!Object.hasOwn(val, 'content')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{ patternProperties: { '^x-': {} } },
-                                            additionalProperties: false,
-                                            required: [],
-                                          }),
+                                              })
+                                              .openapi({ required: ['schema', 'content'] })
+                                              .safeParseAsync(val)
+                                          ).success
+                                        ) {
+                                          ctx.issues.push({ code: 'custom', input: val })
+                                        }
+                                      })(ctx).then(() => val)
+                                    }
+                                    return val
+                                  }, Schema)
+                                })().openapi({
+                                  description:
+                                    'Schema and content are mutually exclusive, at least one is required',
+                                  not: { required: ['schema', 'content'] },
+                                }),
+                              )
+                              .and(
+                                z
+                                  .xor([
+                                    z
+                                      .object({
+                                        in: z.literal('path').exactOptional(),
+                                        style: z
+                                          .enum(['matrix', 'label', 'simple'])
+                                          .default('simple')
+                                          .exactOptional(),
+                                        required: z.literal(true),
+                                      })
+                                      .openapi({
+                                        description: 'Parameter in path',
+                                        required: ['required'],
+                                      }),
+                                    z
+                                      .object({
+                                        in: z.literal('query').exactOptional(),
+                                        style: z
+                                          .enum([
+                                            'form',
+                                            'spaceDelimited',
+                                            'pipeDelimited',
+                                            'deepObject',
+                                          ])
+                                          .default('form')
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Parameter in query', required: [] }),
+                                    z
+                                      .object({
+                                        in: z.literal('header').exactOptional(),
+                                        style: z
+                                          .literal('simple')
+                                          .default('simple')
+                                          .exactOptional(),
+                                      })
+                                      .openapi({
+                                        description: 'Parameter in header',
+                                        required: [],
+                                      }),
+                                    z
+                                      .object({
+                                        in: z.literal('cookie').exactOptional(),
+                                        style: z.literal('form').default('form').exactOptional(),
+                                      })
+                                      .openapi({
+                                        description: 'Parameter in cookie',
+                                        required: [],
+                                      }),
+                                  ])
+                                  .openapi({ description: 'Parameter location' }),
+                              )
+                              .and(
+                                z
+                                  .object({
+                                    name: z.string(),
+                                    in: z.string(),
+                                    description: z.string().exactOptional(),
+                                    required: z.boolean().default(false).exactOptional(),
+                                    deprecated: z.boolean().default(false).exactOptional(),
+                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                    style: z.string().exactOptional(),
+                                    explode: z.boolean().exactOptional(),
+                                    allowReserved: z.boolean().default(false).exactOptional(),
+                                    schema: z
+                                      .xor([
+                                        SchemaSchema,
                                         z
                                           .looseObject({})
                                           .superRefine((o, ctx) => {
@@ -52769,36 +53153,147 @@ export const postTykApisOasImportRoute = createRoute({
                                             },
                                             required: ['$ref'],
                                           }),
-                                      ]),
-                                    )
-                                    .exactOptional(),
-                                })
-                                .openapi({ required: ['name', 'in'] }),
-                            )
+                                      ])
+                                      .exactOptional(),
+                                    content: z
+                                      .record(z.string(), MediaTypeSchema)
+                                      .refine((val) => Object.keys(val).length >= 1)
+                                      .refine((val) => Object.keys(val).length <= 1)
+                                      .exactOptional(),
+                                    example: z.any().exactOptional(),
+                                    examples: z
+                                      .record(
+                                        z.string(),
+                                        z.xor([
+                                          z
+                                            .looseObject({
+                                              summary: z.string().exactOptional(),
+                                              description: z.string().exactOptional(),
+                                              value: z.any().exactOptional(),
+                                              externalValue: z.string().exactOptional(),
+                                            })
+                                            .superRefine((o, ctx) => {
+                                              const keys = Object.keys(o).filter(
+                                                (k) =>
+                                                  ![
+                                                    'summary',
+                                                    'description',
+                                                    'value',
+                                                    'externalValue',
+                                                  ].includes(k) &&
+                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
+                                              )
+                                              if (keys.length > 0) {
+                                                ctx.addIssue({
+                                                  code: 'unrecognized_keys',
+                                                  keys,
+                                                  input: o,
+                                                })
+                                              }
+                                            })
+                                            .superRefine((o, ctx) => {
+                                              const regex = new RegExp('^x-')
+                                              const Schema = z.any()
+                                              for (const [k, val] of Object.entries(o)) {
+                                                if (!regex.test(k)) {
+                                                  continue
+                                                }
+                                                const result = Schema.safeParse(val)
+                                                if (!result.success) {
+                                                  for (const issue of result.error.issues) {
+                                                    ctx.addIssue({
+                                                      ...issue,
+                                                      path: [k, ...issue.path],
+                                                    })
+                                                  }
+                                                }
+                                              }
+                                            })
+                                            .openapi({
+                                              ...{ patternProperties: { '^x-': {} } },
+                                              additionalProperties: false,
+                                              required: [],
+                                            }),
+                                          z
+                                            .looseObject({})
+                                            .superRefine((o, ctx) => {
+                                              const regex = new RegExp('^\\$ref$')
+                                              const Schema = z.string()
+                                              for (const [k, val] of Object.entries(o)) {
+                                                if (!regex.test(k)) {
+                                                  continue
+                                                }
+                                                const result = Schema.safeParse(val)
+                                                if (!result.success) {
+                                                  for (const issue of result.error.issues) {
+                                                    ctx.addIssue({
+                                                      ...issue,
+                                                      path: [k, ...issue.path],
+                                                    })
+                                                  }
+                                                }
+                                              }
+                                            })
+                                            .openapi({
+                                              ...{
+                                                patternProperties: {
+                                                  '^\\$ref$': {
+                                                    type: 'string',
+                                                    format: 'uri-reference',
+                                                  },
+                                                },
+                                              },
+                                              required: ['$ref'],
+                                            }),
+                                        ]),
+                                      )
+                                      .exactOptional(),
+                                  })
+                                  .openapi({ required: ['name', 'in'] }),
+                              )
+                            return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                              ;((ctx) => {
+                                const o = ctx.value
+                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
+                                for (const k of Object.keys(o)) {
+                                  if (
+                                    ![
+                                      'name',
+                                      'in',
+                                      'description',
+                                      'required',
+                                      'deprecated',
+                                      'allowEmptyValue',
+                                      'style',
+                                      'explode',
+                                      'allowReserved',
+                                      'schema',
+                                      'content',
+                                      'example',
+                                      'examples',
+                                    ].includes(k) &&
+                                    !['^x-'].some((p) => new RegExp(p).test(k))
+                                  ) {
+                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  }
+                                }
+                              })(ctx)
+                              return val
+                            }, Schema)
+                          })()
                           return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                             ;((ctx) => {
-                              const o = ctx.value
-                              if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                              for (const k of Object.keys(o)) {
-                                if (
-                                  ![
-                                    'name',
-                                    'in',
-                                    'description',
-                                    'required',
-                                    'deprecated',
-                                    'allowEmptyValue',
-                                    'style',
-                                    'explode',
-                                    'allowReserved',
-                                    'schema',
-                                    'content',
-                                    'example',
-                                    'examples',
-                                  ].includes(k) &&
-                                  !['^x-'].some((p) => new RegExp(p).test(k))
-                                ) {
-                                  ctx.issues.push({ code: 'custom', path: [k], input: o })
+                              const val = ctx.value
+                              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                                {
+                                  const Schema = z.any()
+                                  for (const k of Object.keys(val)) {
+                                    if (new RegExp('^x-').test(k)) {
+                                      if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                        ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                      }
+                                    }
+                                  }
                                 }
                               }
                             })(ctx)
@@ -55585,63 +56080,88 @@ export const postTykApisOasImportRoute = createRoute({
                               required: ['type', 'name', 'in'],
                             }),
                           (() => {
-                            const Schema = z
-                              .xor([
-                                z
-                                  .object({
-                                    scheme: z
-                                      .string()
-                                      .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ description: 'Bearer', required: [] }),
-                                z
-                                  .any()
-                                  .refine(
-                                    (val) =>
-                                      !z
-                                        .unknown()
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'bearerFormat')) {
-                                              ctx.addIssue({ code: 'custom' })
+                            const Schema = (() => {
+                              const Schema = z
+                                .xor([
+                                  z
+                                    .object({
+                                      scheme: z
+                                        .string()
+                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ description: 'Bearer', required: [] }),
+                                  z
+                                    .any()
+                                    .refine(
+                                      (val) =>
+                                        !z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
                                             }
-                                          }
-                                        })
-                                        .openapi({ required: ['bearerFormat'] })
-                                        .safeParse(val).success,
-                                  )
-                                  .openapi({
-                                    description: 'Non Bearer',
-                                    not: { required: ['bearerFormat'] },
-                                  }),
-                              ])
-                              .and(
-                                z
-                                  .object({
-                                    scheme: z.string(),
-                                    bearerFormat: z.string().exactOptional(),
-                                    description: z.string().exactOptional(),
-                                    type: z.literal('http'),
-                                  })
-                                  .openapi({ required: ['scheme', 'type'] }),
-                              )
+                                          })
+                                          .openapi({ required: ['bearerFormat'] })
+                                          .safeParse(val).success,
+                                    )
+                                    .openapi({
+                                      description: 'Non Bearer',
+                                      not: { required: ['bearerFormat'] },
+                                    }),
+                                ])
+                                .and(
+                                  z
+                                    .object({
+                                      scheme: z.string(),
+                                      bearerFormat: z.string().exactOptional(),
+                                      description: z.string().exactOptional(),
+                                      type: z.literal('http'),
+                                    })
+                                    .openapi({ required: ['scheme', 'type'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                        k,
+                                      ) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                      k,
-                                    ) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -59180,37 +59700,12 @@ export const getTykMcpsRoute = createRoute({
                                 required: ['$ref'],
                               }),
                             (() => {
-                              const Schema = z
-                                .any()
-                                .refine(
-                                  (val) =>
-                                    !z
-                                      .unknown()
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'example')) {
-                                            ctx.addIssue({ code: 'custom' })
-                                          }
-                                          if (!Object.hasOwn(val, 'examples')) {
-                                            ctx.addIssue({ code: 'custom' })
-                                          }
-                                        }
-                                      })
-                                      .openapi({ required: ['example', 'examples'] })
-                                      .safeParse(val).success,
-                                )
-                                .openapi({
-                                  description: 'Example and examples are mutually exclusive',
-                                  not: { required: ['example', 'examples'] },
-                                })
-                                .and(
-                                  (() => {
-                                    const Schema = z.xor([
-                                      z
+                              const Schema = (() => {
+                                const Schema = z
+                                  .any()
+                                  .refine(
+                                    (val) =>
+                                      !z
                                         .unknown()
                                         .superRefine((val, ctx) => {
                                           if (
@@ -59218,178 +59713,175 @@ export const getTykMcpsRoute = createRoute({
                                             val !== null &&
                                             !Array.isArray(val)
                                           ) {
-                                            if (!Object.hasOwn(val, 'schema')) {
+                                            if (!Object.hasOwn(val, 'example')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                            if (!Object.hasOwn(val, 'examples')) {
                                               ctx.addIssue({ code: 'custom' })
                                             }
                                           }
                                         })
-                                        .openapi({ required: ['schema'] }),
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'style')) {
-                                                    ctx.addIssue({ code: 'custom' })
+                                        .openapi({ required: ['example', 'examples'] })
+                                        .safeParse(val).success,
+                                  )
+                                  .openapi({
+                                    description: 'Example and examples are mutually exclusive',
+                                    not: { required: ['example', 'examples'] },
+                                  })
+                                  .and(
+                                    (() => {
+                                      const Schema = z.xor([
+                                        z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'schema')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
+                                            }
+                                          })
+                                          .openapi({ required: ['schema'] }),
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'style')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              })
-                                              .openapi({ required: ['style'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['style'] } })
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'content')) {
-                                              ctx.addIssue({ code: 'custom' })
+                                                })
+                                                .openapi({ required: ['style'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['style'] } })
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'content')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
                                             }
-                                          }
-                                        })
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'explode')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['explode'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['explode'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'allowReserved')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['allowReserved'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['allowReserved'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'example')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['example'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['example'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'examples')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['examples'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['examples'] } }),
-                                        )
-                                        .openapi({
-                                          required: ['content'],
-                                          description:
-                                            'Some properties are not allowed if content is present',
-                                        }),
-                                    ])
-                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                      const reported = ctx.issues.length
-                                      try {
-                                        ;((ctx) => {
-                                          const val = ctx.value
-                                          if (
+                                          })
+                                          .and(
                                             z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'schema')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                  if (!Object.hasOwn(val, 'content')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['schema', 'content'] })
-                                              .safeParse(val).success
-                                          ) {
-                                            ctx.issues.push({ code: 'custom', input: val })
-                                          }
-                                        })(ctx)
-                                      } catch (error) {
-                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                        ctx.issues.length = reported
-                                        return (async (ctx) => {
-                                          const val = ctx.value
-                                          if (
-                                            (
-                                              await z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'explode')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['explode'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['explode'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'allowReserved')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['allowReserved'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['allowReserved'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'example')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['example'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['example'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'examples')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['examples'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['examples'] } }),
+                                          )
+                                          .openapi({
+                                            required: ['content'],
+                                            description:
+                                              'Some properties are not allowed if content is present',
+                                          }),
+                                      ])
+                                      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                        const reported = ctx.issues.length
+                                        try {
+                                          ;((ctx) => {
+                                            const val = ctx.value
+                                            if (
+                                              z
                                                 .unknown()
                                                 .superRefine((val, ctx) => {
                                                   if (
@@ -59406,185 +59898,125 @@ export const getTykMcpsRoute = createRoute({
                                                   }
                                                 })
                                                 .openapi({ required: ['schema', 'content'] })
-                                                .safeParseAsync(val)
-                                            ).success
-                                          ) {
-                                            ctx.issues.push({ code: 'custom', input: val })
-                                          }
-                                        })(ctx).then(() => val)
-                                      }
-                                      return val
-                                    }, Schema)
-                                  })().openapi({
-                                    description:
-                                      'Schema and content are mutually exclusive, at least one is required',
-                                    not: { required: ['schema', 'content'] },
-                                  }),
-                                )
-                                .and(
-                                  z
-                                    .xor([
-                                      z
-                                        .object({
-                                          in: z.literal('path').exactOptional(),
-                                          style: z
-                                            .enum(['matrix', 'label', 'simple'])
-                                            .default('simple')
-                                            .exactOptional(),
-                                          required: z.literal(true),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in path',
-                                          required: ['required'],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('query').exactOptional(),
-                                          style: z
-                                            .enum([
-                                              'form',
-                                              'spaceDelimited',
-                                              'pipeDelimited',
-                                              'deepObject',
-                                            ])
-                                            .default('form')
-                                            .exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in query',
-                                          required: [],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('header').exactOptional(),
-                                          style: z
-                                            .literal('simple')
-                                            .default('simple')
-                                            .exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in header',
-                                          required: [],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('cookie').exactOptional(),
-                                          style: z.literal('form').default('form').exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in cookie',
-                                          required: [],
-                                        }),
-                                    ])
-                                    .openapi({ description: 'Parameter location' }),
-                                )
-                                .and(
-                                  z
-                                    .object({
-                                      name: z.string(),
-                                      in: z.string(),
-                                      description: z.string().exactOptional(),
-                                      required: z.boolean().default(false).exactOptional(),
-                                      deprecated: z.boolean().default(false).exactOptional(),
-                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                      style: z.string().exactOptional(),
-                                      explode: z.boolean().exactOptional(),
-                                      allowReserved: z.boolean().default(false).exactOptional(),
-                                      schema: z
-                                        .xor([
-                                          SchemaSchema,
-                                          z
-                                            .looseObject({})
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^\\$ref$')
-                                              const Schema = z.string()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
-                                                  }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{
-                                                patternProperties: {
-                                                  '^\\$ref$': {
-                                                    type: 'string',
-                                                    format: 'uri-reference',
-                                                  },
-                                                },
-                                              },
-                                              required: ['$ref'],
-                                            }),
-                                        ])
-                                        .exactOptional(),
-                                      content: z
-                                        .record(z.string(), MediaTypeSchema)
-                                        .refine((val) => Object.keys(val).length >= 1)
-                                        .refine((val) => Object.keys(val).length <= 1)
-                                        .exactOptional(),
-                                      example: z.any().exactOptional(),
-                                      examples: z
-                                        .record(
-                                          z.string(),
-                                          z.xor([
-                                            z
-                                              .looseObject({
-                                                summary: z.string().exactOptional(),
-                                                description: z.string().exactOptional(),
-                                                value: z.any().exactOptional(),
-                                                externalValue: z.string().exactOptional(),
-                                              })
-                                              .superRefine((o, ctx) => {
-                                                const keys = Object.keys(o).filter(
-                                                  (k) =>
-                                                    ![
-                                                      'summary',
-                                                      'description',
-                                                      'value',
-                                                      'externalValue',
-                                                    ].includes(k) &&
-                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
-                                                )
-                                                if (keys.length > 0) {
-                                                  ctx.addIssue({
-                                                    code: 'unrecognized_keys',
-                                                    keys,
-                                                    input: o,
-                                                  })
-                                                }
-                                              })
-                                              .superRefine((o, ctx) => {
-                                                const regex = new RegExp('^x-')
-                                                const Schema = z.any()
-                                                for (const [k, val] of Object.entries(o)) {
-                                                  if (!regex.test(k)) {
-                                                    continue
-                                                  }
-                                                  const result = Schema.safeParse(val)
-                                                  if (!result.success) {
-                                                    for (const issue of result.error.issues) {
-                                                      ctx.addIssue({
-                                                        ...issue,
-                                                        path: [k, ...issue.path],
-                                                      })
+                                                .safeParse(val).success
+                                            ) {
+                                              ctx.issues.push({ code: 'custom', input: val })
+                                            }
+                                          })(ctx)
+                                        } catch (error) {
+                                          if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                          ctx.issues.length = reported
+                                          return (async (ctx) => {
+                                            const val = ctx.value
+                                            if (
+                                              (
+                                                await z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'schema')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                      if (!Object.hasOwn(val, 'content')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
                                                     }
-                                                  }
-                                                }
-                                              })
-                                              .openapi({
-                                                ...{ patternProperties: { '^x-': {} } },
-                                                additionalProperties: false,
-                                                required: [],
-                                              }),
+                                                  })
+                                                  .openapi({ required: ['schema', 'content'] })
+                                                  .safeParseAsync(val)
+                                              ).success
+                                            ) {
+                                              ctx.issues.push({ code: 'custom', input: val })
+                                            }
+                                          })(ctx).then(() => val)
+                                        }
+                                        return val
+                                      }, Schema)
+                                    })().openapi({
+                                      description:
+                                        'Schema and content are mutually exclusive, at least one is required',
+                                      not: { required: ['schema', 'content'] },
+                                    }),
+                                  )
+                                  .and(
+                                    z
+                                      .xor([
+                                        z
+                                          .object({
+                                            in: z.literal('path').exactOptional(),
+                                            style: z
+                                              .enum(['matrix', 'label', 'simple'])
+                                              .default('simple')
+                                              .exactOptional(),
+                                            required: z.literal(true),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in path',
+                                            required: ['required'],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('query').exactOptional(),
+                                            style: z
+                                              .enum([
+                                                'form',
+                                                'spaceDelimited',
+                                                'pipeDelimited',
+                                                'deepObject',
+                                              ])
+                                              .default('form')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in query',
+                                            required: [],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('header').exactOptional(),
+                                            style: z
+                                              .literal('simple')
+                                              .default('simple')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in header',
+                                            required: [],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('cookie').exactOptional(),
+                                            style: z
+                                              .literal('form')
+                                              .default('form')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in cookie',
+                                            required: [],
+                                          }),
+                                      ])
+                                      .openapi({ description: 'Parameter location' }),
+                                  )
+                                  .and(
+                                    z
+                                      .object({
+                                        name: z.string(),
+                                        in: z.string(),
+                                        description: z.string().exactOptional(),
+                                        required: z.boolean().default(false).exactOptional(),
+                                        deprecated: z.boolean().default(false).exactOptional(),
+                                        allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                        style: z.string().exactOptional(),
+                                        explode: z.boolean().exactOptional(),
+                                        allowReserved: z.boolean().default(false).exactOptional(),
+                                        schema: z
+                                          .xor([
+                                            SchemaSchema,
                                             z
                                               .looseObject({})
                                               .superRefine((o, ctx) => {
@@ -59616,37 +60048,152 @@ export const getTykMcpsRoute = createRoute({
                                                 },
                                                 required: ['$ref'],
                                               }),
-                                          ]),
-                                        )
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ required: ['name', 'in'] }),
-                                )
+                                          ])
+                                          .exactOptional(),
+                                        content: z
+                                          .record(z.string(), MediaTypeSchema)
+                                          .refine((val) => Object.keys(val).length >= 1)
+                                          .refine((val) => Object.keys(val).length <= 1)
+                                          .exactOptional(),
+                                        example: z.any().exactOptional(),
+                                        examples: z
+                                          .record(
+                                            z.string(),
+                                            z.xor([
+                                              z
+                                                .looseObject({
+                                                  summary: z.string().exactOptional(),
+                                                  description: z.string().exactOptional(),
+                                                  value: z.any().exactOptional(),
+                                                  externalValue: z.string().exactOptional(),
+                                                })
+                                                .superRefine((o, ctx) => {
+                                                  const keys = Object.keys(o).filter(
+                                                    (k) =>
+                                                      ![
+                                                        'summary',
+                                                        'description',
+                                                        'value',
+                                                        'externalValue',
+                                                      ].includes(k) &&
+                                                      !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                  )
+                                                  if (keys.length > 0) {
+                                                    ctx.addIssue({
+                                                      code: 'unrecognized_keys',
+                                                      keys,
+                                                      input: o,
+                                                    })
+                                                  }
+                                                })
+                                                .superRefine((o, ctx) => {
+                                                  const regex = new RegExp('^x-')
+                                                  const Schema = z.any()
+                                                  for (const [k, val] of Object.entries(o)) {
+                                                    if (!regex.test(k)) {
+                                                      continue
+                                                    }
+                                                    const result = Schema.safeParse(val)
+                                                    if (!result.success) {
+                                                      for (const issue of result.error.issues) {
+                                                        ctx.addIssue({
+                                                          ...issue,
+                                                          path: [k, ...issue.path],
+                                                        })
+                                                      }
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({
+                                                  ...{ patternProperties: { '^x-': {} } },
+                                                  additionalProperties: false,
+                                                  required: [],
+                                                }),
+                                              z
+                                                .looseObject({})
+                                                .superRefine((o, ctx) => {
+                                                  const regex = new RegExp('^\\$ref$')
+                                                  const Schema = z.string()
+                                                  for (const [k, val] of Object.entries(o)) {
+                                                    if (!regex.test(k)) {
+                                                      continue
+                                                    }
+                                                    const result = Schema.safeParse(val)
+                                                    if (!result.success) {
+                                                      for (const issue of result.error.issues) {
+                                                        ctx.addIssue({
+                                                          ...issue,
+                                                          path: [k, ...issue.path],
+                                                        })
+                                                      }
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({
+                                                  ...{
+                                                    patternProperties: {
+                                                      '^\\$ref$': {
+                                                        type: 'string',
+                                                        format: 'uri-reference',
+                                                      },
+                                                    },
+                                                  },
+                                                  required: ['$ref'],
+                                                }),
+                                            ]),
+                                          )
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ required: ['name', 'in'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        ![
+                                          'name',
+                                          'in',
+                                          'description',
+                                          'required',
+                                          'deprecated',
+                                          'allowEmptyValue',
+                                          'style',
+                                          'explode',
+                                          'allowReserved',
+                                          'schema',
+                                          'content',
+                                          'example',
+                                          'examples',
+                                        ].includes(k) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      ![
-                                        'name',
-                                        'in',
-                                        'description',
-                                        'required',
-                                        'deprecated',
-                                        'allowEmptyValue',
-                                        'style',
-                                        'explode',
-                                        'allowReserved',
-                                        'schema',
-                                        'content',
-                                        'example',
-                                        'examples',
-                                      ].includes(k) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -62569,64 +63116,91 @@ export const getTykMcpsRoute = createRoute({
                                   required: ['type', 'name', 'in'],
                                 }),
                               (() => {
-                                const Schema = z
-                                  .xor([
-                                    z
-                                      .object({
-                                        scheme: z
-                                          .string()
-                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Bearer', required: [] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                const Schema = (() => {
+                                  const Schema = z
+                                    .xor([
+                                      z
+                                        .object({
+                                          scheme: z
+                                            .string()
+                                            .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                            .exactOptional(),
+                                        })
+                                        .openapi({ description: 'Bearer', required: [] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['bearerFormat'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({
-                                        description: 'Non Bearer',
-                                        not: { required: ['bearerFormat'] },
-                                      }),
-                                  ])
-                                  .and(
-                                    z
-                                      .object({
-                                        scheme: z.string(),
-                                        bearerFormat: z.string().exactOptional(),
-                                        description: z.string().exactOptional(),
-                                        type: z.literal('http'),
-                                      })
-                                      .openapi({ required: ['scheme', 'type'] }),
-                                  )
+                                              })
+                                              .openapi({ required: ['bearerFormat'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({
+                                          description: 'Non Bearer',
+                                          not: { required: ['bearerFormat'] },
+                                        }),
+                                    ])
+                                    .and(
+                                      z
+                                        .object({
+                                          scheme: z.string(),
+                                          bearerFormat: z.string().exactOptional(),
+                                          description: z.string().exactOptional(),
+                                          type: z.literal('http'),
+                                        })
+                                        .openapi({ required: ['scheme', 'type'] }),
+                                    )
+                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                    ;((ctx) => {
+                                      const o = ctx.value
+                                      if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                        return
+                                      for (const k of Object.keys(o)) {
+                                        if (
+                                          ![
+                                            'scheme',
+                                            'bearerFormat',
+                                            'description',
+                                            'type',
+                                          ].includes(k) &&
+                                          !['^x-'].some((p) => new RegExp(p).test(k))
+                                        ) {
+                                          ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                        }
+                                      }
+                                    })(ctx)
+                                    return val
+                                  }, Schema)
+                                })()
                                 return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                   ;((ctx) => {
-                                    const o = ctx.value
-                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                      return
-                                    for (const k of Object.keys(o)) {
-                                      if (
-                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                          k,
-                                        ) &&
-                                        !['^x-'].some((p) => new RegExp(p).test(k))
-                                      ) {
-                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    const val = ctx.value
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      {
+                                        const Schema = z.any()
+                                        for (const k of Object.keys(val)) {
+                                          if (new RegExp('^x-').test(k)) {
+                                            if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                              ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                            }
+                                          }
+                                        }
                                       }
                                     }
                                   })(ctx)
@@ -66125,37 +66699,12 @@ export const postTykMcpsRoute = createRoute({
                               required: ['$ref'],
                             }),
                           (() => {
-                            const Schema = z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example', 'examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({
-                                description: 'Example and examples are mutually exclusive',
-                                not: { required: ['example', 'examples'] },
-                              })
-                              .and(
-                                (() => {
-                                  const Schema = z.xor([
-                                    z
+                            const Schema = (() => {
+                              const Schema = z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
                                       .unknown()
                                       .superRefine((val, ctx) => {
                                         if (
@@ -66163,178 +66712,175 @@ export const postTykMcpsRoute = createRoute({
                                           val !== null &&
                                           !Array.isArray(val)
                                         ) {
-                                          if (!Object.hasOwn(val, 'schema')) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                          if (!Object.hasOwn(val, 'examples')) {
                                             ctx.addIssue({ code: 'custom' })
                                           }
                                         }
                                       })
-                                      .openapi({ required: ['schema'] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'style')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                      .openapi({ required: ['example', 'examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({
+                                  description: 'Example and examples are mutually exclusive',
+                                  not: { required: ['example', 'examples'] },
+                                })
+                                .and(
+                                  (() => {
+                                    const Schema = z.xor([
+                                      z
+                                        .unknown()
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'schema')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                          }
+                                        })
+                                        .openapi({ required: ['schema'] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'style')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['style'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({ not: { required: ['style'] } })
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'content')) {
-                                            ctx.addIssue({ code: 'custom' })
+                                              })
+                                              .openapi({ required: ['style'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({ not: { required: ['style'] } })
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'content')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
                                           }
-                                        }
-                                      })
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'explode')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['explode'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['explode'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'allowReserved')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['allowReserved'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['allowReserved'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'example')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['example'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['example'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'examples')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['examples'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['examples'] } }),
-                                      )
-                                      .openapi({
-                                        required: ['content'],
-                                        description:
-                                          'Some properties are not allowed if content is present',
-                                      }),
-                                  ])
-                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                    const reported = ctx.issues.length
-                                    try {
-                                      ;((ctx) => {
-                                        const val = ctx.value
-                                        if (
+                                        })
+                                        .and(
                                           z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'schema')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                                if (!Object.hasOwn(val, 'content')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                              }
-                                            })
-                                            .openapi({ required: ['schema', 'content'] })
-                                            .safeParse(val).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx)
-                                    } catch (error) {
-                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                      ctx.issues.length = reported
-                                      return (async (ctx) => {
-                                        const val = ctx.value
-                                        if (
-                                          (
-                                            await z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'explode')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['explode'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['explode'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'allowReserved')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['allowReserved'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['allowReserved'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'example')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['example'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['example'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'examples')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['examples'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['examples'] } }),
+                                        )
+                                        .openapi({
+                                          required: ['content'],
+                                          description:
+                                            'Some properties are not allowed if content is present',
+                                        }),
+                                    ])
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      const reported = ctx.issues.length
+                                      try {
+                                        ;((ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            z
                                               .unknown()
                                               .superRefine((val, ctx) => {
                                                 if (
@@ -66351,182 +66897,122 @@ export const postTykMcpsRoute = createRoute({
                                                 }
                                               })
                                               .openapi({ required: ['schema', 'content'] })
-                                              .safeParseAsync(val)
-                                          ).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx).then(() => val)
-                                    }
-                                    return val
-                                  }, Schema)
-                                })().openapi({
-                                  description:
-                                    'Schema and content are mutually exclusive, at least one is required',
-                                  not: { required: ['schema', 'content'] },
-                                }),
-                              )
-                              .and(
-                                z
-                                  .xor([
-                                    z
-                                      .object({
-                                        in: z.literal('path').exactOptional(),
-                                        style: z
-                                          .enum(['matrix', 'label', 'simple'])
-                                          .default('simple')
-                                          .exactOptional(),
-                                        required: z.literal(true),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in path',
-                                        required: ['required'],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('query').exactOptional(),
-                                        style: z
-                                          .enum([
-                                            'form',
-                                            'spaceDelimited',
-                                            'pipeDelimited',
-                                            'deepObject',
-                                          ])
-                                          .default('form')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Parameter in query', required: [] }),
-                                    z
-                                      .object({
-                                        in: z.literal('header').exactOptional(),
-                                        style: z
-                                          .literal('simple')
-                                          .default('simple')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in header',
-                                        required: [],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('cookie').exactOptional(),
-                                        style: z.literal('form').default('form').exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in cookie',
-                                        required: [],
-                                      }),
-                                  ])
-                                  .openapi({ description: 'Parameter location' }),
-                              )
-                              .and(
-                                z
-                                  .object({
-                                    name: z.string(),
-                                    in: z.string(),
-                                    description: z.string().exactOptional(),
-                                    required: z.boolean().default(false).exactOptional(),
-                                    deprecated: z.boolean().default(false).exactOptional(),
-                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                    style: z.string().exactOptional(),
-                                    explode: z.boolean().exactOptional(),
-                                    allowReserved: z.boolean().default(false).exactOptional(),
-                                    schema: z
-                                      .xor([
-                                        SchemaSchema,
-                                        z
-                                          .looseObject({})
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^\\$ref$')
-                                            const Schema = z.string()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
-                                                }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{
-                                              patternProperties: {
-                                                '^\\$ref$': {
-                                                  type: 'string',
-                                                  format: 'uri-reference',
-                                                },
-                                              },
-                                            },
-                                            required: ['$ref'],
-                                          }),
-                                      ])
-                                      .exactOptional(),
-                                    content: z
-                                      .record(z.string(), MediaTypeSchema)
-                                      .refine((val) => Object.keys(val).length >= 1)
-                                      .refine((val) => Object.keys(val).length <= 1)
-                                      .exactOptional(),
-                                    example: z.any().exactOptional(),
-                                    examples: z
-                                      .record(
-                                        z.string(),
-                                        z.xor([
-                                          z
-                                            .looseObject({
-                                              summary: z.string().exactOptional(),
-                                              description: z.string().exactOptional(),
-                                              value: z.any().exactOptional(),
-                                              externalValue: z.string().exactOptional(),
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const keys = Object.keys(o).filter(
-                                                (k) =>
-                                                  ![
-                                                    'summary',
-                                                    'description',
-                                                    'value',
-                                                    'externalValue',
-                                                  ].includes(k) &&
-                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
-                                              )
-                                              if (keys.length > 0) {
-                                                ctx.addIssue({
-                                                  code: 'unrecognized_keys',
-                                                  keys,
-                                                  input: o,
-                                                })
-                                              }
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^x-')
-                                              const Schema = z.any()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
+                                              .safeParse(val).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx)
+                                      } catch (error) {
+                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                        ctx.issues.length = reported
+                                        return (async (ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            (
+                                              await z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'schema')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                    if (!Object.hasOwn(val, 'content')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{ patternProperties: { '^x-': {} } },
-                                              additionalProperties: false,
-                                              required: [],
-                                            }),
+                                                })
+                                                .openapi({ required: ['schema', 'content'] })
+                                                .safeParseAsync(val)
+                                            ).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx).then(() => val)
+                                      }
+                                      return val
+                                    }, Schema)
+                                  })().openapi({
+                                    description:
+                                      'Schema and content are mutually exclusive, at least one is required',
+                                    not: { required: ['schema', 'content'] },
+                                  }),
+                                )
+                                .and(
+                                  z
+                                    .xor([
+                                      z
+                                        .object({
+                                          in: z.literal('path').exactOptional(),
+                                          style: z
+                                            .enum(['matrix', 'label', 'simple'])
+                                            .default('simple')
+                                            .exactOptional(),
+                                          required: z.literal(true),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in path',
+                                          required: ['required'],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('query').exactOptional(),
+                                          style: z
+                                            .enum([
+                                              'form',
+                                              'spaceDelimited',
+                                              'pipeDelimited',
+                                              'deepObject',
+                                            ])
+                                            .default('form')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in query',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('header').exactOptional(),
+                                          style: z
+                                            .literal('simple')
+                                            .default('simple')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in header',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('cookie').exactOptional(),
+                                          style: z.literal('form').default('form').exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in cookie',
+                                          required: [],
+                                        }),
+                                    ])
+                                    .openapi({ description: 'Parameter location' }),
+                                )
+                                .and(
+                                  z
+                                    .object({
+                                      name: z.string(),
+                                      in: z.string(),
+                                      description: z.string().exactOptional(),
+                                      required: z.boolean().default(false).exactOptional(),
+                                      deprecated: z.boolean().default(false).exactOptional(),
+                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                      style: z.string().exactOptional(),
+                                      explode: z.boolean().exactOptional(),
+                                      allowReserved: z.boolean().default(false).exactOptional(),
+                                      schema: z
+                                        .xor([
+                                          SchemaSchema,
                                           z
                                             .looseObject({})
                                             .superRefine((o, ctx) => {
@@ -66558,36 +67044,152 @@ export const postTykMcpsRoute = createRoute({
                                               },
                                               required: ['$ref'],
                                             }),
-                                        ]),
-                                      )
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ required: ['name', 'in'] }),
-                              )
+                                        ])
+                                        .exactOptional(),
+                                      content: z
+                                        .record(z.string(), MediaTypeSchema)
+                                        .refine((val) => Object.keys(val).length >= 1)
+                                        .refine((val) => Object.keys(val).length <= 1)
+                                        .exactOptional(),
+                                      example: z.any().exactOptional(),
+                                      examples: z
+                                        .record(
+                                          z.string(),
+                                          z.xor([
+                                            z
+                                              .looseObject({
+                                                summary: z.string().exactOptional(),
+                                                description: z.string().exactOptional(),
+                                                value: z.any().exactOptional(),
+                                                externalValue: z.string().exactOptional(),
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const keys = Object.keys(o).filter(
+                                                  (k) =>
+                                                    ![
+                                                      'summary',
+                                                      'description',
+                                                      'value',
+                                                      'externalValue',
+                                                    ].includes(k) &&
+                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                )
+                                                if (keys.length > 0) {
+                                                  ctx.addIssue({
+                                                    code: 'unrecognized_keys',
+                                                    keys,
+                                                    input: o,
+                                                  })
+                                                }
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^x-')
+                                                const Schema = z.any()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{ patternProperties: { '^x-': {} } },
+                                                additionalProperties: false,
+                                                required: [],
+                                              }),
+                                            z
+                                              .looseObject({})
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^\\$ref$')
+                                                const Schema = z.string()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{
+                                                  patternProperties: {
+                                                    '^\\$ref$': {
+                                                      type: 'string',
+                                                      format: 'uri-reference',
+                                                    },
+                                                  },
+                                                },
+                                                required: ['$ref'],
+                                              }),
+                                          ]),
+                                        )
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ required: ['name', 'in'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      ![
+                                        'name',
+                                        'in',
+                                        'description',
+                                        'required',
+                                        'deprecated',
+                                        'allowEmptyValue',
+                                        'style',
+                                        'explode',
+                                        'allowReserved',
+                                        'schema',
+                                        'content',
+                                        'example',
+                                        'examples',
+                                      ].includes(k) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    ![
-                                      'name',
-                                      'in',
-                                      'description',
-                                      'required',
-                                      'deprecated',
-                                      'allowEmptyValue',
-                                      'style',
-                                      'explode',
-                                      'allowReserved',
-                                      'schema',
-                                      'content',
-                                      'example',
-                                      'examples',
-                                    ].includes(k) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -69426,64 +70028,88 @@ export const postTykMcpsRoute = createRoute({
                                 required: ['type', 'name', 'in'],
                               }),
                             (() => {
-                              const Schema = z
-                                .xor([
-                                  z
-                                    .object({
-                                      scheme: z
-                                        .string()
-                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Bearer', required: [] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                ctx.addIssue({ code: 'custom' })
+                              const Schema = (() => {
+                                const Schema = z
+                                  .xor([
+                                    z
+                                      .object({
+                                        scheme: z
+                                          .string()
+                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Bearer', required: [] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['bearerFormat'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({
-                                      description: 'Non Bearer',
-                                      not: { required: ['bearerFormat'] },
-                                    }),
-                                ])
-                                .and(
-                                  z
-                                    .object({
-                                      scheme: z.string(),
-                                      bearerFormat: z.string().exactOptional(),
-                                      description: z.string().exactOptional(),
-                                      type: z.literal('http'),
-                                    })
-                                    .openapi({ required: ['scheme', 'type'] }),
-                                )
+                                            })
+                                            .openapi({ required: ['bearerFormat'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({
+                                        description: 'Non Bearer',
+                                        not: { required: ['bearerFormat'] },
+                                      }),
+                                  ])
+                                  .and(
+                                    z
+                                      .object({
+                                        scheme: z.string(),
+                                        bearerFormat: z.string().exactOptional(),
+                                        description: z.string().exactOptional(),
+                                        type: z.literal('http'),
+                                      })
+                                      .openapi({ required: ['scheme', 'type'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                          k,
+                                        ) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                        k,
-                                      ) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -73011,37 +73637,12 @@ export const postTykMcpsRoute = createRoute({
                                 required: ['$ref'],
                               }),
                             (() => {
-                              const Schema = z
-                                .any()
-                                .refine(
-                                  (val) =>
-                                    !z
-                                      .unknown()
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'example')) {
-                                            ctx.addIssue({ code: 'custom' })
-                                          }
-                                          if (!Object.hasOwn(val, 'examples')) {
-                                            ctx.addIssue({ code: 'custom' })
-                                          }
-                                        }
-                                      })
-                                      .openapi({ required: ['example', 'examples'] })
-                                      .safeParse(val).success,
-                                )
-                                .openapi({
-                                  description: 'Example and examples are mutually exclusive',
-                                  not: { required: ['example', 'examples'] },
-                                })
-                                .and(
-                                  (() => {
-                                    const Schema = z.xor([
-                                      z
+                              const Schema = (() => {
+                                const Schema = z
+                                  .any()
+                                  .refine(
+                                    (val) =>
+                                      !z
                                         .unknown()
                                         .superRefine((val, ctx) => {
                                           if (
@@ -73049,178 +73650,175 @@ export const postTykMcpsRoute = createRoute({
                                             val !== null &&
                                             !Array.isArray(val)
                                           ) {
-                                            if (!Object.hasOwn(val, 'schema')) {
+                                            if (!Object.hasOwn(val, 'example')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                            if (!Object.hasOwn(val, 'examples')) {
                                               ctx.addIssue({ code: 'custom' })
                                             }
                                           }
                                         })
-                                        .openapi({ required: ['schema'] }),
-                                      z
-                                        .any()
-                                        .refine(
-                                          (val) =>
-                                            !z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'style')) {
-                                                    ctx.addIssue({ code: 'custom' })
+                                        .openapi({ required: ['example', 'examples'] })
+                                        .safeParse(val).success,
+                                  )
+                                  .openapi({
+                                    description: 'Example and examples are mutually exclusive',
+                                    not: { required: ['example', 'examples'] },
+                                  })
+                                  .and(
+                                    (() => {
+                                      const Schema = z.xor([
+                                        z
+                                          .unknown()
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'schema')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
+                                            }
+                                          })
+                                          .openapi({ required: ['schema'] }),
+                                        z
+                                          .any()
+                                          .refine(
+                                            (val) =>
+                                              !z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'style')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              })
-                                              .openapi({ required: ['style'] })
-                                              .safeParse(val).success,
-                                        )
-                                        .openapi({ not: { required: ['style'] } })
-                                        .superRefine((val, ctx) => {
-                                          if (
-                                            typeof val === 'object' &&
-                                            val !== null &&
-                                            !Array.isArray(val)
-                                          ) {
-                                            if (!Object.hasOwn(val, 'content')) {
-                                              ctx.addIssue({ code: 'custom' })
+                                                })
+                                                .openapi({ required: ['style'] })
+                                                .safeParse(val).success,
+                                          )
+                                          .openapi({ not: { required: ['style'] } })
+                                          .superRefine((val, ctx) => {
+                                            if (
+                                              typeof val === 'object' &&
+                                              val !== null &&
+                                              !Array.isArray(val)
+                                            ) {
+                                              if (!Object.hasOwn(val, 'content')) {
+                                                ctx.addIssue({ code: 'custom' })
+                                              }
                                             }
-                                          }
-                                        })
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'explode')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['explode'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['explode'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'allowReserved')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['allowReserved'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['allowReserved'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'example')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['example'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['example'] } }),
-                                        )
-                                        .and(
-                                          z
-                                            .any()
-                                            .refine(
-                                              (val) =>
-                                                !z
-                                                  .unknown()
-                                                  .superRefine((val, ctx) => {
-                                                    if (
-                                                      typeof val === 'object' &&
-                                                      val !== null &&
-                                                      !Array.isArray(val)
-                                                    ) {
-                                                      if (!Object.hasOwn(val, 'examples')) {
-                                                        ctx.addIssue({ code: 'custom' })
-                                                      }
-                                                    }
-                                                  })
-                                                  .openapi({ required: ['examples'] })
-                                                  .safeParse(val).success,
-                                            )
-                                            .openapi({ not: { required: ['examples'] } }),
-                                        )
-                                        .openapi({
-                                          required: ['content'],
-                                          description:
-                                            'Some properties are not allowed if content is present',
-                                        }),
-                                    ])
-                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                      const reported = ctx.issues.length
-                                      try {
-                                        ;((ctx) => {
-                                          const val = ctx.value
-                                          if (
+                                          })
+                                          .and(
                                             z
-                                              .unknown()
-                                              .superRefine((val, ctx) => {
-                                                if (
-                                                  typeof val === 'object' &&
-                                                  val !== null &&
-                                                  !Array.isArray(val)
-                                                ) {
-                                                  if (!Object.hasOwn(val, 'schema')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                  if (!Object.hasOwn(val, 'content')) {
-                                                    ctx.addIssue({ code: 'custom' })
-                                                  }
-                                                }
-                                              })
-                                              .openapi({ required: ['schema', 'content'] })
-                                              .safeParse(val).success
-                                          ) {
-                                            ctx.issues.push({ code: 'custom', input: val })
-                                          }
-                                        })(ctx)
-                                      } catch (error) {
-                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                        ctx.issues.length = reported
-                                        return (async (ctx) => {
-                                          const val = ctx.value
-                                          if (
-                                            (
-                                              await z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'explode')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['explode'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['explode'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'allowReserved')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['allowReserved'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['allowReserved'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'example')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['example'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['example'] } }),
+                                          )
+                                          .and(
+                                            z
+                                              .any()
+                                              .refine(
+                                                (val) =>
+                                                  !z
+                                                    .unknown()
+                                                    .superRefine((val, ctx) => {
+                                                      if (
+                                                        typeof val === 'object' &&
+                                                        val !== null &&
+                                                        !Array.isArray(val)
+                                                      ) {
+                                                        if (!Object.hasOwn(val, 'examples')) {
+                                                          ctx.addIssue({ code: 'custom' })
+                                                        }
+                                                      }
+                                                    })
+                                                    .openapi({ required: ['examples'] })
+                                                    .safeParse(val).success,
+                                              )
+                                              .openapi({ not: { required: ['examples'] } }),
+                                          )
+                                          .openapi({
+                                            required: ['content'],
+                                            description:
+                                              'Some properties are not allowed if content is present',
+                                          }),
+                                      ])
+                                      return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                        const reported = ctx.issues.length
+                                        try {
+                                          ;((ctx) => {
+                                            const val = ctx.value
+                                            if (
+                                              z
                                                 .unknown()
                                                 .superRefine((val, ctx) => {
                                                   if (
@@ -73237,185 +73835,125 @@ export const postTykMcpsRoute = createRoute({
                                                   }
                                                 })
                                                 .openapi({ required: ['schema', 'content'] })
-                                                .safeParseAsync(val)
-                                            ).success
-                                          ) {
-                                            ctx.issues.push({ code: 'custom', input: val })
-                                          }
-                                        })(ctx).then(() => val)
-                                      }
-                                      return val
-                                    }, Schema)
-                                  })().openapi({
-                                    description:
-                                      'Schema and content are mutually exclusive, at least one is required',
-                                    not: { required: ['schema', 'content'] },
-                                  }),
-                                )
-                                .and(
-                                  z
-                                    .xor([
-                                      z
-                                        .object({
-                                          in: z.literal('path').exactOptional(),
-                                          style: z
-                                            .enum(['matrix', 'label', 'simple'])
-                                            .default('simple')
-                                            .exactOptional(),
-                                          required: z.literal(true),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in path',
-                                          required: ['required'],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('query').exactOptional(),
-                                          style: z
-                                            .enum([
-                                              'form',
-                                              'spaceDelimited',
-                                              'pipeDelimited',
-                                              'deepObject',
-                                            ])
-                                            .default('form')
-                                            .exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in query',
-                                          required: [],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('header').exactOptional(),
-                                          style: z
-                                            .literal('simple')
-                                            .default('simple')
-                                            .exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in header',
-                                          required: [],
-                                        }),
-                                      z
-                                        .object({
-                                          in: z.literal('cookie').exactOptional(),
-                                          style: z.literal('form').default('form').exactOptional(),
-                                        })
-                                        .openapi({
-                                          description: 'Parameter in cookie',
-                                          required: [],
-                                        }),
-                                    ])
-                                    .openapi({ description: 'Parameter location' }),
-                                )
-                                .and(
-                                  z
-                                    .object({
-                                      name: z.string(),
-                                      in: z.string(),
-                                      description: z.string().exactOptional(),
-                                      required: z.boolean().default(false).exactOptional(),
-                                      deprecated: z.boolean().default(false).exactOptional(),
-                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                      style: z.string().exactOptional(),
-                                      explode: z.boolean().exactOptional(),
-                                      allowReserved: z.boolean().default(false).exactOptional(),
-                                      schema: z
-                                        .xor([
-                                          SchemaSchema,
-                                          z
-                                            .looseObject({})
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^\\$ref$')
-                                              const Schema = z.string()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
-                                                  }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{
-                                                patternProperties: {
-                                                  '^\\$ref$': {
-                                                    type: 'string',
-                                                    format: 'uri-reference',
-                                                  },
-                                                },
-                                              },
-                                              required: ['$ref'],
-                                            }),
-                                        ])
-                                        .exactOptional(),
-                                      content: z
-                                        .record(z.string(), MediaTypeSchema)
-                                        .refine((val) => Object.keys(val).length >= 1)
-                                        .refine((val) => Object.keys(val).length <= 1)
-                                        .exactOptional(),
-                                      example: z.any().exactOptional(),
-                                      examples: z
-                                        .record(
-                                          z.string(),
-                                          z.xor([
-                                            z
-                                              .looseObject({
-                                                summary: z.string().exactOptional(),
-                                                description: z.string().exactOptional(),
-                                                value: z.any().exactOptional(),
-                                                externalValue: z.string().exactOptional(),
-                                              })
-                                              .superRefine((o, ctx) => {
-                                                const keys = Object.keys(o).filter(
-                                                  (k) =>
-                                                    ![
-                                                      'summary',
-                                                      'description',
-                                                      'value',
-                                                      'externalValue',
-                                                    ].includes(k) &&
-                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
-                                                )
-                                                if (keys.length > 0) {
-                                                  ctx.addIssue({
-                                                    code: 'unrecognized_keys',
-                                                    keys,
-                                                    input: o,
-                                                  })
-                                                }
-                                              })
-                                              .superRefine((o, ctx) => {
-                                                const regex = new RegExp('^x-')
-                                                const Schema = z.any()
-                                                for (const [k, val] of Object.entries(o)) {
-                                                  if (!regex.test(k)) {
-                                                    continue
-                                                  }
-                                                  const result = Schema.safeParse(val)
-                                                  if (!result.success) {
-                                                    for (const issue of result.error.issues) {
-                                                      ctx.addIssue({
-                                                        ...issue,
-                                                        path: [k, ...issue.path],
-                                                      })
+                                                .safeParse(val).success
+                                            ) {
+                                              ctx.issues.push({ code: 'custom', input: val })
+                                            }
+                                          })(ctx)
+                                        } catch (error) {
+                                          if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                          ctx.issues.length = reported
+                                          return (async (ctx) => {
+                                            const val = ctx.value
+                                            if (
+                                              (
+                                                await z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'schema')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                      if (!Object.hasOwn(val, 'content')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
                                                     }
-                                                  }
-                                                }
-                                              })
-                                              .openapi({
-                                                ...{ patternProperties: { '^x-': {} } },
-                                                additionalProperties: false,
-                                                required: [],
-                                              }),
+                                                  })
+                                                  .openapi({ required: ['schema', 'content'] })
+                                                  .safeParseAsync(val)
+                                              ).success
+                                            ) {
+                                              ctx.issues.push({ code: 'custom', input: val })
+                                            }
+                                          })(ctx).then(() => val)
+                                        }
+                                        return val
+                                      }, Schema)
+                                    })().openapi({
+                                      description:
+                                        'Schema and content are mutually exclusive, at least one is required',
+                                      not: { required: ['schema', 'content'] },
+                                    }),
+                                  )
+                                  .and(
+                                    z
+                                      .xor([
+                                        z
+                                          .object({
+                                            in: z.literal('path').exactOptional(),
+                                            style: z
+                                              .enum(['matrix', 'label', 'simple'])
+                                              .default('simple')
+                                              .exactOptional(),
+                                            required: z.literal(true),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in path',
+                                            required: ['required'],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('query').exactOptional(),
+                                            style: z
+                                              .enum([
+                                                'form',
+                                                'spaceDelimited',
+                                                'pipeDelimited',
+                                                'deepObject',
+                                              ])
+                                              .default('form')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in query',
+                                            required: [],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('header').exactOptional(),
+                                            style: z
+                                              .literal('simple')
+                                              .default('simple')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in header',
+                                            required: [],
+                                          }),
+                                        z
+                                          .object({
+                                            in: z.literal('cookie').exactOptional(),
+                                            style: z
+                                              .literal('form')
+                                              .default('form')
+                                              .exactOptional(),
+                                          })
+                                          .openapi({
+                                            description: 'Parameter in cookie',
+                                            required: [],
+                                          }),
+                                      ])
+                                      .openapi({ description: 'Parameter location' }),
+                                  )
+                                  .and(
+                                    z
+                                      .object({
+                                        name: z.string(),
+                                        in: z.string(),
+                                        description: z.string().exactOptional(),
+                                        required: z.boolean().default(false).exactOptional(),
+                                        deprecated: z.boolean().default(false).exactOptional(),
+                                        allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                        style: z.string().exactOptional(),
+                                        explode: z.boolean().exactOptional(),
+                                        allowReserved: z.boolean().default(false).exactOptional(),
+                                        schema: z
+                                          .xor([
+                                            SchemaSchema,
                                             z
                                               .looseObject({})
                                               .superRefine((o, ctx) => {
@@ -73447,37 +73985,152 @@ export const postTykMcpsRoute = createRoute({
                                                 },
                                                 required: ['$ref'],
                                               }),
-                                          ]),
-                                        )
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ required: ['name', 'in'] }),
-                                )
+                                          ])
+                                          .exactOptional(),
+                                        content: z
+                                          .record(z.string(), MediaTypeSchema)
+                                          .refine((val) => Object.keys(val).length >= 1)
+                                          .refine((val) => Object.keys(val).length <= 1)
+                                          .exactOptional(),
+                                        example: z.any().exactOptional(),
+                                        examples: z
+                                          .record(
+                                            z.string(),
+                                            z.xor([
+                                              z
+                                                .looseObject({
+                                                  summary: z.string().exactOptional(),
+                                                  description: z.string().exactOptional(),
+                                                  value: z.any().exactOptional(),
+                                                  externalValue: z.string().exactOptional(),
+                                                })
+                                                .superRefine((o, ctx) => {
+                                                  const keys = Object.keys(o).filter(
+                                                    (k) =>
+                                                      ![
+                                                        'summary',
+                                                        'description',
+                                                        'value',
+                                                        'externalValue',
+                                                      ].includes(k) &&
+                                                      !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                  )
+                                                  if (keys.length > 0) {
+                                                    ctx.addIssue({
+                                                      code: 'unrecognized_keys',
+                                                      keys,
+                                                      input: o,
+                                                    })
+                                                  }
+                                                })
+                                                .superRefine((o, ctx) => {
+                                                  const regex = new RegExp('^x-')
+                                                  const Schema = z.any()
+                                                  for (const [k, val] of Object.entries(o)) {
+                                                    if (!regex.test(k)) {
+                                                      continue
+                                                    }
+                                                    const result = Schema.safeParse(val)
+                                                    if (!result.success) {
+                                                      for (const issue of result.error.issues) {
+                                                        ctx.addIssue({
+                                                          ...issue,
+                                                          path: [k, ...issue.path],
+                                                        })
+                                                      }
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({
+                                                  ...{ patternProperties: { '^x-': {} } },
+                                                  additionalProperties: false,
+                                                  required: [],
+                                                }),
+                                              z
+                                                .looseObject({})
+                                                .superRefine((o, ctx) => {
+                                                  const regex = new RegExp('^\\$ref$')
+                                                  const Schema = z.string()
+                                                  for (const [k, val] of Object.entries(o)) {
+                                                    if (!regex.test(k)) {
+                                                      continue
+                                                    }
+                                                    const result = Schema.safeParse(val)
+                                                    if (!result.success) {
+                                                      for (const issue of result.error.issues) {
+                                                        ctx.addIssue({
+                                                          ...issue,
+                                                          path: [k, ...issue.path],
+                                                        })
+                                                      }
+                                                    }
+                                                  }
+                                                })
+                                                .openapi({
+                                                  ...{
+                                                    patternProperties: {
+                                                      '^\\$ref$': {
+                                                        type: 'string',
+                                                        format: 'uri-reference',
+                                                      },
+                                                    },
+                                                  },
+                                                  required: ['$ref'],
+                                                }),
+                                            ]),
+                                          )
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ required: ['name', 'in'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        ![
+                                          'name',
+                                          'in',
+                                          'description',
+                                          'required',
+                                          'deprecated',
+                                          'allowEmptyValue',
+                                          'style',
+                                          'explode',
+                                          'allowReserved',
+                                          'schema',
+                                          'content',
+                                          'example',
+                                          'examples',
+                                        ].includes(k) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      ![
-                                        'name',
-                                        'in',
-                                        'description',
-                                        'required',
-                                        'deprecated',
-                                        'allowEmptyValue',
-                                        'style',
-                                        'explode',
-                                        'allowReserved',
-                                        'schema',
-                                        'content',
-                                        'example',
-                                        'examples',
-                                      ].includes(k) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -76400,64 +77053,91 @@ export const postTykMcpsRoute = createRoute({
                                   required: ['type', 'name', 'in'],
                                 }),
                               (() => {
-                                const Schema = z
-                                  .xor([
-                                    z
-                                      .object({
-                                        scheme: z
-                                          .string()
-                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Bearer', required: [] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                const Schema = (() => {
+                                  const Schema = z
+                                    .xor([
+                                      z
+                                        .object({
+                                          scheme: z
+                                            .string()
+                                            .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                            .exactOptional(),
+                                        })
+                                        .openapi({ description: 'Bearer', required: [] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['bearerFormat'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({
-                                        description: 'Non Bearer',
-                                        not: { required: ['bearerFormat'] },
-                                      }),
-                                  ])
-                                  .and(
-                                    z
-                                      .object({
-                                        scheme: z.string(),
-                                        bearerFormat: z.string().exactOptional(),
-                                        description: z.string().exactOptional(),
-                                        type: z.literal('http'),
-                                      })
-                                      .openapi({ required: ['scheme', 'type'] }),
-                                  )
+                                              })
+                                              .openapi({ required: ['bearerFormat'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({
+                                          description: 'Non Bearer',
+                                          not: { required: ['bearerFormat'] },
+                                        }),
+                                    ])
+                                    .and(
+                                      z
+                                        .object({
+                                          scheme: z.string(),
+                                          bearerFormat: z.string().exactOptional(),
+                                          description: z.string().exactOptional(),
+                                          type: z.literal('http'),
+                                        })
+                                        .openapi({ required: ['scheme', 'type'] }),
+                                    )
+                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                    ;((ctx) => {
+                                      const o = ctx.value
+                                      if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                        return
+                                      for (const k of Object.keys(o)) {
+                                        if (
+                                          ![
+                                            'scheme',
+                                            'bearerFormat',
+                                            'description',
+                                            'type',
+                                          ].includes(k) &&
+                                          !['^x-'].some((p) => new RegExp(p).test(k))
+                                        ) {
+                                          ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                        }
+                                      }
+                                    })(ctx)
+                                    return val
+                                  }, Schema)
+                                })()
                                 return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                   ;((ctx) => {
-                                    const o = ctx.value
-                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                      return
-                                    for (const k of Object.keys(o)) {
-                                      if (
-                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                          k,
-                                        ) &&
-                                        !['^x-'].some((p) => new RegExp(p).test(k))
-                                      ) {
-                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    const val = ctx.value
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      {
+                                        const Schema = z.any()
+                                        for (const k of Object.keys(val)) {
+                                          if (new RegExp('^x-').test(k)) {
+                                            if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                              ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                            }
+                                          }
+                                        }
                                       }
                                     }
                                   })(ctx)
@@ -79970,37 +80650,12 @@ export const getTykMcpsApiIDRoute = createRoute({
                               required: ['$ref'],
                             }),
                           (() => {
-                            const Schema = z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example', 'examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({
-                                description: 'Example and examples are mutually exclusive',
-                                not: { required: ['example', 'examples'] },
-                              })
-                              .and(
-                                (() => {
-                                  const Schema = z.xor([
-                                    z
+                            const Schema = (() => {
+                              const Schema = z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
                                       .unknown()
                                       .superRefine((val, ctx) => {
                                         if (
@@ -80008,178 +80663,175 @@ export const getTykMcpsApiIDRoute = createRoute({
                                           val !== null &&
                                           !Array.isArray(val)
                                         ) {
-                                          if (!Object.hasOwn(val, 'schema')) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                          if (!Object.hasOwn(val, 'examples')) {
                                             ctx.addIssue({ code: 'custom' })
                                           }
                                         }
                                       })
-                                      .openapi({ required: ['schema'] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'style')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                      .openapi({ required: ['example', 'examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({
+                                  description: 'Example and examples are mutually exclusive',
+                                  not: { required: ['example', 'examples'] },
+                                })
+                                .and(
+                                  (() => {
+                                    const Schema = z.xor([
+                                      z
+                                        .unknown()
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'schema')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                          }
+                                        })
+                                        .openapi({ required: ['schema'] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'style')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['style'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({ not: { required: ['style'] } })
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'content')) {
-                                            ctx.addIssue({ code: 'custom' })
+                                              })
+                                              .openapi({ required: ['style'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({ not: { required: ['style'] } })
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'content')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
                                           }
-                                        }
-                                      })
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'explode')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['explode'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['explode'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'allowReserved')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['allowReserved'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['allowReserved'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'example')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['example'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['example'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'examples')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['examples'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['examples'] } }),
-                                      )
-                                      .openapi({
-                                        required: ['content'],
-                                        description:
-                                          'Some properties are not allowed if content is present',
-                                      }),
-                                  ])
-                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                    const reported = ctx.issues.length
-                                    try {
-                                      ;((ctx) => {
-                                        const val = ctx.value
-                                        if (
+                                        })
+                                        .and(
                                           z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'schema')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                                if (!Object.hasOwn(val, 'content')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                              }
-                                            })
-                                            .openapi({ required: ['schema', 'content'] })
-                                            .safeParse(val).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx)
-                                    } catch (error) {
-                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                      ctx.issues.length = reported
-                                      return (async (ctx) => {
-                                        const val = ctx.value
-                                        if (
-                                          (
-                                            await z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'explode')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['explode'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['explode'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'allowReserved')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['allowReserved'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['allowReserved'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'example')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['example'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['example'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'examples')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['examples'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['examples'] } }),
+                                        )
+                                        .openapi({
+                                          required: ['content'],
+                                          description:
+                                            'Some properties are not allowed if content is present',
+                                        }),
+                                    ])
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      const reported = ctx.issues.length
+                                      try {
+                                        ;((ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            z
                                               .unknown()
                                               .superRefine((val, ctx) => {
                                                 if (
@@ -80196,182 +80848,122 @@ export const getTykMcpsApiIDRoute = createRoute({
                                                 }
                                               })
                                               .openapi({ required: ['schema', 'content'] })
-                                              .safeParseAsync(val)
-                                          ).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx).then(() => val)
-                                    }
-                                    return val
-                                  }, Schema)
-                                })().openapi({
-                                  description:
-                                    'Schema and content are mutually exclusive, at least one is required',
-                                  not: { required: ['schema', 'content'] },
-                                }),
-                              )
-                              .and(
-                                z
-                                  .xor([
-                                    z
-                                      .object({
-                                        in: z.literal('path').exactOptional(),
-                                        style: z
-                                          .enum(['matrix', 'label', 'simple'])
-                                          .default('simple')
-                                          .exactOptional(),
-                                        required: z.literal(true),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in path',
-                                        required: ['required'],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('query').exactOptional(),
-                                        style: z
-                                          .enum([
-                                            'form',
-                                            'spaceDelimited',
-                                            'pipeDelimited',
-                                            'deepObject',
-                                          ])
-                                          .default('form')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Parameter in query', required: [] }),
-                                    z
-                                      .object({
-                                        in: z.literal('header').exactOptional(),
-                                        style: z
-                                          .literal('simple')
-                                          .default('simple')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in header',
-                                        required: [],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('cookie').exactOptional(),
-                                        style: z.literal('form').default('form').exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in cookie',
-                                        required: [],
-                                      }),
-                                  ])
-                                  .openapi({ description: 'Parameter location' }),
-                              )
-                              .and(
-                                z
-                                  .object({
-                                    name: z.string(),
-                                    in: z.string(),
-                                    description: z.string().exactOptional(),
-                                    required: z.boolean().default(false).exactOptional(),
-                                    deprecated: z.boolean().default(false).exactOptional(),
-                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                    style: z.string().exactOptional(),
-                                    explode: z.boolean().exactOptional(),
-                                    allowReserved: z.boolean().default(false).exactOptional(),
-                                    schema: z
-                                      .xor([
-                                        SchemaSchema,
-                                        z
-                                          .looseObject({})
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^\\$ref$')
-                                            const Schema = z.string()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
-                                                }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{
-                                              patternProperties: {
-                                                '^\\$ref$': {
-                                                  type: 'string',
-                                                  format: 'uri-reference',
-                                                },
-                                              },
-                                            },
-                                            required: ['$ref'],
-                                          }),
-                                      ])
-                                      .exactOptional(),
-                                    content: z
-                                      .record(z.string(), MediaTypeSchema)
-                                      .refine((val) => Object.keys(val).length >= 1)
-                                      .refine((val) => Object.keys(val).length <= 1)
-                                      .exactOptional(),
-                                    example: z.any().exactOptional(),
-                                    examples: z
-                                      .record(
-                                        z.string(),
-                                        z.xor([
-                                          z
-                                            .looseObject({
-                                              summary: z.string().exactOptional(),
-                                              description: z.string().exactOptional(),
-                                              value: z.any().exactOptional(),
-                                              externalValue: z.string().exactOptional(),
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const keys = Object.keys(o).filter(
-                                                (k) =>
-                                                  ![
-                                                    'summary',
-                                                    'description',
-                                                    'value',
-                                                    'externalValue',
-                                                  ].includes(k) &&
-                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
-                                              )
-                                              if (keys.length > 0) {
-                                                ctx.addIssue({
-                                                  code: 'unrecognized_keys',
-                                                  keys,
-                                                  input: o,
-                                                })
-                                              }
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^x-')
-                                              const Schema = z.any()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
+                                              .safeParse(val).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx)
+                                      } catch (error) {
+                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                        ctx.issues.length = reported
+                                        return (async (ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            (
+                                              await z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'schema')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                    if (!Object.hasOwn(val, 'content')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{ patternProperties: { '^x-': {} } },
-                                              additionalProperties: false,
-                                              required: [],
-                                            }),
+                                                })
+                                                .openapi({ required: ['schema', 'content'] })
+                                                .safeParseAsync(val)
+                                            ).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx).then(() => val)
+                                      }
+                                      return val
+                                    }, Schema)
+                                  })().openapi({
+                                    description:
+                                      'Schema and content are mutually exclusive, at least one is required',
+                                    not: { required: ['schema', 'content'] },
+                                  }),
+                                )
+                                .and(
+                                  z
+                                    .xor([
+                                      z
+                                        .object({
+                                          in: z.literal('path').exactOptional(),
+                                          style: z
+                                            .enum(['matrix', 'label', 'simple'])
+                                            .default('simple')
+                                            .exactOptional(),
+                                          required: z.literal(true),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in path',
+                                          required: ['required'],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('query').exactOptional(),
+                                          style: z
+                                            .enum([
+                                              'form',
+                                              'spaceDelimited',
+                                              'pipeDelimited',
+                                              'deepObject',
+                                            ])
+                                            .default('form')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in query',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('header').exactOptional(),
+                                          style: z
+                                            .literal('simple')
+                                            .default('simple')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in header',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('cookie').exactOptional(),
+                                          style: z.literal('form').default('form').exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in cookie',
+                                          required: [],
+                                        }),
+                                    ])
+                                    .openapi({ description: 'Parameter location' }),
+                                )
+                                .and(
+                                  z
+                                    .object({
+                                      name: z.string(),
+                                      in: z.string(),
+                                      description: z.string().exactOptional(),
+                                      required: z.boolean().default(false).exactOptional(),
+                                      deprecated: z.boolean().default(false).exactOptional(),
+                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                      style: z.string().exactOptional(),
+                                      explode: z.boolean().exactOptional(),
+                                      allowReserved: z.boolean().default(false).exactOptional(),
+                                      schema: z
+                                        .xor([
+                                          SchemaSchema,
                                           z
                                             .looseObject({})
                                             .superRefine((o, ctx) => {
@@ -80403,36 +80995,152 @@ export const getTykMcpsApiIDRoute = createRoute({
                                               },
                                               required: ['$ref'],
                                             }),
-                                        ]),
-                                      )
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ required: ['name', 'in'] }),
-                              )
+                                        ])
+                                        .exactOptional(),
+                                      content: z
+                                        .record(z.string(), MediaTypeSchema)
+                                        .refine((val) => Object.keys(val).length >= 1)
+                                        .refine((val) => Object.keys(val).length <= 1)
+                                        .exactOptional(),
+                                      example: z.any().exactOptional(),
+                                      examples: z
+                                        .record(
+                                          z.string(),
+                                          z.xor([
+                                            z
+                                              .looseObject({
+                                                summary: z.string().exactOptional(),
+                                                description: z.string().exactOptional(),
+                                                value: z.any().exactOptional(),
+                                                externalValue: z.string().exactOptional(),
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const keys = Object.keys(o).filter(
+                                                  (k) =>
+                                                    ![
+                                                      'summary',
+                                                      'description',
+                                                      'value',
+                                                      'externalValue',
+                                                    ].includes(k) &&
+                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                )
+                                                if (keys.length > 0) {
+                                                  ctx.addIssue({
+                                                    code: 'unrecognized_keys',
+                                                    keys,
+                                                    input: o,
+                                                  })
+                                                }
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^x-')
+                                                const Schema = z.any()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{ patternProperties: { '^x-': {} } },
+                                                additionalProperties: false,
+                                                required: [],
+                                              }),
+                                            z
+                                              .looseObject({})
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^\\$ref$')
+                                                const Schema = z.string()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{
+                                                  patternProperties: {
+                                                    '^\\$ref$': {
+                                                      type: 'string',
+                                                      format: 'uri-reference',
+                                                    },
+                                                  },
+                                                },
+                                                required: ['$ref'],
+                                              }),
+                                          ]),
+                                        )
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ required: ['name', 'in'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      ![
+                                        'name',
+                                        'in',
+                                        'description',
+                                        'required',
+                                        'deprecated',
+                                        'allowEmptyValue',
+                                        'style',
+                                        'explode',
+                                        'allowReserved',
+                                        'schema',
+                                        'content',
+                                        'example',
+                                        'examples',
+                                      ].includes(k) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    ![
-                                      'name',
-                                      'in',
-                                      'description',
-                                      'required',
-                                      'deprecated',
-                                      'allowEmptyValue',
-                                      'style',
-                                      'explode',
-                                      'allowReserved',
-                                      'schema',
-                                      'content',
-                                      'example',
-                                      'examples',
-                                    ].includes(k) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -83271,64 +83979,88 @@ export const getTykMcpsApiIDRoute = createRoute({
                                 required: ['type', 'name', 'in'],
                               }),
                             (() => {
-                              const Schema = z
-                                .xor([
-                                  z
-                                    .object({
-                                      scheme: z
-                                        .string()
-                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Bearer', required: [] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                ctx.addIssue({ code: 'custom' })
+                              const Schema = (() => {
+                                const Schema = z
+                                  .xor([
+                                    z
+                                      .object({
+                                        scheme: z
+                                          .string()
+                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Bearer', required: [] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['bearerFormat'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({
-                                      description: 'Non Bearer',
-                                      not: { required: ['bearerFormat'] },
-                                    }),
-                                ])
-                                .and(
-                                  z
-                                    .object({
-                                      scheme: z.string(),
-                                      bearerFormat: z.string().exactOptional(),
-                                      description: z.string().exactOptional(),
-                                      type: z.literal('http'),
-                                    })
-                                    .openapi({ required: ['scheme', 'type'] }),
-                                )
+                                            })
+                                            .openapi({ required: ['bearerFormat'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({
+                                        description: 'Non Bearer',
+                                        not: { required: ['bearerFormat'] },
+                                      }),
+                                  ])
+                                  .and(
+                                    z
+                                      .object({
+                                        scheme: z.string(),
+                                        bearerFormat: z.string().exactOptional(),
+                                        description: z.string().exactOptional(),
+                                        type: z.literal('http'),
+                                      })
+                                      .openapi({ required: ['scheme', 'type'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                          k,
+                                        ) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                        k,
-                                      ) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)
@@ -86797,37 +87529,12 @@ export const putTykMcpsApiIDRoute = createRoute({
                               required: ['$ref'],
                             }),
                           (() => {
-                            const Schema = z
-                              .any()
-                              .refine(
-                                (val) =>
-                                  !z
-                                    .unknown()
-                                    .superRefine((val, ctx) => {
-                                      if (
-                                        typeof val === 'object' &&
-                                        val !== null &&
-                                        !Array.isArray(val)
-                                      ) {
-                                        if (!Object.hasOwn(val, 'example')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                        if (!Object.hasOwn(val, 'examples')) {
-                                          ctx.addIssue({ code: 'custom' })
-                                        }
-                                      }
-                                    })
-                                    .openapi({ required: ['example', 'examples'] })
-                                    .safeParse(val).success,
-                              )
-                              .openapi({
-                                description: 'Example and examples are mutually exclusive',
-                                not: { required: ['example', 'examples'] },
-                              })
-                              .and(
-                                (() => {
-                                  const Schema = z.xor([
-                                    z
+                            const Schema = (() => {
+                              const Schema = z
+                                .any()
+                                .refine(
+                                  (val) =>
+                                    !z
                                       .unknown()
                                       .superRefine((val, ctx) => {
                                         if (
@@ -86835,178 +87542,175 @@ export const putTykMcpsApiIDRoute = createRoute({
                                           val !== null &&
                                           !Array.isArray(val)
                                         ) {
-                                          if (!Object.hasOwn(val, 'schema')) {
+                                          if (!Object.hasOwn(val, 'example')) {
+                                            ctx.addIssue({ code: 'custom' })
+                                          }
+                                          if (!Object.hasOwn(val, 'examples')) {
                                             ctx.addIssue({ code: 'custom' })
                                           }
                                         }
                                       })
-                                      .openapi({ required: ['schema'] }),
-                                    z
-                                      .any()
-                                      .refine(
-                                        (val) =>
-                                          !z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'style')) {
-                                                  ctx.addIssue({ code: 'custom' })
+                                      .openapi({ required: ['example', 'examples'] })
+                                      .safeParse(val).success,
+                                )
+                                .openapi({
+                                  description: 'Example and examples are mutually exclusive',
+                                  not: { required: ['example', 'examples'] },
+                                })
+                                .and(
+                                  (() => {
+                                    const Schema = z.xor([
+                                      z
+                                        .unknown()
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'schema')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
+                                          }
+                                        })
+                                        .openapi({ required: ['schema'] }),
+                                      z
+                                        .any()
+                                        .refine(
+                                          (val) =>
+                                            !z
+                                              .unknown()
+                                              .superRefine((val, ctx) => {
+                                                if (
+                                                  typeof val === 'object' &&
+                                                  val !== null &&
+                                                  !Array.isArray(val)
+                                                ) {
+                                                  if (!Object.hasOwn(val, 'style')) {
+                                                    ctx.addIssue({ code: 'custom' })
+                                                  }
                                                 }
-                                              }
-                                            })
-                                            .openapi({ required: ['style'] })
-                                            .safeParse(val).success,
-                                      )
-                                      .openapi({ not: { required: ['style'] } })
-                                      .superRefine((val, ctx) => {
-                                        if (
-                                          typeof val === 'object' &&
-                                          val !== null &&
-                                          !Array.isArray(val)
-                                        ) {
-                                          if (!Object.hasOwn(val, 'content')) {
-                                            ctx.addIssue({ code: 'custom' })
+                                              })
+                                              .openapi({ required: ['style'] })
+                                              .safeParse(val).success,
+                                        )
+                                        .openapi({ not: { required: ['style'] } })
+                                        .superRefine((val, ctx) => {
+                                          if (
+                                            typeof val === 'object' &&
+                                            val !== null &&
+                                            !Array.isArray(val)
+                                          ) {
+                                            if (!Object.hasOwn(val, 'content')) {
+                                              ctx.addIssue({ code: 'custom' })
+                                            }
                                           }
-                                        }
-                                      })
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'explode')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['explode'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['explode'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'allowReserved')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['allowReserved'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['allowReserved'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'example')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['example'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['example'] } }),
-                                      )
-                                      .and(
-                                        z
-                                          .any()
-                                          .refine(
-                                            (val) =>
-                                              !z
-                                                .unknown()
-                                                .superRefine((val, ctx) => {
-                                                  if (
-                                                    typeof val === 'object' &&
-                                                    val !== null &&
-                                                    !Array.isArray(val)
-                                                  ) {
-                                                    if (!Object.hasOwn(val, 'examples')) {
-                                                      ctx.addIssue({ code: 'custom' })
-                                                    }
-                                                  }
-                                                })
-                                                .openapi({ required: ['examples'] })
-                                                .safeParse(val).success,
-                                          )
-                                          .openapi({ not: { required: ['examples'] } }),
-                                      )
-                                      .openapi({
-                                        required: ['content'],
-                                        description:
-                                          'Some properties are not allowed if content is present',
-                                      }),
-                                  ])
-                                  return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-                                    const reported = ctx.issues.length
-                                    try {
-                                      ;((ctx) => {
-                                        const val = ctx.value
-                                        if (
+                                        })
+                                        .and(
                                           z
-                                            .unknown()
-                                            .superRefine((val, ctx) => {
-                                              if (
-                                                typeof val === 'object' &&
-                                                val !== null &&
-                                                !Array.isArray(val)
-                                              ) {
-                                                if (!Object.hasOwn(val, 'schema')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                                if (!Object.hasOwn(val, 'content')) {
-                                                  ctx.addIssue({ code: 'custom' })
-                                                }
-                                              }
-                                            })
-                                            .openapi({ required: ['schema', 'content'] })
-                                            .safeParse(val).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx)
-                                    } catch (error) {
-                                      if (!(error instanceof z.core.$ZodAsyncError)) throw error
-                                      ctx.issues.length = reported
-                                      return (async (ctx) => {
-                                        const val = ctx.value
-                                        if (
-                                          (
-                                            await z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'explode')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['explode'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['explode'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'allowReserved')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['allowReserved'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['allowReserved'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'example')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['example'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['example'] } }),
+                                        )
+                                        .and(
+                                          z
+                                            .any()
+                                            .refine(
+                                              (val) =>
+                                                !z
+                                                  .unknown()
+                                                  .superRefine((val, ctx) => {
+                                                    if (
+                                                      typeof val === 'object' &&
+                                                      val !== null &&
+                                                      !Array.isArray(val)
+                                                    ) {
+                                                      if (!Object.hasOwn(val, 'examples')) {
+                                                        ctx.addIssue({ code: 'custom' })
+                                                      }
+                                                    }
+                                                  })
+                                                  .openapi({ required: ['examples'] })
+                                                  .safeParse(val).success,
+                                            )
+                                            .openapi({ not: { required: ['examples'] } }),
+                                        )
+                                        .openapi({
+                                          required: ['content'],
+                                          description:
+                                            'Some properties are not allowed if content is present',
+                                        }),
+                                    ])
+                                    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                      const reported = ctx.issues.length
+                                      try {
+                                        ;((ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            z
                                               .unknown()
                                               .superRefine((val, ctx) => {
                                                 if (
@@ -87023,182 +87727,122 @@ export const putTykMcpsApiIDRoute = createRoute({
                                                 }
                                               })
                                               .openapi({ required: ['schema', 'content'] })
-                                              .safeParseAsync(val)
-                                          ).success
-                                        ) {
-                                          ctx.issues.push({ code: 'custom', input: val })
-                                        }
-                                      })(ctx).then(() => val)
-                                    }
-                                    return val
-                                  }, Schema)
-                                })().openapi({
-                                  description:
-                                    'Schema and content are mutually exclusive, at least one is required',
-                                  not: { required: ['schema', 'content'] },
-                                }),
-                              )
-                              .and(
-                                z
-                                  .xor([
-                                    z
-                                      .object({
-                                        in: z.literal('path').exactOptional(),
-                                        style: z
-                                          .enum(['matrix', 'label', 'simple'])
-                                          .default('simple')
-                                          .exactOptional(),
-                                        required: z.literal(true),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in path',
-                                        required: ['required'],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('query').exactOptional(),
-                                        style: z
-                                          .enum([
-                                            'form',
-                                            'spaceDelimited',
-                                            'pipeDelimited',
-                                            'deepObject',
-                                          ])
-                                          .default('form')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({ description: 'Parameter in query', required: [] }),
-                                    z
-                                      .object({
-                                        in: z.literal('header').exactOptional(),
-                                        style: z
-                                          .literal('simple')
-                                          .default('simple')
-                                          .exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in header',
-                                        required: [],
-                                      }),
-                                    z
-                                      .object({
-                                        in: z.literal('cookie').exactOptional(),
-                                        style: z.literal('form').default('form').exactOptional(),
-                                      })
-                                      .openapi({
-                                        description: 'Parameter in cookie',
-                                        required: [],
-                                      }),
-                                  ])
-                                  .openapi({ description: 'Parameter location' }),
-                              )
-                              .and(
-                                z
-                                  .object({
-                                    name: z.string(),
-                                    in: z.string(),
-                                    description: z.string().exactOptional(),
-                                    required: z.boolean().default(false).exactOptional(),
-                                    deprecated: z.boolean().default(false).exactOptional(),
-                                    allowEmptyValue: z.boolean().default(false).exactOptional(),
-                                    style: z.string().exactOptional(),
-                                    explode: z.boolean().exactOptional(),
-                                    allowReserved: z.boolean().default(false).exactOptional(),
-                                    schema: z
-                                      .xor([
-                                        SchemaSchema,
-                                        z
-                                          .looseObject({})
-                                          .superRefine((o, ctx) => {
-                                            const regex = new RegExp('^\\$ref$')
-                                            const Schema = z.string()
-                                            for (const [k, val] of Object.entries(o)) {
-                                              if (!regex.test(k)) {
-                                                continue
-                                              }
-                                              const result = Schema.safeParse(val)
-                                              if (!result.success) {
-                                                for (const issue of result.error.issues) {
-                                                  ctx.addIssue({
-                                                    ...issue,
-                                                    path: [k, ...issue.path],
-                                                  })
-                                                }
-                                              }
-                                            }
-                                          })
-                                          .openapi({
-                                            ...{
-                                              patternProperties: {
-                                                '^\\$ref$': {
-                                                  type: 'string',
-                                                  format: 'uri-reference',
-                                                },
-                                              },
-                                            },
-                                            required: ['$ref'],
-                                          }),
-                                      ])
-                                      .exactOptional(),
-                                    content: z
-                                      .record(z.string(), MediaTypeSchema)
-                                      .refine((val) => Object.keys(val).length >= 1)
-                                      .refine((val) => Object.keys(val).length <= 1)
-                                      .exactOptional(),
-                                    example: z.any().exactOptional(),
-                                    examples: z
-                                      .record(
-                                        z.string(),
-                                        z.xor([
-                                          z
-                                            .looseObject({
-                                              summary: z.string().exactOptional(),
-                                              description: z.string().exactOptional(),
-                                              value: z.any().exactOptional(),
-                                              externalValue: z.string().exactOptional(),
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const keys = Object.keys(o).filter(
-                                                (k) =>
-                                                  ![
-                                                    'summary',
-                                                    'description',
-                                                    'value',
-                                                    'externalValue',
-                                                  ].includes(k) &&
-                                                  !['^x-'].some((p) => new RegExp(p).test(k)),
-                                              )
-                                              if (keys.length > 0) {
-                                                ctx.addIssue({
-                                                  code: 'unrecognized_keys',
-                                                  keys,
-                                                  input: o,
-                                                })
-                                              }
-                                            })
-                                            .superRefine((o, ctx) => {
-                                              const regex = new RegExp('^x-')
-                                              const Schema = z.any()
-                                              for (const [k, val] of Object.entries(o)) {
-                                                if (!regex.test(k)) {
-                                                  continue
-                                                }
-                                                const result = Schema.safeParse(val)
-                                                if (!result.success) {
-                                                  for (const issue of result.error.issues) {
-                                                    ctx.addIssue({
-                                                      ...issue,
-                                                      path: [k, ...issue.path],
-                                                    })
+                                              .safeParse(val).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx)
+                                      } catch (error) {
+                                        if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                        ctx.issues.length = reported
+                                        return (async (ctx) => {
+                                          const val = ctx.value
+                                          if (
+                                            (
+                                              await z
+                                                .unknown()
+                                                .superRefine((val, ctx) => {
+                                                  if (
+                                                    typeof val === 'object' &&
+                                                    val !== null &&
+                                                    !Array.isArray(val)
+                                                  ) {
+                                                    if (!Object.hasOwn(val, 'schema')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
+                                                    if (!Object.hasOwn(val, 'content')) {
+                                                      ctx.addIssue({ code: 'custom' })
+                                                    }
                                                   }
-                                                }
-                                              }
-                                            })
-                                            .openapi({
-                                              ...{ patternProperties: { '^x-': {} } },
-                                              additionalProperties: false,
-                                              required: [],
-                                            }),
+                                                })
+                                                .openapi({ required: ['schema', 'content'] })
+                                                .safeParseAsync(val)
+                                            ).success
+                                          ) {
+                                            ctx.issues.push({ code: 'custom', input: val })
+                                          }
+                                        })(ctx).then(() => val)
+                                      }
+                                      return val
+                                    }, Schema)
+                                  })().openapi({
+                                    description:
+                                      'Schema and content are mutually exclusive, at least one is required',
+                                    not: { required: ['schema', 'content'] },
+                                  }),
+                                )
+                                .and(
+                                  z
+                                    .xor([
+                                      z
+                                        .object({
+                                          in: z.literal('path').exactOptional(),
+                                          style: z
+                                            .enum(['matrix', 'label', 'simple'])
+                                            .default('simple')
+                                            .exactOptional(),
+                                          required: z.literal(true),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in path',
+                                          required: ['required'],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('query').exactOptional(),
+                                          style: z
+                                            .enum([
+                                              'form',
+                                              'spaceDelimited',
+                                              'pipeDelimited',
+                                              'deepObject',
+                                            ])
+                                            .default('form')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in query',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('header').exactOptional(),
+                                          style: z
+                                            .literal('simple')
+                                            .default('simple')
+                                            .exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in header',
+                                          required: [],
+                                        }),
+                                      z
+                                        .object({
+                                          in: z.literal('cookie').exactOptional(),
+                                          style: z.literal('form').default('form').exactOptional(),
+                                        })
+                                        .openapi({
+                                          description: 'Parameter in cookie',
+                                          required: [],
+                                        }),
+                                    ])
+                                    .openapi({ description: 'Parameter location' }),
+                                )
+                                .and(
+                                  z
+                                    .object({
+                                      name: z.string(),
+                                      in: z.string(),
+                                      description: z.string().exactOptional(),
+                                      required: z.boolean().default(false).exactOptional(),
+                                      deprecated: z.boolean().default(false).exactOptional(),
+                                      allowEmptyValue: z.boolean().default(false).exactOptional(),
+                                      style: z.string().exactOptional(),
+                                      explode: z.boolean().exactOptional(),
+                                      allowReserved: z.boolean().default(false).exactOptional(),
+                                      schema: z
+                                        .xor([
+                                          SchemaSchema,
                                           z
                                             .looseObject({})
                                             .superRefine((o, ctx) => {
@@ -87230,36 +87874,152 @@ export const putTykMcpsApiIDRoute = createRoute({
                                               },
                                               required: ['$ref'],
                                             }),
-                                        ]),
-                                      )
-                                      .exactOptional(),
-                                  })
-                                  .openapi({ required: ['name', 'in'] }),
-                              )
+                                        ])
+                                        .exactOptional(),
+                                      content: z
+                                        .record(z.string(), MediaTypeSchema)
+                                        .refine((val) => Object.keys(val).length >= 1)
+                                        .refine((val) => Object.keys(val).length <= 1)
+                                        .exactOptional(),
+                                      example: z.any().exactOptional(),
+                                      examples: z
+                                        .record(
+                                          z.string(),
+                                          z.xor([
+                                            z
+                                              .looseObject({
+                                                summary: z.string().exactOptional(),
+                                                description: z.string().exactOptional(),
+                                                value: z.any().exactOptional(),
+                                                externalValue: z.string().exactOptional(),
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const keys = Object.keys(o).filter(
+                                                  (k) =>
+                                                    ![
+                                                      'summary',
+                                                      'description',
+                                                      'value',
+                                                      'externalValue',
+                                                    ].includes(k) &&
+                                                    !['^x-'].some((p) => new RegExp(p).test(k)),
+                                                )
+                                                if (keys.length > 0) {
+                                                  ctx.addIssue({
+                                                    code: 'unrecognized_keys',
+                                                    keys,
+                                                    input: o,
+                                                  })
+                                                }
+                                              })
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^x-')
+                                                const Schema = z.any()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{ patternProperties: { '^x-': {} } },
+                                                additionalProperties: false,
+                                                required: [],
+                                              }),
+                                            z
+                                              .looseObject({})
+                                              .superRefine((o, ctx) => {
+                                                const regex = new RegExp('^\\$ref$')
+                                                const Schema = z.string()
+                                                for (const [k, val] of Object.entries(o)) {
+                                                  if (!regex.test(k)) {
+                                                    continue
+                                                  }
+                                                  const result = Schema.safeParse(val)
+                                                  if (!result.success) {
+                                                    for (const issue of result.error.issues) {
+                                                      ctx.addIssue({
+                                                        ...issue,
+                                                        path: [k, ...issue.path],
+                                                      })
+                                                    }
+                                                  }
+                                                }
+                                              })
+                                              .openapi({
+                                                ...{
+                                                  patternProperties: {
+                                                    '^\\$ref$': {
+                                                      type: 'string',
+                                                      format: 'uri-reference',
+                                                    },
+                                                  },
+                                                },
+                                                required: ['$ref'],
+                                              }),
+                                          ]),
+                                        )
+                                        .exactOptional(),
+                                    })
+                                    .openapi({ required: ['name', 'in'] }),
+                                )
+                              return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                ;((ctx) => {
+                                  const o = ctx.value
+                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                    return
+                                  for (const k of Object.keys(o)) {
+                                    if (
+                                      ![
+                                        'name',
+                                        'in',
+                                        'description',
+                                        'required',
+                                        'deprecated',
+                                        'allowEmptyValue',
+                                        'style',
+                                        'explode',
+                                        'allowReserved',
+                                        'schema',
+                                        'content',
+                                        'example',
+                                        'examples',
+                                      ].includes(k) &&
+                                      !['^x-'].some((p) => new RegExp(p).test(k))
+                                    ) {
+                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                    }
+                                  }
+                                })(ctx)
+                                return val
+                              }, Schema)
+                            })()
                             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                               ;((ctx) => {
-                                const o = ctx.value
-                                if (typeof o !== 'object' || o === null || Array.isArray(o)) return
-                                for (const k of Object.keys(o)) {
-                                  if (
-                                    ![
-                                      'name',
-                                      'in',
-                                      'description',
-                                      'required',
-                                      'deprecated',
-                                      'allowEmptyValue',
-                                      'style',
-                                      'explode',
-                                      'allowReserved',
-                                      'schema',
-                                      'content',
-                                      'example',
-                                      'examples',
-                                    ].includes(k) &&
-                                    !['^x-'].some((p) => new RegExp(p).test(k))
-                                  ) {
-                                    ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                const val = ctx.value
+                                if (
+                                  typeof val === 'object' &&
+                                  val !== null &&
+                                  !Array.isArray(val)
+                                ) {
+                                  {
+                                    const Schema = z.any()
+                                    for (const k of Object.keys(val)) {
+                                      if (new RegExp('^x-').test(k)) {
+                                        if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               })(ctx)
@@ -90098,64 +90858,88 @@ export const putTykMcpsApiIDRoute = createRoute({
                                 required: ['type', 'name', 'in'],
                               }),
                             (() => {
-                              const Schema = z
-                                .xor([
-                                  z
-                                    .object({
-                                      scheme: z
-                                        .string()
-                                        .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
-                                        .exactOptional(),
-                                    })
-                                    .openapi({ description: 'Bearer', required: [] }),
-                                  z
-                                    .any()
-                                    .refine(
-                                      (val) =>
-                                        !z
-                                          .unknown()
-                                          .superRefine((val, ctx) => {
-                                            if (
-                                              typeof val === 'object' &&
-                                              val !== null &&
-                                              !Array.isArray(val)
-                                            ) {
-                                              if (!Object.hasOwn(val, 'bearerFormat')) {
-                                                ctx.addIssue({ code: 'custom' })
+                              const Schema = (() => {
+                                const Schema = z
+                                  .xor([
+                                    z
+                                      .object({
+                                        scheme: z
+                                          .string()
+                                          .regex(/^[Bb][Ee][Aa][Rr][Ee][Rr]$/)
+                                          .exactOptional(),
+                                      })
+                                      .openapi({ description: 'Bearer', required: [] }),
+                                    z
+                                      .any()
+                                      .refine(
+                                        (val) =>
+                                          !z
+                                            .unknown()
+                                            .superRefine((val, ctx) => {
+                                              if (
+                                                typeof val === 'object' &&
+                                                val !== null &&
+                                                !Array.isArray(val)
+                                              ) {
+                                                if (!Object.hasOwn(val, 'bearerFormat')) {
+                                                  ctx.addIssue({ code: 'custom' })
+                                                }
                                               }
-                                            }
-                                          })
-                                          .openapi({ required: ['bearerFormat'] })
-                                          .safeParse(val).success,
-                                    )
-                                    .openapi({
-                                      description: 'Non Bearer',
-                                      not: { required: ['bearerFormat'] },
-                                    }),
-                                ])
-                                .and(
-                                  z
-                                    .object({
-                                      scheme: z.string(),
-                                      bearerFormat: z.string().exactOptional(),
-                                      description: z.string().exactOptional(),
-                                      type: z.literal('http'),
-                                    })
-                                    .openapi({ required: ['scheme', 'type'] }),
-                                )
+                                            })
+                                            .openapi({ required: ['bearerFormat'] })
+                                            .safeParse(val).success,
+                                      )
+                                      .openapi({
+                                        description: 'Non Bearer',
+                                        not: { required: ['bearerFormat'] },
+                                      }),
+                                  ])
+                                  .and(
+                                    z
+                                      .object({
+                                        scheme: z.string(),
+                                        bearerFormat: z.string().exactOptional(),
+                                        description: z.string().exactOptional(),
+                                        type: z.literal('http'),
+                                      })
+                                      .openapi({ required: ['scheme', 'type'] }),
+                                  )
+                                return z.preprocess((val: z.input<typeof Schema>, ctx) => {
+                                  ;((ctx) => {
+                                    const o = ctx.value
+                                    if (typeof o !== 'object' || o === null || Array.isArray(o))
+                                      return
+                                    for (const k of Object.keys(o)) {
+                                      if (
+                                        !['scheme', 'bearerFormat', 'description', 'type'].includes(
+                                          k,
+                                        ) &&
+                                        !['^x-'].some((p) => new RegExp(p).test(k))
+                                      ) {
+                                        ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                      }
+                                    }
+                                  })(ctx)
+                                  return val
+                                }, Schema)
+                              })()
                               return z.preprocess((val: z.input<typeof Schema>, ctx) => {
                                 ;((ctx) => {
-                                  const o = ctx.value
-                                  if (typeof o !== 'object' || o === null || Array.isArray(o))
-                                    return
-                                  for (const k of Object.keys(o)) {
-                                    if (
-                                      !['scheme', 'bearerFormat', 'description', 'type'].includes(
-                                        k,
-                                      ) &&
-                                      !['^x-'].some((p) => new RegExp(p).test(k))
-                                    ) {
-                                      ctx.issues.push({ code: 'custom', path: [k], input: o })
+                                  const val = ctx.value
+                                  if (
+                                    typeof val === 'object' &&
+                                    val !== null &&
+                                    !Array.isArray(val)
+                                  ) {
+                                    {
+                                      const Schema = z.any()
+                                      for (const k of Object.keys(val)) {
+                                        if (new RegExp('^x-').test(k)) {
+                                          if (!Schema.safeParse(Reflect.get(val, k)).success) {
+                                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                          }
+                                        }
+                                      }
                                     }
                                   }
                                 })(ctx)

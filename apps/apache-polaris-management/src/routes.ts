@@ -1148,8 +1148,9 @@ const GrantResourcesSchema = z
 
 const OAuth2SecurityScheme = {
   type: 'oauth2',
-  description: 'Uses OAuth 2 with client credentials flow',
-  flows: { implicit: { authorizationUrl: '{scheme}://{host}/api/v1/oauth/tokens', scopes: {} } },
+  description:
+    'The OAuth 2 client credentials flow below uses the Polaris token endpoint. When authenticating with an external identity provider, use its token URL.',
+  flows: { clientCredentials: { tokenUrl: '/api/catalog/v1/oauth/tokens', scopes: {} } },
 }
 
 export const getCatalogsRoute = createRoute({

@@ -34,15 +34,18 @@
     }
   },
   "configs/3-0-extensionseverywhere.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
-    "generated": false,
-    "config": "df7308aa700c839b33f769ce53357ac4738817e065beabe31c67d49e1d587ea3",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
+    "generated": true,
+    "config": "37cbec2eceac3446bd1d4844b462761ea5f022039af914cfab1ff8cd1d61e9a8",
     "sources": {
       "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/extensionsEverywhere.yaml": {
         "etag": "W/\"3adaa5fc39027e99cb072097f91aaf24cc62fa3bfe5edb53bb42253ef759485a\"",
         "sha256": "a6c611a8178348392b63fc488247c53e0fa6c68a7d20792ec1c99da7fe311439"
       }
+    },
+    "typecheck": {
+      "errors": 0
     }
   },
   "configs/3-0-externalpathitemref.config.ts": {
@@ -728,6 +731,11 @@
         "etag": "W/\"7024d4049866566c09847f798874d963fa67112c17ac0898cfdbf919d8cd90a0\"",
         "sha256": "70ad9a99f78a67aae715337c839368bc6969276274c250a8acd25d845ea4cd7a"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.12",
+      "date": "2026-11-25",
+      "error": "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/comp_pathitems.yaml is not a valid Openapi API definition"
     }
   },
   "configs/3-1-info-summary.config.ts": {
@@ -740,6 +748,11 @@
         "etag": "W/\"45dd5f6f6b9e8c48c5d9495b6c34881636080049ca7086531f15cc78194ad8f8\"",
         "sha256": "7f1d10743acc25dac12d05ed31682d65f84af74edb6fcececec61703f63feb63"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.12",
+      "date": "2026-11-25",
+      "error": "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/info_summary.yaml is not a valid Openapi API definition"
     }
   },
   "configs/3-1-license-identifier.config.ts": {
@@ -752,6 +765,11 @@
         "etag": "W/\"3b77a652f6780eb96f5f6c005043a511b18bf37b4ca3a65189e9e6d47485adad\"",
         "sha256": "25c23bd9471636f09fd1b3e74597a2bf9e617902831b3821beea2f487162fb33"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.12",
+      "date": "2026-11-25",
+      "error": "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/license_identifier.yaml is not a valid Openapi API definition"
     }
   },
   "configs/3-1-mega.config.ts": {
@@ -779,6 +797,11 @@
         "etag": "W/\"bda94206268844ca592913f0434ff0fab028e787124bb99ccd9f5612284bdb1d\"",
         "sha256": "4ddb612c64c14661cebcccf6dd0723c9b1a98e24beffc4b186ce5c88de82a357"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.12",
+      "date": "2026-11-25",
+      "error": "https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/minimal_comp.yaml is not a valid Openapi API definition"
     }
   },
   "configs/3-1-minimal-hooks.config.ts": {

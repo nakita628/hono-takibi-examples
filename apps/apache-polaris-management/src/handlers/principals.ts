@@ -1,15 +1,15 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deletePrincipalsPrincipalNamePrincipalRolesPrincipalRoleNameRoute,
-  deletePrincipalsPrincipalNameRoute,
-  getPrincipalsPrincipalNamePrincipalRolesRoute,
-  getPrincipalsPrincipalNameRoute,
   getPrincipalsRoute,
-  postPrincipalsPrincipalNameResetRoute,
-  postPrincipalsPrincipalNameRotateRoute,
   postPrincipalsRoute,
-  putPrincipalsPrincipalNamePrincipalRolesRoute,
+  getPrincipalsPrincipalNameRoute,
   putPrincipalsPrincipalNameRoute,
+  deletePrincipalsPrincipalNameRoute,
+  postPrincipalsPrincipalNameRotateRoute,
+  postPrincipalsPrincipalNameResetRoute,
+  getPrincipalsPrincipalNamePrincipalRolesRoute,
+  putPrincipalsPrincipalNamePrincipalRolesRoute,
+  deletePrincipalsPrincipalNamePrincipalRolesPrincipalRoleNameRoute,
 } from '../routes'
 
 export const getPrincipalsRouteHandler: RouteHandler<typeof getPrincipalsRoute> = async (c) => {

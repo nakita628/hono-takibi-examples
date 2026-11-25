@@ -13,66 +13,109 @@ type Catalog = {
   storageConfigInfo: StorageConfigInfo
 }
 type Catalogs = { catalogs: Catalog[] }
-type CreateCatalogRequest = { catalog: Catalog }
-type UpdateCatalogRequest = {
-  currentEntityVersion?: number | undefined
-  properties?: { [x: string]: string } | undefined
-  storageConfigInfo?: StorageConfigInfo | undefined
+type StorageConfigInfoInput = {
+  storageType: 'S3' | 'GCS' | 'AZURE' | 'FILE'
+  allowedLocations?: string[]
+  storageName?: string
+}
+type CatalogInput = {
+  type: 'INTERNAL' | 'EXTERNAL'
+  name: string
+  properties: { 'default-base-location': string }
+  createTimestamp?: bigint
+  lastUpdateTimestamp?: bigint
+  entityVersion?: number
+  storageConfigInfo: StorageConfigInfoInput
+}
+type CreateCatalogRequestInput = { catalog: CatalogInput }
+type UpdateCatalogRequestInput = {
+  currentEntityVersion?: number
+  properties?: { [key: string]: string }
+  storageConfigInfo?: StorageConfigInfoInput
 }
 type Principal = {
   name: string
   clientId?: string | undefined
-  properties?: { [x: string]: string } | undefined
+  properties?: { [key: string]: string } | undefined
   createTimestamp?: bigint | undefined
   lastUpdateTimestamp?: bigint | undefined
   entityVersion?: number | undefined
 }
 type Principals = { principals: Principal[] }
-type CreatePrincipalRequest = {
-  principal?: Principal | undefined
-  credentialRotationRequired?: boolean | undefined
+type PrincipalInput = {
+  name: string
+  clientId?: string
+  properties?: { [key: string]: string }
+  createTimestamp?: bigint
+  lastUpdateTimestamp?: bigint
+  entityVersion?: number
+}
+type CreatePrincipalRequestInput = {
+  principal?: PrincipalInput
+  credentialRotationRequired?: boolean
 }
 type PrincipalWithCredentials = {
   principal: Principal
   credentials: { clientId?: string | undefined; clientSecret?: string | undefined }
 }
-type UpdatePrincipalRequest = { currentEntityVersion: number; properties: { [x: string]: string } }
-type ResetPrincipalRequest = { clientId?: string | undefined; clientSecret?: string | undefined }
+type UpdatePrincipalRequestInput = {
+  currentEntityVersion: number
+  properties: { [key: string]: string }
+}
+type ResetPrincipalRequestInput = { clientId?: string; clientSecret?: string }
 type PrincipalRole = {
   name: string
   federated?: boolean | undefined
-  properties?: { [x: string]: string } | undefined
+  properties?: { [key: string]: string } | undefined
   createTimestamp?: bigint | undefined
   lastUpdateTimestamp?: bigint | undefined
   entityVersion?: number | undefined
 }
 type PrincipalRoles = { roles: PrincipalRole[] }
-type GrantPrincipalRoleRequest = { principalRole?: PrincipalRole | undefined }
-type CreatePrincipalRoleRequest = { principalRole?: PrincipalRole | undefined }
-type UpdatePrincipalRoleRequest = {
+type PrincipalRoleInput = {
+  name: string
+  federated?: boolean
+  properties?: { [key: string]: string }
+  createTimestamp?: bigint
+  lastUpdateTimestamp?: bigint
+  entityVersion?: number
+}
+type GrantPrincipalRoleRequestInput = { principalRole?: PrincipalRoleInput }
+type CreatePrincipalRoleRequestInput = { principalRole?: PrincipalRoleInput }
+type UpdatePrincipalRoleRequestInput = {
   currentEntityVersion: number
-  properties: { [x: string]: string }
+  properties: { [key: string]: string }
 }
 type CatalogRole = {
   name: string
-  properties?: { [x: string]: string } | undefined
+  properties?: { [key: string]: string } | undefined
   createTimestamp?: bigint | undefined
   lastUpdateTimestamp?: bigint | undefined
   entityVersion?: number | undefined
 }
 type CatalogRoles = { roles: CatalogRole[] }
-type GrantCatalogRoleRequest = { catalogRole?: CatalogRole | undefined }
-type CreateCatalogRoleRequest = { catalogRole?: CatalogRole | undefined }
-type UpdateCatalogRoleRequest = {
+type CatalogRoleInput = {
+  name: string
+  properties?: { [key: string]: string }
+  createTimestamp?: bigint
+  lastUpdateTimestamp?: bigint
+  entityVersion?: number
+}
+type GrantCatalogRoleRequestInput = { catalogRole?: CatalogRoleInput }
+type CreateCatalogRoleRequestInput = { catalogRole?: CatalogRoleInput }
+type UpdateCatalogRoleRequestInput = {
   currentEntityVersion: number
-  properties: { [x: string]: string }
+  properties: { [key: string]: string }
 }
 type GrantResource = {
   type: 'catalog' | 'namespace' | 'table' | 'view' | 'policy' | 'semantic-model'
 }
 type GrantResources = { grants: GrantResource[] }
-type AddGrantRequest = { grant?: GrantResource | undefined }
-type RevokeGrantRequest = { grant?: GrantResource | undefined }
+type GrantResourceInput = {
+  type: 'catalog' | 'namespace' | 'table' | 'view' | 'policy' | 'semantic-model'
+}
+type AddGrantRequestInput = { grant?: GrantResourceInput }
+type RevokeGrantRequestInput = { grant?: GrantResourceInput }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
@@ -82,15 +125,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 403 }
       $post:
         | {
-            input: { json: CreateCatalogRequest }
+            input: { json: CreateCatalogRequestInput }
             output: Catalog
             outputFormat: 'json'
             status: 201
           }
-        | { input: { json: CreateCatalogRequest }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: CreateCatalogRequest }; output: {}; outputFormat: string; status: 403 }
-        | { input: { json: CreateCatalogRequest }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: CreateCatalogRequest }; output: {}; outputFormat: string; status: 409 }
+        | {
+            input: { json: CreateCatalogRequestInput }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: CreateCatalogRequestInput }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { json: CreateCatalogRequestInput }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { json: CreateCatalogRequestInput }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
     }
   } & {
     '/catalogs/:catalogName': {
@@ -115,25 +178,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { catalogName: string } } & { json: UpdateCatalogRequest }
+            input: { param: { catalogName: string } } & { json: UpdateCatalogRequestInput }
             output: Catalog
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { catalogName: string } } & { json: UpdateCatalogRequest }
+            input: { param: { catalogName: string } } & { json: UpdateCatalogRequestInput }
             output: {}
             outputFormat: string
             status: 403
           }
         | {
-            input: { param: { catalogName: string } } & { json: UpdateCatalogRequest }
+            input: { param: { catalogName: string } } & { json: UpdateCatalogRequestInput }
             output: {}
             outputFormat: string
             status: 404
           }
         | {
-            input: { param: { catalogName: string } } & { json: UpdateCatalogRequest }
+            input: { param: { catalogName: string } } & { json: UpdateCatalogRequestInput }
             output: {}
             outputFormat: string
             status: 409
@@ -166,12 +229,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 404 }
       $post:
         | {
-            input: { json: CreatePrincipalRequest }
+            input: { json: CreatePrincipalRequestInput }
             output: PrincipalWithCredentials
             outputFormat: 'json'
             status: 201
           }
-        | { input: { json: CreatePrincipalRequest }; output: {}; outputFormat: string; status: 403 }
+        | {
+            input: { json: CreatePrincipalRequestInput }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/principals/:principalName': {
@@ -196,25 +264,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { principalName: string } } & { json: UpdatePrincipalRequest }
+            input: { param: { principalName: string } } & { json: UpdatePrincipalRequestInput }
             output: Principal
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { principalName: string } } & { json: UpdatePrincipalRequest }
+            input: { param: { principalName: string } } & { json: UpdatePrincipalRequestInput }
             output: {}
             outputFormat: string
             status: 403
           }
         | {
-            input: { param: { principalName: string } } & { json: UpdatePrincipalRequest }
+            input: { param: { principalName: string } } & { json: UpdatePrincipalRequestInput }
             output: {}
             outputFormat: string
             status: 404
           }
         | {
-            input: { param: { principalName: string } } & { json: UpdatePrincipalRequest }
+            input: { param: { principalName: string } } & { json: UpdatePrincipalRequestInput }
             output: {}
             outputFormat: string
             status: 409
@@ -265,19 +333,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/principals/:principalName/reset': {
       $post:
         | {
-            input: { param: { principalName: string } } & { json: ResetPrincipalRequest }
+            input: { param: { principalName: string } } & { json: ResetPrincipalRequestInput }
             output: PrincipalWithCredentials
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { principalName: string } } & { json: ResetPrincipalRequest }
+            input: { param: { principalName: string } } & { json: ResetPrincipalRequestInput }
             output: {}
             outputFormat: string
             status: 403
           }
         | {
-            input: { param: { principalName: string } } & { json: ResetPrincipalRequest }
+            input: { param: { principalName: string } } & { json: ResetPrincipalRequestInput }
             output: {}
             outputFormat: string
             status: 404
@@ -306,19 +374,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { principalName: string } } & { json: GrantPrincipalRoleRequest }
+            input: { param: { principalName: string } } & { json: GrantPrincipalRoleRequestInput }
             output: {}
             outputFormat: string
             status: 201
           }
         | {
-            input: { param: { principalName: string } } & { json: GrantPrincipalRoleRequest }
+            input: { param: { principalName: string } } & { json: GrantPrincipalRoleRequestInput }
             output: {}
             outputFormat: string
             status: 403
           }
         | {
-            input: { param: { principalName: string } } & { json: GrantPrincipalRoleRequest }
+            input: { param: { principalName: string } } & { json: GrantPrincipalRoleRequestInput }
             output: {}
             outputFormat: string
             status: 404
@@ -354,13 +422,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 404 }
       $post:
         | {
-            input: { json: CreatePrincipalRoleRequest }
+            input: { json: CreatePrincipalRoleRequestInput }
             output: PrincipalRole
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreatePrincipalRoleRequest }
+            input: { json: CreatePrincipalRoleRequestInput }
             output: {}
             outputFormat: string
             status: 403
@@ -389,25 +457,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { principalRoleName: string } } & { json: UpdatePrincipalRoleRequest }
+            input: { param: { principalRoleName: string } } & {
+              json: UpdatePrincipalRoleRequestInput
+            }
             output: PrincipalRole
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { principalRoleName: string } } & { json: UpdatePrincipalRoleRequest }
+            input: { param: { principalRoleName: string } } & {
+              json: UpdatePrincipalRoleRequestInput
+            }
             output: {}
             outputFormat: string
             status: 403
           }
         | {
-            input: { param: { principalRoleName: string } } & { json: UpdatePrincipalRoleRequest }
+            input: { param: { principalRoleName: string } } & {
+              json: UpdatePrincipalRoleRequestInput
+            }
             output: {}
             outputFormat: string
             status: 404
           }
         | {
-            input: { param: { principalRoleName: string } } & { json: UpdatePrincipalRoleRequest }
+            input: { param: { principalRoleName: string } } & {
+              json: UpdatePrincipalRoleRequestInput
+            }
             output: {}
             outputFormat: string
             status: 409
@@ -478,7 +554,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { principalRoleName: string; catalogName: string } } & {
-              json: GrantCatalogRoleRequest
+              json: GrantCatalogRoleRequestInput
             }
             output: {}
             outputFormat: string
@@ -486,7 +562,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { principalRoleName: string; catalogName: string } } & {
-              json: GrantCatalogRoleRequest
+              json: GrantCatalogRoleRequestInput
             }
             output: {}
             outputFormat: string
@@ -531,19 +607,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
       $post:
         | {
-            input: { param: { catalogName: string } } & { json: CreateCatalogRoleRequest }
+            input: { param: { catalogName: string } } & { json: CreateCatalogRoleRequestInput }
             output: CatalogRole
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { catalogName: string } } & { json: CreateCatalogRoleRequest }
+            input: { param: { catalogName: string } } & { json: CreateCatalogRoleRequestInput }
             output: {}
             outputFormat: string
             status: 403
           }
         | {
-            input: { param: { catalogName: string } } & { json: CreateCatalogRoleRequest }
+            input: { param: { catalogName: string } } & { json: CreateCatalogRoleRequestInput }
             output: {}
             outputFormat: string
             status: 404
@@ -573,7 +649,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              json: UpdateCatalogRoleRequest
+              json: UpdateCatalogRoleRequestInput
             }
             output: CatalogRole
             outputFormat: 'json'
@@ -581,7 +657,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              json: UpdateCatalogRoleRequest
+              json: UpdateCatalogRoleRequestInput
             }
             output: {}
             outputFormat: string
@@ -589,7 +665,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              json: UpdateCatalogRoleRequest
+              json: UpdateCatalogRoleRequestInput
             }
             output: {}
             outputFormat: string
@@ -597,7 +673,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              json: UpdateCatalogRoleRequest
+              json: UpdateCatalogRoleRequestInput
             }
             output: {}
             outputFormat: string
@@ -656,7 +732,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              json: AddGrantRequest
+              json: AddGrantRequestInput
             }
             output: {}
             outputFormat: string
@@ -664,7 +740,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              json: AddGrantRequest
+              json: AddGrantRequestInput
             }
             output: {}
             outputFormat: string
@@ -672,7 +748,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              json: AddGrantRequest
+              json: AddGrantRequestInput
             }
             output: {}
             outputFormat: string
@@ -681,24 +757,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              query: { cascade?: boolean | undefined }
-            } & { json: RevokeGrantRequest }
+              query: { cascade?: string }
+            } & { json: RevokeGrantRequestInput }
             output: {}
             outputFormat: string
             status: 201
           }
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              query: { cascade?: boolean | undefined }
-            } & { json: RevokeGrantRequest }
+              query: { cascade?: string }
+            } & { json: RevokeGrantRequestInput }
             output: {}
             outputFormat: string
             status: 403
           }
         | {
             input: { param: { catalogName: string; catalogRoleName: string } } & {
-              query: { cascade?: boolean | undefined }
-            } & { json: RevokeGrantRequest }
+              query: { cascade?: string }
+            } & { json: RevokeGrantRequestInput }
             output: {}
             outputFormat: string
             status: 404

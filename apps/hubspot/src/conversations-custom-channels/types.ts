@@ -2,7 +2,7 @@ type NextPage = { after: string; link?: string | undefined }
 type PreviousPage = { before: string; link?: string | undefined }
 type Paging = { next?: NextPage | undefined; prev?: PreviousPage | undefined }
 type PublicChannelIntegrationChannel = {
-  capabilities: { [x: string]: { [x: string]: unknown } }
+  capabilities: { [key: string]: { [key: string]: unknown } }
   channelAccountConnectionRedirectUrl?: string | undefined
   channelDescription?: string | undefined
   channelLogoUrl?: string | undefined
@@ -16,45 +16,33 @@ type CollectionResponseWithTotalPublicChannelIntegrationChannel = {
   results: PublicChannelIntegrationChannel[]
   total: number
 }
-type ErrorDetail = {
-  code?: string | undefined
-  context?: { [x: string]: string[] } | undefined
-  in?: string | undefined
-  message: string
-  subCategory?: string | undefined
-}
-type Error = {
-  category: string
-  context?: { [x: string]: string[] } | undefined
-  correlationId: string
-  errors?: ErrorDetail[] | undefined
-  links?: { [x: string]: string } | undefined
-  message: string
-  subCategory?: string | undefined
-}
-type PublicChannelIntegrationChannelCreate = {
-  capabilities: { [x: string]: { [x: string]: unknown } }
-  channelAccountConnectionRedirectUrl?: string | undefined
-  channelDescription?: string | undefined
-  channelLogoUrl?: string | undefined
+type PublicChannelIntegrationChannelCreateInput = {
+  capabilities: { [key: string]: { [key: string]: unknown } }
+  channelAccountConnectionRedirectUrl?: string
+  channelDescription?: string
+  channelLogoUrl?: string
   name: string
-  webhookUrl?: string | undefined
+  webhookUrl?: string
 }
-type PublicChannelIntegrationChannelPatch = {
-  capabilities: { [x: string]: { [x: string]: unknown } }
-  channelAccountConnectionRedirectUrl: { [x: string]: unknown }
-  channelDescription: { [x: string]: unknown }
-  channelLogoUrl: { [x: string]: unknown }
-  name: { [x: string]: unknown }
-  webhookUrl: { [x: string]: unknown }
+type PublicChannelIntegrationChannelPatchInput = {
+  capabilities: { [key: string]: { [key: string]: unknown } }
+  channelAccountConnectionRedirectUrl: { [key: string]: unknown }
+  channelDescription: { [key: string]: unknown }
+  channelLogoUrl: { [key: string]: unknown }
+  name: { [key: string]: unknown }
+  webhookUrl: { [key: string]: unknown }
+}
+type PublicDeliveryIdentifierInput = {
+  type: 'CHANNEL_SPECIFIC_OPAQUE_ID' | 'HS_EMAIL_ADDRESS' | 'HS_PHONE_NUMBER' | 'HS_SHORT_CODE'
+  value: string
+}
+type PublicChannelAccountStagingTokenUpdateRequestInput = {
+  accountName?: string
+  deliveryIdentifier?: PublicDeliveryIdentifierInput
 }
 type PublicDeliveryIdentifier = {
   type: 'CHANNEL_SPECIFIC_OPAQUE_ID' | 'HS_EMAIL_ADDRESS' | 'HS_PHONE_NUMBER' | 'HS_SHORT_CODE'
   value: string
-}
-type PublicChannelAccountStagingTokenUpdateRequest = {
-  accountName?: string | undefined
-  deliveryIdentifier?: PublicDeliveryIdentifier | undefined
 }
 type PublicChannelAccountStagingToken = {
   accountName?: string | undefined
@@ -82,74 +70,63 @@ type CollectionResponseWithTotalPublicChannelAccount = {
   results: PublicChannelAccount[]
   total: number
 }
-type PublicChannelAccountEgg = {
+type PublicChannelAccountEggInput = {
   authorized: boolean
-  deliveryIdentifier?: PublicDeliveryIdentifier | undefined
+  deliveryIdentifier?: PublicDeliveryIdentifierInput
   inboxId: string
   name: string
 }
-type PublicChannelAccountUpdateRequest = {
-  authorized?: boolean | undefined
-  name?: string | undefined
-}
-type FileAttachment = {
+type PublicChannelAccountUpdateRequestInput = { authorized?: boolean; name?: string }
+type FileAttachmentInput = {
   fileId: string
-  fileUsageType?: 'AUDIO' | 'IMAGE' | 'OTHER' | 'STICKER' | 'VOICE_RECORDING' | undefined
+  fileUsageType?: 'AUDIO' | 'IMAGE' | 'OTHER' | 'STICKER' | 'VOICE_RECORDING'
   type: 'FILE'
 }
-type LocationAttachment = {
-  address?: string | undefined
+type LocationAttachmentInput = {
+  address?: string
   latitude: number
   longitude: number
-  name?: string | undefined
+  name?: string
   type: 'LOCATION'
-  url?: string | undefined
+  url?: string
 }
-type ContactAddress = {
-  city?: string | undefined
-  country?: string | undefined
-  countryCode?: string | undefined
-  state?: string | undefined
-  street?: string | undefined
-  type?: 'HOME' | 'WORK' | undefined
-  zip?: string | undefined
+type ContactAddressInput = {
+  city?: string
+  country?: string
+  countryCode?: string
+  state?: string
+  street?: string
+  type?: 'HOME' | 'WORK'
+  zip?: string
 }
-type ContactEmail = { email: string; type?: 'HOME' | 'WORK' | undefined }
-type ContactName = {
-  firstName?: string | undefined
-  lastName?: string | undefined
-  middleName?: string | undefined
-  prefix?: string | undefined
-  suffix?: string | undefined
+type ContactEmailInput = { email: string; type?: 'HOME' | 'WORK' }
+type ContactNameInput = {
+  firstName?: string
+  lastName?: string
+  middleName?: string
+  prefix?: string
+  suffix?: string
 }
-type ContactOrg = {
-  company?: string | undefined
-  department?: string | undefined
-  title?: string | undefined
+type ContactOrgInput = { company?: string; department?: string; title?: string }
+type ContactPhoneInput = { phone: string; type?: 'CELL' | 'HOME' | 'MAIN' | 'WORK' }
+type ContactUrlInput = { type?: 'HOME' | 'WORK'; url: string }
+type ContactProfileInput = {
+  addresses: ContactAddressInput[]
+  emails: ContactEmailInput[]
+  name?: ContactNameInput
+  org?: ContactOrgInput
+  phones: ContactPhoneInput[]
+  urls: ContactUrlInput[]
 }
-type ContactPhone = { phone: string; type?: 'CELL' | 'HOME' | 'MAIN' | 'WORK' | undefined }
-type ContactUrl = { type?: 'HOME' | 'WORK' | undefined; url: string }
-type ContactProfile = {
-  addresses: ContactAddress[]
-  emails: ContactEmail[]
-  name?: ContactName | undefined
-  org?: ContactOrg | undefined
-  phones: ContactPhone[]
-  urls: ContactUrl[]
-}
-type ContactAttachment = { contactProfile: ContactProfile; type: 'CONTACT' }
-type UnsupportedContentAttachment = { type: 'UNSUPPORTED_CONTENT' }
-type MessageHeaderAttachment = {
-  fileId?: bigint | undefined
-  text?: string | undefined
-  type: 'MESSAGE_HEADER'
-}
-type QuickReply = { label?: string | undefined; value: string; valueType: 'TEXT' | 'URL' }
-type QuickRepliesAttachment = { quickReplies: QuickReply[]; type: 'QUICK_REPLIES' }
-type SocialMetadata = {
-  description?: string | undefined
-  id?: string | undefined
-  mediaTitle?: string | undefined
+type ContactAttachmentInput = { contactProfile: ContactProfileInput; type: 'CONTACT' }
+type UnsupportedContentAttachmentInput = { type: 'UNSUPPORTED_CONTENT' }
+type MessageHeaderAttachmentInput = { fileId?: bigint; text?: string; type: 'MESSAGE_HEADER' }
+type QuickReplyInput = { label?: string; value: string; valueType: 'TEXT' | 'URL' }
+type QuickRepliesAttachmentInput = { quickReplies: QuickReplyInput[]; type: 'QUICK_REPLIES' }
+type SocialMetadataInput = {
+  description?: string
+  id?: string
+  mediaTitle?: string
   mediaType:
     | 'ARTICLE'
     | 'AUDIO'
@@ -162,15 +139,15 @@ type SocialMetadata = {
     | 'POLL'
     | 'STORY'
     | 'VIDEO'
-  mediaUrl?: string | undefined
-  mediaUrlString?: string | undefined
-  thumbnailUrl?: string | undefined
+  mediaUrl?: string
+  mediaUrlString?: string
+  thumbnailUrl?: string
 }
-type SocialMetadataIntegrationAttachment = {
-  socialMetadata: SocialMetadata
+type SocialMetadataIntegrationAttachmentInput = {
+  socialMetadata: SocialMetadataInput
   type: 'SOCIAL_MEDIA_METADATA'
 }
-type PreResolvedContact = {
+type PreResolvedContactInput = {
   contactPropertiesLeadingToMatch: (
     | 'address'
     | 'annualrevenue'
@@ -419,6 +396,7 @@ type PreResolvedContact = {
     | 'hs_messaging_engagement_score'
     | 'hs_mobile_sdk_push_tokens'
     | 'hs_next_renewal_date'
+    | 'hs_normalized_email'
     | 'hs_notes_last_activity'
     | 'hs_notes_next_activity'
     | 'hs_notes_next_activity_type'
@@ -597,32 +575,32 @@ type PreResolvedContact = {
   )[]
   contactVid: bigint
 }
-type PreResolvedContacts = { contacts: PreResolvedContact[] }
-type ChannelIntegrationParticipant = {
-  deliveryIdentifier: PublicDeliveryIdentifier
-  name?: string | undefined
-  senderActorId?: string | undefined
+type PreResolvedContactsInput = { contacts: PreResolvedContactInput[] }
+type ChannelIntegrationParticipantInput = {
+  deliveryIdentifier: PublicDeliveryIdentifierInput
+  name?: string
+  senderActorId?: string
 }
-type ChannelIntegrationMessageEgg = {
-  associateWithContactId?: bigint | undefined
+type ChannelIntegrationMessageEggInput = {
+  associateWithContactId?: bigint
   attachments: (
-    | FileAttachment
-    | LocationAttachment
-    | ContactAttachment
-    | UnsupportedContentAttachment
-    | MessageHeaderAttachment
-    | QuickRepliesAttachment
-    | SocialMetadataIntegrationAttachment
+    | FileAttachmentInput
+    | LocationAttachmentInput
+    | ContactAttachmentInput
+    | UnsupportedContentAttachmentInput
+    | MessageHeaderAttachmentInput
+    | QuickRepliesAttachmentInput
+    | SocialMetadataIntegrationAttachmentInput
   )[]
   channelAccountId: string
-  inReplyToId?: string | undefined
-  integrationIdempotencyId?: string | undefined
-  integrationThreadId?: string | undefined
+  inReplyToId?: string
+  integrationIdempotencyId?: string
+  integrationThreadId?: string
   messageDirection: 'INCOMING' | 'OUTGOING'
-  preResolvedContacts?: PreResolvedContacts | undefined
-  recipients: ChannelIntegrationParticipant[]
-  richText?: string | undefined
-  senders: ChannelIntegrationParticipant[]
+  preResolvedContacts?: PreResolvedContactsInput
+  recipients: ChannelIntegrationParticipantInput[]
+  richText?: string
+  senders: ChannelIntegrationParticipantInput[]
   text: string
   timestamp: string
 }
@@ -641,6 +619,38 @@ type PublicLocation = {
   type: 'LOCATION'
   url?: string | undefined
 }
+type ContactAddress = {
+  city?: string | undefined
+  country?: string | undefined
+  countryCode?: string | undefined
+  state?: string | undefined
+  street?: string | undefined
+  type?: 'HOME' | 'WORK' | undefined
+  zip?: string | undefined
+}
+type ContactEmail = { email: string; type?: 'HOME' | 'WORK' | undefined }
+type ContactName = {
+  firstName?: string | undefined
+  lastName?: string | undefined
+  middleName?: string | undefined
+  prefix?: string | undefined
+  suffix?: string | undefined
+}
+type ContactOrg = {
+  company?: string | undefined
+  department?: string | undefined
+  title?: string | undefined
+}
+type ContactPhone = { phone: string; type?: 'CELL' | 'HOME' | 'MAIN' | 'WORK' | undefined }
+type ContactUrl = { type?: 'HOME' | 'WORK' | undefined; url: string }
+type ContactProfile = {
+  addresses: ContactAddress[]
+  emails: ContactEmail[]
+  name?: ContactName | undefined
+  org?: ContactOrg | undefined
+  phones: ContactPhone[]
+  urls: ContactUrl[]
+}
 type PublicContact = { contactProfile: ContactProfile; type: 'CONTACT' }
 type PublicUnsupportedContent = { type: 'UNSUPPORTED_CONTENT' }
 type PublicMessageHeader = {
@@ -648,6 +658,7 @@ type PublicMessageHeader = {
   text?: string | undefined
   type: 'MESSAGE_HEADER'
 }
+type QuickReply = { label?: string | undefined; value: string; valueType: 'TEXT' | 'URL' }
 type PublicQuickReplies = {
   allowMultiSelect: boolean
   allowUserInput: boolean
@@ -656,11 +667,31 @@ type PublicQuickReplies = {
 }
 type PublicWhatsAppTemplateMetadata = {
   contentId?: bigint | undefined
-  crmObjectIds: { [x: string]: bigint }
+  crmObjectIds: { [key: string]: bigint }
   mappedTemplateId?: bigint | undefined
-  parameters: { [x: string]: string }
+  parameters: { [key: string]: string }
   rootMicId?: bigint | undefined
   type: 'WHATSAPP_TEMPLATE_METADATA'
+}
+type SocialMetadata = {
+  description?: string | undefined
+  id?: string | undefined
+  mediaTitle?: string | undefined
+  mediaType:
+    | 'ARTICLE'
+    | 'AUDIO'
+    | 'CAROUSEL'
+    | 'DOCUMENT'
+    | 'GIF'
+    | 'LINK'
+    | 'NONE'
+    | 'PHOTO'
+    | 'POLL'
+    | 'STORY'
+    | 'VIDEO'
+  mediaUrl?: string | undefined
+  mediaUrlString?: string | undefined
+  thumbnailUrl?: string | undefined
 }
 type PublicSocialMetadataAttachment = {
   socialMetadata: SocialMetadata
@@ -684,7 +715,7 @@ type PublicSender = {
 }
 type PublicMessageFailureDetails = {
   errorMessage?: string | undefined
-  errorMessageTokens: { [x: string]: string }
+  errorMessageTokens: { [key: string]: string }
 }
 type PublicMessageStatus = {
   failureDetails?: PublicMessageFailureDetails | undefined
@@ -721,8 +752,8 @@ type PublicConversationsMessage = {
   type: 'MESSAGE'
   updatedAt?: string | undefined
 }
-type PublicChannelIntegrationMessageUpdateRequest = {
-  errorMessage?: string | undefined
+type PublicChannelIntegrationMessageUpdateRequestInput = {
+  errorMessage?: string
   statusType: 'FAILED' | 'READ' | 'SENT'
 }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
@@ -733,10 +764,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                after?: string | undefined
-                defaultPageLength?: number | undefined
-                limit?: number | undefined
-                sort?: string[] | undefined
+                after?: string
+                defaultPageLength?: unknown
+                limit?: unknown
+                sort?: unknown
               }
             }
             output: CollectionResponseWithTotalPublicChannelIntegrationChannel
@@ -746,27 +777,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                after?: string | undefined
-                defaultPageLength?: number | undefined
-                limit?: number | undefined
-                sort?: string[] | undefined
+                after?: string
+                defaultPageLength?: unknown
+                limit?: unknown
+                sort?: unknown
               }
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
       $post:
         | {
-            input: { json: PublicChannelIntegrationChannelCreate }
+            input: { json: PublicChannelIntegrationChannelCreateInput }
             output: PublicChannelIntegrationChannel
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: PublicChannelIntegrationChannelCreate }
-            output: Error
-            outputFormat: 'text'
+            input: { json: PublicChannelIntegrationChannelCreateInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -774,36 +805,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/custom-channels/2026-09/:channelId': {
       $get:
         | {
-            input: { param: { channelId: number } }
+            input: { param: { channelId: unknown } }
             output: PublicChannelIntegrationChannel
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channelId: number } }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { channelId: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
       $delete:
-        | { input: { param: { channelId: number } }; output: {}; outputFormat: string; status: 204 }
         | {
-            input: { param: { channelId: number } }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { channelId: unknown } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { channelId: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
       $patch:
         | {
-            input: { param: { channelId: number } } & { json: PublicChannelIntegrationChannelPatch }
+            input: { param: { channelId: unknown } } & {
+              json: PublicChannelIntegrationChannelPatchInput
+            }
             output: PublicChannelIntegrationChannel
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channelId: number } } & { json: PublicChannelIntegrationChannelPatch }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { channelId: unknown } } & {
+              json: PublicChannelIntegrationChannelPatchInput
+            }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -811,19 +851,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/custom-channels/2026-09/:channelId/channel-account-staging-tokens/:accountToken': {
       $patch:
         | {
-            input: { param: { accountToken: string; channelId: number } } & {
-              json: PublicChannelAccountStagingTokenUpdateRequest
+            input: { param: { accountToken: string; channelId: unknown } } & {
+              json: PublicChannelAccountStagingTokenUpdateRequestInput
             }
             output: PublicChannelAccountStagingToken
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { accountToken: string; channelId: number } } & {
-              json: PublicChannelAccountStagingTokenUpdateRequest
+            input: { param: { accountToken: string; channelId: unknown } } & {
+              json: PublicChannelAccountStagingTokenUpdateRequestInput
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -831,22 +871,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/custom-channels/2026-09/:channelId/channel-accounts': {
       $get:
         | {
-            input: { param: { channelId: number } } & {
+            input: { param: { channelId: unknown } } & {
               query: {
-                after?: string | undefined
-                archived?: boolean | undefined
-                defaultPageLength?: number | undefined
-                deliveryIdentifierType?:
-                  | (
-                      | 'HS_EMAIL_ADDRESS'
-                      | 'HS_PHONE_NUMBER'
-                      | 'HS_SHORT_CODE'
-                      | 'CHANNEL_SPECIFIC_OPAQUE_ID'
-                    )[]
-                  | undefined
-                deliveryIdentifierValue?: string[] | undefined
-                limit?: number | undefined
-                sort?: string[] | undefined
+                after?: string
+                archived?: string
+                defaultPageLength?: unknown
+                deliveryIdentifierType?: unknown
+                deliveryIdentifierValue?: unknown
+                limit?: unknown
+                sort?: unknown
               }
             }
             output: CollectionResponseWithTotalPublicChannelAccount
@@ -854,39 +887,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { channelId: number } } & {
+            input: { param: { channelId: unknown } } & {
               query: {
-                after?: string | undefined
-                archived?: boolean | undefined
-                defaultPageLength?: number | undefined
-                deliveryIdentifierType?:
-                  | (
-                      | 'HS_EMAIL_ADDRESS'
-                      | 'HS_PHONE_NUMBER'
-                      | 'HS_SHORT_CODE'
-                      | 'CHANNEL_SPECIFIC_OPAQUE_ID'
-                    )[]
-                  | undefined
-                deliveryIdentifierValue?: string[] | undefined
-                limit?: number | undefined
-                sort?: string[] | undefined
+                after?: string
+                archived?: string
+                defaultPageLength?: unknown
+                deliveryIdentifierType?: unknown
+                deliveryIdentifierValue?: unknown
+                limit?: unknown
+                sort?: unknown
               }
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
       $post:
         | {
-            input: { param: { channelId: number } } & { json: PublicChannelAccountEgg }
+            input: { param: { channelId: unknown } } & { json: PublicChannelAccountEggInput }
             output: PublicChannelAccount
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { channelId: number } } & { json: PublicChannelAccountEgg }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { channelId: unknown } } & { json: PublicChannelAccountEggInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -894,36 +920,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/custom-channels/2026-09/:channelId/channel-accounts/:channelAccountId': {
       $get:
         | {
-            input: { param: { channelAccountId: bigint; channelId: number } } & {
-              query: { archived?: boolean | undefined }
+            input: { param: { channelAccountId: unknown; channelId: unknown } } & {
+              query: { archived?: string }
             }
             output: PublicChannelAccount
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channelAccountId: bigint; channelId: number } } & {
-              query: { archived?: boolean | undefined }
+            input: { param: { channelAccountId: unknown; channelId: unknown } } & {
+              query: { archived?: string }
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
       $patch:
         | {
-            input: { param: { channelAccountId: bigint; channelId: number } } & {
-              json: PublicChannelAccountUpdateRequest
+            input: { param: { channelAccountId: unknown; channelId: unknown } } & {
+              json: PublicChannelAccountUpdateRequestInput
             }
             output: PublicChannelAccount
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channelAccountId: bigint; channelId: number } } & {
-              json: PublicChannelAccountUpdateRequest
+            input: { param: { channelAccountId: unknown; channelId: unknown } } & {
+              json: PublicChannelAccountUpdateRequestInput
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -931,15 +957,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/custom-channels/2026-09/:channelId/messages': {
       $post:
         | {
-            input: { param: { channelId: number } } & { json: ChannelIntegrationMessageEgg }
+            input: { param: { channelId: unknown } } & { json: ChannelIntegrationMessageEggInput }
             output: PublicConversationsMessage
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { channelId: number } } & { json: ChannelIntegrationMessageEgg }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { channelId: unknown } } & { json: ChannelIntegrationMessageEggInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -947,32 +973,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/custom-channels/2026-09/:channelId/messages/:messageId': {
       $get:
         | {
-            input: { param: { channelId: number; messageId: string } }
+            input: { param: { channelId: unknown; messageId: string } }
             output: PublicConversationsMessage
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channelId: number; messageId: string } }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { channelId: unknown; messageId: string } }
+            output: {}
+            outputFormat: string
             status: 200
           }
       $patch:
         | {
-            input: { param: { channelId: number; messageId: string } } & {
-              json: PublicChannelIntegrationMessageUpdateRequest
+            input: { param: { channelId: unknown; messageId: string } } & {
+              json: PublicChannelIntegrationMessageUpdateRequestInput
             }
             output: PublicConversationsMessage
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channelId: number; messageId: string } } & {
-              json: PublicChannelIntegrationMessageUpdateRequest
+            input: { param: { channelId: unknown; messageId: string } } & {
+              json: PublicChannelIntegrationMessageUpdateRequestInput
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
     }

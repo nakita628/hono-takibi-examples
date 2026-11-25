@@ -1,9 +1,9 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.35.6",
-    "date": "2026-11-24",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
-    "config": "03552a9855f56959c115351d66924b57ca8125cbf897b6507efd8a33935fc0ee",
+    "config": "1fb03cc87b3e87623ac93eb893f26e85c9d2fbac60f1f05ec2f0dc1068afa24f",
     "sources": {
       "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/beacon/blobs/blobs.yaml": {
         "etag": "W/\"21ccfb5d33f3b12b2f1a62328948447bf9a09998354a569effbac000a1a5179b\"",
@@ -302,8 +302,8 @@
         "sha256": "08b48c7f38f4fde866248405e21127ed28f142456eca9d507b6082bcf7eaf2b6"
       },
       "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/duties/ptc.yaml": {
-        "etag": "W/\"73ad6b4541aab4ef29d847a08711ca12980d5f25fe0f564f0a3af5cc95de9119\"",
-        "sha256": "0c84cf0f1d443b56b5443ebab3a12db793389335ce32b663370d1d484f36accf"
+        "etag": "W/\"ab3980e7fc5aa9704731612ce68fbd32e4fe387e035c53dd0743a1283860e087\"",
+        "sha256": "49b613edd0f807edade32e9c6baaa849c7ab571c343dcb676856c3872634b79a"
       },
       "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/apis/validator/duties/sync.yaml": {
         "etag": "W/\"b4a1f18bbbb4a2e1da52a248a448cb2f4210e95a572d35bc34ecdbd407d5dc1c\"",
@@ -662,8 +662,8 @@
         "sha256": "aae654c3edb7edbc74c8b6adcc42066a919b2e1edb1854059ed01a996d5493c7"
       },
       "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/primitive.yaml": {
-        "etag": "W/\"048e7a85869a2812ecc4dbb651c467b6c2e55c64541699d98a99286503a7e6b3\"",
-        "sha256": "a0e98a1c0ce0bc2d073f355bc7ededb390c1568ed3afded6858ca0bcbdcc7dcf"
+        "etag": "W/\"2265ae020b22fd6a3645360039bbc840a5fd7a68c93d16bdb609906ba8694a68\"",
+        "sha256": "d7ba0c0db7955c7a2a2b3e8ad956d6afd6d889455c1d0501716d1e15478678cc"
       },
       "https://raw.githubusercontent.com/ethereum/beacon-APIs/master/types/registration.yaml": {
         "etag": "W/\"0db7fe521347e8d9c0713c33819e281b7679b48f960f3be5a3d6b4630074d6d5\"",

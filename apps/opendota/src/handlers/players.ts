@@ -1,19 +1,19 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getPlayersAccountIdCountsRoute,
-  getPlayersAccountIdHeroesRoute,
-  getPlayersAccountIdHistogramsFieldRoute,
+  getPlayersAccountIdRoute,
+  getPlayersAccountIdWlRoute,
+  getPlayersAccountIdRecentMatchesRoute,
   getPlayersAccountIdMatchesRoute,
+  getPlayersAccountIdHeroesRoute,
   getPlayersAccountIdPeersRoute,
   getPlayersAccountIdProsRoute,
-  getPlayersAccountIdRankingsRoute,
-  getPlayersAccountIdRatingsRoute,
-  getPlayersAccountIdRecentMatchesRoute,
-  getPlayersAccountIdRoute,
   getPlayersAccountIdTotalsRoute,
+  getPlayersAccountIdCountsRoute,
+  getPlayersAccountIdHistogramsFieldRoute,
   getPlayersAccountIdWardmapRoute,
-  getPlayersAccountIdWlRoute,
   getPlayersAccountIdWordcloudRoute,
+  getPlayersAccountIdRatingsRoute,
+  getPlayersAccountIdRankingsRoute,
   postPlayersAccountIdRefreshRoute,
 } from '../routes'
 

@@ -2755,6 +2755,7 @@ curl http://localhost/api/v1/vm.restore \
     ],
     "iommufd_fd": 0,
     "resume": true,
+    "clock_restore_mode": "Advance",
     "zone_updates": [
       {
         "id": "string",
@@ -2818,6 +2819,7 @@ curl http://localhost/api/v1/vm.restore \
   ],
   "iommufd_fd": 0,
   "resume": true,
+  "clock_restore_mode": "Advance",
   "zone_updates": [
     {
       "id": "string",
@@ -2867,6 +2869,7 @@ curl http://localhost/api/v1/vm.restore \
 |» vfio_fds|body|[[RestoredVfioConfig](#schemarestoredvfioconfig)]|false|**Deprecated.** Deprecated: use external_fds with Vfio targets instead.<br>|
 |» iommufd_fd|body|integer(int32)|false|**Deprecated.** Deprecated: use external_fds with an Iommu target instead.<br>|
 |» resume|body|boolean|false|none|
+|» clock_restore_mode|body|[SnapshotClockMode](#schemasnapshotclockmode)|false|Whether to advance the guest clock by elapsed wall time when supported (Advance) or restore it without that adjustment (Preserve).<br>|
 |» zone_updates|body|[[VmMemoryZoneUpdateData](#schemavmmemoryzoneupdatedata)]|false|none|
 |» serial|body|object|false|New output of the serial console, in the mode of the snapshot.|
 |» » file|body|string|false|Required if `mode` is `File`. For `Pty`, it holds the path of the<br>PTY once the device has been created.<br>|
@@ -2894,6 +2897,8 @@ curl http://localhost/api/v1/vm.restore \
 |» memory_restore_mode|OnDemand|
 |» memory_restore_mode|OnDemandNoBackgroundFetchPages|
 |» memory_restore_mode|CopyOnWrite|
+|» clock_restore_mode|Advance|
+|» clock_restore_mode|Preserve|
 |» » » server|true|
 |» » mode|Off|
 |» » mode|Pty|
@@ -2934,6 +2939,7 @@ curl http://localhost/api/v1/vm.receive-migration \
   -H 'Content-Type: application/json' \
   -d '{
     "receiver_url": "string",
+    "clock_restore_mode": "Advance",
     "vfio_fds": [
       {
         "id": "string",
@@ -2987,6 +2993,7 @@ curl http://localhost/api/v1/vm.receive-migration \
 ```json
 {
   "receiver_url": "string",
+  "clock_restore_mode": "Advance",
   "vfio_fds": [
     {
       "id": "string",
@@ -3039,6 +3046,7 @@ curl http://localhost/api/v1/vm.receive-migration \
 |---|---|---|---|---|
 |body|body|[ReceiveMigrationData](#schemareceivemigrationdata)|true|The URL for the reception of migration state|
 |» receiver_url|body|string|true|none|
+|» clock_restore_mode|body|[SnapshotClockMode](#schemasnapshotclockmode)|false|Whether to advance the guest clock by elapsed wall time when supported (Advance) or restore it without that adjustment (Preserve).<br>|
 |» vfio_fds|body|[[RestoredVfioConfig](#schemarestoredvfioconfig)]|false|**Deprecated.** Deprecated: use external_fds with Vfio targets instead.<br>|
 |» iommufd_fd|body|integer(int32)|false|**Deprecated.** Deprecated: use external_fds with an Iommu target instead.<br>|
 |» tls_dir|body|string|false|Directory containing the TLS server certificate (server-cert.pem), the TLS server key (server-key.pem), and the client TLS root CA certificate (ca-cert.pem). TLS is only supported with tcp:<host>:<port> receiver URLs. Recommended for all TCP migrations. Omitting it is only intended for development and testing, as TCP migration is then unencrypted and unauthenticated.<br>|
@@ -3066,6 +3074,8 @@ curl http://localhost/api/v1/vm.receive-migration \
 
 |Parameter|Value|
 |---|---|
+|» clock_restore_mode|Advance|
+|» clock_restore_mode|Preserve|
 |» » » server|true|
 |» » mode|Off|
 |» » mode|Pty|
@@ -5717,6 +5727,19 @@ image_type is required unless vhost_user is true.
 |---|---|---|---|---|
 |destination_url|string|true|none|none|
 
+<h2 id="tocS_SnapshotClockMode">SnapshotClockMode</h2>
+<!-- backwards compatibility -->
+<a id="schemasnapshotclockmode"></a>
+<a id="schema_SnapshotClockMode"></a>
+<a id="tocSsnapshotclockmode"></a>
+<a id="tocssnapshotclockmode"></a>
+
+```json
+"Advance"
+```
+
+Whether to advance the guest clock by elapsed wall time when supported (Advance) or restore it without that adjustment (Preserve).
+
 <h2 id="tocS_MemoryRestoreMode">MemoryRestoreMode</h2>
 <!-- backwards compatibility -->
 <a id="schemamemoryrestoremode"></a>
@@ -5747,17 +5770,108 @@ image_type is required unless vhost_user is true.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*oneOf*|object|false|none|none|
-|Net|object|true|none|none|
-|*oneOf*|object|false|none|none|
-|Vfio|object|true|none|none|
-|*oneOf*|string|false|none|none|
+|*oneOf*|[ExternalFdDeviceTarget](#schemaexternalfddevicetarget)|false|none|none|
+|*oneOf*|[ExternalFdVmTarget](#schemaexternalfdvmtarget)|false|none|none|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
 |*oneOf*|Iommu|
+
+<h2 id="tocS_ExternalFdDeviceTarget">ExternalFdDeviceTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemaexternalfddevicetarget"></a>
+<a id="schema_ExternalFdDeviceTarget"></a>
+<a id="tocSexternalfddevicetarget"></a>
+<a id="tocsexternalfddevicetarget"></a>
+
+```json
+{
+  "Net": {
+    "id": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|[ExternalFdNetTarget](#schemaexternalfdnettarget)|false|none|none|
+|*oneOf*|[ExternalFdVfioTarget](#schemaexternalfdvfiotarget)|false|none|none|
+
+<h2 id="tocS_ExternalFdNetTarget">ExternalFdNetTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemaexternalfdnettarget"></a>
+<a id="schema_ExternalFdNetTarget"></a>
+<a id="tocSexternalfdnettarget"></a>
+<a id="tocsexternalfdnettarget"></a>
+
+```json
+{
+  "Net": {
+    "id": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|Net|[ExternalFdDeviceId](#schemaexternalfddeviceid)|true|none|none|
+
+<h2 id="tocS_ExternalFdVfioTarget">ExternalFdVfioTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemaexternalfdvfiotarget"></a>
+<a id="schema_ExternalFdVfioTarget"></a>
+<a id="tocSexternalfdvfiotarget"></a>
+<a id="tocsexternalfdvfiotarget"></a>
+
+```json
+{
+  "Vfio": {
+    "id": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|Vfio|[ExternalFdDeviceId](#schemaexternalfddeviceid)|true|none|none|
+
+<h2 id="tocS_ExternalFdDeviceId">ExternalFdDeviceId</h2>
+<!-- backwards compatibility -->
+<a id="schemaexternalfddeviceid"></a>
+<a id="schema_ExternalFdDeviceId"></a>
+<a id="tocSexternalfddeviceid"></a>
+<a id="tocsexternalfddeviceid"></a>
+
+```json
+{
+  "id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+
+<h2 id="tocS_ExternalFdVmTarget">ExternalFdVmTarget</h2>
+<!-- backwards compatibility -->
+<a id="schemaexternalfdvmtarget"></a>
+<a id="schema_ExternalFdVmTarget"></a>
+<a id="tocSexternalfdvmtarget"></a>
+<a id="tocsexternalfdvmtarget"></a>
+
+```json
+"Iommu"
+```
 
 <h2 id="tocS_RestoredNetConfig">RestoredNetConfig</h2>
 <!-- backwards compatibility -->
@@ -5834,6 +5948,7 @@ image_type is required unless vhost_user is true.
   ],
   "iommufd_fd": 0,
   "resume": true,
+  "clock_restore_mode": "Advance",
   "zone_updates": [
     {
       "id": "string",
@@ -5882,6 +5997,7 @@ image_type is required unless vhost_user is true.
 |vfio_fds|[[RestoredVfioConfig](#schemarestoredvfioconfig)]|false|none|**Deprecated.** Deprecated: use external_fds with Vfio targets instead.<br>|
 |iommufd_fd|integer(int32)|false|none|**Deprecated.** Deprecated: use external_fds with an Iommu target instead.<br>|
 |resume|boolean|false|none|none|
+|clock_restore_mode|[SnapshotClockMode](#schemasnapshotclockmode)|false|none|Whether to advance the guest clock by elapsed wall time when supported (Advance) or restore it without that adjustment (Preserve).<br>|
 |zone_updates|[[VmMemoryZoneUpdateData](#schemavmmemoryzoneupdatedata)]|false|none|none|
 |serial|object|false|none|New output of the serial console, in the mode of the snapshot.|
 |console|object|false|none|New output of the virtio console, in the mode of the snapshot.|
@@ -5895,6 +6011,8 @@ image_type is required unless vhost_user is true.
 |memory_restore_mode|OnDemand|
 |memory_restore_mode|OnDemandNoBackgroundFetchPages|
 |memory_restore_mode|CopyOnWrite|
+|clock_restore_mode|Advance|
+|clock_restore_mode|Preserve|
 
 <h2 id="tocS_ReceiveMigrationData">ReceiveMigrationData</h2>
 <!-- backwards compatibility -->
@@ -5906,6 +6024,7 @@ image_type is required unless vhost_user is true.
 ```json
 {
   "receiver_url": "string",
+  "clock_restore_mode": "Advance",
   "vfio_fds": [
     {
       "id": "string",
@@ -5957,6 +6076,7 @@ image_type is required unless vhost_user is true.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |receiver_url|string|true|none|none|
+|clock_restore_mode|[SnapshotClockMode](#schemasnapshotclockmode)|false|none|Whether to advance the guest clock by elapsed wall time when supported (Advance) or restore it without that adjustment (Preserve).<br>|
 |vfio_fds|[[RestoredVfioConfig](#schemarestoredvfioconfig)]|false|none|**Deprecated.** Deprecated: use external_fds with Vfio targets instead.<br>|
 |iommufd_fd|integer(int32)|false|none|**Deprecated.** Deprecated: use external_fds with an Iommu target instead.<br>|
 |tls_dir|string|false|none|Directory containing the TLS server certificate (server-cert.pem), the TLS server key (server-key.pem), and the client TLS root CA certificate (ca-cert.pem). TLS is only supported with tcp:<host>:<port> receiver URLs. Recommended for all TCP migrations. Omitting it is only intended for development and testing, as TCP migration is then unencrypted and unauthenticated.<br>|
@@ -5965,6 +6085,13 @@ image_type is required unless vhost_user is true.
 |serial|object|false|none|New output of the serial console, in the mode of the source VM.|
 |console|object|false|none|New output of the virtio console, in the mode of the source VM.|
 |external_fds|[object]|false|none|File descriptor entries and counts. The corresponding descriptors must be supplied out of band via SCM_RIGHTS on the API UNIX socket. Do not combine external_fds with legacy FD fields.<br>|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|clock_restore_mode|Advance|
+|clock_restore_mode|Preserve|
 
 <h2 id="tocS_MigrationMode">MigrationMode</h2>
 <!-- backwards compatibility -->

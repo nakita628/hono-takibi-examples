@@ -1,13 +1,13 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.35.6",
-    "date": "2026-11-24",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "211e5de7af6217c7ffd837fe8760d00f094652cfa0bb970c8aa8bdb9cfaec529",
     "sources": {
       "https://raw.githubusercontent.com/apache/polaris/main/spec/polaris-management-service.yml": {
-        "etag": "W/\"fc53db759b240a62d85e0c540a8dc9d9af244bb432a9d783035638c216f430a4\"",
-        "sha256": "1bc7e8f70d6de5d08c4883114b82ce0d4138c50f09ebb68ccaec40bec5a89d1d"
+        "etag": "W/\"2133566f365a260a426e53d1dcd55a069528d4f6fa81733207315ba984c5b27c\"",
+        "sha256": "d5c8eab026fa0b4259fc5a5d4c34fdecce3cea4e46100bbf49bee06485bf820f"
       }
     },
     "typecheck": {

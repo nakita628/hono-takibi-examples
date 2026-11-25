@@ -1,0 +1,18 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
+    "generated": true,
+    "config": "fd68ccb2b65e3983e6e79633aec60569d328f3e0ec2eb58ae85d6ad7cc60c89c",
+    "sources": {
+      "https://raw.githubusercontent.com/stoatchat/javascript-client-api/main/OpenAPI.json": {
+        "etag": "W/\"2867660868e02889a99615eb09984b2e9424ff4890008da9fdf15053a74b30d5\"",
+        "sha256": "a1b655c0b4e119acc849ab50f90bb07112dff42110fce9857432c2f9845ae0f1",
+        "canonical": "b1b3c44051258fd04be8005994003e2bf7a81cc2b7838b9b0be5d8aa6ab8a08d"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "91861e723019c962cc449298708172ebdeed15ea3cc5ab783d92eef1e5cbbb23",
     "sources": {
@@ -130,8 +130,8 @@
         "sha256": "63044728d2bf48938f50cc316f6a7339483692785b4e252ffe69278c7ed7d5e1"
       },
       "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/paginationParameters.yaml": {
-        "etag": "W/\"ece84964cac4a550340fe8abd524813f6288fbc92959db1dbf2699fa46da1397\"",
-        "sha256": "1c32c683c318a5424f7a418626141f741cc75042fb9626e87a43d20f9c98db72"
+        "etag": "W/\"a4752c3398834784bb25912b3a862a02dbf236f663c1f15d7de5349a7de53a57\"",
+        "sha256": "59d96dbd7d14c8a33f1f5cd585566aff45e4b18009c22c667e51556ac0c609c2"
       },
       "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/parameters/requestQueueParameters.yaml": {
         "etag": "W/\"82fc0472493b6c3cd240487b32c250175c1cb2fcb98c2d09fe1e542a1995ef30\"",
@@ -994,12 +994,12 @@
         "sha256": "b142bab93023d421996043e5e8dd5f446ee84bb604c7cd16ef987390425610bd"
       },
       "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/store/ListOfStoreActorsResponse.yaml": {
-        "etag": "W/\"ce91b41d3ef0ee7245a35b6684fe18d087ece04e9a0070c6d340e6d86aa9fd5a\"",
-        "sha256": "136c189b6054d3d9d4190eeb629166ec3247194bd70dafa5527ee6feb5d65a46"
+        "etag": "W/\"b82a194190812d8a7c217ef201503d58653492ce5cbf7901ac034b34af239803\"",
+        "sha256": "87747cc0a38620a1c2c68a06b96df83f9b5d3c55f65a52a918673cfef60e14b4"
       },
       "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/store/StoreActor.yaml": {
-        "etag": "W/\"2c2cc1353987282934fbf748d15bd2f5594c3fc568498b9914e8059058c6a82c\"",
-        "sha256": "d04e518b2da23de3eb2d77d550aa593d297a966ca93f3ebfa004d199f33ecc22"
+        "etag": "W/\"c7599bc0e45bccff37e2f7893df5c9f1190b166e0fff30aaeadb0397e6ff00ec\"",
+        "sha256": "33ace0245bc224450e842f1c21d617032fdddf00b7c170cc2bc2df341ca6c855"
       },
       "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/components/schemas/store/UpdateKeyValueStoreRequest.yaml": {
         "etag": "W/\"037c31414876576c1367d0651ccdef37aaa1de12d1e69b6e2a0f61006c7e97b4\"",
@@ -1758,8 +1758,8 @@
         "sha256": "7c99f50f30d2d95a1f5e8954afd35019bf8a1d2623ef6d23fc514ec6cd08d4d0"
       },
       "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/store/store.yaml": {
-        "etag": "W/\"17751416e815bfa111ff90126b5b0fc39f27fde3f998a299f3c2cf6c5646ecea\"",
-        "sha256": "71056b88094cff2a9d5afddb20cb055a67534f1caf91c0e7061dfada5c5536b7"
+        "etag": "W/\"c8dbaaca787428eb30697cf0e1e4111e5a48844667fd6d14c2920034bde4177c\"",
+        "sha256": "d1a720211bcdc9b3b4d38ede74c2817328ec1dc16581b98b8a3b791e34e1ff8b"
       },
       "https://raw.githubusercontent.com/apify/apify-docs/master/apify-api/openapi/paths/tools/tools@browser-info.yaml": {
         "etag": "W/\"96447971a91d01682ceadb5ddcbd6fe7a4146f6cc08852a15f70e14bb392eeeb\"",
@@ -1823,10 +1823,7 @@
       }
     },
     "typecheck": {
-      "errors": 292,
-      "where": "`index.ts`",
-      "codes": "TS2724 ×160, TS2305 ×132",
-      "issue": "[#544](https://github.com/nakita628/hono-takibi/issues/544) (146 of 242 operations lose their `responses` to YAML merge keys), [#545](https://github.com/nakita628/hono-takibi/issues/545)"
+      "errors": 0
     }
   }
 }

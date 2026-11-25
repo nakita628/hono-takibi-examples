@@ -1,19 +1,19 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteCatalogsCatalogNameCatalogRolesCatalogRoleNameRoute,
-  deleteCatalogsCatalogNameRoute,
-  getCatalogsCatalogNameCatalogRolesCatalogRoleNameGrantsRoute,
-  getCatalogsCatalogNameCatalogRolesCatalogRoleNamePrincipalRolesRoute,
-  getCatalogsCatalogNameCatalogRolesCatalogRoleNameRoute,
-  getCatalogsCatalogNameCatalogRolesRoute,
-  getCatalogsCatalogNameRoute,
   getCatalogsRoute,
-  postCatalogsCatalogNameCatalogRolesCatalogRoleNameGrantsRoute,
-  postCatalogsCatalogNameCatalogRolesRoute,
   postCatalogsRoute,
-  putCatalogsCatalogNameCatalogRolesCatalogRoleNameGrantsRoute,
-  putCatalogsCatalogNameCatalogRolesCatalogRoleNameRoute,
+  getCatalogsCatalogNameRoute,
   putCatalogsCatalogNameRoute,
+  deleteCatalogsCatalogNameRoute,
+  getCatalogsCatalogNameCatalogRolesRoute,
+  postCatalogsCatalogNameCatalogRolesRoute,
+  getCatalogsCatalogNameCatalogRolesCatalogRoleNameRoute,
+  putCatalogsCatalogNameCatalogRolesCatalogRoleNameRoute,
+  deleteCatalogsCatalogNameCatalogRolesCatalogRoleNameRoute,
+  getCatalogsCatalogNameCatalogRolesCatalogRoleNamePrincipalRolesRoute,
+  getCatalogsCatalogNameCatalogRolesCatalogRoleNameGrantsRoute,
+  putCatalogsCatalogNameCatalogRolesCatalogRoleNameGrantsRoute,
+  postCatalogsCatalogNameCatalogRolesCatalogRoleNameGrantsRoute,
 } from '../routes'
 
 export const getCatalogsRouteHandler: RouteHandler<typeof getCatalogsRoute> = async (c) => {

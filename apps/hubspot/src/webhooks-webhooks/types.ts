@@ -5,23 +5,8 @@ type SettingsResponse = {
   throttling: ThrottlingSettings
   updatedAt?: string | undefined
 }
-type ErrorDetail = {
-  code?: string | undefined
-  context?: { [x: string]: string[] } | undefined
-  in?: string | undefined
-  message: string
-  subCategory?: string | undefined
-}
-type Error = {
-  category: string
-  context?: { [x: string]: string[] } | undefined
-  correlationId: string
-  errors?: ErrorDetail[] | undefined
-  links?: { [x: string]: string } | undefined
-  message: string
-  subCategory?: string | undefined
-}
-type SettingsChangeRequest = { targetUrl: string; throttling: ThrottlingSettings }
+type ThrottlingSettingsInput = { maxConcurrentRequests: number }
+type SettingsChangeRequestInput = { targetUrl: string; throttling: ThrottlingSettingsInput }
 type SubscriptionResponse = {
   active: boolean
   createdAt: string
@@ -81,7 +66,7 @@ type SubscriptionResponse = {
   updatedAt?: string | undefined
 }
 type SubscriptionListResponse = { results: SubscriptionResponse[] }
-type SubscriptionCreateRequest = {
+type SubscriptionCreateRequestInput = {
   active: boolean
   eventType:
     | 'company.associationChange'
@@ -132,55 +117,64 @@ type SubscriptionCreateRequest = {
     | 'ticket.merge'
     | 'ticket.propertyChange'
     | 'ticket.restore'
-  eventTypeName?: string | undefined
-  objectTypeId?: string | undefined
-  propertyName?: string | undefined
+  eventTypeName?: string
+  objectTypeId?: string
+  propertyName?: string
 }
-type SubscriptionBatchUpdateRequest = { active: boolean; id: number }
-type BatchInputSubscriptionBatchUpdateRequest = { inputs: SubscriptionBatchUpdateRequest[] }
+type SubscriptionBatchUpdateRequestInput = { active: boolean; id: number }
+type BatchInputSubscriptionBatchUpdateRequestInput = {
+  inputs: SubscriptionBatchUpdateRequestInput[]
+}
 type BatchResponseSubscriptionResponse = {
   completedAt: string
-  links?: { [x: string]: string } | undefined
+  links?: { [key: string]: string } | undefined
   requestedAt?: string | undefined
   results: SubscriptionResponse[]
   startedAt: string
   status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
 }
+type ErrorDetail = {
+  code?: string | undefined
+  context?: { [key: string]: string[] } | undefined
+  in?: string | undefined
+  message: string
+  subCategory?: string | undefined
+}
 type StandardError = {
   category: string
-  context: { [x: string]: string[] }
+  context: { [key: string]: string[] }
   errors: ErrorDetail[]
   id?: string | undefined
-  links: { [x: string]: string }
+  links: { [key: string]: string }
   message: string
   status: string
-  subCategory?: { [x: string]: unknown } | undefined
+  subCategory?: { [key: string]: unknown } | undefined
 }
 type BatchResponseSubscriptionResponseWithErrors = {
   completedAt: string
   errors?: StandardError[] | undefined
-  links?: { [x: string]: string } | undefined
+  links?: { [key: string]: string } | undefined
   numErrors?: number | undefined
   requestedAt?: string | undefined
   results: SubscriptionResponse[]
   startedAt: string
   status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
 }
-type SubscriptionPatchRequest = { active?: boolean | undefined }
+type SubscriptionPatchRequestInput = { active?: boolean; enabled?: boolean }
 type JournalFetchResponse = { currentOffset: string; expiresAt: string; url: string }
 type BatchResponseJournalFetchResponse = {
   completedAt: string
-  links?: { [x: string]: string } | undefined
+  links?: { [key: string]: string } | undefined
   requestedAt?: string | undefined
   results: JournalFetchResponse[]
   startedAt: string
   status: 'CANCELED' | 'COMPLETE' | 'PENDING' | 'PROCESSING'
 }
-type BatchInputString = { inputs: string[] }
+type BatchInputStringInput = { inputs: string[] }
 type BatchResponseJournalFetchResponseWithErrors = {
   completedAt: string
   errors?: StandardError[] | undefined
-  links?: { [x: string]: string } | undefined
+  links?: { [key: string]: string } | undefined
   numErrors?: number | undefined
   requestedAt?: string | undefined
   results: JournalFetchResponse[]
@@ -195,13 +189,13 @@ type SnapshotStatusResponse = {
   message?: string | undefined
   status: 'EXPIRED' | 'FAILED' | 'IN_PROGRESS' | 'PENDING' | 'SUCCESS'
 }
-type CrmObjectSnapshotRequest = {
+type CrmObjectSnapshotRequestInput = {
   objectId: bigint
   objectTypeId: string
   portalId: bigint
   properties: string[]
 }
-type CrmObjectSnapshotBatchRequest = { snapshotRequests: CrmObjectSnapshotRequest[] }
+type CrmObjectSnapshotBatchRequestInput = { snapshotRequests: CrmObjectSnapshotRequestInput[] }
 type CrmObjectSnapshotResponse = {
   objectId: bigint
   objectTypeId: string
@@ -216,7 +210,7 @@ type ActionOverrideRequest = {
   properties?: string[] | undefined
 }
 type SubscriptionResponse_1 = {
-  actionOverrides?: { [x: string]: ActionOverrideRequest } | undefined
+  actionOverrides?: { [key: string]: ActionOverrideRequest } | undefined
   actions: (
     | 'CREATE'
     | 'UPDATE'
@@ -253,7 +247,7 @@ type SubscriptionResponse_1 = {
   updatedAt: string
 }
 type CollectionResponseSubscriptionResponseNoPaging = { results: SubscriptionResponse_1[] }
-type ObjectSubscriptionUpsertRequest = {
+type ObjectSubscriptionUpsertRequestInput = {
   actions: (
     | 'CREATE'
     | 'UPDATE'
@@ -275,7 +269,7 @@ type ObjectSubscriptionUpsertRequest = {
   properties: string[]
   subscriptionType: 'OBJECT'
 }
-type AssociationSubscriptionUpsertRequest = {
+type AssociationSubscriptionUpsertRequestInput = {
   actions: (
     | 'CREATE'
     | 'UPDATE'
@@ -297,12 +291,12 @@ type AssociationSubscriptionUpsertRequest = {
   portalId: bigint
   subscriptionType: 'ASSOCIATION'
 }
-type AppLifecycleEventSubscriptionUpsertRequest = {
+type AppLifecycleEventSubscriptionUpsertRequestInput = {
   eventTypeId: string
   properties: string[]
   subscriptionType: 'APP_LIFECYCLE_EVENT'
 }
-type ListMembershipSubscriptionUpsertRequest = {
+type ListMembershipSubscriptionUpsertRequestInput = {
   actions: (
     | 'CREATE'
     | 'UPDATE'
@@ -323,7 +317,7 @@ type ListMembershipSubscriptionUpsertRequest = {
   portalId: bigint
   subscriptionType: 'LIST_MEMBERSHIP'
 }
-type GdprPrivacyDeletionSubscriptionUpsertRequest = {
+type GdprPrivacyDeletionSubscriptionUpsertRequestInput = {
   actions: (
     | 'CREATE'
     | 'UPDATE'
@@ -343,12 +337,35 @@ type GdprPrivacyDeletionSubscriptionUpsertRequest = {
   portalId: bigint
   subscriptionType: 'GDPR_PRIVACY_DELETION'
 }
-type SubscriptionUpsertRequest =
-  | ObjectSubscriptionUpsertRequest
-  | AssociationSubscriptionUpsertRequest
-  | AppLifecycleEventSubscriptionUpsertRequest
-  | ListMembershipSubscriptionUpsertRequest
-  | GdprPrivacyDeletionSubscriptionUpsertRequest
+type SubscriptionUpsertRequestInput =
+  | ObjectSubscriptionUpsertRequestInput
+  | AssociationSubscriptionUpsertRequestInput
+  | AppLifecycleEventSubscriptionUpsertRequestInput
+  | ListMembershipSubscriptionUpsertRequestInput
+  | GdprPrivacyDeletionSubscriptionUpsertRequestInput
+type ConditionInput = {
+  filterType: 'CRM_OBJECT_PROPERTY'
+  operator:
+    | 'CONTAINS'
+    | 'ENDS_WITH'
+    | 'EQ'
+    | 'GT'
+    | 'GTE'
+    | 'IN'
+    | 'IS_EMPTY'
+    | 'IS_NOT_EMPTY'
+    | 'LT'
+    | 'LTE'
+    | 'N_EQ'
+    | 'NOT_IN'
+    | 'STARTS_WITH'
+  property: string
+  value?: string
+  values?: string[]
+}
+type FilterInput = { conditions: ConditionInput[] }
+type FilterCreateRequestInput = { filter: FilterInput; subscriptionId: bigint }
+type FilterCreateResponse = { filterId: bigint }
 type Condition = {
   filterType: 'CRM_OBJECT_PROPERTY'
   operator:
@@ -370,8 +387,6 @@ type Condition = {
   values?: string[] | undefined
 }
 type Filter = { conditions: Condition[] }
-type FilterCreateRequest = { filter: Filter; subscriptionId: bigint }
-type FilterCreateResponse = { filterId: bigint }
 type FilterResponse = { createdAt: bigint; filter: Filter; id: bigint }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
@@ -379,50 +394,50 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/app-webhooks/2026-09/:appId/settings': {
       $get:
         | {
-            input: { param: { appId: number } }
+            input: { param: { appId: unknown } }
             output: SettingsResponse
             outputFormat: 'json'
             status: 200
           }
-        | { input: { param: { appId: number } }; output: Error; outputFormat: 'text'; status: 200 }
+        | { input: { param: { appId: unknown } }; output: {}; outputFormat: string; status: 200 }
       $put:
         | {
-            input: { param: { appId: number } } & { json: SettingsChangeRequest }
+            input: { param: { appId: unknown } } & { json: SettingsChangeRequestInput }
             output: SettingsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { appId: number } } & { json: SettingsChangeRequest }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { appId: unknown } } & { json: SettingsChangeRequestInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
       $delete:
-        | { input: { param: { appId: number } }; output: {}; outputFormat: string; status: 204 }
-        | { input: { param: { appId: number } }; output: Error; outputFormat: 'text'; status: 200 }
+        | { input: { param: { appId: unknown } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { appId: unknown } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
     '/app-webhooks/2026-09/:appId/subscriptions': {
       $get:
         | {
-            input: { param: { appId: number } }
+            input: { param: { appId: unknown } }
             output: SubscriptionListResponse
             outputFormat: 'json'
             status: 200
           }
-        | { input: { param: { appId: number } }; output: Error; outputFormat: 'text'; status: 200 }
+        | { input: { param: { appId: unknown } }; output: {}; outputFormat: string; status: 200 }
       $post:
         | {
-            input: { param: { appId: number } } & { json: SubscriptionCreateRequest }
+            input: { param: { appId: unknown } } & { json: SubscriptionCreateRequestInput }
             output: SubscriptionResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { appId: number } } & { json: SubscriptionCreateRequest }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { appId: unknown } } & { json: SubscriptionCreateRequestInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -430,21 +445,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/app-webhooks/2026-09/:appId/subscriptions/batch/update': {
       $post:
         | {
-            input: { param: { appId: number } } & { json: BatchInputSubscriptionBatchUpdateRequest }
+            input: { param: { appId: unknown } } & {
+              json: BatchInputSubscriptionBatchUpdateRequestInput
+            }
             output: BatchResponseSubscriptionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { appId: number } } & { json: BatchInputSubscriptionBatchUpdateRequest }
+            input: { param: { appId: unknown } } & {
+              json: BatchInputSubscriptionBatchUpdateRequestInput
+            }
             output: BatchResponseSubscriptionResponseWithErrors
             outputFormat: 'json'
             status: 207
           }
         | {
-            input: { param: { appId: number } } & { json: BatchInputSubscriptionBatchUpdateRequest }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { appId: unknown } } & {
+              json: BatchInputSubscriptionBatchUpdateRequestInput
+            }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -452,45 +473,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/app-webhooks/2026-09/:appId/subscriptions/:subscriptionId': {
       $get:
         | {
-            input: { param: { appId: number; subscriptionId: number } }
+            input: { param: { appId: unknown; subscriptionId: unknown } }
             output: SubscriptionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { appId: number; subscriptionId: number } }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { appId: unknown; subscriptionId: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
       $delete:
         | {
-            input: { param: { appId: number; subscriptionId: number } }
+            input: { param: { appId: unknown; subscriptionId: unknown } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { appId: number; subscriptionId: number } }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { appId: unknown; subscriptionId: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
       $patch:
         | {
-            input: { param: { appId: number; subscriptionId: number } } & {
-              json: SubscriptionPatchRequest
+            input: { param: { appId: unknown; subscriptionId: unknown } } & {
+              json: SubscriptionPatchRequestInput
             }
             output: SubscriptionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { appId: number; subscriptionId: number } } & {
-              json: SubscriptionPatchRequest
+            input: { param: { appId: unknown; subscriptionId: unknown } } & {
+              json: SubscriptionPatchRequestInput
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -498,19 +519,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal-local/2026-09/batch/earliest/:count': {
       $get:
         | {
-            input: { param: { count: number } } & {
-              query: { installPortalId?: number | undefined }
-            }
+            input: { param: { count: unknown } } & { query: { installPortalId?: unknown } }
             output: BatchResponseJournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { count: number } } & {
-              query: { installPortalId?: number | undefined }
-            }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { count: unknown } } & { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -518,19 +535,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal-local/2026-09/batch/latest/:count': {
       $get:
         | {
-            input: { param: { count: number } } & {
-              query: { installPortalId?: number | undefined }
-            }
+            input: { param: { count: unknown } } & { query: { installPortalId?: unknown } }
             output: BatchResponseJournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { count: number } } & {
-              query: { installPortalId?: number | undefined }
-            }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { count: unknown } } & { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -538,21 +551,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal-local/2026-09/batch/read': {
       $post:
         | {
-            input: { query: { installPortalId?: number | undefined } } & { json: BatchInputString }
+            input: { query: { installPortalId?: unknown } } & { json: BatchInputStringInput }
             output: BatchResponseJournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { installPortalId?: number | undefined } } & { json: BatchInputString }
+            input: { query: { installPortalId?: unknown } } & { json: BatchInputStringInput }
             output: BatchResponseJournalFetchResponseWithErrors
             outputFormat: 'json'
             status: 207
           }
         | {
-            input: { query: { installPortalId?: number | undefined } } & { json: BatchInputString }
-            output: Error
-            outputFormat: 'text'
+            input: { query: { installPortalId?: unknown } } & { json: BatchInputStringInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -560,19 +573,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal-local/2026-09/batch/:offset/next/:count': {
       $get:
         | {
-            input: { param: { count: number; offset: string } } & {
-              query: { installPortalId?: number | undefined }
+            input: { param: { count: unknown; offset: string } } & {
+              query: { installPortalId?: unknown }
             }
             output: BatchResponseJournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { count: number; offset: string } } & {
-              query: { installPortalId?: number | undefined }
+            input: { param: { count: unknown; offset: string } } & {
+              query: { installPortalId?: unknown }
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -580,21 +593,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal-local/2026-09/earliest': {
       $get:
         | {
-            input: { query: { installPortalId?: number | undefined } }
+            input: { query: { installPortalId?: unknown } }
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { installPortalId?: number | undefined } }
+            input: { query: { installPortalId?: unknown } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { query: { installPortalId?: number | undefined } }
-            output: Error
-            outputFormat: 'text'
+            input: { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -602,21 +615,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal-local/2026-09/latest': {
       $get:
         | {
-            input: { query: { installPortalId?: number | undefined } }
+            input: { query: { installPortalId?: unknown } }
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { installPortalId?: number | undefined } }
+            input: { query: { installPortalId?: unknown } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { query: { installPortalId?: number | undefined } }
-            output: Error
-            outputFormat: 'text'
+            input: { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -624,27 +637,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal-local/2026-09/offset/:offset/next': {
       $get:
         | {
-            input: { param: { offset: string } } & {
-              query: { installPortalId?: number | undefined }
-            }
+            input: { param: { offset: string } } & { query: { installPortalId?: unknown } }
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { offset: string } } & {
-              query: { installPortalId?: number | undefined }
-            }
+            input: { param: { offset: string } } & { query: { installPortalId?: unknown } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { offset: string } } & {
-              query: { installPortalId?: number | undefined }
-            }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { offset: string } } & { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -657,30 +664,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { statusId: string } }
-            output: Error
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { statusId: string } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
     '/webhooks-journal/journal/2026-09/batch/earliest/:count': {
       $get:
         | {
-            input: { param: { count: number } } & {
-              query: { installPortalId?: number | undefined }
-            }
+            input: { param: { count: unknown } } & { query: { installPortalId?: unknown } }
             output: BatchResponseJournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { count: number } } & {
-              query: { installPortalId?: number | undefined }
-            }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { count: unknown } } & { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -688,19 +686,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal/2026-09/batch/latest/:count': {
       $get:
         | {
-            input: { param: { count: number } } & {
-              query: { installPortalId?: number | undefined }
-            }
+            input: { param: { count: unknown } } & { query: { installPortalId?: unknown } }
             output: BatchResponseJournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { count: number } } & {
-              query: { installPortalId?: number | undefined }
-            }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { count: unknown } } & { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -708,21 +702,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal/2026-09/batch/read': {
       $post:
         | {
-            input: { query: { installPortalId?: number | undefined } } & { json: BatchInputString }
+            input: { query: { installPortalId?: unknown } } & { json: BatchInputStringInput }
             output: BatchResponseJournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { installPortalId?: number | undefined } } & { json: BatchInputString }
+            input: { query: { installPortalId?: unknown } } & { json: BatchInputStringInput }
             output: BatchResponseJournalFetchResponseWithErrors
             outputFormat: 'json'
             status: 207
           }
         | {
-            input: { query: { installPortalId?: number | undefined } } & { json: BatchInputString }
-            output: Error
-            outputFormat: 'text'
+            input: { query: { installPortalId?: unknown } } & { json: BatchInputStringInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -730,19 +724,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal/2026-09/batch/:offset/next/:count': {
       $get:
         | {
-            input: { param: { count: number; offset: string } } & {
-              query: { installPortalId?: number | undefined }
+            input: { param: { count: unknown; offset: string } } & {
+              query: { installPortalId?: unknown }
             }
             output: BatchResponseJournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { count: number; offset: string } } & {
-              query: { installPortalId?: number | undefined }
+            input: { param: { count: unknown; offset: string } } & {
+              query: { installPortalId?: unknown }
             }
-            output: Error
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -750,21 +744,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal/2026-09/earliest': {
       $get:
         | {
-            input: { query: { installPortalId?: number | undefined } }
+            input: { query: { installPortalId?: unknown } }
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { installPortalId?: number | undefined } }
+            input: { query: { installPortalId?: unknown } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { query: { installPortalId?: number | undefined } }
-            output: Error
-            outputFormat: 'text'
+            input: { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -772,21 +766,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal/2026-09/latest': {
       $get:
         | {
-            input: { query: { installPortalId?: number | undefined } }
+            input: { query: { installPortalId?: unknown } }
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { installPortalId?: number | undefined } }
+            input: { query: { installPortalId?: unknown } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { query: { installPortalId?: number | undefined } }
-            output: Error
-            outputFormat: 'text'
+            input: { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -794,27 +788,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/journal/2026-09/offset/:offset/next': {
       $get:
         | {
-            input: { param: { offset: string } } & {
-              query: { installPortalId?: number | undefined }
-            }
+            input: { param: { offset: string } } & { query: { installPortalId?: unknown } }
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { offset: string } } & {
-              query: { installPortalId?: number | undefined }
-            }
+            input: { param: { offset: string } } & { query: { installPortalId?: unknown } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { offset: string } } & {
-              query: { installPortalId?: number | undefined }
-            }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { offset: string } } & { query: { installPortalId?: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -827,26 +815,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { statusId: string } }
-            output: Error
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { statusId: string } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
     '/webhooks-journal/snapshots/2026-09/crm': {
       $post:
         | {
-            input: { json: CrmObjectSnapshotBatchRequest }
+            input: { json: CrmObjectSnapshotBatchRequestInput }
             output: CrmObjectSnapshotBatchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CrmObjectSnapshotBatchRequest }
-            output: Error
-            outputFormat: 'text'
+            input: { json: CrmObjectSnapshotBatchRequestInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -859,18 +842,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | { input: {}; output: Error; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
       $post:
         | {
-            input: { json: SubscriptionUpsertRequest }
+            input: { json: SubscriptionUpsertRequestInput }
             output: SubscriptionResponse_1
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: SubscriptionUpsertRequest }
-            output: Error
-            outputFormat: 'text'
+            input: { json: SubscriptionUpsertRequestInput }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -878,26 +861,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/subscriptions/2026-09/filters': {
       $post:
         | {
-            input: { json: FilterCreateRequest }
+            input: { json: FilterCreateRequestInput }
             output: FilterCreateResponse
             outputFormat: 'json'
             status: 200
           }
-        | { input: { json: FilterCreateRequest }; output: Error; outputFormat: 'text'; status: 200 }
+        | {
+            input: { json: FilterCreateRequestInput }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
     }
   } & {
     '/webhooks-journal/subscriptions/2026-09/filters/subscription/:subscriptionId': {
       $get:
         | {
-            input: { param: { subscriptionId: bigint } }
+            input: { param: { subscriptionId: unknown } }
             output: FilterResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { subscriptionId: bigint } }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { subscriptionId: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }
@@ -905,63 +893,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks-journal/subscriptions/2026-09/filters/:filterId': {
       $get:
         | {
-            input: { param: { filterId: bigint } }
+            input: { param: { filterId: unknown } }
             output: FilterResponse
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { filterId: bigint } }
-            output: Error
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { filterId: unknown } }; output: {}; outputFormat: string; status: 200 }
       $delete:
-        | { input: { param: { filterId: bigint } }; output: {}; outputFormat: string; status: 204 }
-        | {
-            input: { param: { filterId: bigint } }
-            output: Error
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { filterId: unknown } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { filterId: unknown } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
     '/webhooks-journal/subscriptions/2026-09/portals/:portalId': {
       $delete:
-        | { input: { param: { portalId: bigint } }; output: {}; outputFormat: string; status: 204 }
-        | {
-            input: { param: { portalId: bigint } }
-            output: Error
-            outputFormat: 'text'
-            status: 200
-          }
+        | { input: { param: { portalId: unknown } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { portalId: unknown } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
     '/webhooks-journal/subscriptions/2026-09/:subscriptionId': {
       $get:
         | {
-            input: { param: { subscriptionId: bigint } }
+            input: { param: { subscriptionId: unknown } }
             output: SubscriptionResponse_1
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { subscriptionId: bigint } }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { subscriptionId: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
       $delete:
         | {
-            input: { param: { subscriptionId: bigint } }
+            input: { param: { subscriptionId: unknown } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { subscriptionId: bigint } }
-            output: Error
-            outputFormat: 'text'
+            input: { param: { subscriptionId: unknown } }
+            output: {}
+            outputFormat: string
             status: 200
           }
     }

@@ -1939,10 +1939,28 @@ const VersionSchema = z
 const ClientVersionV1Schema = z
   .object({
     code: z
-      .enum(['BU', 'EJ', 'EG', 'GE', 'GR', 'LH', 'LS', 'NM', 'NB', 'TE', 'TK', 'PM', 'RH'])
+      .enum([
+        'BU',
+        'CN',
+        'EJ',
+        'EG',
+        'EX',
+        'GE',
+        'GR',
+        'LA',
+        'LH',
+        'LS',
+        'NM',
+        'NB',
+        'NE',
+        'TE',
+        'TK',
+        'PM',
+        'RH',
+      ])
       .openapi({
         description:
-          'A two-character client code that uniquely maps to a client name as defined in the [Engine API](https://github.com/ethereum/execution-apis/blob/dc4dbca37ef8697d782f431af19120beaf5517f5/src/engine/identification.md#clientcode).',
+          'A two-character client code that uniquely maps to a client name as defined in the [Engine API](https://github.com/ethereum/execution-apis/blob/1ca0818569467cff85b7f41372f22e728d5daa14/src/engine/identification.md#clientcode).',
         example: 'LS',
       }),
     name: z
@@ -8977,7 +8995,7 @@ export const postEthV1ValidatorDutiesPtcEpochRoute = createRoute({
   tags: ['Validator', 'ValidatorRequiredApi'],
   summary: 'Get PTC duties',
   description:
-    'Requests the beacon node to provide a set of Payload Timeliness Committee (PTC) duties, which should be performed by validators, for a particular epoch.\nDuties should only need to be checked once per epoch, however a chain reorganization (of > MIN_SEED_LOOKAHEAD epochs) could occur, resulting in a change of duties. For full safety, you should monitor head_v2 events and confirm the dependent root in this response matches:\n- event.current_epoch_dependent_root when `compute_epoch_at_slot(event.slot) == epoch`\n- event.next_epoch_dependent_root when `compute_epoch_at_slot(event.slot) + 1 == epoch`\n\nThe dependent_root value is `get_block_root_at_slot(state, compute_start_slot_at_epoch(epoch - 1) - 1)` or the genesis block root in the case of underflow.\n\nThe PTC of `GLOAS_FORK_EPOCH` is computed at the fork from effective balances that are updated at the end of the previous epoch, so its duties can change until the last slot before the fork. For `epoch == GLOAS_FORK_EPOCH`, the dependent_root value is `get_block_root_at_slot(state, compute_start_slot_at_epoch(epoch) - 1)` or the genesis block root in the case of underflow, and matches event.next_epoch_dependent_root when `compute_epoch_at_slot(event.slot) == epoch`. Duties for this epoch are not available before the fork.',
+    'Requests the beacon node to provide a set of Payload Timeliness Committee (PTC) duties, which should be performed by validators, for a particular epoch.\nDuties should only need to be checked once per epoch, however a chain reorganization (of > MIN_SEED_LOOKAHEAD epochs) could occur, resulting in a change of duties. For full safety, you should monitor head_v2 events and confirm that, for `epoch > GLOAS_FORK_EPOCH`, the dependent root in this response matches:\n- event.current_epoch_dependent_root when `compute_epoch_at_slot(event.slot) == epoch`\n- event.next_epoch_dependent_root when `compute_epoch_at_slot(event.slot) + 1 == epoch`\n\nFor `epoch > GLOAS_FORK_EPOCH`, the dependent_root value is `get_block_root_at_slot(state, compute_start_slot_at_epoch(epoch - 1) - 1)` or the genesis block root in the case of underflow.\n\nThe PTC of `GLOAS_FORK_EPOCH` is computed at the fork from effective balances that are updated at the end of the previous epoch, so its duties can change until the last slot before the fork. For `epoch == GLOAS_FORK_EPOCH`, the dependent_root value is `get_block_root_at_slot(state, compute_start_slot_at_epoch(epoch) - 1)` or the genesis block root in the case of underflow, and matches event.next_epoch_dependent_root when `compute_epoch_at_slot(event.slot) == epoch`. Duties for this epoch are not available before the fork.',
   operationId: 'getPtcDuties',
   request: {
     params: z.object({

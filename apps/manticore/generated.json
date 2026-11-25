@@ -1,0 +1,17 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
+    "generated": true,
+    "config": "5f0e677a061ca55c688b804ec59d9083999125d8f100a5af84b98fee73b9c0ef",
+    "sources": {
+      "https://raw.githubusercontent.com/manticoresoftware/openapi/master/manticore.yml": {
+        "etag": "W/\"9c3c5bcfe70df55ee089746312c04a05aa4cec14f103cbb24b9c7b3c250134c5\"",
+        "sha256": "144b4ca386196611924ee7532a6767f6d9501957f787ff560afc6212a484f34b"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

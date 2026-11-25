@@ -243233,19 +243233,24 @@ parameter to search Actors by string in title, name, description, username
 and readme.
 If you need detailed info about a specific Actor, use the [Get Actor](/api/v2/actor-get) endpoint.
 
-The endpoint supports pagination using the `limit` and `offset` parameters.
-It will not return more than 1,000 records.
+Without `search`, the endpoint supports pagination using the `limit` and
+`offset` parameters. It will not return more than 1,000 records per page.
+
+With `search`, results are ranked by relevance and returned as a single
+page of at most 100 records. `offset` is ignored and there is no second
+page. `total` and `count` equal the number of returned items. To narrow
+the results, use `category`, `username` or `pricingModel`.
 
 
 <h3 id="get-list-of-actors-in-store-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|limit|query|number(double)|false|Maximum number of items to return. The default value as well as the maximum is `1000`.<br>|
-|offset|query|number(double)|false|Number of items that should be skipped at the start. The default value is `0`.<br>|
-|search|query|string|false|String to search by. The search runs on the following fields: `title`,<br>`name`, `description`, `username`, `readme`.<br>|
-|sortBy|query|string|false|Specifies the field by which to sort the results. The supported values<br>are `relevance` (default), `popularity`, `newest` and `lastUpdate`.<br>|
-|category|query|string|false|Filters the results by the specified category.|
+|limit|query|number(double)|false|Maximum number of items to return. The default value as well as the<br>maximum is `1000`. When `search` is used, the default and maximum are<br>`100`, and larger values are reduced to `100`.<br>|
+|offset|query|number(double)|false|Number of items that should be skipped at the start. The default value<br>is `0`. Ignored when `search` is used.<br>|
+|search|query|string|false|String to search by. Results are ranked by relevance and returned as a<br>single page of at most 100 items.<br>|
+|sortBy|query|string|false|**Deprecated.** Deprecated and ignored. The value is accepted for backward<br>compatibility but has no effect. Results are ordered by relevance when<br>`search` is used, and by Store position otherwise. Sort the results<br>on the client if you need a different order.<br>|
+|category|query|string|false|Filters the results by category. Accepts one or more category IDs,<br>separated by commas and case-insensitive. An Actor must match all of<br>the listed categories. See the<br>[list of category IDs](https://github.com/apify/apify-shared-js/blob/master/packages/actor-categories/src/actor_categories.ts).<br>Legacy keys such as `social_media` are still accepted. An unknown<br>category returns a `400` error.<br>|
 |username|query|string|false|Filters the results by the specified username.|
 |pricingModel|query|string|false|Only return Actors with the specified pricing model.<br>|
 |allowsAgenticUsers|query|boolean|false|If true, only return Actors that allow agentic users. If false, only<br>return Actors that do not allow agentic users.<br>|
@@ -243282,23 +243287,27 @@ It will not return more than 1,000 records.
         "name": "my-public-actor",
         "username": "jane35",
         "userFullName": "Jane Doe",
+        "categories": [
+          "AI_AND_ML",
+          "GENERATE_LEADS"
+        ],
         "description": "My public Actor!",
         "pictureUrl": "https://...",
         "userPictureUrl": "https://...",
         "url": "https://...",
         "stats": {
-          "totalBuilds": 9,
           "totalRuns": 16,
           "totalUsers": 6,
           "totalUsers7Days": 2,
           "totalUsers30Days": 6,
           "totalUsers90Days": 6,
-          "totalMetamorphs": 2,
-          "lastRunStartedAt": "2019-07-08T14:01:05.546Z"
+          "actorReviewRating": 4.7,
+          "actorReviewCount": 69
         },
         "currentPricingInfo": {
           "pricingModel": "FREE"
         },
+        "isVerified": true,
         "isWhiteListedForAgenticPayments": true
       },
       {
@@ -243308,26 +243317,25 @@ It will not return more than 1,000 records.
         "username": "jane35",
         "userFullName": "Jane H. Doe",
         "categories": [
-          "MARKETING",
-          "LEAD_GENERATION"
+          "ECOMMERCE"
         ],
         "description": "My public Actor!",
         "pictureUrl": "https://...",
         "userPictureUrl": "https://...",
         "url": "https://...",
         "stats": {
-          "totalBuilds": 9,
           "totalRuns": 16,
           "totalUsers": 6,
           "totalUsers7Days": 2,
           "totalUsers30Days": 6,
           "totalUsers90Days": 6,
-          "totalMetamorphs": 2,
-          "lastRunStartedAt": "2019-07-08T14:01:05.546Z"
+          "actorReviewRating": 4.7,
+          "actorReviewCount": 69
         },
         "currentPricingInfo": {
           "pricingModel": "FREE"
         },
+        "isVerified": false,
         "isWhiteListedForAgenticPayments": false
       }
     ]
@@ -243413,24 +243421,14 @@ Status Code **200**
 |» » pictureUrl|string \| null|false|none|none|
 |» » userPictureUrl|string \| null(uri)|false|none|none|
 |» » url|string \| null(uri)|false|none|none|
-|» » stats|object|true|none|Usage statistics and Apify Store metrics for the Actor.|
-|» » » totalBuilds|integer|false|none|The total number of builds of the Actor.|
+|» » stats|object|true|none|Actor usage statistics and Apify Store metrics returned by the Store endpoint.|
+|» » » totalUsers|integer|true|none|The total number of Actor users, including its owner.|
 |» » » totalRuns|integer|false|none|The total number of runs of the Actor.|
-|» » » totalUsers|integer|false|none|The total number of Actor users, including its owner.|
 |» » » totalUsers7Days|integer|false|none|The number of active users of the Actor in the last 7 days.|
 |» » » totalUsers30Days|integer|false|none|The number of active users of the Actor in the last 30 days.|
 |» » » totalUsers90Days|integer|false|none|The number of active users of the Actor in the last 90 days.|
-|» » » totalMetamorphs|integer|false|none|The total number of times a run of another Actor was [metamorphed](https://docs.apify.com/platform/actors/development/programming-interface/metamorph) into this Actor.|
-|» » » lastRunStartedAt|string(date-time)|false|none|The date and time the most recent run of the Actor started.|
-|» » » actorReviewCount|integer|false|none|The number of reviews the Actor has received in Apify Store.|
-|» » » actorReviewRating|number|false|none|The average rating of the Actor in Apify Store.|
-|» » » bookmarkCount|integer|false|none|The number of users who bookmarked the Actor in Apify Store.|
-|» » » publicActorRunStats30Days|object|false|none|Run status counts from the last 30 days. Only for public Actors.<br>Excludes runs started by the Actor's owner.<br>|
-|» » » » ABORTED|integer|false|none|The number of runs that were aborted.|
-|» » » » FAILED|integer|false|none|The number of runs that failed.|
-|» » » » SUCCEEDED|integer|false|none|The number of runs that succeeded.|
-|» » » » TIMED-OUT|integer|false|none|The number of runs that timed out.|
-|» » » » TOTAL|integer|false|none|The total number of runs.|
+|» » » actorReviewRating|number|true|none|The average rating of the Actor in Apify Store.|
+|» » » actorReviewCount|integer|true|none|The number of reviews the Actor has received in Apify Store.|
 |» » currentPricingInfo|object|false|none|none|
 |» » » pricingModel|string|true|none|none|
 |» » » apifyMarginPercentage|number|false|none|Apify's share of the revenue generated under this pricing info record, as a fraction between 0 and 1. Set by the Apify platform.<br>|
@@ -243452,9 +243450,7 @@ Status Code **200**
 |» » » » » tieredPricePerUnitUsd|number|false|none|none|
 |» » » notifiedAboutRentalToPpePriceChangeAt|string \| null(date-time)|false|none|none|
 |» » isWhiteListedForAgenticPayments|boolean \| null|false|none|Whether the Actor is whitelisted for agentic payment processing.|
-|» » actorReviewCount|integer|false|none|none|
-|» » actorReviewRating|number|false|none|none|
-|» » bookmarkCount|integer|false|none|none|
+|» » isVerified|boolean|false|none|Whether the Actor's developer has a verified identity.|
 |» » badge|string \| null|false|none|none|
 |» » readmeSummary|string|false|none|A brief, LLM-generated readme summary|
 |» » inputSchema|object|false|none|Compact input schema of the Actor's default build, with only property types and required properties. Returned only when `includeInputSchema=true` and the default build succeeded and defines input properties.|

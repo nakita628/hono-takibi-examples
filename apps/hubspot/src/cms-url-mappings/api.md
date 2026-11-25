@@ -21,6 +21,8 @@ Base URLs:
 
 |Scope|Scope Description|
 |---|---|
+|cms.url_redirects.read||
+|cms.url_redirects.write||
 |content||
 
 <h1 id="url-mappings-basic">Basic</h1>
@@ -72,7 +74,7 @@ Status Code **200**
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: content ), oauth2 ( Scopes: cms.url_redirects.read )
 </aside>
 
 ## Create URL mapping
@@ -216,7 +218,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.url_redirects.write ), oauth2 ( Scopes: content )
 </aside>
 
 ## Retrieve URL mapping
@@ -264,7 +266,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: content ), oauth2 ( Scopes: cms.url_redirects.read )
 </aside>
 
 ## Delete URL mapping
@@ -306,7 +308,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: content )
+oauth2 ( Scopes: cms.url_redirects.write ), oauth2 ( Scopes: content )
 </aside>
 
 # Schemas

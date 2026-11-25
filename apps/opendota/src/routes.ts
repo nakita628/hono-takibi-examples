@@ -1657,6 +1657,35 @@ const PlayerObjectResponseSchema = z
   .openapi({ title: 'PlayerObjectResponse', required: [] })
   .openapi('PlayerObjectResponse')
 
+const HeroPlayersResponseSchema = z
+  .object({
+    account_id: z.int().exactOptional().openapi({ description: 'The player account ID' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "Verified player name, e.g. 'Miracle-'" }),
+    team_id: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "Player's team identifier" }),
+    team_name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Team name', example: 'Newbee' }),
+    team_tag: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: "Player's team shorthand tag, e.g. 'EG'" }),
+    games_played: z.int().exactOptional().openapi({ description: 'Number of games played' }),
+    wins: z.int().exactOptional().openapi({ description: 'Number of games won' }),
+  })
+  .openapi({ title: 'HeroPlayersResponse', required: [] })
+  .openapi('HeroPlayersResponse')
+
 const PlayerPeersResponseSchema = z
   .object({
     account_id: z.int().exactOptional().openapi({ description: 'The player account ID' }),
@@ -3936,7 +3965,7 @@ export const getHeroesHeroIdPlayersRoute = createRoute({
     200: {
       description: 'Success',
       content: {
-        'application/json; charset=utf-8': { schema: z.array(z.array(PlayerObjectResponseSchema)) },
+        'application/json; charset=utf-8': { schema: z.array(HeroPlayersResponseSchema) },
       },
     },
   },

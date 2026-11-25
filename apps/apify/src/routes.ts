@@ -273380,7 +273380,7 @@ export const getV2StoreRoute = createRoute({
   tags: ['Store'],
   summary: 'Get list of Actors in Store',
   description:
-    'Gets the list of public Actors in Apify Store. You can use `search`\nparameter to search Actors by string in title, name, description, username\nand readme.\nIf you need detailed info about a specific Actor, use the [Get Actor](/api/v2/actor-get) endpoint.\n\nThe endpoint supports pagination using the `limit` and `offset` parameters.\nIt will not return more than 1,000 records.\n',
+    'Gets the list of public Actors in Apify Store. You can use `search`\nparameter to search Actors by string in title, name, description, username\nand readme.\nIf you need detailed info about a specific Actor, use the [Get Actor](/api/v2/actor-get) endpoint.\n\nWithout `search`, the endpoint supports pagination using the `limit` and\n`offset` parameters. It will not return more than 1,000 records per page.\n\nWith `search`, results are ranked by relevance and returned as a single\npage of at most 100 records. `offset` is ignored and there is no second\npage. `total` and `count` equal the number of returned items. To narrow\nthe results, use `category`, `username` or `pricingModel`.\n',
   operationId: 'store_get',
   request: {
     query: z.object({
@@ -273400,13 +273400,13 @@ export const getV2StoreRoute = createRoute({
             name: 'limit',
             in: 'query',
             description:
-              'Maximum number of items to return. The default value as well as the maximum is `1000`.\n',
+              'Maximum number of items to return. The default value as well as the\nmaximum is `1000`. When `search` is used, the default and maximum are\n`100`, and larger values are reduced to `100`.\n',
             style: 'form',
             explode: true,
-            schema: { type: 'number', format: 'double', example: 1000 },
+            schema: { type: 'number', format: 'double', example: 100 },
             required: false,
           },
-          example: 1000,
+          example: 100,
         }),
       offset: z
         .preprocess(
@@ -273424,7 +273424,7 @@ export const getV2StoreRoute = createRoute({
             name: 'offset',
             in: 'query',
             description:
-              'Number of items that should be skipped at the start. The default value is `0`.\n',
+              'Number of items that should be skipped at the start. The default value\nis `0`. Ignored when `search` is used.\n',
             style: 'form',
             explode: true,
             schema: { type: 'number', format: 'double', example: 0 },
@@ -273440,7 +273440,7 @@ export const getV2StoreRoute = createRoute({
             name: 'search',
             in: 'query',
             description:
-              'String to search by. The search runs on the following fields: `title`,\n`name`, `description`, `username`, `readme`.\n',
+              'String to search by. Results are ranked by relevance and returned as a\nsingle page of at most 100 items.\n',
             style: 'form',
             explode: true,
             schema: { type: 'string', example: 'web scraper' },
@@ -273456,13 +273456,14 @@ export const getV2StoreRoute = createRoute({
             name: 'sortBy',
             in: 'query',
             description:
-              'Specifies the field by which to sort the results. The supported values\nare `relevance` (default), `popularity`, `newest` and `lastUpdate`.\n',
+              'Deprecated and ignored. The value is accepted for backward\ncompatibility but has no effect. Results are ordered by relevance when\n`search` is used, and by Store position otherwise. Sort the results\non the client if you need a different order.\n',
+            deprecated: true,
             style: 'form',
             explode: true,
-            schema: { type: 'string', example: "'popularity'" },
+            schema: { type: 'string', example: 'popularity' },
             required: false,
           },
-          example: "'popularity'",
+          example: 'popularity',
         }),
       category: z
         .string()
@@ -273471,13 +273472,14 @@ export const getV2StoreRoute = createRoute({
           param: {
             name: 'category',
             in: 'query',
-            description: 'Filters the results by the specified category.',
+            description:
+              'Filters the results by category. Accepts one or more category IDs,\nseparated by commas and case-insensitive. An Actor must match all of\nthe listed categories. See the\n[list of category IDs](https://github.com/apify/apify-shared-js/blob/master/packages/actor-categories/src/actor_categories.ts).\nLegacy keys such as `social_media` are still accepted. An unknown\ncategory returns a `400` error.\n',
             style: 'form',
             explode: true,
-            schema: { type: 'string', example: "'AI'" },
+            schema: { type: 'string', example: 'AI_AND_ML' },
             required: false,
           },
-          example: "'AI'",
+          example: 'AI_AND_ML',
         }),
       username: z
         .string()
@@ -273489,10 +273491,10 @@ export const getV2StoreRoute = createRoute({
             description: 'Filters the results by the specified username.',
             style: 'form',
             explode: true,
-            schema: { type: 'string', example: "'apify'" },
+            schema: { type: 'string', example: 'apify' },
             required: false,
           },
-          example: "'apify'",
+          example: 'apify',
         }),
       pricingModel: z
         .enum(['FREE', 'PRICE_PER_DATASET_ITEM', 'PAY_PER_EVENT'])
@@ -273654,7 +273656,7 @@ export const getV2StoreRoute = createRoute({
                             categories: z
                               .array(z.string())
                               .exactOptional()
-                              .openapi({ example: ['MARKETING', 'LEAD_GENERATION'] }),
+                              .openapi({ example: ['AI_AND_ML', 'GENERATE_LEADS'] }),
                             notice: z
                               .union([
                                 z.literal('NONE'),
@@ -273687,12 +273689,12 @@ export const getV2StoreRoute = createRoute({
                               .openapi({ examples: ['https://...'] }),
                             stats: z
                               .object({
-                                totalBuilds: z
+                                totalUsers: z
                                   .int()
-                                  .exactOptional()
                                   .openapi({
-                                    examples: [9],
-                                    description: 'The total number of builds of the Actor.',
+                                    examples: [6],
+                                    description:
+                                      'The total number of Actor users, including its owner.',
                                   }),
                                 totalRuns: z
                                   .int()
@@ -273700,14 +273702,6 @@ export const getV2StoreRoute = createRoute({
                                   .openapi({
                                     examples: [16],
                                     description: 'The total number of runs of the Actor.',
-                                  }),
-                                totalUsers: z
-                                  .int()
-                                  .exactOptional()
-                                  .openapi({
-                                    examples: [6],
-                                    description:
-                                      'The total number of Actor users, including its owner.',
                                   }),
                                 totalUsers7Days: z
                                   .int()
@@ -273733,95 +273727,25 @@ export const getV2StoreRoute = createRoute({
                                     description:
                                       'The number of active users of the Actor in the last 90 days.',
                                   }),
-                                totalMetamorphs: z
-                                  .int()
-                                  .exactOptional()
+                                actorReviewRating: z
+                                  .number()
                                   .openapi({
-                                    examples: [2],
-                                    description:
-                                      'The total number of times a run of another Actor was [metamorphed](https://docs.apify.com/platform/actors/development/programming-interface/metamorph) into this Actor.',
-                                  }),
-                                lastRunStartedAt: z.iso
-                                  .datetime({ offset: true })
-                                  .exactOptional()
-                                  .openapi({
-                                    examples: ['2019-07-08T14:01:05.546Z'],
-                                    description:
-                                      'The date and time the most recent run of the Actor started.',
+                                    examples: [4.7],
+                                    description: 'The average rating of the Actor in Apify Store.',
                                   }),
                                 actorReviewCount: z
                                   .int()
-                                  .exactOptional()
                                   .openapi({
                                     examples: [69],
                                     description:
                                       'The number of reviews the Actor has received in Apify Store.',
                                   }),
-                                actorReviewRating: z
-                                  .number()
-                                  .exactOptional()
-                                  .openapi({
-                                    examples: [4.7],
-                                    description: 'The average rating of the Actor in Apify Store.',
-                                  }),
-                                bookmarkCount: z
-                                  .int()
-                                  .exactOptional()
-                                  .openapi({
-                                    examples: [1269],
-                                    description:
-                                      'The number of users who bookmarked the Actor in Apify Store.',
-                                  }),
-                                publicActorRunStats30Days: z
-                                  .object({
-                                    ABORTED: z
-                                      .int()
-                                      .exactOptional()
-                                      .openapi({
-                                        examples: [2542],
-                                        description: 'The number of runs that were aborted.',
-                                      }),
-                                    FAILED: z
-                                      .int()
-                                      .exactOptional()
-                                      .openapi({
-                                        examples: [1234],
-                                        description: 'The number of runs that failed.',
-                                      }),
-                                    SUCCEEDED: z
-                                      .int()
-                                      .exactOptional()
-                                      .openapi({
-                                        examples: [732805],
-                                        description: 'The number of runs that succeeded.',
-                                      }),
-                                    'TIMED-OUT': z
-                                      .int()
-                                      .exactOptional()
-                                      .openapi({
-                                        examples: [12556],
-                                        description: 'The number of runs that timed out.',
-                                      }),
-                                    TOTAL: z
-                                      .int()
-                                      .exactOptional()
-                                      .openapi({
-                                        examples: [749137],
-                                        description: 'The total number of runs.',
-                                      }),
-                                  })
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      "Run status counts from the last 30 days. Only for public Actors.\nExcludes runs started by the Actor's owner.\n",
-                                    required: [],
-                                  }),
                               })
                               .openapi({
-                                title: 'ActorStats',
+                                title: 'StoreActorStats',
                                 description:
-                                  'Usage statistics and Apify Store metrics for the Actor.',
-                                required: [],
+                                  'Actor usage statistics and Apify Store metrics returned by the Store endpoint.',
+                                required: ['totalUsers', 'actorReviewRating', 'actorReviewCount'],
                               }),
                             currentPricingInfo: z
                               .object({
@@ -273935,18 +273859,14 @@ export const getV2StoreRoute = createRoute({
                                 description:
                                   'Whether the Actor is whitelisted for agentic payment processing.',
                               }),
-                            actorReviewCount: z
-                              .int()
+                            isVerified: z
+                              .boolean()
                               .exactOptional()
-                              .openapi({ examples: [69] }),
-                            actorReviewRating: z
-                              .number()
-                              .exactOptional()
-                              .openapi({ examples: [4.7] }),
-                            bookmarkCount: z
-                              .int()
-                              .exactOptional()
-                              .openapi({ examples: [1269] }),
+                              .openapi({
+                                description:
+                                  "Whether the Actor's developer has a verified identity.",
+                                examples: [false],
+                              }),
                             badge: z
                               .string()
                               .nullable()
@@ -274017,21 +273937,22 @@ export const getV2StoreRoute = createRoute({
                       name: 'my-public-actor',
                       username: 'jane35',
                       userFullName: 'Jane Doe',
+                      categories: ['AI_AND_ML', 'GENERATE_LEADS'],
                       description: 'My public Actor!',
                       pictureUrl: 'https://...',
                       userPictureUrl: 'https://...',
                       url: 'https://...',
                       stats: {
-                        totalBuilds: 9,
                         totalRuns: 16,
                         totalUsers: 6,
                         totalUsers7Days: 2,
                         totalUsers30Days: 6,
                         totalUsers90Days: 6,
-                        totalMetamorphs: 2,
-                        lastRunStartedAt: '2019-07-08T14:01:05.546Z',
+                        actorReviewRating: 4.7,
+                        actorReviewCount: 69,
                       },
                       currentPricingInfo: { pricingModel: 'FREE' },
+                      isVerified: true,
                       isWhiteListedForAgenticPayments: true,
                     },
                     {
@@ -274040,22 +273961,22 @@ export const getV2StoreRoute = createRoute({
                       name: 'my-public-actor',
                       username: 'jane35',
                       userFullName: 'Jane H. Doe',
-                      categories: ['MARKETING', 'LEAD_GENERATION'],
+                      categories: ['ECOMMERCE'],
                       description: 'My public Actor!',
                       pictureUrl: 'https://...',
                       userPictureUrl: 'https://...',
                       url: 'https://...',
                       stats: {
-                        totalBuilds: 9,
                         totalRuns: 16,
                         totalUsers: 6,
                         totalUsers7Days: 2,
                         totalUsers30Days: 6,
                         totalUsers90Days: 6,
-                        totalMetamorphs: 2,
-                        lastRunStartedAt: '2019-07-08T14:01:05.546Z',
+                        actorReviewRating: 4.7,
+                        actorReviewCount: 69,
                       },
                       currentPricingInfo: { pricingModel: 'FREE' },
+                      isVerified: false,
                       isWhiteListedForAgenticPayments: false,
                     },
                   ],

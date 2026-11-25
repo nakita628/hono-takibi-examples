@@ -153350,11 +153350,11 @@ curl http://localhost:5052/eth/v1/validator/duties/ptc/1 \
 `POST /eth/v1/validator/duties/ptc/{epoch}`
 
 Requests the beacon node to provide a set of Payload Timeliness Committee (PTC) duties, which should be performed by validators, for a particular epoch.
-Duties should only need to be checked once per epoch, however a chain reorganization (of > MIN_SEED_LOOKAHEAD epochs) could occur, resulting in a change of duties. For full safety, you should monitor head_v2 events and confirm the dependent root in this response matches:
+Duties should only need to be checked once per epoch, however a chain reorganization (of > MIN_SEED_LOOKAHEAD epochs) could occur, resulting in a change of duties. For full safety, you should monitor head_v2 events and confirm that, for `epoch > GLOAS_FORK_EPOCH`, the dependent root in this response matches:
 - event.current_epoch_dependent_root when `compute_epoch_at_slot(event.slot) == epoch`
 - event.next_epoch_dependent_root when `compute_epoch_at_slot(event.slot) + 1 == epoch`
 
-The dependent_root value is `get_block_root_at_slot(state, compute_start_slot_at_epoch(epoch - 1) - 1)` or the genesis block root in the case of underflow.
+For `epoch > GLOAS_FORK_EPOCH`, the dependent_root value is `get_block_root_at_slot(state, compute_start_slot_at_epoch(epoch - 1) - 1)` or the genesis block root in the case of underflow.
 
 The PTC of `GLOAS_FORK_EPOCH` is computed at the fork from effective balances that are updated at the end of the previous epoch, so its duties can change until the last slot before the fork. For `epoch == GLOAS_FORK_EPOCH`, the dependent_root value is `get_block_root_at_slot(state, compute_start_slot_at_epoch(epoch) - 1)` or the genesis block root in the case of underflow, and matches event.next_epoch_dependent_root when `compute_epoch_at_slot(event.slot) == epoch`. Duties for this epoch are not available before the fork.
 
@@ -157730,7 +157730,7 @@ A structure which uniquely identifies a client implementation and its version. M
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|code|string|true|none|A two-character client code that uniquely maps to a client name as defined in the [Engine API](https://github.com/ethereum/execution-apis/blob/dc4dbca37ef8697d782f431af19120beaf5517f5/src/engine/identification.md#clientcode).|
+|code|string|true|none|A two-character client code that uniquely maps to a client name as defined in the [Engine API](https://github.com/ethereum/execution-apis/blob/1ca0818569467cff85b7f41372f22e728d5daa14/src/engine/identification.md#clientcode).|
 |name|string|true|none|Human-readable name of the client, e.g. `Lighthouse` or `go-ethereum`.|
 |version|string|true|none|The version string of the current implementation e.g. `v4.6.0` or `1.0.0-alpha.1` or `1.0.0+20130313144700`.|
 |commit|string(hex)|true|none|4 bytes - first four bytes of the latest commit hash of this build e.g. `0xfa4ff922`.|
@@ -157740,14 +157740,18 @@ A structure which uniquely identifies a client implementation and its version. M
 |Property|Value|
 |---|---|
 |code|BU|
+|code|CN|
 |code|EJ|
 |code|EG|
+|code|EX|
 |code|GE|
 |code|GR|
+|code|LA|
 |code|LH|
 |code|LS|
 |code|NM|
 |code|NB|
+|code|NE|
 |code|TE|
 |code|TK|
 |code|PM|

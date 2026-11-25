@@ -1,7 +1,7 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.35.6",
-    "date": "2026-11-24",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "4baf24607a3e2f95b35a0bc9a23a140a4e7f20205b7b38e631a8471629231ded",
     "sources": {
@@ -16,10 +16,7 @@
       }
     },
     "typecheck": {
-      "errors": 1,
-      "where": "`routes.ts`",
-      "codes": "TS2375 ×1",
-      "issue": "`CallbackSchema` (patternProperties + `additionalProperties: PathItem` in a cycle) is a lazy `z.looseObject({})` whose output does not satisfy its annotation `z.ZodType<CallbackType>` ([#629](https://github.com/nakita628/hono-takibi/issues/629))"
+      "errors": 0
     }
   }
 }

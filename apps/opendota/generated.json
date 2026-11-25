@@ -1,13 +1,14 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "8351d766b6c802e989c5f86ddb5e5c8e502d5968b2a4bf3268f3e1134104f05e",
     "sources": {
       "https://api.opendota.com/api": {
-        "etag": "W/\"17fe1-fNBNSZJ//guhP5R+8Zez6O+Hi1Q\"",
-        "sha256": "55dbe30ff431ce5f9dc06ca2bd160878b0f99a9ca2da3e3c582e82693a090f4f"
+        "etag": "W/\"1825d-LFruJFCjkb8P06tB6vRecMllJ/0\"",
+        "sha256": "b4ee8e2369c6178c7015519a765f6ff0e65b365be44ece00a77a786c722ba914",
+        "canonical": "68b9573aa3dac292991f26570e1353ca8f29c7d75dadbf0e49bbd46d5dde0ca7"
       }
     },
     "typecheck": {

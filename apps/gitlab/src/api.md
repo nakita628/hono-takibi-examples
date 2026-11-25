@@ -3205,34 +3205,44 @@ Lists all groups and projects accessible by the personal access token used to au
 
 ```json
 {
-  "id": 2,
-  "name": "John Doe",
-  "revoked": true,
-  "created_at": "1970-01-01T00:00:00Z",
-  "description": "Token to manage api",
-  "scopes": [
-    "api"
-  ],
-  "user_id": 3,
-  "last_used_at": "2020-08-31T15:53:00.073Z",
-  "last_used_ips": [
-    "127.0.0.1",
-    "127.0.0.2",
-    "127.0.0.3"
-  ],
-  "granular_scopes": [
+  "groups": [
     {
-      "access": "personal_projects",
-      "permissions": [
-        "read_job"
-      ],
-      "project_id": 3,
-      "group_id": 5
+      "id": 0,
+      "web_url": "http://gitlab.example.com/groups/diaspora",
+      "name": "Diaspora",
+      "parent_id": 1,
+      "organization_id": 1,
+      "access_levels": 50,
+      "visibility": "public"
     }
   ],
-  "active": true,
-  "granular": true,
-  "expires_at": "2020-08-31T15:53:00.073Z"
+  "projects": [
+    {
+      "id": 1,
+      "description": "desc",
+      "name": "project1",
+      "name_with_namespace": "John Doe / project1",
+      "path": "project1",
+      "path_with_namespace": "namespace1/project1",
+      "created_at": "2020-05-07T04:27:17.016Z",
+      "access_levels": {
+        "project_access_level": 50,
+        "group_access_level": 50
+      },
+      "visibility": "public",
+      "web_url": "https://gitlab.example.com/gitlab/gitlab",
+      "namespace": {
+        "id": 2,
+        "name": "project",
+        "path": "my_project",
+        "kind": "project",
+        "full_path": "group/my_project",
+        "parent_id": 1,
+        "avatar_url": "https://example.com/avatar/12345",
+        "web_url": "https://example.com/group/my_project"
+      }
+    }
+  ]
 }
 ```
 
@@ -3240,7 +3250,7 @@ Lists all groups and projects accessible by the personal access token used to au
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|[APIEntitiesPersonalAccessToken](#schemaapientitiespersonalaccesstoken)|
+|200|OK|OK|[APIEntitiesPersonalAccessTokenAssociations](#schemaapientitiespersonalaccesstokenassociations)|
 |400|Bad Request|Bad Request|None|
 |401|Unauthorized|Unauthorized|None|
 |404|Not Found|Not found|None|
@@ -5288,7 +5298,7 @@ curl https://gitlab.com/api/v4/api/v4/applications \
 
 `GET /api/v4/applications`
 
-List all registered applications
+List all registered applications. The `secret` value is not returned.
 
 > Example responses
 
@@ -5377,7 +5387,7 @@ curl https://gitlab.com/api/v4/api/v4/applications \
 
 `POST /api/v4/applications`
 
-This feature was introduced in GitLab 10.5. The granular_scopes parameter requires the granular_oauth_tokens feature flag.
+Creates an application. Declaring granular scopes records the fine-grained permissions of the application, as a set of access levels and permissions. GitLab creates the application and stores this set in one step. If GitLab rejects the set, it does not create the application. While an application has granular scopes, GitLab adds the `granular` scope to its `scopes`. The granular_scopes parameter requires the granular_oauth_tokens feature flag.
 
 > Body parameter
 
@@ -5744,6 +5754,8 @@ Private API subject to change
           "duo_core_features_enabled": true,
           "duo_features_enabled": true,
           "lock_duo_features_enabled": true,
+          "duo_code_suggestions_enabled": true,
+          "lock_duo_code_suggestions_enabled": true,
           "auto_duo_code_review_enabled": "string",
           "duo_code_review_level_allowed": true,
           "duo_code_review_default_level": "lite",
@@ -6099,6 +6111,8 @@ Private API subject to change
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -6443,6 +6457,8 @@ Private API subject to change
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -6751,6 +6767,8 @@ Lists all approval rules and any associated details for a specified group. Restr
         "duo_core_features_enabled": true,
         "duo_features_enabled": true,
         "lock_duo_features_enabled": true,
+        "duo_code_suggestions_enabled": true,
+        "lock_duo_code_suggestions_enabled": true,
         "auto_duo_code_review_enabled": "string",
         "duo_code_review_level_allowed": true,
         "duo_code_review_default_level": "lite",
@@ -7034,6 +7052,8 @@ Creates an approval rule for a group. Restricted to group administrators. Do not
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -7309,6 +7329,8 @@ Updates an approval rule for a group. Restricted to group administrators. Do not
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -7551,6 +7573,8 @@ Lists all approval rules and any associated details for a specified project. To 
         "duo_core_features_enabled": true,
         "duo_features_enabled": true,
         "lock_duo_features_enabled": true,
+        "duo_code_suggestions_enabled": true,
+        "lock_duo_code_suggestions_enabled": true,
         "auto_duo_code_review_enabled": "string",
         "duo_code_review_level_allowed": true,
         "duo_code_review_default_level": "lite",
@@ -7902,6 +7926,8 @@ Creates an approval rule for a specified project. The `rule_type` field supports
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -8143,6 +8169,8 @@ Retrieves information about a specified approval rule for a project.
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -8477,6 +8505,8 @@ Updates a specified approval rule for a project. This endpoint removes any appro
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -12210,7 +12240,7 @@ curl https://gitlab.com/api/v4/api/v4/admin/batched_background_migrations \
 
 `GET /api/v4/admin/batched_background_migrations`
 
-Lists all batched background migrations with optional filters for database and job class name.
+Lists all batched background migrations with optional filters for database and job class name. Returns the 20 most recently created migrations.
 
 <h3 id="get-the-list-of-batched-background-migrations-parameters">Parameters</h3>
 
@@ -16667,7 +16697,7 @@ curl https://gitlab.com/api/v4/api/v4/broadcast_messages \
 
 `POST /api/v4/broadcast_messages`
 
-Creates a broadcast message.
+Creates a broadcast message. Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information.
 
 > Body parameter
 
@@ -16698,11 +16728,11 @@ Creates a broadcast message.
 |» ends_at|body|string(date-time) \| null|false|Ending time, in UTC. When creating a message, defaults to one hour after the current time.|
 |» color|body|string \| null|false|Background color hex code. Deprecated. Use `theme` instead.|
 |» font|body|string \| null|false|Foreground color hex code. Deprecated. Use `theme` instead.|
-|» target_access_levels|body|[integer]|false|Target access levels (roles) of the broadcast message.|
+|» target_access_levels|body|[integer]|false|Target access levels (roles) of the broadcast message. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner).|
 |» target_path|body|string \| null|false|Target path of the broadcast message.|
 |» broadcast_type|body|string \| null|false|Appearance type of the broadcast message.|
 |» dismissable|body|boolean \| null|false|If `true`, the user can dismiss the message.|
-|» theme|body|string \| null|false|Color theme for the broadcast message. Applies only to banners.|
+|» theme|body|string \| null|false|Color theme for the broadcast message. Applies only to banners. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498900) in GitLab 17.6.|
 
 #### Enumerated Values
 
@@ -16852,7 +16882,7 @@ curl https://gitlab.com/api/v4/api/v4/broadcast_messages/0 \
 
 `PUT /api/v4/broadcast_messages/{id}`
 
-Updates a specified broadcast message.
+Updates a specified broadcast message. Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information.
 
 > Body parameter
 
@@ -16884,11 +16914,11 @@ Updates a specified broadcast message.
 |» ends_at|body|string(date-time) \| null|false|Ending time, in UTC. When creating a message, defaults to one hour after the current time.|
 |» color|body|string \| null|false|Background color hex code. Deprecated. Use `theme` instead.|
 |» font|body|string \| null|false|Foreground color hex code. Deprecated. Use `theme` instead.|
-|» target_access_levels|body|[integer]|false|Target access levels (roles) of the broadcast message.|
+|» target_access_levels|body|[integer]|false|Target access levels (roles) of the broadcast message. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner).|
 |» target_path|body|string \| null|false|Target path of the broadcast message.|
 |» broadcast_type|body|string \| null|false|Appearance type of the broadcast message.|
 |» dismissable|body|boolean \| null|false|If `true`, the user can dismiss the message.|
-|» theme|body|string \| null|false|Color theme for the broadcast message. Applies only to banners.|
+|» theme|body|string \| null|false|Color theme for the broadcast message. Applies only to banners. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498900) in GitLab 17.6.|
 
 #### Enumerated Values
 
@@ -18768,7 +18798,7 @@ curl https://gitlab.com/api/v4/api/v4/projects/string/ci/lint \
 
 `GET /api/v4/projects/{id}/ci/lint`
 
-Validates the `.gitlab-ci.yml` configuration for a specified project.
+Validates the existing `.gitlab-ci.yml` configuration for a specified project. The validation runs in the context of the project, using the CI/CD variables of the project and searching the files of the project for `include:local` entries. If the `ci_lint_api_require_authentication` setting is enabled, this endpoint requires authentication, including for public projects. This endpoint does not accept CI/CD job tokens. Use a personal, project, or group access token instead.
 
 <h3 id="validate-existing-cicd-configuration-parameters">Parameters</h3>
 
@@ -18841,14 +18871,14 @@ curl https://gitlab.com/api/v4/api/v4/projects/string/ci/lint \
   -d '{
     "content": "string",
     "dry_run": false,
-    "include_jobs": true,
+    "include_jobs": false,
     "ref": "string"
   }'
 ```
 
 `POST /api/v4/projects/{id}/ci/lint`
 
-Validates a provided CI/CD configuration in the context of a specified project.
+Validates a provided CI/CD configuration in the context of a specified project. The validation uses the CI/CD variables of the project and searches the files of the project for `include:local` entries.
 
 > Body parameter
 
@@ -18856,7 +18886,7 @@ Validates a provided CI/CD configuration in the context of a specified project.
 {
   "content": "string",
   "dry_run": false,
-  "include_jobs": true,
+  "include_jobs": false,
   "ref": "string"
 }
 ```
@@ -23971,7 +24001,7 @@ curl https://gitlab.com/api/v4/api/v4/admin/clusters/0 \
 
 `PUT /api/v4/admin/clusters/{cluster_id}`
 
-Updates an existing instance cluster.
+Updates an existing instance cluster. The `name`, `api_url`, `ca_cert`, and `token` attributes can be updated only if the cluster was added as an existing Kubernetes cluster.
 
 > Body parameter
 
@@ -24497,6 +24527,7 @@ Retrieves user-specific connection details which can be used by IDEs or clients 
 |201|Created|Created|None|
 |400|Bad Request|Bad Request|None|
 |401|Unauthorized|Unauthorized|None|
+|403|Forbidden|Forbidden|None|
 |404|Not Found|Not found|None|
 |429|Too Many Requests|Too many requests|None|
 
@@ -24578,6 +24609,7 @@ Retrieves user-specific connection details which can be used by IDEs or clients 
 |201|Created|Created|None|
 |400|Bad Request|Bad Request|None|
 |401|Unauthorized|Unauthorized|None|
+|403|Forbidden|Forbidden|None|
 |404|Not Found|Not found|None|
 |429|Too Many Requests|Too many requests|None|
 
@@ -27766,6 +27798,7 @@ can introduce a slight inaccuracy in the returned data.
 
 ```bash
 curl 'https://gitlab.com/api/v4/api/v4/projects/string/dora/metrics?metric=deployment_frequency' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -27801,14 +27834,63 @@ Retrieves DORA metrics for a specified project.
 |environment_tiers|development|
 |environment_tiers|other|
 
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "date": "2021-03-01",
+    "value": 3
+  },
+  {
+    "date": "2021-03-02",
+    "value": 6
+  },
+  {
+    "date": "2021-03-03",
+    "value": 0
+  },
+  {
+    "date": "2021-03-04",
+    "value": 0
+  },
+  {
+    "date": "2021-03-05",
+    "value": 0
+  },
+  {
+    "date": "2021-03-06",
+    "value": 0
+  },
+  {
+    "date": "2021-03-07",
+    "value": 0
+  },
+  {
+    "date": "2021-03-08",
+    "value": 4
+  }
+]
+```
+
 <h3 id="retrieve-project-level-dora-metrics-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|successful operation|None|
+|200|OK|successful operation|Inline|
 |400|Bad Request|Bad request|None|
 |401|Unauthorized|Unauthorized|None|
 |404|Not Found|Not Found|None|
+
+<h3 id="retrieve-project-level-dora-metrics-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[APIEntitiesDoraMetric](#schemaapientitiesdorametric)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -27823,6 +27905,7 @@ http, oauth2, apiKey
 
 ```bash
 curl 'https://gitlab.com/api/v4/api/v4/groups/string/dora/metrics?metric=deployment_frequency' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -27858,14 +27941,63 @@ Retrieves DORA metrics for a specified group.
 |environment_tiers|development|
 |environment_tiers|other|
 
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "date": "2021-03-01",
+    "value": 3
+  },
+  {
+    "date": "2021-03-02",
+    "value": 6
+  },
+  {
+    "date": "2021-03-03",
+    "value": 0
+  },
+  {
+    "date": "2021-03-04",
+    "value": 0
+  },
+  {
+    "date": "2021-03-05",
+    "value": 0
+  },
+  {
+    "date": "2021-03-06",
+    "value": 0
+  },
+  {
+    "date": "2021-03-07",
+    "value": 0
+  },
+  {
+    "date": "2021-03-08",
+    "value": 4
+  }
+]
+```
+
 <h3 id="retrieve-group-level-dora-metrics-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|successful operation|None|
+|200|OK|successful operation|Inline|
 |400|Bad Request|Bad request|None|
 |401|Unauthorized|Unauthorized|None|
 |404|Not Found|Not Found|None|
+
+<h3 id="retrieve-group-level-dora-metrics-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[APIEntitiesDoraMetric](#schemaapientitiesdorametric)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -28016,7 +28148,7 @@ curl https://gitlab.com/api/v4/api/v4/admin/data_management/uploads \
 
 `GET /api/v4/admin/data_management/{model_name}`
 
-Retrieves information about a data model in an instance. Only available to administrators.
+Retrieves information about a data model in an instance. Only available to administrators. Supports keyset pagination on the primary key of the model. To use keyset pagination, set `pagination=keyset`. By default, keyset pagination returns 20 records per page in ascending order. Use `sort` to set the order and `per_page` to set the number of records per page.
 
 <h3 id="retrieve-model-information-parameters">Parameters</h3>
 
@@ -28110,7 +28242,7 @@ curl https://gitlab.com/api/v4/api/v4/admin/data_management/uploads/checksum \
 
 `PUT /api/v4/admin/data_management/{model_name}/checksum`
 
-Recalculates checksums for selected records of a specified model, filtered by `checksum_state` and `identifiers` parameters if provided. The request enqueues a background job to perform the recalculation. Only available to administrators on primary Geo sites.
+Recalculates checksums for selected records of a specified model, filtered by `checksum_state` and `identifiers` parameters if provided. The request enqueues a background job to perform the recalculation. Only available to administrators on primary Geo sites. If no records match `identifiers`, returns `status` `success` with the message `No records matched the given identifiers.`
 
 > Body parameter
 
@@ -28597,6 +28729,7 @@ http, oauth2, apiKey
 
 ```bash
 curl 'https://gitlab.com/api/v4/api/v4/occurrences/vulnerabilities?id=string' \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -28610,12 +28743,36 @@ Returns vulnerabilities related to an occurrence.
 |---|---|---|---|---|
 |id|query|string \| null|true|ID of the occurrence.|
 
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "occurrence_id": 0,
+    "id": 0,
+    "name": "string",
+    "url": "string",
+    "severity": "string"
+  }
+]
+```
+
 <h3 id="get-vulnerabilities-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|None|
+|200|OK|OK|Inline|
 |400|Bad Request|Bad Request|None|
+
+<h3 id="get-vulnerabilities-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[APIEntitiesDependenciesVulnerabilities](#schemaapientitiesdependenciesvulnerabilities)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -44200,7 +44357,7 @@ curl https://gitlab.com/api/v4/api/v4/projects/string/error_tracking/settings \
 
 `PUT /api/v4/projects/{id}/error_tracking/settings`
 
-Creates Error Tracking settings for a specified project. You must have the Maintainer or Owner role for the project.
+Creates Error Tracking settings for a specified project. Available only with integrated error tracking. You must have the Maintainer or Owner role for the project.
 
 > Body parameter
 
@@ -47166,7 +47323,7 @@ curl https://gitlab.com/api/v4/api/v4/features \
 
 `GET /api/v4/features`
 
-Lists all feature flags for the instance.
+Lists all persisted feature flags for the instance, with their gate values.
 
 > Example responses
 
@@ -47308,7 +47465,7 @@ curl https://gitlab.com/api/v4/api/v4/features/string \
 
 `POST /api/v4/features/{name}`
 
-Creates or updates a feature flag value. If a feature with the given name doesn't exist yet, the operation creates one. The value can be a boolean or an integer to indicate percentage of time.
+Creates or updates a feature flag value. If a feature with the given name doesn't exist yet, the operation creates one. The value can be a boolean or an integer to indicate percentage of time. A single call can enable or disable a feature for a `feature_group`, a `user`, a `group`, a `namespace`, a `project`, an `organization`, a `repository`, and a `runner`. Enabling a feature that is still in development has security and stability risks.
 
 > Body parameter
 
@@ -55915,6 +56072,7 @@ Retrieves detailed information about a specific workflow by its ID.
   "web_url": "https://gitlab.example.com/group/project/-/automate/agent-sessions/42",
   "project_id": 0,
   "namespace_id": 0,
+  "service_account_id": 0,
   "agent_privileges": [
     0
   ],
@@ -56987,6 +57145,7 @@ Creates and starts a flow. Returns `403 Forbidden` if the user must complete ide
   "web_url": "https://gitlab.example.com/group/project/-/automate/agent-sessions/42",
   "project_id": 0,
   "namespace_id": 0,
+  "service_account_id": 0,
   "agent_privileges": [
     0
   ],
@@ -60658,6 +60817,8 @@ Lists all visible groups for the authenticated user. Unauthenticated requests re
     "duo_core_features_enabled": true,
     "duo_features_enabled": true,
     "lock_duo_features_enabled": true,
+    "duo_code_suggestions_enabled": true,
+    "lock_duo_code_suggestions_enabled": true,
     "auto_duo_code_review_enabled": "string",
     "duo_code_review_level_allowed": true,
     "duo_code_review_default_level": "lite",
@@ -60738,6 +60899,7 @@ curl https://gitlab.com/api/v4/api/v4/groups \
   -F 'duo_remote_flows_availability=true' \
   -F 'duo_foundational_flows_availability=true' \
   -F 'duo_scheduled_automations_availability=true' \
+  -F 'duo_code_suggestions_availability=true' \
   -F 'duo_custom_agents_availability=true' \
   -F 'duo_custom_flows_availability=true' \
   -F 'duo_external_agents_availability=true' \
@@ -60747,7 +60909,7 @@ curl https://gitlab.com/api/v4/api/v4/groups \
   -F 'experiment_features_enabled=true' \
   -F 'model_prompt_cache_enabled=true' \
   -F 'foundational_agents_statuses=[{"reference":"string","enabled":true}]' \
-  -F 'ai_settings_attributes={"duo_agent_platform_enabled":true,"duo_workflow_mcp_enabled":true,"ai_usage_data_collection_enabled":true,"ai_catalog_restricted_to_group_hierarchy":true,"web_search_enabled":true,"duo_workflow_file_attachments_enabled":true,"external_agent_audit_event_content_enabled":true,"foundational_agents_default_enabled":true,"prompt_injection_protection_level":"no_checks","include_recommended_allowed":true,"allow_all_unix_sockets":true,"allow_project_extension":true,"require_sandbox":true,"minimum_access_level_execute":10,"minimum_access_level_execute_async":30,"minimum_access_level_manage":30,"minimum_access_level_enable_on_projects":30}'
+  -F 'ai_settings_attributes={"duo_agent_platform_enabled":true,"duo_workflow_mcp_enabled":true,"ai_usage_data_collection_enabled":true,"ai_catalog_restricted_to_group_hierarchy":true,"web_search_enabled":true,"duo_workflow_file_attachments_enabled":true,"external_agent_audit_event_content_enabled":true,"foundational_agents_default_enabled":true,"prompt_injection_protection_level":"no_checks","include_recommended_allowed":true,"allow_all_unix_sockets":true,"allow_project_extension":true,"require_sandbox":true,"auto_model_routing_enabled":true,"minimum_access_level_execute":10,"minimum_access_level_execute_async":30,"minimum_access_level_manage":30,"minimum_access_level_enable_on_projects":30}'
 ```
 
 `POST /api/v4/groups`
@@ -60802,6 +60964,7 @@ duo_availability: always_on
 duo_remote_flows_availability: true
 duo_foundational_flows_availability: true
 duo_scheduled_automations_availability: true
+duo_code_suggestions_availability: true
 duo_custom_agents_availability: true
 duo_custom_flows_availability: true
 duo_external_agents_availability: true
@@ -60828,6 +60991,7 @@ ai_settings_attributes:
   allow_all_unix_sockets: true
   allow_project_extension: true
   require_sandbox: true
+  auto_model_routing_enabled: true
   minimum_access_level_execute: 10
   minimum_access_level_execute_async: 30
   minimum_access_level_manage: 30
@@ -60882,6 +61046,7 @@ ai_settings_attributes:
 |» duo_remote_flows_availability|body|boolean \| null|false|Enable GitLab Duo remote flows for this group|
 |» duo_foundational_flows_availability|body|boolean \| null|false|Enable GitLab foundational Duo flows for this group|
 |» duo_scheduled_automations_availability|body|boolean \| null|false|Allow GitLab Duo flows in this group to run on a schedule|
+|» duo_code_suggestions_availability|body|boolean \| null|false|Enable GitLab Duo Code Suggestions for this group|
 |» duo_custom_agents_availability|body|boolean \| null|false|Enable GitLab Duo custom agents for this group|
 |» duo_custom_flows_availability|body|boolean \| null|false|Enable GitLab Duo custom flows for this group|
 |» duo_external_agents_availability|body|boolean \| null|false|Enable GitLab Duo external agents for this group|
@@ -60907,6 +61072,7 @@ ai_settings_attributes:
 |» » allow_all_unix_sockets|body|boolean \| null|false|Whether to allow all Unix sockets for network access|
 |» » allow_project_extension|body|boolean \| null|false|Whether to allow projects to extend the network access domain allowlist|
 |» » require_sandbox|body|boolean \| null|false|Whether flows that run on GitLab Runner fail when the execution environment sandbox is unavailable. Applies only to top-level groups on GitLab.com.|
+|» » auto_model_routing_enabled|body|boolean \| null|false|Whether Auto model routing is turned on for Duo Developer. Can only be set on top-level groups. GitLab.com only.|
 |» » minimum_access_level_execute|body|integer \| null|false|The minimum access level required to execute Duo Agent Platform. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
 |» » minimum_access_level_execute_async|body|integer \| null|false|The minimum access level required to execute Duo Agent Platform features in CI/CD. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
 |» » minimum_access_level_manage|body|integer \| null|false|The minimum access level required to manage Duo Agent Platform. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
@@ -61072,6 +61238,8 @@ ai_settings_attributes:
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -61219,6 +61387,8 @@ Retrieves a specified group by ID or path. Public groups can be retrieved withou
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -61858,8 +62028,12 @@ Retrieves a specified group by ID or path. Public groups can be retrieved withou
   "only_allow_merge_if_all_discussions_are_resolved": "string",
   "unique_project_download_limit": "string",
   "unique_project_download_limit_interval_in_seconds": "string",
-  "unique_project_download_limit_allowlist": "string",
-  "unique_project_download_limit_alertlist": "string",
+  "unique_project_download_limit_allowlist": [
+    "string"
+  ],
+  "unique_project_download_limit_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string"
 }
 ```
@@ -61923,6 +62097,7 @@ curl https://gitlab.com/api/v4/api/v4/groups/string \
   -F 'duo_remote_flows_availability=true' \
   -F 'duo_foundational_flows_availability=true' \
   -F 'duo_scheduled_automations_availability=true' \
+  -F 'duo_code_suggestions_availability=true' \
   -F 'duo_custom_agents_availability=true' \
   -F 'duo_custom_flows_availability=true' \
   -F 'duo_external_agents_availability=true' \
@@ -61932,7 +62107,7 @@ curl https://gitlab.com/api/v4/api/v4/groups/string \
   -F 'experiment_features_enabled=true' \
   -F 'model_prompt_cache_enabled=true' \
   -F 'foundational_agents_statuses=[{"reference":"string","enabled":true}]' \
-  -F 'ai_settings_attributes={"duo_agent_platform_enabled":true,"duo_workflow_mcp_enabled":true,"ai_usage_data_collection_enabled":true,"ai_catalog_restricted_to_group_hierarchy":true,"web_search_enabled":true,"duo_workflow_file_attachments_enabled":true,"external_agent_audit_event_content_enabled":true,"foundational_agents_default_enabled":true,"prompt_injection_protection_level":"no_checks","include_recommended_allowed":true,"allow_all_unix_sockets":true,"allow_project_extension":true,"require_sandbox":true,"minimum_access_level_execute":10,"minimum_access_level_execute_async":30,"minimum_access_level_manage":30,"minimum_access_level_enable_on_projects":30}' \
+  -F 'ai_settings_attributes={"duo_agent_platform_enabled":true,"duo_workflow_mcp_enabled":true,"ai_usage_data_collection_enabled":true,"ai_catalog_restricted_to_group_hierarchy":true,"web_search_enabled":true,"duo_workflow_file_attachments_enabled":true,"external_agent_audit_event_content_enabled":true,"foundational_agents_default_enabled":true,"prompt_injection_protection_level":"no_checks","include_recommended_allowed":true,"allow_all_unix_sockets":true,"allow_project_extension":true,"require_sandbox":true,"auto_model_routing_enabled":true,"minimum_access_level_execute":10,"minimum_access_level_execute_async":30,"minimum_access_level_manage":30,"minimum_access_level_enable_on_projects":30}' \
   -F 'prevent_sharing_groups_outside_hierarchy=true' \
   -F 'step_up_auth_required_oauth_provider=string' \
   -F 'lock_math_rendering_limits_enabled=true' \
@@ -62025,6 +62200,7 @@ duo_availability: always_on
 duo_remote_flows_availability: true
 duo_foundational_flows_availability: true
 duo_scheduled_automations_availability: true
+duo_code_suggestions_availability: true
 duo_custom_agents_availability: true
 duo_custom_flows_availability: true
 duo_external_agents_availability: true
@@ -62051,6 +62227,7 @@ ai_settings_attributes:
   allow_all_unix_sockets: true
   allow_project_extension: true
   require_sandbox: true
+  auto_model_routing_enabled: true
   minimum_access_level_execute: 10
   minimum_access_level_execute_async: 30
   minimum_access_level_manage: 30
@@ -62154,6 +62331,7 @@ create_code_review_flow_consent: true
 |» duo_remote_flows_availability|body|boolean \| null|false|Enable GitLab Duo remote flows for this group|
 |» duo_foundational_flows_availability|body|boolean \| null|false|Enable GitLab foundational Duo flows for this group|
 |» duo_scheduled_automations_availability|body|boolean \| null|false|Allow GitLab Duo flows in this group to run on a schedule|
+|» duo_code_suggestions_availability|body|boolean \| null|false|Enable GitLab Duo Code Suggestions for this group|
 |» duo_custom_agents_availability|body|boolean \| null|false|Enable GitLab Duo custom agents for this group|
 |» duo_custom_flows_availability|body|boolean \| null|false|Enable GitLab Duo custom flows for this group|
 |» duo_external_agents_availability|body|boolean \| null|false|Enable GitLab Duo external agents for this group|
@@ -62179,6 +62357,7 @@ create_code_review_flow_consent: true
 |» » allow_all_unix_sockets|body|boolean \| null|false|Whether to allow all Unix sockets for network access|
 |» » allow_project_extension|body|boolean \| null|false|Whether to allow projects to extend the network access domain allowlist|
 |» » require_sandbox|body|boolean \| null|false|Whether flows that run on GitLab Runner fail when the execution environment sandbox is unavailable. Applies only to top-level groups on GitLab.com.|
+|» » auto_model_routing_enabled|body|boolean \| null|false|Whether Auto model routing is turned on for Duo Developer. Can only be set on top-level groups. GitLab.com only.|
 |» » minimum_access_level_execute|body|integer \| null|false|The minimum access level required to execute Duo Agent Platform. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
 |» » minimum_access_level_execute_async|body|integer \| null|false|The minimum access level required to execute Duo Agent Platform features in CI/CD. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
 |» » minimum_access_level_manage|body|integer \| null|false|The minimum access level required to manage Duo Agent Platform. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
@@ -62393,6 +62572,8 @@ create_code_review_flow_consent: true
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -63032,8 +63213,12 @@ create_code_review_flow_consent: true
   "only_allow_merge_if_all_discussions_are_resolved": "string",
   "unique_project_download_limit": "string",
   "unique_project_download_limit_interval_in_seconds": "string",
-  "unique_project_download_limit_allowlist": "string",
-  "unique_project_download_limit_alertlist": "string",
+  "unique_project_download_limit_allowlist": [
+    "string"
+  ],
+  "unique_project_download_limit_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string"
 }
 ```
@@ -63207,6 +63392,8 @@ Archives a specified group. You must be an administrator or have the Owner role 
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -63354,6 +63541,8 @@ Unarchives a specified group. You must be an administrator or have the Owner rol
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -63567,6 +63756,8 @@ Lists all groups shared with a specified group. Unauthenticated requests return 
     "duo_core_features_enabled": true,
     "duo_features_enabled": true,
     "lock_duo_features_enabled": true,
+    "duo_code_suggestions_enabled": true,
+    "lock_duo_code_suggestions_enabled": true,
     "auto_duo_code_review_enabled": "string",
     "duo_code_review_level_allowed": true,
     "duo_code_review_default_level": "lite",
@@ -63743,6 +63934,8 @@ Lists all groups invited to a specified group. Unauthenticated requests return o
     "duo_core_features_enabled": true,
     "duo_features_enabled": true,
     "lock_duo_features_enabled": true,
+    "duo_code_suggestions_enabled": true,
+    "lock_duo_code_suggestions_enabled": true,
     "auto_duo_code_review_enabled": "string",
     "duo_code_review_level_allowed": true,
     "duo_code_review_default_level": "lite",
@@ -64706,6 +64899,8 @@ Lists the visible direct subgroups of a specified group.
     "duo_core_features_enabled": true,
     "duo_features_enabled": true,
     "lock_duo_features_enabled": true,
+    "duo_code_suggestions_enabled": true,
+    "lock_duo_code_suggestions_enabled": true,
     "auto_duo_code_review_enabled": "string",
     "duo_code_review_level_allowed": true,
     "duo_code_review_default_level": "lite",
@@ -64900,6 +65095,8 @@ Lists all descendant groups for a specified group. Unauthenticated requests retu
     "duo_core_features_enabled": true,
     "duo_features_enabled": true,
     "lock_duo_features_enabled": true,
+    "duo_code_suggestions_enabled": true,
+    "lock_duo_code_suggestions_enabled": true,
     "auto_duo_code_review_enabled": "string",
     "duo_code_review_level_allowed": true,
     "duo_code_review_default_level": "lite",
@@ -65056,6 +65253,8 @@ Transfers a specified project to another group. Administrators only. To transfer
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -65695,8 +65894,12 @@ Transfers a specified project to another group. Administrators only. To transfer
   "only_allow_merge_if_all_discussions_are_resolved": "string",
   "unique_project_download_limit": "string",
   "unique_project_download_limit_interval_in_seconds": "string",
-  "unique_project_download_limit_allowlist": "string",
-  "unique_project_download_limit_alertlist": "string",
+  "unique_project_download_limit_allowlist": [
+    "string"
+  ],
+  "unique_project_download_limit_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string"
 }
 ```
@@ -65838,6 +66041,8 @@ Lists all groups that a specified source group can be transferred to.
     "duo_core_features_enabled": true,
     "duo_features_enabled": true,
     "lock_duo_features_enabled": true,
+    "duo_code_suggestions_enabled": true,
+    "lock_duo_code_suggestions_enabled": true,
     "auto_duo_code_review_enabled": "string",
     "duo_code_review_level_allowed": true,
     "duo_code_review_default_level": "lite",
@@ -66056,6 +66261,8 @@ Transfers a group to another organization asynchronously. Requires the Owner rol
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -66695,8 +66902,12 @@ Transfers a group to another organization asynchronously. Requires the Owner rol
   "only_allow_merge_if_all_discussions_are_resolved": "string",
   "unique_project_download_limit": "string",
   "unique_project_download_limit_interval_in_seconds": "string",
-  "unique_project_download_limit_allowlist": "string",
-  "unique_project_download_limit_alertlist": "string",
+  "unique_project_download_limit_allowlist": [
+    "string"
+  ],
+  "unique_project_download_limit_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string"
 }
 ```
@@ -66874,6 +67085,8 @@ Adds a group to a group.
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -67513,8 +67726,12 @@ Adds a group to a group.
   "only_allow_merge_if_all_discussions_are_resolved": "string",
   "unique_project_download_limit": "string",
   "unique_project_download_limit_interval_in_seconds": "string",
-  "unique_project_download_limit_allowlist": "string",
-  "unique_project_download_limit_alertlist": "string",
+  "unique_project_download_limit_allowlist": [
+    "string"
+  ],
+  "unique_project_download_limit_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string"
 }
 ```
@@ -71648,7 +71865,9 @@ Retrieves the current application settings for this GitLab instance.
   "archive_builds_in_human_readable": "string",
   "asset_proxy_enabled": "string",
   "asset_proxy_url": "string",
-  "asset_proxy_allowlist": "string",
+  "asset_proxy_allowlist": [
+    "string"
+  ],
   "static_objects_external_storage_auth_token": "string",
   "static_objects_external_storage_url": "string",
   "authn_data_retention_cleanup_enabled": "string",
@@ -71664,7 +71883,9 @@ Retrieves the current application settings for this GitLab instance.
   "ci_job_trace_update_interval_when_being_watched": 0,
   "ci_lint_api_require_authentication": "string",
   "ci_partitions_in_seconds_limit_human_readable": "string",
-  "code_dropdown_custom_clients": "string",
+  "code_dropdown_custom_clients": [
+    {}
+  ],
   "concurrent_github_import_jobs_limit": "string",
   "concurrent_bitbucket_import_jobs_limit": "string",
   "concurrent_bitbucket_server_import_jobs_limit": "string",
@@ -71678,7 +71899,7 @@ Retrieves the current application settings for this GitLab instance.
   "default_artifacts_expire_in": "string",
   "default_branch_name": "string",
   "default_branch_protection": "string",
-  "default_branch_protection_defaults": "string",
+  "default_branch_protection_defaults": {},
   "default_ci_config_path": "string",
   "default_group_visibility": "string",
   "default_preferred_language": "string",
@@ -71692,20 +71913,28 @@ Retrieves the current application settings for this GitLab instance.
   "delete_inactive_projects": "string",
   "deletion_adjourned_period": "string",
   "deny_all_requests_except_allowed": "string",
-  "dependency_management_settings": "string",
+  "dependency_management_settings": {},
   "disable_admin_oauth_scopes": "string",
   "disable_feed_token": "string",
   "disable_password_authentication_for_users_with_sso_identities": "string",
   "block_jwt_for_reclaimed_paths": "string",
   "root_moved_permanently_redirection": "string",
-  "disabled_oauth_sign_in_sources": "string",
-  "domain_denylist": "string",
+  "disabled_oauth_sign_in_sources": [
+    "string"
+  ],
+  "domain_denylist": [
+    "string"
+  ],
   "domain_denylist_enabled": "string",
   "domain_denylist_raw": "string",
-  "domain_allowlist": "string",
+  "domain_allowlist": [
+    "string"
+  ],
   "domain_allowlist_raw": "string",
   "outbound_local_requests_allowlist_raw": "string",
-  "outbound_local_requests_whitelist": "string",
+  "outbound_local_requests_whitelist": [
+    "string"
+  ],
   "dsa_key_restriction": "string",
   "ecdsa_key_restriction": "string",
   "ecdsa_sk_key_restriction": "string",
@@ -71753,9 +71982,13 @@ Retrieves the current application settings for this GitLab instance.
   "housekeeping_optimize_repository_period": "string",
   "html_emails_enabled": "string",
   "iframe_rendering_enabled": "string",
-  "iframe_rendering_allowlist": "string",
+  "iframe_rendering_allowlist": [
+    "string"
+  ],
   "iframe_rendering_allowlist_raw": "string",
-  "import_sources": "string",
+  "import_sources": [
+    "string"
+  ],
   "inactive_resource_access_tokens_delete_after_days": "string",
   "inactive_projects_delete_after_months": "string",
   "inactive_projects_min_size_mb": "string",
@@ -71766,7 +71999,9 @@ Retrieves the current application settings for this GitLab instance.
   "jira_connect_public_key_storage_enabled": "string",
   "jira_connect_proxy_url": "string",
   "jira_connect_additional_audience_url": "string",
-  "jira_connect_domain_allowlist": "string",
+  "jira_connect_domain_allowlist": [
+    "string"
+  ],
   "jira_connect_domain_allowlist_raw": "string",
   "jira_forge_app_id": "string",
   "math_rendering_limits_enabled": "string",
@@ -71808,7 +72043,7 @@ Retrieves the current application settings for this GitLab instance.
   "instance_token_prefix": "string",
   "kroki_enabled": "string",
   "kroki_url": "string",
-  "kroki_formats": "string",
+  "kroki_formats": {},
   "kroki_diagram_proxy_enabled": "string",
   "plantuml_enabled": "string",
   "plantuml_url": "string",
@@ -71829,13 +72064,15 @@ Retrieves the current application settings for this GitLab instance.
   "require_admin_two_factor_authentication": "string",
   "require_two_factor_authentication": "string",
   "remember_me_enabled": "string",
-  "restricted_visibility_levels": "string",
+  "restricted_visibility_levels": [
+    "string"
+  ],
   "rsa_key_restriction": "string",
   "session_expire_delay": "string",
   "session_expire_from_init": "string",
   "shared_runners_enabled": "string",
   "shared_runners_text": "string",
-  "sign_in_restrictions": "string",
+  "sign_in_restrictions": {},
   "signup_enabled": "string",
   "silent_mode_enabled": "string",
   "slack_app_enabled": "string",
@@ -72027,7 +72264,9 @@ Retrieves the current application settings for this GitLab instance.
   "offline_transfer_exports_enabled": "string",
   "offline_transfer_imports_enabled": "string",
   "allow_runner_registration_token": "string",
-  "valid_runner_registrars": "string",
+  "valid_runner_registrars": [
+    "string"
+  ],
   "user_defaults_to_private_profile": "string",
   "deactivation_email_additional_text": "string",
   "projects_api_rate_limit_unauthenticated": "string",
@@ -72059,6 +72298,7 @@ Retrieves the current application settings for this GitLab instance.
   "project_members_api_limit": "string",
   "protected_branch_write_limit": "string",
   "create_organization_api_limit": "string",
+  "delete_merged_branches_limit": "string",
   "cross_reference_checks_limit": "string",
   "user_contributed_projects_api_limit": "string",
   "user_projects_api_limit": "string",
@@ -72080,6 +72320,7 @@ Retrieves the current application settings for this GitLab instance.
   "wiki_read_request_limit_unauthenticated": "string",
   "merge_request_diffs_page_request_limit": "string",
   "merge_request_diff_resources_request_limit": "string",
+  "graphql_participant_fields_request_limit": "string",
   "work_item_hierarchy_add_children_limit": "string",
   "work_item_move_limit": "string",
   "work_item_update_limit": "string",
@@ -72133,7 +72374,7 @@ Retrieves the current application settings for this GitLab instance.
   "global_search_block_anonymous_searches_enabled": "string",
   "enable_language_server_restrictions": "string",
   "minimum_language_server_version": "string",
-  "vscode_extension_marketplace": "string",
+  "vscode_extension_marketplace": {},
   "vscode_extension_marketplace_enabled": "string",
   "vscode_extension_marketplace_extension_host_domain": "string",
   "vscode_extension_marketplace_single_origin_fallback_enabled": "string",
@@ -72143,7 +72384,7 @@ Retrieves the current application settings for this GitLab instance.
   "default_search_scope": "string",
   "git_push_pipeline_limit": "string",
   "delay_user_account_self_deletion": "string",
-  "resource_usage_limits": "string",
+  "resource_usage_limits": {},
   "runner_jobs_request_api_limit": "string",
   "runner_jobs_patch_trace_api_limit": "string",
   "runner_jobs_endpoints_api_limit": "string",
@@ -72164,11 +72405,15 @@ Retrieves the current application settings for this GitLab instance.
   "dynamic_client_registration_enabled": "string",
   "active_context_pause_indexing": "string",
   "allow_all_integrations": "string",
-  "allowed_integrations": "string",
+  "allowed_integrations": [
+    "string"
+  ],
   "allow_group_owners_to_manage_ldap": "string",
   "automatic_purchased_storage_allocation": "string",
   "check_namespace_plan": "string",
-  "ci_cd_catalog_projects_allowlist": "string",
+  "ci_cd_catalog_projects_allowlist": [
+    "string"
+  ],
   "ci_cd_catalog_projects_allowlist_raw": "string",
   "duo_chat_expiration_column": "string",
   "duo_chat_expiration_days": "string",
@@ -72189,15 +72434,21 @@ Retrieves the current application settings for this GitLab instance.
   "elasticsearch_max_bulk_concurrency": "string",
   "elasticsearch_max_bulk_size_mb": "string",
   "elasticsearch_max_code_indexing_concurrency": "string",
-  "elasticsearch_namespace_ids": "string",
+  "elasticsearch_namespace_ids": [
+    0
+  ],
   "elasticsearch_pause_indexing": "string",
   "elasticsearch_advanced_search_pause_indexing": "string",
-  "elasticsearch_project_ids": "string",
+  "elasticsearch_project_ids": [
+    0
+  ],
   "elasticsearch_retry_on_failure": "string",
   "elasticsearch_replicas": "string",
   "elasticsearch_search": "string",
   "elasticsearch_shards": "string",
-  "elasticsearch_url": "string",
+  "elasticsearch_url": [
+    "string"
+  ],
   "elasticsearch_username": "string",
   "elasticsearch_password": "string",
   "elasticsearch_analyzers_smartcn_enabled": "string",
@@ -72225,7 +72476,9 @@ Retrieves the current application settings for this GitLab instance.
   "throttle_incident_management_notification_enabled": "string",
   "throttle_incident_management_notification_per_period": "string",
   "throttle_incident_management_notification_period_in_seconds": "string",
-  "package_metadata_purl_types": "string",
+  "package_metadata_purl_types": [
+    0
+  ],
   "product_analytics_enabled": "string",
   "product_analytics_data_collector_host": "string",
   "product_analytics_configurator_connection_string": "string",
@@ -72241,13 +72494,17 @@ Retrieves the current application settings for this GitLab instance.
   "ai_audit_events_streaming_enabled": true,
   "duo_token_usage_tracking_enabled": true,
   "duo_workflow_file_attachments_enabled": true,
-  "duo_namespace_access_rules": "string",
+  "duo_namespace_access_rules": [
+    {}
+  ],
   "duo_remote_flows_enabled": "string",
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
   "duo_scheduled_automations_enabled": "string",
   "duo_scheduled_automations_availability": "string",
+  "duo_code_suggestions_enabled": true,
+  "duo_code_suggestions_availability": "string",
   "duo_custom_agents_enabled": true,
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_enabled": true,
@@ -72260,7 +72517,9 @@ Retrieves the current application settings for this GitLab instance.
   "duo_auto_mode_availability": "string",
   "enabled_expanded_logging": "string",
   "foundational_agents_default_enabled": "string",
-  "foundational_agents_statuses": "string",
+  "foundational_agents_statuses": [
+    {}
+  ],
   "zoekt_indexing_enabled": "string",
   "zoekt_search_enabled": "string",
   "zoekt_indexing_paused": "string",
@@ -72306,6 +72565,8 @@ Retrieves the current application settings for this GitLab instance.
   "credits_usage_per_minute_limit": "string",
   "credits_usage_per_hour_limit": "string",
   "credits_usage_per_day_limit": "string",
+  "ci_minutes_usage_projects_per_minute_limit": "string",
+  "ci_minutes_usage_projects_per_hour_limit": "string",
   "trial_create_limit": "string",
   "hand_raise_lead_create_limit": "string",
   "user_add_on_assignment_bulk_create_limit": "string",
@@ -72352,9 +72613,11 @@ Retrieves the current application settings for this GitLab instance.
   "password_authentication_enabled": "string",
   "signin_enabled": "string",
   "allow_local_requests_from_hooks_and_services": "string",
-  "asset_proxy_whitelist": "string",
-  "housekeeping_bitmaps_enabled": "string",
-  "repository_storages_weighted": "string",
+  "asset_proxy_whitelist": [
+    "string"
+  ],
+  "housekeeping_bitmaps_enabled": true,
+  "repository_storages_weighted": {},
   "gitlab_product_usage_data_source": "string",
   "container_registry_import_max_tags_count": "string",
   "container_registry_import_max_retries": "string",
@@ -72399,8 +72662,12 @@ Retrieves the current application settings for this GitLab instance.
   "git_two_factor_session_expiry": "string",
   "max_number_of_repository_downloads": "string",
   "max_number_of_repository_downloads_within_time_period": "string",
-  "git_rate_limit_users_allowlist": "string",
-  "git_rate_limit_users_alertlist": "string",
+  "git_rate_limit_users_allowlist": [
+    "string"
+  ],
+  "git_rate_limit_users_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string",
   "delete_unconfirmed_users": "string",
   "unconfirmed_users_delete_after_days": "string",
@@ -72408,6 +72675,7 @@ Retrieves the current application settings for this GitLab instance.
   "lock_duo_custom_agents_enabled": true,
   "lock_duo_custom_flows_enabled": true,
   "lock_duo_external_agents_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "duo_workflows_default_image_registry": "string",
   "duo_template_project_id": "string",
   "ci_telemetry_otel_endpoint": "string",
@@ -72501,7 +72769,8 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "default_projects_limit": 0,
     "default_snippet_visibility": "private",
     "dependency_management_settings": {
-      "security_update_scheduler_max_concurrency": 0
+      "security_update_scheduler_max_concurrency": 0,
+      "security_update_scheduler_project_period_in_seconds": 0
     },
     "disable_admin_oauth_scopes": true,
     "disable_feed_token": true,
@@ -72541,6 +72810,7 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "gitaly_timeout_medium": 0,
     "grafana_enabled": true,
     "grafana_url": "string",
+    "graphql_participant_fields_request_limit": 0,
     "gravatar_enabled": true,
     "help_page_hide_commercial_content": true,
     "help_page_support_url": "string",
@@ -72756,6 +73026,7 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "auto_accept_awarded_achievements": "string",
     "auto_devops_domain": "string",
     "auto_devops_enabled": "string",
+    "block_jwt_for_reclaimed_paths": "string",
     "bulk_import_max_download_file_size": "string",
     "can_create_group": "string",
     "ci_delete_pipelines_in_seconds_limit_human_readable": "string",
@@ -72763,11 +73034,13 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "ci_partitions_in_seconds_limit": "string",
     "ci_partitions_in_seconds_limit_human_readable": "string",
     "commit_email_hostname": "string",
+    "concurrent_relation_export_limit": "string",
     "container_expiration_policies_enable_historic_entries": "string",
     "container_registry_cleanup_tags_service_max_list_size": "string",
     "container_registry_delete_tags_service_timeout": "string",
     "container_registry_expiration_policies_caching": "string",
     "container_registry_expiration_policies_worker_capacity": "string",
+    "create_organization_api_limit": "string",
     "custom_http_clone_url_root": "string",
     "default_branch_name": "string",
     "default_dark_syntax_highlighting_theme": "string",
@@ -72805,17 +73078,31 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "gitlab_product_usage_data_enabled": "string",
     "gitlab_shell_operation_limit": "string",
     "gitlab_shell_operation_per_actor_limit": 0,
+    "group_api_limit": "string",
+    "group_archive_unarchive_api_limit": "string",
+    "group_create_limit": "string",
     "group_hooks_create_limit": "string",
+    "group_download_export_limit": "string",
+    "group_export_limit": "string",
+    "group_import_limit": "string",
+    "group_invited_groups_api_limit": "string",
+    "group_projects_api_limit": "string",
+    "group_shared_groups_api_limit": "string",
+    "groups_api_limit": "string",
     "hashed_storage_enabled": "string",
+    "helm_max_packages_count": "string",
     "hide_third_party_offers": "string",
+    "import_jobs_concurrency_limit": "string",
     "inactive_projects_delete_after_months": "string",
     "inactive_projects_min_size_mb": "string",
     "inactive_projects_send_warning_email_after_months": "string",
     "inactive_resource_access_tokens_delete_after_days": "string",
     "include_optional_metrics_in_service_ping": "string",
+    "issuable_csv_import_limit": "string",
     "keep_latest_artifact": "string",
     "kroki_diagram_proxy_enabled": "string",
     "kroki_formats": "string",
+    "label_delete_limit": "string",
     "lock_require_sha_for_merge": "string",
     "max_http_decompressed_size": "string",
     "max_http_response_csv_structural_chars": "string",
@@ -72826,18 +73113,36 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "max_login_attempts": "string",
     "max_yaml_depth": "string",
     "max_yaml_size_bytes": "string",
+    "members_delete_limit": "string",
     "minimum_password_length": "string",
     "mirror_available": "string",
     "ml_experiment_tracking_run_retention_days": 0,
+    "notes_create_limit": "string",
+    "notes_create_limit_allowlist_raw": "string",
     "notify_on_unknown_sign_in": "string",
+    "nuget_skip_metadata_url_validation": "string",
     "offline_transfer_exports_enabled": "string",
     "offline_transfer_imports_enabled": "string",
     "package_registry_allow_anyone_to_pull_option": "string",
     "package_registry_cleanup_policies_worker_capacity": "string",
+    "pages_deployments_api_limit": "string",
     "pages_domain_verification_enabled": "string",
     "pages_unique_domain_default_enabled": "string",
+    "pg_ash_sample_interval_seconds": "string",
+    "pg_ash_sampling_enabled": "string",
     "plantuml_diagram_proxy_enabled": "string",
+    "project_api_limit": "string",
+    "project_create_limit": "string",
     "project_hooks_create_limit": "string",
+    "project_download_export_limit": "string",
+    "project_export_limit": "string",
+    "project_import_limit": "string",
+    "project_invited_groups_api_limit": "string",
+    "project_members_api_limit": "string",
+    "project_repositories_blame_limit": "string",
+    "project_repositories_blame_unauthenticated_limit": "string",
+    "project_repositories_blobs_batch_limit": "string",
+    "projects_api_limit": "string",
     "projects_api_rate_limit_unauthenticated": "string",
     "protected_ci_variables": "string",
     "rate_limiting_response_text": "string",
@@ -72852,6 +73157,7 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "runner_jobs_request_api_limit": "string",
     "runner_manager_creation_limit": "string",
     "search_rate_limit": "string",
+    "search_rate_limit_allowlist_raw": "string",
     "search_rate_limit_unauthenticated": "string",
     "sidekiq_job_limiter_compression_threshold_bytes": "string",
     "sidekiq_job_limiter_limit_bytes": "string",
@@ -72866,13 +73172,23 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "static_objects_external_storage_auth_token": "string",
     "static_objects_external_storage_url": "string",
     "system_hooks_create_limit": "string",
+    "tags_create_limit": "string",
     "terms": "string",
     "throttle_authenticated_api_enabled": "string",
     "throttle_authenticated_api_period_in_seconds": "string",
     "throttle_authenticated_api_requests_per_period": "string",
+    "throttle_authenticated_deprecated_api_enabled": "string",
+    "throttle_authenticated_deprecated_api_period_in_seconds": "string",
+    "throttle_authenticated_deprecated_api_requests_per_period": "string",
+    "throttle_authenticated_files_api_enabled": "string",
+    "throttle_authenticated_files_api_period_in_seconds": "string",
+    "throttle_authenticated_files_api_requests_per_period": "string",
     "throttle_authenticated_git_http_enabled": "string",
     "throttle_authenticated_git_http_period_in_seconds": "string",
     "throttle_authenticated_git_http_requests_per_period": "string",
+    "throttle_authenticated_git_lfs_enabled": "string",
+    "throttle_authenticated_git_lfs_period_in_seconds": "string",
+    "throttle_authenticated_git_lfs_requests_per_period": "string",
     "throttle_authenticated_mcp_enabled": "string",
     "throttle_authenticated_mcp_period_in_seconds": "string",
     "throttle_authenticated_mcp_requests_per_period": "string",
@@ -72885,9 +73201,18 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "throttle_authenticated_web_enabled": "string",
     "throttle_authenticated_web_period_in_seconds": "string",
     "throttle_authenticated_web_requests_per_period": "string",
+    "throttle_protected_paths_enabled": "string",
+    "throttle_protected_paths_period_in_seconds": "string",
+    "throttle_protected_paths_requests_per_period": "string",
     "throttle_unauthenticated_api_enabled": "string",
     "throttle_unauthenticated_api_period_in_seconds": "string",
     "throttle_unauthenticated_api_requests_per_period": "string",
+    "throttle_unauthenticated_deprecated_api_enabled": "string",
+    "throttle_unauthenticated_deprecated_api_period_in_seconds": "string",
+    "throttle_unauthenticated_deprecated_api_requests_per_period": "string",
+    "throttle_unauthenticated_files_api_enabled": "string",
+    "throttle_unauthenticated_files_api_period_in_seconds": "string",
+    "throttle_unauthenticated_files_api_requests_per_period": "string",
     "throttle_unauthenticated_enabled": "string",
     "throttle_unauthenticated_git_http_enabled": "string",
     "throttle_unauthenticated_git_http_period_in_seconds": "string",
@@ -72901,25 +73226,34 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "throttle_unauthenticated_web_period_in_seconds": "string",
     "throttle_unauthenticated_web_requests_per_period": "string",
     "time_tracking_limit_to_hours": "string",
+    "todos_list_api_limit": "string",
     "top_level_group_creation_enabled": "string",
     "unique_ips_limit_enabled": "string",
     "unique_ips_limit_per_user": "string",
     "unique_ips_limit_time_window": "string",
     "update_runner_versions_enabled": "string",
     "use_clickhouse_for_analytics": "string",
+    "user_contributed_projects_api_limit": "string",
     "user_default_external": "string",
     "user_default_internal_regex": "string",
     "user_defaults_to_private_profile": "string",
     "user_oauth_applications": "string",
+    "user_projects_api_limit": "string",
     "user_show_add_ssh_key_message": "string",
+    "user_starred_projects_api_limit": "string",
     "users_api_limit_followers": "string",
     "users_api_limit_following": "string",
     "users_api_limit_gpg_key": "string",
     "users_api_limit_gpg_keys": "string",
+    "users_api_limit_ssh_key": "string",
+    "users_api_limit_ssh_keys": "string",
     "users_api_limit_status": "string",
+    "users_get_by_id_limit_allowlist_raw": "string",
     "version_check_enabled": "string",
     "web_hook_event_resend_limit": "string",
     "web_hook_test_limit": "string",
+    "wiki_read_request_limit_unauthenticated": "string",
+    "work_item_hierarchy_add_children_limit": "string",
     "elasticsearch_aws": true,
     "elasticsearch_aws_access_key": "string",
     "elasticsearch_aws_region": "string",
@@ -72982,6 +73316,8 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "credits_usage_per_minute_limit": 0,
     "credits_usage_per_hour_limit": 0,
     "credits_usage_per_day_limit": 0,
+    "ci_minutes_usage_projects_per_minute_limit": 0,
+    "ci_minutes_usage_projects_per_hour_limit": 0,
     "trial_create_limit": 0,
     "hand_raise_lead_create_limit": 0,
     "user_add_on_assignment_bulk_create_limit": 0,
@@ -73023,6 +73359,8 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "lock_duo_remote_flows_enabled": true,
     "duo_scheduled_automations_enabled": true,
     "lock_duo_scheduled_automations_enabled": true,
+    "duo_code_suggestions_enabled": true,
+    "lock_duo_code_suggestions_enabled": true,
     "duo_workflows_default_image_registry": "string",
     "ci_telemetry_otel_endpoint": "string",
     "ci_job_telemetry_sampling_rate": 0,
@@ -73048,7 +73386,14 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "automatic_purchased_storage_allocation": "string",
     "check_namespace_plan": "string",
     "delete_unconfirmed_users": "string",
+    "dependency_firewall_policies_per_configuration_limit": "string",
+    "dependency_scanning_sbom_scan_api_download_limit": "string",
+    "dependency_scanning_sbom_scan_api_upload_limit": "string",
     "disable_invite_members": "string",
+    "duo_agent_platform_enabled": "string",
+    "duo_availability": "string",
+    "duo_token_usage_tracking_enabled": "string",
+    "duo_workflow_file_attachments_enabled": "string",
     "elasticsearch_client_adapter": "string",
     "elasticsearch_indexed_field_length_limit": "string",
     "elasticsearch_indexed_file_size_limit_kb": "string",
@@ -73077,18 +73422,22 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "password_number_required": "string",
     "password_symbol_required": "string",
     "password_uppercase_required": "string",
+    "pipeline_execution_policies_per_configuration_limit": "string",
     "project_secrets_limit": "string",
     "scan_execution_policies_action_limit": "string",
+    "scan_execution_policies_per_configuration_limit": "string",
     "scan_execution_policies_schedule_limit": "string",
     "secret_push_protection_available": "string",
     "security_approval_policies_limit": "string",
     "security_mr_report_cache_lifetime_minutes": "string",
     "shared_runners_minutes": "string",
+    "throttle_incident_management_notification_enabled": "string",
+    "throttle_incident_management_notification_per_period": "string",
+    "throttle_incident_management_notification_period_in_seconds": "string",
     "unconfirmed_users_delete_after_days": "string",
+    "vulnerability_management_policies_per_configuration_limit": "string",
     "allow_possible_spam": "string",
-    "import_jobs_concurrency_limit": "string",
     "deny_all_requests_except_allowed": "string",
-    "block_jwt_for_reclaimed_paths": "string",
     "root_moved_permanently_redirection": "string",
     "domain_denylist_raw": "string",
     "domain_allowlist_raw": "string",
@@ -73104,42 +73453,13 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "organization_cluster_agent_authorization_enabled": "string",
     "instance_token_prefix": "string",
     "pages_extra_deployments_default_expiry_seconds": "string",
-    "throttle_authenticated_git_lfs_enabled": "string",
-    "throttle_authenticated_git_lfs_period_in_seconds": "string",
-    "throttle_authenticated_git_lfs_requests_per_period": "string",
-    "throttle_authenticated_files_api_enabled": "string",
-    "throttle_authenticated_files_api_period_in_seconds": "string",
-    "throttle_authenticated_files_api_requests_per_period": "string",
-    "throttle_authenticated_deprecated_api_enabled": "string",
-    "throttle_authenticated_deprecated_api_period_in_seconds": "string",
-    "throttle_authenticated_deprecated_api_requests_per_period": "string",
-    "throttle_unauthenticated_files_api_enabled": "string",
-    "throttle_unauthenticated_files_api_period_in_seconds": "string",
-    "throttle_unauthenticated_files_api_requests_per_period": "string",
-    "throttle_unauthenticated_deprecated_api_enabled": "string",
-    "throttle_unauthenticated_deprecated_api_period_in_seconds": "string",
-    "throttle_unauthenticated_deprecated_api_requests_per_period": "string",
-    "throttle_protected_paths_enabled": "string",
-    "throttle_protected_paths_period_in_seconds": "string",
-    "throttle_protected_paths_requests_per_period": "string",
     "protected_paths_raw": "string",
     "protected_paths_for_get_request_raw": "string",
     "usage_ping_generation_enabled": "string",
     "usage_ping_features_enabled": "string",
-    "project_create_limit": "string",
-    "group_create_limit": "string",
-    "notes_create_limit": "string",
-    "notes_create_limit_allowlist_raw": "string",
     "merge_request_diff_download_request_limit": "string",
     "markdown_upload_limit_megabytes_per_day": "string",
-    "members_delete_limit": "string",
     "milestone_destroy_limit": "string",
-    "project_import_limit": "string",
-    "project_export_limit": "string",
-    "project_download_export_limit": "string",
-    "group_import_limit": "string",
-    "group_export_limit": "string",
-    "group_download_export_limit": "string",
     "resource_access_token_notify_inherited": "string",
     "lock_resource_access_token_notify_inherited": "string",
     "sentry_enabled": "string",
@@ -73147,53 +73467,25 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "sentry_clientside_dsn": "string",
     "sentry_environment": "string",
     "sentry_clientside_traces_sample_rate": "string",
-    "search_rate_limit_allowlist_raw": "string",
-    "users_get_by_id_limit_allowlist_raw": "string",
     "invitation_flow_enforcement": "string",
     "can_create_organization": "string",
-    "concurrent_relation_export_limit": "string",
     "allow_contribution_mapping_to_admins": "string",
     "deactivation_email_additional_text": "string",
     "glql_db_seconds_per_ip_limit": "string",
     "glql_db_seconds_per_query_limit": "string",
     "glql_db_seconds_per_user_limit": "string",
     "glql_duo_db_seconds_per_user_limit": "string",
-    "group_api_limit": "string",
-    "group_archive_unarchive_api_limit": "string",
-    "group_invited_groups_api_limit": "string",
-    "group_shared_groups_api_limit": "string",
-    "group_projects_api_limit": "string",
-    "groups_api_limit": "string",
-    "issuable_csv_import_limit": "string",
-    "label_delete_limit": "string",
     "merge_requests_update_limit": "string",
-    "pages_deployments_api_limit": "string",
-    "project_api_limit": "string",
-    "project_invited_groups_api_limit": "string",
     "project_repositories_archive_limit": "string",
     "project_repositories_archive_unauthenticated_limit": "string",
-    "project_repositories_blame_limit": "string",
-    "project_repositories_blame_unauthenticated_limit": "string",
-    "project_repositories_blobs_batch_limit": "string",
     "project_repository_commits_api_limit": "string",
     "project_repositories_compare_limit": "string",
     "project_repositories_compare_unauthenticated_limit": "string",
-    "projects_api_limit": "string",
-    "project_members_api_limit": "string",
     "protected_branch_write_limit": "string",
-    "create_organization_api_limit": "string",
+    "delete_merged_branches_limit": "string",
     "cross_reference_checks_limit": "string",
-    "user_contributed_projects_api_limit": "string",
-    "user_projects_api_limit": "string",
-    "user_starred_projects_api_limit": "string",
-    "users_api_limit_ssh_keys": "string",
-    "users_api_limit_ssh_key": "string",
-    "tags_create_limit": "string",
-    "todos_list_api_limit": "string",
-    "wiki_read_request_limit_unauthenticated": "string",
     "merge_request_diffs_page_request_limit": "string",
     "merge_request_diff_resources_request_limit": "string",
-    "work_item_hierarchy_add_children_limit": "string",
     "work_item_move_limit": "string",
     "work_item_update_limit": "string",
     "track_namespace_visits_limit": "string",
@@ -73214,14 +73506,10 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "default_search_scope": "string",
     "delay_user_account_self_deletion": "string",
     "background_operations_max_jobs": "string",
-    "pg_ash_sampling_enabled": "string",
-    "pg_ash_sample_interval_seconds": "string",
     "enforce_granular_tokens": "string",
     "granular_tokens_enforced_after": "string",
     "deactivate_dormant_users": "string",
     "deactivate_dormant_users_period": "string",
-    "nuget_skip_metadata_url_validation": "string",
-    "helm_max_packages_count": "string",
     "mcp_server_enabled": "string",
     "dynamic_client_registration_enabled": "string",
     "ci_cd_catalog_projects_allowlist": "string",
@@ -73241,24 +73529,18 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "lock_model_prompt_cache_enabled": "string",
     "model_prompt_cache_enabled": "string",
     "secret_detection_token_revocation_token": "string",
-    "throttle_incident_management_notification_enabled": "string",
-    "throttle_incident_management_notification_per_period": "string",
-    "throttle_incident_management_notification_period_in_seconds": "string",
     "product_analytics_enabled": "string",
     "product_analytics_data_collector_host": "string",
     "product_analytics_configurator_connection_string": "string",
     "cube_api_base_url": "string",
     "cube_api_key": "string",
-    "duo_availability": "string",
-    "duo_agent_platform_enabled": "string",
     "duo_cli_enabled": "string",
     "ai_audit_events_streaming_enabled": "string",
-    "duo_token_usage_tracking_enabled": "string",
-    "duo_workflow_file_attachments_enabled": "string",
     "duo_remote_flows_availability": "string",
     "duo_foundational_flows_enabled": "string",
     "duo_foundational_flows_availability": "string",
     "duo_scheduled_automations_availability": "string",
+    "duo_code_suggestions_availability": "string",
     "duo_custom_agents_availability": "string",
     "duo_custom_flows_availability": "string",
     "duo_external_agents_availability": "string",
@@ -73292,10 +73574,6 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "orbit_dap_enabled_by_default": "string",
     "epic_move_list_limit": "string",
     "duo_workflow_oauth_application_id": "string",
-    "pipeline_execution_policies_per_configuration_limit": "string",
-    "scan_execution_policies_per_configuration_limit": "string",
-    "vulnerability_management_policies_per_configuration_limit": "string",
-    "dependency_firewall_policies_per_configuration_limit": "string",
     "policy_store_experiment_enabled": "string",
     "secret_detection_service_auth_token": "string",
     "secret_detection_service_url": "string",
@@ -73310,8 +73588,6 @@ curl https://gitlab.com/api/v4/api/v4/application/settings \
     "enable_member_promotion_management": "string",
     "allow_deploy_tokens_and_keys_with_external_authn": "string",
     "allow_top_level_group_owners_to_create_service_accounts": "string",
-    "dependency_scanning_sbom_scan_api_upload_limit": "string",
-    "dependency_scanning_sbom_scan_api_download_limit": "string",
     "auto_duo_code_review_on_push_enabled": "string"
   }'
 ```
@@ -73369,7 +73645,8 @@ Updates the current application settings for this GitLab instance. At least one 
   "default_projects_limit": 0,
   "default_snippet_visibility": "private",
   "dependency_management_settings": {
-    "security_update_scheduler_max_concurrency": 0
+    "security_update_scheduler_max_concurrency": 0,
+    "security_update_scheduler_project_period_in_seconds": 0
   },
   "disable_admin_oauth_scopes": true,
   "disable_feed_token": true,
@@ -73409,6 +73686,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "gitaly_timeout_medium": 0,
   "grafana_enabled": true,
   "grafana_url": "string",
+  "graphql_participant_fields_request_limit": 0,
   "gravatar_enabled": true,
   "help_page_hide_commercial_content": true,
   "help_page_support_url": "string",
@@ -73624,6 +73902,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "auto_accept_awarded_achievements": "string",
   "auto_devops_domain": "string",
   "auto_devops_enabled": "string",
+  "block_jwt_for_reclaimed_paths": "string",
   "bulk_import_max_download_file_size": "string",
   "can_create_group": "string",
   "ci_delete_pipelines_in_seconds_limit_human_readable": "string",
@@ -73631,11 +73910,13 @@ Updates the current application settings for this GitLab instance. At least one 
   "ci_partitions_in_seconds_limit": "string",
   "ci_partitions_in_seconds_limit_human_readable": "string",
   "commit_email_hostname": "string",
+  "concurrent_relation_export_limit": "string",
   "container_expiration_policies_enable_historic_entries": "string",
   "container_registry_cleanup_tags_service_max_list_size": "string",
   "container_registry_delete_tags_service_timeout": "string",
   "container_registry_expiration_policies_caching": "string",
   "container_registry_expiration_policies_worker_capacity": "string",
+  "create_organization_api_limit": "string",
   "custom_http_clone_url_root": "string",
   "default_branch_name": "string",
   "default_dark_syntax_highlighting_theme": "string",
@@ -73673,17 +73954,31 @@ Updates the current application settings for this GitLab instance. At least one 
   "gitlab_product_usage_data_enabled": "string",
   "gitlab_shell_operation_limit": "string",
   "gitlab_shell_operation_per_actor_limit": 0,
+  "group_api_limit": "string",
+  "group_archive_unarchive_api_limit": "string",
+  "group_create_limit": "string",
   "group_hooks_create_limit": "string",
+  "group_download_export_limit": "string",
+  "group_export_limit": "string",
+  "group_import_limit": "string",
+  "group_invited_groups_api_limit": "string",
+  "group_projects_api_limit": "string",
+  "group_shared_groups_api_limit": "string",
+  "groups_api_limit": "string",
   "hashed_storage_enabled": "string",
+  "helm_max_packages_count": "string",
   "hide_third_party_offers": "string",
+  "import_jobs_concurrency_limit": "string",
   "inactive_projects_delete_after_months": "string",
   "inactive_projects_min_size_mb": "string",
   "inactive_projects_send_warning_email_after_months": "string",
   "inactive_resource_access_tokens_delete_after_days": "string",
   "include_optional_metrics_in_service_ping": "string",
+  "issuable_csv_import_limit": "string",
   "keep_latest_artifact": "string",
   "kroki_diagram_proxy_enabled": "string",
   "kroki_formats": "string",
+  "label_delete_limit": "string",
   "lock_require_sha_for_merge": "string",
   "max_http_decompressed_size": "string",
   "max_http_response_csv_structural_chars": "string",
@@ -73694,18 +73989,36 @@ Updates the current application settings for this GitLab instance. At least one 
   "max_login_attempts": "string",
   "max_yaml_depth": "string",
   "max_yaml_size_bytes": "string",
+  "members_delete_limit": "string",
   "minimum_password_length": "string",
   "mirror_available": "string",
   "ml_experiment_tracking_run_retention_days": 0,
+  "notes_create_limit": "string",
+  "notes_create_limit_allowlist_raw": "string",
   "notify_on_unknown_sign_in": "string",
+  "nuget_skip_metadata_url_validation": "string",
   "offline_transfer_exports_enabled": "string",
   "offline_transfer_imports_enabled": "string",
   "package_registry_allow_anyone_to_pull_option": "string",
   "package_registry_cleanup_policies_worker_capacity": "string",
+  "pages_deployments_api_limit": "string",
   "pages_domain_verification_enabled": "string",
   "pages_unique_domain_default_enabled": "string",
+  "pg_ash_sample_interval_seconds": "string",
+  "pg_ash_sampling_enabled": "string",
   "plantuml_diagram_proxy_enabled": "string",
+  "project_api_limit": "string",
+  "project_create_limit": "string",
   "project_hooks_create_limit": "string",
+  "project_download_export_limit": "string",
+  "project_export_limit": "string",
+  "project_import_limit": "string",
+  "project_invited_groups_api_limit": "string",
+  "project_members_api_limit": "string",
+  "project_repositories_blame_limit": "string",
+  "project_repositories_blame_unauthenticated_limit": "string",
+  "project_repositories_blobs_batch_limit": "string",
+  "projects_api_limit": "string",
   "projects_api_rate_limit_unauthenticated": "string",
   "protected_ci_variables": "string",
   "rate_limiting_response_text": "string",
@@ -73720,6 +74033,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "runner_jobs_request_api_limit": "string",
   "runner_manager_creation_limit": "string",
   "search_rate_limit": "string",
+  "search_rate_limit_allowlist_raw": "string",
   "search_rate_limit_unauthenticated": "string",
   "sidekiq_job_limiter_compression_threshold_bytes": "string",
   "sidekiq_job_limiter_limit_bytes": "string",
@@ -73734,13 +74048,23 @@ Updates the current application settings for this GitLab instance. At least one 
   "static_objects_external_storage_auth_token": "string",
   "static_objects_external_storage_url": "string",
   "system_hooks_create_limit": "string",
+  "tags_create_limit": "string",
   "terms": "string",
   "throttle_authenticated_api_enabled": "string",
   "throttle_authenticated_api_period_in_seconds": "string",
   "throttle_authenticated_api_requests_per_period": "string",
+  "throttle_authenticated_deprecated_api_enabled": "string",
+  "throttle_authenticated_deprecated_api_period_in_seconds": "string",
+  "throttle_authenticated_deprecated_api_requests_per_period": "string",
+  "throttle_authenticated_files_api_enabled": "string",
+  "throttle_authenticated_files_api_period_in_seconds": "string",
+  "throttle_authenticated_files_api_requests_per_period": "string",
   "throttle_authenticated_git_http_enabled": "string",
   "throttle_authenticated_git_http_period_in_seconds": "string",
   "throttle_authenticated_git_http_requests_per_period": "string",
+  "throttle_authenticated_git_lfs_enabled": "string",
+  "throttle_authenticated_git_lfs_period_in_seconds": "string",
+  "throttle_authenticated_git_lfs_requests_per_period": "string",
   "throttle_authenticated_mcp_enabled": "string",
   "throttle_authenticated_mcp_period_in_seconds": "string",
   "throttle_authenticated_mcp_requests_per_period": "string",
@@ -73753,9 +74077,18 @@ Updates the current application settings for this GitLab instance. At least one 
   "throttle_authenticated_web_enabled": "string",
   "throttle_authenticated_web_period_in_seconds": "string",
   "throttle_authenticated_web_requests_per_period": "string",
+  "throttle_protected_paths_enabled": "string",
+  "throttle_protected_paths_period_in_seconds": "string",
+  "throttle_protected_paths_requests_per_period": "string",
   "throttle_unauthenticated_api_enabled": "string",
   "throttle_unauthenticated_api_period_in_seconds": "string",
   "throttle_unauthenticated_api_requests_per_period": "string",
+  "throttle_unauthenticated_deprecated_api_enabled": "string",
+  "throttle_unauthenticated_deprecated_api_period_in_seconds": "string",
+  "throttle_unauthenticated_deprecated_api_requests_per_period": "string",
+  "throttle_unauthenticated_files_api_enabled": "string",
+  "throttle_unauthenticated_files_api_period_in_seconds": "string",
+  "throttle_unauthenticated_files_api_requests_per_period": "string",
   "throttle_unauthenticated_enabled": "string",
   "throttle_unauthenticated_git_http_enabled": "string",
   "throttle_unauthenticated_git_http_period_in_seconds": "string",
@@ -73769,25 +74102,34 @@ Updates the current application settings for this GitLab instance. At least one 
   "throttle_unauthenticated_web_period_in_seconds": "string",
   "throttle_unauthenticated_web_requests_per_period": "string",
   "time_tracking_limit_to_hours": "string",
+  "todos_list_api_limit": "string",
   "top_level_group_creation_enabled": "string",
   "unique_ips_limit_enabled": "string",
   "unique_ips_limit_per_user": "string",
   "unique_ips_limit_time_window": "string",
   "update_runner_versions_enabled": "string",
   "use_clickhouse_for_analytics": "string",
+  "user_contributed_projects_api_limit": "string",
   "user_default_external": "string",
   "user_default_internal_regex": "string",
   "user_defaults_to_private_profile": "string",
   "user_oauth_applications": "string",
+  "user_projects_api_limit": "string",
   "user_show_add_ssh_key_message": "string",
+  "user_starred_projects_api_limit": "string",
   "users_api_limit_followers": "string",
   "users_api_limit_following": "string",
   "users_api_limit_gpg_key": "string",
   "users_api_limit_gpg_keys": "string",
+  "users_api_limit_ssh_key": "string",
+  "users_api_limit_ssh_keys": "string",
   "users_api_limit_status": "string",
+  "users_get_by_id_limit_allowlist_raw": "string",
   "version_check_enabled": "string",
   "web_hook_event_resend_limit": "string",
   "web_hook_test_limit": "string",
+  "wiki_read_request_limit_unauthenticated": "string",
+  "work_item_hierarchy_add_children_limit": "string",
   "elasticsearch_aws": true,
   "elasticsearch_aws_access_key": "string",
   "elasticsearch_aws_region": "string",
@@ -73850,6 +74192,8 @@ Updates the current application settings for this GitLab instance. At least one 
   "credits_usage_per_minute_limit": 0,
   "credits_usage_per_hour_limit": 0,
   "credits_usage_per_day_limit": 0,
+  "ci_minutes_usage_projects_per_minute_limit": 0,
+  "ci_minutes_usage_projects_per_hour_limit": 0,
   "trial_create_limit": 0,
   "hand_raise_lead_create_limit": 0,
   "user_add_on_assignment_bulk_create_limit": 0,
@@ -73891,6 +74235,8 @@ Updates the current application settings for this GitLab instance. At least one 
   "lock_duo_remote_flows_enabled": true,
   "duo_scheduled_automations_enabled": true,
   "lock_duo_scheduled_automations_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "duo_workflows_default_image_registry": "string",
   "ci_telemetry_otel_endpoint": "string",
   "ci_job_telemetry_sampling_rate": 0,
@@ -73916,7 +74262,14 @@ Updates the current application settings for this GitLab instance. At least one 
   "automatic_purchased_storage_allocation": "string",
   "check_namespace_plan": "string",
   "delete_unconfirmed_users": "string",
+  "dependency_firewall_policies_per_configuration_limit": "string",
+  "dependency_scanning_sbom_scan_api_download_limit": "string",
+  "dependency_scanning_sbom_scan_api_upload_limit": "string",
   "disable_invite_members": "string",
+  "duo_agent_platform_enabled": "string",
+  "duo_availability": "string",
+  "duo_token_usage_tracking_enabled": "string",
+  "duo_workflow_file_attachments_enabled": "string",
   "elasticsearch_client_adapter": "string",
   "elasticsearch_indexed_field_length_limit": "string",
   "elasticsearch_indexed_file_size_limit_kb": "string",
@@ -73945,18 +74298,22 @@ Updates the current application settings for this GitLab instance. At least one 
   "password_number_required": "string",
   "password_symbol_required": "string",
   "password_uppercase_required": "string",
+  "pipeline_execution_policies_per_configuration_limit": "string",
   "project_secrets_limit": "string",
   "scan_execution_policies_action_limit": "string",
+  "scan_execution_policies_per_configuration_limit": "string",
   "scan_execution_policies_schedule_limit": "string",
   "secret_push_protection_available": "string",
   "security_approval_policies_limit": "string",
   "security_mr_report_cache_lifetime_minutes": "string",
   "shared_runners_minutes": "string",
+  "throttle_incident_management_notification_enabled": "string",
+  "throttle_incident_management_notification_per_period": "string",
+  "throttle_incident_management_notification_period_in_seconds": "string",
   "unconfirmed_users_delete_after_days": "string",
+  "vulnerability_management_policies_per_configuration_limit": "string",
   "allow_possible_spam": "string",
-  "import_jobs_concurrency_limit": "string",
   "deny_all_requests_except_allowed": "string",
-  "block_jwt_for_reclaimed_paths": "string",
   "root_moved_permanently_redirection": "string",
   "domain_denylist_raw": "string",
   "domain_allowlist_raw": "string",
@@ -73972,42 +74329,13 @@ Updates the current application settings for this GitLab instance. At least one 
   "organization_cluster_agent_authorization_enabled": "string",
   "instance_token_prefix": "string",
   "pages_extra_deployments_default_expiry_seconds": "string",
-  "throttle_authenticated_git_lfs_enabled": "string",
-  "throttle_authenticated_git_lfs_period_in_seconds": "string",
-  "throttle_authenticated_git_lfs_requests_per_period": "string",
-  "throttle_authenticated_files_api_enabled": "string",
-  "throttle_authenticated_files_api_period_in_seconds": "string",
-  "throttle_authenticated_files_api_requests_per_period": "string",
-  "throttle_authenticated_deprecated_api_enabled": "string",
-  "throttle_authenticated_deprecated_api_period_in_seconds": "string",
-  "throttle_authenticated_deprecated_api_requests_per_period": "string",
-  "throttle_unauthenticated_files_api_enabled": "string",
-  "throttle_unauthenticated_files_api_period_in_seconds": "string",
-  "throttle_unauthenticated_files_api_requests_per_period": "string",
-  "throttle_unauthenticated_deprecated_api_enabled": "string",
-  "throttle_unauthenticated_deprecated_api_period_in_seconds": "string",
-  "throttle_unauthenticated_deprecated_api_requests_per_period": "string",
-  "throttle_protected_paths_enabled": "string",
-  "throttle_protected_paths_period_in_seconds": "string",
-  "throttle_protected_paths_requests_per_period": "string",
   "protected_paths_raw": "string",
   "protected_paths_for_get_request_raw": "string",
   "usage_ping_generation_enabled": "string",
   "usage_ping_features_enabled": "string",
-  "project_create_limit": "string",
-  "group_create_limit": "string",
-  "notes_create_limit": "string",
-  "notes_create_limit_allowlist_raw": "string",
   "merge_request_diff_download_request_limit": "string",
   "markdown_upload_limit_megabytes_per_day": "string",
-  "members_delete_limit": "string",
   "milestone_destroy_limit": "string",
-  "project_import_limit": "string",
-  "project_export_limit": "string",
-  "project_download_export_limit": "string",
-  "group_import_limit": "string",
-  "group_export_limit": "string",
-  "group_download_export_limit": "string",
   "resource_access_token_notify_inherited": "string",
   "lock_resource_access_token_notify_inherited": "string",
   "sentry_enabled": "string",
@@ -74015,53 +74343,25 @@ Updates the current application settings for this GitLab instance. At least one 
   "sentry_clientside_dsn": "string",
   "sentry_environment": "string",
   "sentry_clientside_traces_sample_rate": "string",
-  "search_rate_limit_allowlist_raw": "string",
-  "users_get_by_id_limit_allowlist_raw": "string",
   "invitation_flow_enforcement": "string",
   "can_create_organization": "string",
-  "concurrent_relation_export_limit": "string",
   "allow_contribution_mapping_to_admins": "string",
   "deactivation_email_additional_text": "string",
   "glql_db_seconds_per_ip_limit": "string",
   "glql_db_seconds_per_query_limit": "string",
   "glql_db_seconds_per_user_limit": "string",
   "glql_duo_db_seconds_per_user_limit": "string",
-  "group_api_limit": "string",
-  "group_archive_unarchive_api_limit": "string",
-  "group_invited_groups_api_limit": "string",
-  "group_shared_groups_api_limit": "string",
-  "group_projects_api_limit": "string",
-  "groups_api_limit": "string",
-  "issuable_csv_import_limit": "string",
-  "label_delete_limit": "string",
   "merge_requests_update_limit": "string",
-  "pages_deployments_api_limit": "string",
-  "project_api_limit": "string",
-  "project_invited_groups_api_limit": "string",
   "project_repositories_archive_limit": "string",
   "project_repositories_archive_unauthenticated_limit": "string",
-  "project_repositories_blame_limit": "string",
-  "project_repositories_blame_unauthenticated_limit": "string",
-  "project_repositories_blobs_batch_limit": "string",
   "project_repository_commits_api_limit": "string",
   "project_repositories_compare_limit": "string",
   "project_repositories_compare_unauthenticated_limit": "string",
-  "projects_api_limit": "string",
-  "project_members_api_limit": "string",
   "protected_branch_write_limit": "string",
-  "create_organization_api_limit": "string",
+  "delete_merged_branches_limit": "string",
   "cross_reference_checks_limit": "string",
-  "user_contributed_projects_api_limit": "string",
-  "user_projects_api_limit": "string",
-  "user_starred_projects_api_limit": "string",
-  "users_api_limit_ssh_keys": "string",
-  "users_api_limit_ssh_key": "string",
-  "tags_create_limit": "string",
-  "todos_list_api_limit": "string",
-  "wiki_read_request_limit_unauthenticated": "string",
   "merge_request_diffs_page_request_limit": "string",
   "merge_request_diff_resources_request_limit": "string",
-  "work_item_hierarchy_add_children_limit": "string",
   "work_item_move_limit": "string",
   "work_item_update_limit": "string",
   "track_namespace_visits_limit": "string",
@@ -74082,14 +74382,10 @@ Updates the current application settings for this GitLab instance. At least one 
   "default_search_scope": "string",
   "delay_user_account_self_deletion": "string",
   "background_operations_max_jobs": "string",
-  "pg_ash_sampling_enabled": "string",
-  "pg_ash_sample_interval_seconds": "string",
   "enforce_granular_tokens": "string",
   "granular_tokens_enforced_after": "string",
   "deactivate_dormant_users": "string",
   "deactivate_dormant_users_period": "string",
-  "nuget_skip_metadata_url_validation": "string",
-  "helm_max_packages_count": "string",
   "mcp_server_enabled": "string",
   "dynamic_client_registration_enabled": "string",
   "ci_cd_catalog_projects_allowlist": "string",
@@ -74109,24 +74405,18 @@ Updates the current application settings for this GitLab instance. At least one 
   "lock_model_prompt_cache_enabled": "string",
   "model_prompt_cache_enabled": "string",
   "secret_detection_token_revocation_token": "string",
-  "throttle_incident_management_notification_enabled": "string",
-  "throttle_incident_management_notification_per_period": "string",
-  "throttle_incident_management_notification_period_in_seconds": "string",
   "product_analytics_enabled": "string",
   "product_analytics_data_collector_host": "string",
   "product_analytics_configurator_connection_string": "string",
   "cube_api_base_url": "string",
   "cube_api_key": "string",
-  "duo_availability": "string",
-  "duo_agent_platform_enabled": "string",
   "duo_cli_enabled": "string",
   "ai_audit_events_streaming_enabled": "string",
-  "duo_token_usage_tracking_enabled": "string",
-  "duo_workflow_file_attachments_enabled": "string",
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
   "duo_scheduled_automations_availability": "string",
+  "duo_code_suggestions_availability": "string",
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_availability": "string",
   "duo_external_agents_availability": "string",
@@ -74160,10 +74450,6 @@ Updates the current application settings for this GitLab instance. At least one 
   "orbit_dap_enabled_by_default": "string",
   "epic_move_list_limit": "string",
   "duo_workflow_oauth_application_id": "string",
-  "pipeline_execution_policies_per_configuration_limit": "string",
-  "scan_execution_policies_per_configuration_limit": "string",
-  "vulnerability_management_policies_per_configuration_limit": "string",
-  "dependency_firewall_policies_per_configuration_limit": "string",
   "policy_store_experiment_enabled": "string",
   "secret_detection_service_auth_token": "string",
   "secret_detection_service_url": "string",
@@ -74178,8 +74464,6 @@ Updates the current application settings for this GitLab instance. At least one 
   "enable_member_promotion_management": "string",
   "allow_deploy_tokens_and_keys_with_external_authn": "string",
   "allow_top_level_group_owners_to_create_service_accounts": "string",
-  "dependency_scanning_sbom_scan_api_upload_limit": "string",
-  "dependency_scanning_sbom_scan_api_download_limit": "string",
   "auto_duo_code_review_on_push_enabled": "string"
 }
 ```
@@ -74194,21 +74478,21 @@ Updates the current application settings for this GitLab instance. At least one 
 |» abuse_notification_email|body|string \| null|false|If set, [abuse reports](https://docs.gitlab.com/administration/review_abuse_reports/) are sent to this address. Abuse reports are always available in the **Admin** area.|
 |» after_sign_up_text|body|string \| null|false|Text shown after sign up.|
 |» after_sign_out_path|body|string \| null|false|Users are redirected to this page after they sign out.|
-|» akismet_enabled|body|boolean \| null|false|If `true`, helps prevent bots from creating issues. Requires `akismet_api_key`.|
-|» akismet_api_key|body|string \| null|false|Generate API key at http://www.akismet.com|
-|» asset_proxy_enabled|body|boolean \| null|false|Enable proxying of assets|
-|» asset_proxy_url|body|string \| null|false|URL of the asset proxy server|
-|» asset_proxy_secret_key|body|string \| null|false|Shared secret with the asset proxy server|
+|» akismet_enabled|body|boolean \| null|false|If `true`, enables Akismet spam protection, which helps prevent bots from creating issues. Requires `akismet_api_key`.|
+|» akismet_api_key|body|string \| null|false|API key for Akismet spam protection. Generate API key at http://www.akismet.com|
+|» asset_proxy_enabled|body|boolean \| null|false|Enable proxying of assets. Requires `asset_proxy_url` and `asset_proxy_secret_key`. GitLab restart is required to apply changes.|
+|» asset_proxy_url|body|string \| null|false|URL of the asset proxy server. GitLab restart is required to apply changes.|
+|» asset_proxy_secret_key|body|string \| null|false|Shared secret with the asset proxy server. GitLab restart is required to apply changes.|
 |» asset_proxy_whitelist|body|[string]|false|Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes. Deprecated. Use `asset_proxy_allowlist` instead.|
 |» asset_proxy_allowlist|body|[string]|false|Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes.|
-|» authn_data_retention_cleanup_enabled|body|boolean \| null|false|If `true`, runs cleanup workers that permanently delete authentication login history older than one year, and previously revoked OAuth access tokens and grants older than one month. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579002) in GitLab 18.7.|
+|» authn_data_retention_cleanup_enabled|body|boolean \| null|false|If `true`, runs cleanup workers that permanently delete authentication login history older than one year, and previously revoked OAuth access tokens and grants older than one month. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579002) in GitLab 18.7.|
 |» container_registry_token_expire_delay|body|integer \| null|false|Duration, in minutes, that container registry authorization tokens remain valid.|
 |» oauth_access_token_expires_in|body|integer \| null|false|Maximum lifetime in seconds of all new OAuth access tokens issued by the instance. Minimum value: `300` (5 minutes). Default value: `7200` (2 hours). If blank or `null`, uses default value. Does not affect existing OAuth access tokens.|
 |» decompress_archive_file_timeout|body|integer \| null|false|Timeout for decompressing archived files, in seconds. Set to `0` to disable the timeout.|
 |» default_artifacts_expire_in|body|string \| null|false|Set the default expiration time for each job's artifacts.|
 |» default_ci_config_path|body|string \| null|false|Default CI/CD configuration file and path for new projects. If empty, new projects use `.gitlab-ci.yml`.|
 |» default_project_creation|body|integer \| null|false|Default minimum role required to create projects. Can take: `0` _(No one)_, `1` _(Maintainers)_, `2` _(Developers)_, `3` _(Administrators)_, or `4` _(Owners)_.|
-|» default_remove_source_branch_after_merge|body|boolean \| null|false|Enable the delete source branch option by default for new projects|
+|» default_remove_source_branch_after_merge|body|boolean \| null|false|Enable the delete source branch option by default for new projects. Default is `true`.|
 |» default_branch_protection|body|integer \| null|false|Level of protection for the default branch. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.|
 |» default_branch_protection_defaults|body|object \| null|false|Default branch protection settings. For available options, see [Options for `default_branch_protection_defaults`](https://docs.gitlab.com/api/groups/#options-for-default_branch_protection_defaults). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0.|
 |» » allowed_to_push|body|[object]|false|Array of access levels allowed to push to the default branch.|
@@ -74222,9 +74506,10 @@ Updates the current application settings for this GitLab instance. At least one 
 |» default_project_visibility|body|string \| null|false|What visibility level new projects receive. Default is `private`. Cannot be set to any levels in `restricted_visibility_levels`.|
 |» default_projects_limit|body|integer \| null|false|Maximum number of personal projects per user. Default is `100000`.|
 |» default_snippet_visibility|body|string \| null|false|What visibility level new snippets receive. Default is `private`.|
-|» dependency_management_settings|body|object \| null|false|Dependency management settings. Set `security_update_scheduler_max_concurrency` (integer) to cap the number of security update scheduler jobs that run concurrently across the Sidekiq fleet. Default: `30`. Capped at `200`. Set to `0` to remove the concurrency limit. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239173) in GitLab 19.1.|
+|» dependency_management_settings|body|object \| null|false|Dependency management settings. Set `security_update_scheduler_max_concurrency` (integer) to cap the number of security update scheduler jobs that run concurrently across the Sidekiq fleet. Default: `30`. Capped at `200`. Set to `0` to remove the concurrency limit. Set `security_update_scheduler_project_period_in_seconds` (integer) to the seconds between security update scheduler runs for each project. Default: `300`. Maximum: `86400`. Set the period to `0` to remove the rate limit. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239173) in GitLab 19.1.|
 |» » security_update_scheduler_max_concurrency|body|integer \| null|false|Maximum number of dependency management security update scheduler jobs to run concurrently across the Sidekiq fleet.|
-|» disable_admin_oauth_scopes|body|boolean \| null|false|Stop administrators from connecting to non-trusted OAuth applications.|
+|» » security_update_scheduler_project_period_in_seconds|body|integer \| null|false|Seconds between dependency management security update scheduler runs for each project. Default: `300`. Maximum: `86400`. Set to `0` to remove the limit.|
+|» disable_admin_oauth_scopes|body|boolean \| null|false|Stop administrators from connecting to non-trusted OAuth applications that have the `api`, `read_api`, `read_repository`, `write_repository`, `read_registry`, `write_registry`, `sudo`, `admin_mode`, or `read_service_ping` scopes.|
 |» disable_feed_token|body|boolean \| null|false|Disable display of RSS/Atom and Calendar `feed_tokens`|
 |» disabled_oauth_sign_in_sources|body|[string]|false|OAuth sign-in sources to disable.|
 |» discussions_resolve_limit|body|integer \| null|false|Maximum number of thread resolve and unresolve requests per minute for each user. Default: `0`, which disables the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606720) in GitLab 19.6.|
@@ -74233,9 +74518,9 @@ Updates the current application settings for this GitLab instance. At least one 
 |» domain_denylist|body|[string]|false|Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com|
 |» domain_allowlist|body|[string]|false|Only users with email addresses that match these domains can sign up. Wildcards allowed. For example, `domain.com` or `*.domain.com`. If empty, all domains are allowed.|
 |» outbound_local_requests_whitelist|body|[string]|false|List of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled.|
-|» email_otp_enabled|body|boolean \| null|false|If `true`, enables email-based one-time passwords (OTP) as a multi-factor authentication method. Requires `require_email_verification_on_account_locked` to be `true`.|
+|» email_otp_enabled|body|boolean \| null|false|If `true`, enables email-based one-time passwords (OTP) as a multi-factor authentication method. Requires `require_email_verification_on_account_locked` to be `true`. Default is `false`.|
 |» environment_delete_rows_limit_per_user|body|integer \| null|false|Maximum number of deployment, job, and merge request link rows each user can delete with environments every minute.|
-|» iframe_rendering_enabled|body|boolean \| null|false|If `true`, allows rendering of iframes in Markdown.|
+|» iframe_rendering_enabled|body|boolean \| null|false|If `true`, allows rendering of iframes in Markdown. Default is `false`.|
 |» iframe_rendering_allowlist|body|[string]|false|IDs of embed providers users can embed content from. Enter multiple entries separated by commas or on separate lines.|
 |» iframe_rendering_allowlist_raw|body|string \| null|false|Raw newline- or comma-separated list of IDs of embed providers users can embed content from.|
 |» eks_integration_enabled|body|boolean \| null|false|Enable integration with Amazon EKS|
@@ -74245,33 +74530,34 @@ Updates the current application settings for this GitLab instance. At least one 
 |» email_author_in_body|body|boolean \| null|false|If `true`, includes the name of the issue, merge request, or comment author in the email body. Useful when email servers do not support overriding the sender name.|
 |» email_confirmation_setting|body|string \| null|false|Specifies whether users must confirm their email address before signing in. `off` does not require confirmation, `soft` allows sign-in during a confirmation period, and `hard` requires confirmation before sign-in.|
 |» enabled_git_access_protocol|body|string \| null|false|Protocol allowed for Git access. Set to `all` to allow both SSH and HTTP(S).|
-|» gitpod_enabled|body|boolean \| null|false|If `true`, enables [Ona integration](https://docs.gitlab.com/integration/gitpod/). Requires `gitpod_url`.|
+|» gitpod_enabled|body|boolean \| null|false|If `true`, enables [Ona integration](https://docs.gitlab.com/integration/gitpod/). Default is `false`. Requires `gitpod_url`.|
 |» gitpod_url|body|string \| null|false|Ona instance URL for the integration.|
 |» gitaly_timeout_default|body|integer \| null|false|Default Gitaly timeout, in seconds. Set to `0` to disable timeouts.|
 |» gitaly_timeout_fast|body|integer \| null|false|Gitaly fast operation timeout, in seconds. Set to 0 to disable timeouts.|
-|» gitaly_timeout_medium|body|integer \| null|false|Medium Gitaly timeout, in seconds. Set to 0 to disable timeouts.|
+|» gitaly_timeout_medium|body|integer \| null|false|Medium Gitaly timeout, in seconds. Must be between `gitaly_timeout_fast` and `gitaly_timeout_default`. Set to 0 to disable timeouts.|
 |» grafana_enabled|body|boolean \| null|false|If `true`, enables Grafana.|
 |» grafana_url|body|string \| null|false|Grafana URL.|
+|» graphql_participant_fields_request_limit|body|integer \| null|false|Maximum number of GraphQL requests per minute for each user, or for each IP address for unauthenticated requests, that resolve the `participants` and `subscribed` fields more than 20 times in total. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/271502) in GitLab 19.7.|
 |» gravatar_enabled|body|boolean \| null|false|If `true`, enables the Gravatar service.|
 |» help_page_hide_commercial_content|body|boolean \| null|false|If `true`, hides marketing-related entries from help.|
 |» help_page_support_url|body|string \| null|false|Alternate support URL for help page and help dropdown.|
 |» help_page_documentation_base_url|body|string \| null|false|Alternate documentation pages URL.|
 |» help_page_text|body|string \| null|false|Custom text displayed on the help page.|
 |» home_page_url|body|string \| null|false|Users who are not signed in are redirected to this page.|
-|» housekeeping_enabled|body|boolean \| null|false|Enable automatic repository housekeeping (git repack, git gc)|
+|» housekeeping_enabled|body|boolean \| null|false|Enable automatic repository housekeeping (git repack, git gc). When `true`, also set either `housekeeping_optimize_repository_period` or all of `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period`.|
 |» housekeeping_full_repack_period|body|integer \| null|false|Number of Git pushes after which a full `git repack` is run. Deprecated. Use `housekeeping_optimize_repository_period` instead. All or none of `housekeeping_full_repack_period`, `housekeeping_gc_period`, `housekeeping_incremental_repack_period` must be provided.|
 |» housekeeping_gc_period|body|integer \| null|false|Number of Git pushes after which `git gc` is run. Deprecated. Use `housekeeping_optimize_repository_period` instead. All or none of `housekeeping_full_repack_period`, `housekeeping_gc_period`, `housekeeping_incremental_repack_period` must be provided.|
 |» housekeeping_incremental_repack_period|body|integer \| null|false|Number of Git pushes after which an incremental `git repack` is run. Deprecated. Use `housekeeping_optimize_repository_period` instead. Exactly one of `housekeeping_incremental_repack_period`, `housekeeping_optimize_repository_period` must be provided. All or none of `housekeeping_full_repack_period`, `housekeeping_gc_period`, `housekeeping_incremental_repack_period` must be provided.|
 |» housekeeping_optimize_repository_period|body|integer \| null|false|Number of Git pushes after which Gitaly is asked to optimize a repository. Exactly one of `housekeeping_incremental_repack_period`, `housekeeping_optimize_repository_period` must be provided.|
 |» html_emails_enabled|body|boolean \| null|false|If `true`, sends emails in both HTML and plain text formats. If `false`, sends emails in plain text only. Defaults to `true`.|
 |» import_sources|body|[string]|false|Sources to allow project import from. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com.|
-|» invisible_captcha_enabled|body|boolean \| null|false|If `true`, enables Invisible CAPTCHA spam detection during account creation.|
+|» invisible_captcha_enabled|body|boolean \| null|false|If `true`, enables Invisible CAPTCHA spam detection during account creation. Default is `false`.|
 |» max_artifacts_size|body|integer \| null|false|Maximum file size, in MB, for each job's artifacts.|
 |» max_attachment_size|body|integer \| null|false|Maximum attachment size in MB.|
-|» max_export_size|body|integer \| null|false|Maximum export size in MB|
+|» max_export_size|body|integer \| null|false|Maximum export size in MB. Set to `0` for unlimited. Default is `0`.|
 |» max_github_response_size_limit|body|integer \| null|false|Maximum size in MB for GitHub API responses. Set to `0` for unlimited size.|
 |» max_github_response_json_value_count|body|integer \| null|false|Maximum object count for GitHub API responses. Set to `0` for unlimited. The count is an estimate based on the number of `:`, `,`, `{`, and `[` characters in the response.|
-|» max_import_size|body|integer \| null|false|Maximum import size in MB|
+|» max_import_size|body|integer \| null|false|Maximum import size in MB. Set to `0` for unlimited. Default is `0`.|
 |» max_import_record_size|body|integer \| null|false|Maximum size in MiB of a single record in an import file. Set to `0` for unlimited. Default is `50`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/631025) in GitLab 19.7.|
 |» max_import_remote_file_size|body|integer \| null|false|Maximum remote file size in MB for imports from external object storages|
 |» max_decompressed_archive_size|body|integer \| null|false|Maximum decompressed file size for imported archives in MB. Set to `0` for unlimited. Default is `25600`.|
@@ -74285,8 +74571,8 @@ Updates the current application settings for this GitLab instance. At least one 
 |» metrics_method_call_threshold|body|integer \| null|false|Method call is only tracked if it takes longer than this threshold, in milliseconds.|
 |» o11y_provisioner_api_key|body|string \| null|false|API key GitLab sends to the Observability provisioner. GitLab.com only. Not returned in responses.|
 |» o11y_provisioner_url|body|string \| null|false|URL of the Observability provisioner API. GitLab.com only.|
-|» pages_domain_create_limit|body|integer \| null|false|Maximum number of Pages custom domains each user can create per day. Default: `50`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/635642) in GitLab 19.6.|
-|» pages_domain_verify_limit|body|integer \| null|false|Maximum number of Pages custom domain verification requests per minute for each user. Default: `5`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/635642) in GitLab 19.6.|
+|» pages_domain_create_limit|body|integer \| null|false|Maximum number of Pages custom domains each user can create per day. Default: `50`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268633) in GitLab 19.6.|
+|» pages_domain_verify_limit|body|integer \| null|false|Maximum number of Pages custom domain verification requests per minute for each user. Default: `5`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268633) in GitLab 19.6.|
 |» password_authentication_enabled|body|boolean \| null|false|Flag indicating if password authentication is enabled for the web interface. Mutually exclusive with `password_authentication_enabled_for_web`, `signin_enabled`.|
 |» password_authentication_enabled_for_web|body|boolean \| null|false|If `true`, enables authentication for the web interface via a GitLab account password. Defaults to `true`. Mutually exclusive with `password_authentication_enabled`, `signin_enabled`.|
 |» signin_enabled|body|boolean \| null|false|If `true`, enables password authentication for the web interface. Deprecated. Use `password_authentication_enabled_for_web` instead. Mutually exclusive with `password_authentication_enabled_for_web`, `password_authentication_enabled`.|
@@ -74296,9 +74582,9 @@ Updates the current application settings for this GitLab instance. At least one 
 |» performance_bar_enabled|body|string \| null|false|Deprecated: Pass `performance_bar_allowed_group_path: nil` instead. Allow enabling the performance.|
 |» personal_access_token_prefix|body|string \| null|false|Prefix to prepend to all personal access tokens.|
 |» require_personal_access_token_expiry|body|boolean \| null|false|If `true`, requires an expiration date on group and project access tokens, and on personal access tokens not owned by service accounts.|
-|» kroki_enabled|body|boolean \| null|false|If `true`, enables [Kroki integration](https://docs.gitlab.com/administration/integration/kroki/). Requires `kroki_url`.|
+|» kroki_enabled|body|boolean \| null|false|If `true`, enables [Kroki integration](https://docs.gitlab.com/administration/integration/kroki/). Default is `false`. Requires `kroki_url`.|
 |» kroki_url|body|string \| null|false|Kroki server URL.|
-|» plantuml_enabled|body|boolean \| null|false|If `true`, enables [PlantUML integration](https://docs.gitlab.com/administration/integration/plantuml/). Requires `plantuml_url`.|
+|» plantuml_enabled|body|boolean \| null|false|If `true`, enables [PlantUML integration](https://docs.gitlab.com/administration/integration/plantuml/). Default is `false`. Requires `plantuml_url`.|
 |» plantuml_url|body|string \| null|false|The PlantUML server URL|
 |» diagramsnet_enabled|body|boolean \| null|false|If `true`, enables [Diagrams.net integration](https://docs.gitlab.com/administration/integration/diagrams_net/). Requires `diagramsnet_url`. Defaults to `true`.|
 |» diagramsnet_url|body|string \| null|false|The Diagrams.net server URL|
@@ -74308,9 +74594,9 @@ Updates the current application settings for this GitLab instance. At least one 
 |» push_event_hooks_limit|body|integer \| null|false|Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. Default: `3`.|
 |» push_event_activities_limit|body|integer \| null|false|Maximum number of changes (branches or tags) in a single push above which a bulk push event is created. Setting to `0` does not disable throttling.|
 |» recaptcha_enabled|body|boolean \| null|false|If `true`, enables reCAPTCHA. Requires `recaptcha_private_key` and `recaptcha_site_key`.|
-|» recaptcha_site_key|body|string \| null|false|Generate site key at http://www.google.com/recaptcha|
-|» recaptcha_private_key|body|string \| null|false|Generate private key at http://www.google.com/recaptcha|
-|» login_recaptcha_protection_enabled|body|boolean \| null|false|Helps prevent brute-force attacks|
+|» recaptcha_site_key|body|string \| null|false|Site key for reCAPTCHA. Generate site key at http://www.google.com/recaptcha|
+|» recaptcha_private_key|body|string \| null|false|Private key for reCAPTCHA. Generate private key at http://www.google.com/recaptcha|
+|» login_recaptcha_protection_enabled|body|boolean \| null|false|If `true`, enables reCAPTCHA for login, which helps prevent brute-force attacks.|
 |» repository_checks_enabled|body|boolean \| null|false|If `true`, GitLab periodically runs `git fsck` in all project and wiki repositories to look for silent disk corruption issues.|
 |» repository_storages_weighted|body|object \| null|false|Hash of names of storages taken from `gitlab.yml` to [weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored) ranging from 0 to 100. New projects are created in one of these stores, chosen by a weighted random selection.|
 |» » **additionalProperties**|body|integer|false|none|
@@ -74319,14 +74605,14 @@ Updates the current application settings for this GitLab instance. At least one 
 |» restricted_visibility_levels|body|[string]|false|Selected levels cannot be used by non-administrator users for groups, projects, or snippets. Can take `private`, `internal`, and `public` as a parameter. If the `public` level is restricted, user profiles are only visible to signed-in users. If empty, no levels are restricted. Cannot select levels that are set as `default_project_visibility` and `default_group_visibility`.|
 |» session_expire_delay|body|integer \| null|false|Session duration in minutes. Requires a GitLab restart to apply changes.|
 |» session_expire_from_init|body|boolean \| null|false|If `true`, sessions expire a number of minutes after the session was created rather than after the last activity. The session lifetime is defined by `session_expire_delay`.|
-|» shared_runners_enabled|body|boolean \| null|false|Enable shared runners for new projects|
+|» shared_runners_enabled|body|boolean \| null|false|Enable shared runners for new projects. Requires `shared_runners_text`.|
 |» shared_runners_text|body|string \| null|false|Shared runners text |
 |» valid_runner_registrars|body|[string]|false|List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']`, or `['group', 'project']`.|
 |» signup_enabled|body|boolean \| null|false|If `true`, enables registration. Defaults to `true`.|
-|» sourcegraph_enabled|body|boolean \| null|false|If `true`, enables Sourcegraph integration. Requires `sourcegraph_url`.|
+|» sourcegraph_enabled|body|boolean \| null|false|If `true`, enables Sourcegraph integration. Default is `false`. Requires `sourcegraph_url`.|
 |» sourcegraph_public_only|body|boolean \| null|false|If `true`, blocks Sourcegraph from being loaded on private and internal projects. Defaults to `true`.|
 |» sourcegraph_url|body|string \| null|false|Configured Sourcegraph instance URL.|
-|» spam_check_endpoint_enabled|body|boolean \| null|false|Enable Spam Check via external API endpoint|
+|» spam_check_endpoint_enabled|body|boolean \| null|false|Enable Spam Check via external API endpoint. Default is `false`.|
 |» spam_check_endpoint_url|body|string \| null|false|URL of the external Spamcheck service endpoint. Valid URI schemes are `grpc` or `tls`. Specifying `tls` forces communication to be encrypted.|
 |» terminal_max_session_time|body|integer \| null|false|Maximum time for a web terminal WebSocket connection, in seconds. Set to `0` for unlimited time.|
 |» usage_ping_enabled|body|boolean \| null|false|Every week GitLab will report license usage back to GitLab, Inc.|
@@ -74338,14 +74624,14 @@ Updates the current application settings for this GitLab instance. At least one 
 |» snowplow_collector_hostname|body|string \| null|false|The Snowplow collector hostname|
 |» snowplow_cookie_domain|body|string \| null|false|Snowplow cookie domain, for example `.gitlab.com`.|
 |» snowplow_app_id|body|string \| null|false|Snowplow site name or application ID, for example `gitlab`.|
-|» issues_create_limit|body|integer \| null|false|Maximum number of issue creation requests allowed per minute per user. Set to 0 for unlimited requests per minute.|
+|» issues_create_limit|body|integer \| null|false|Maximum number of issue creation requests allowed per minute per user. Set to 0 for unlimited requests per minute. Default is `300`.|
 |» raw_blob_request_limit|body|integer \| null|false|Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling.|
 |» raw_blob_request_limit_unauthenticated|body|integer \| null|false|Maximum number of unauthenticated requests per minute across all raw paths in a project (default is `800`). Set to `0` to disable throttling.|
 |» release_evidence_collections_limit_per_user|body|integer \| null|false|Maximum number of release evidence collection requests a user can make per minute. Set to `0` to disable the limit.|
 |» release_writes_limit_per_project|body|integer \| null|false|Maximum number of release create and update requests per minute for each project. Set to `0` to disable the limit.|
 |» release_writes_limit_per_user|body|integer \| null|false|Maximum number of release create and update requests a user can make per minute. Set to `0` to disable the limit.|
 |» wiki_page_max_content_bytes|body|integer \| null|false|Maximum wiki page content size in bytes. Default: 5242880 bytes (5 MB). The minimum value is 1024 bytes.|
-|» description_and_note_max_size|body|integer \| null|false|Maximum work item, merge request, and vulnerability description and comment content size in bytes.|
+|» description_and_note_max_size|body|integer \| null|false|Maximum work item, merge request, and vulnerability description and comment content size in bytes. Default is `1048576`.|
 |» wiki_asciidoc_allow_uri_includes|body|boolean \| null|false|If `true`, allows URI includes for AsciiDoc wiki pages.|
 |» require_admin_approval_after_user_signup|body|boolean \| null|false|If `true`, requires explicit administrator approval for new signups.|
 |» whats_new_variant|body|string \| null|false|Which features [What's new](https://docs.gitlab.com/administration/whats-new/) shows. `all_tiers` shows features for all tiers, `current_tier` shows only features for the instance's tier, and `disabled` hides What's new.|
@@ -74353,7 +74639,7 @@ Updates the current application settings for this GitLab instance. At least one 
 |» user_deactivation_emails_enabled|body|boolean \| null|false|If `true`, sends emails to users when their account is deactivated.|
 |» show_migrate_from_jenkins_banner|body|boolean \| null|false|If `true`, shows the Jenkins migration banner.|
 |» enable_artifact_external_redirect_warning_page|body|boolean \| null|false|If `true`, shows the external redirect page that warns about user-generated content in GitLab Pages.|
-|» users_get_by_id_limit|body|integer \| null|false|Maximum number of calls to the `/users/:id` API per 10 minutes per user. Set to `0` for unlimited requests.|
+|» users_get_by_id_limit|body|integer \| null|false|Maximum number of calls to the `/users/:id` API per 10 minutes per user. Set to `0` for unlimited requests. Default: `300`.|
 |» runner_token_expiration_interval|body|integer \| null|false|Set the expiration time (in seconds) of authentication tokens of newly registered instance runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](https://docs.gitlab.com/ci/runners/configure_runners/#automatically-rotate-runner-authentication-tokens).|
 |» group_runner_token_expiration_interval|body|integer \| null|false|Set the expiration time (in seconds) of authentication tokens of newly registered group runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](https://docs.gitlab.com/ci/runners/configure_runners/#automatically-rotate-runner-authentication-tokens).|
 |» project_runner_token_expiration_interval|body|integer \| null|false|Set the expiration time (in seconds) of authentication tokens of newly registered project runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](https://docs.gitlab.com/ci/runners/configure_runners/#automatically-rotate-runner-authentication-tokens).|
@@ -74367,12 +74653,12 @@ Updates the current application settings for this GitLab instance. At least one 
 |» jira_connect_domain_allowlist_raw|body|string \| null|false|Raw newline- or comma-separated list of Jira domains that can install the GitLab for Jira Cloud app. Applies to the Connect app only.|
 |» jira_forge_app_id|body|string \| null|false|Atlassian Forge app ID (ARI) of the GitLab for Jira Cloud app, used to verify inbound Forge Invocation Tokens.|
 |» bulk_import_concurrent_pipeline_batch_limit|body|integer \| null|false|Maximum number of simultaneous direct transfer batch exports to process.|
-|» concurrent_relation_batch_export_limit|body|integer \| null|false|Maximum number of simultaneous batch export jobs to process.|
+|» concurrent_relation_batch_export_limit|body|integer \| null|false|Maximum number of simultaneous batch export jobs to process. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6.|
 |» project_export_limit_per_root_namespace|body|integer \| null|false|Maximum number of project export requests every 10 minutes for each top-level group or personal namespace, across all its projects. Default: 0. Set to `0` for no limit.|
-|» project_relations_export_limit|body|integer \| null|false|Maximum number of project relations export requests per minute per user for each project during direct transfer migrations. Set to `0` to disable the rate limit.|
-|» project_relations_export_download_limit|body|integer \| null|false|Maximum number of project relations export downloads per minute per user for each project during direct transfer migrations. Set to `0` to disable the rate limit.|
-|» group_relations_export_limit|body|integer \| null|false|Maximum number of group relations export requests per minute per user for each group during direct transfer migrations. Set to `0` to disable the rate limit.|
-|» group_relations_export_download_limit|body|integer \| null|false|Maximum number of group relations export downloads per minute per user for each group during direct transfer migrations. Set to `0` to disable the rate limit.|
+|» project_relations_export_limit|body|integer \| null|false|Maximum number of project relations export requests per minute per user for each project during direct transfer migrations. Default: `6`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.|
+|» project_relations_export_download_limit|body|integer \| null|false|Maximum number of project relations export downloads per minute per user for each project during direct transfer migrations. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.|
+|» group_relations_export_limit|body|integer \| null|false|Maximum number of group relations export requests per minute per user for each group during direct transfer migrations. Default: `6`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.|
+|» group_relations_export_download_limit|body|integer \| null|false|Maximum number of group relations export downloads per minute per user for each group during direct transfer migrations. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.|
 |» bulk_import_enabled|body|boolean \| null|false|If `true`, enables migrating GitLab groups and projects by direct transfer.|
 |» bulk_import_max_download_file|body|integer \| null|false|Maximum download file size, in MB, when importing from source GitLab instances by direct transfer.|
 |» autocomplete_users_limit|body|integer \| null|false|Maximum number of authenticated requests per minute per user to the users autocomplete endpoint.|
@@ -74390,11 +74676,11 @@ Updates the current application settings for this GitLab instance. At least one 
 |» ci_runner_manager_creation_ceiling|body|integer \| null|false|Number of runner managers for each runner at which the runner cannot create new runner managers. Existing runner managers continue to work. Applies only when the `log_runner_manager_cap` or `enforce_runner_manager_ceiling` feature flag is enabled. Default: `150000`. To disable the limit, set to `0`.|
 |» ci_stale_runner_managers_cleanup_deletions_per_run|body|integer \| null|false|Maximum number of stale runner managers deleted by each run of the stale runner manager cleanup. Applies only when the `stale_runner_manager_cleanup_by_partition` feature flag is enabled. Default: `500`.|
 |» ci_stale_runner_managers_cleanup_backlog_limit|body|integer \| null|false|Number of deleted runner manager records still waiting for background cleanup, above which the stale runner manager cleanup stops deleting. If higher than `ci_runner_manager_cap_cleanup_backlog_limit`, that value is used instead. Applies only when the `stale_runner_manager_cleanup_by_partition` feature flag is enabled. Default: `5000`.|
-|» ci_lint_api_require_authentication|body|boolean \| null|false|If `true`, `GET /projects/:id/ci/lint` requires authentication, including for public projects.|
+|» ci_lint_api_require_authentication|body|boolean \| null|false|If `true`, `GET /projects/:id/ci/lint` requires authentication, including for public projects. Default is `false`.|
 |» release_evidence_max_size_bytes|body|integer \| null|false|Maximum size of a release evidence, in bytes. Applies only when the `release_evidence_size_limit` feature flag is enabled. Default: `2097152` (2 MiB). To disable the limit, set to `0`.|
 |» ci_job_live_trace_enabled|body|boolean \| null|false|If `true`, turns on incremental logging for job logs. Archived job logs are incrementally uploaded to object storage, which must be configured.|
-|» ci_job_trace_update_interval|body|integer \| null|false|Job log update interval when the job log is not open, in seconds.|
-|» ci_job_trace_update_interval_when_being_watched|body|integer \| null|false|Job log update interval when the job log is open, in seconds.|
+|» ci_job_trace_update_interval|body|integer \| null|false|Job log update interval when the job log is not open, in seconds. Must be between `3` and `3600`. Default is `60`.|
+|» ci_job_trace_update_interval_when_being_watched|body|integer \| null|false|Job log update interval when the job log is open, in seconds. Must be between `3` and `3600` and less than or equal to `ci_job_trace_update_interval`. Default is `3`.|
 |» git_push_pipeline_limit|body|integer \| null|false|Maximum number of branch or tag pipelines that can be triggered by a single Git push. Set to `0` to disable the limit.|
 |» security_policy_global_group_approvers_enabled|body|boolean \| null|false|If `true`, looks up merge request approval policy approval groups globally. If `false`, looks them up within project hierarchies.|
 |» slack_app_enabled|body|boolean \| null|false|If `true`, enables the GitLab for Slack app. Requires `slack_app_id`, `slack_app_secret`, `slack_app_signing_secret`, and `slack_app_verification_token`.|
@@ -74403,29 +74689,29 @@ Updates the current application settings for this GitLab instance. At least one 
 |» slack_app_signing_secret|body|string \| null|false|Signing secret of the GitLab for Slack app. Used for authenticating API requests from the app.|
 |» slack_app_verification_token|body|string \| null|false|Verification token of the GitLab for Slack app. This method of authentication is deprecated by Slack and used only for authenticating slash commands from the app.|
 |» namespace_aggregation_schedule_lease_duration_in_seconds|body|integer \| null|false|Maximum duration, in seconds, between refreshes of namespace statistics. Defaults to `300`.|
-|» project_jobs_api_rate_limit|body|integer \| null|false|Maximum authenticated requests to /project/:id/jobs per minute|
+|» project_jobs_api_rate_limit|body|integer \| null|false|Maximum authenticated requests to /project/:id/jobs per minute. Default: `600`.|
 |» security_txt_content|body|string \| null|false|Public security contact information made available at https://gitlab.example.com/.well-known/security.txt.|
 |» downstream_pipeline_trigger_limit_per_project_user_sha|body|integer \| null|false|[Maximum number of downstream pipelines](https://docs.gitlab.com/administration/cicd/limits/#limit-downstream-pipeline-trigger-rate) that can be triggered per minute for a given project, user, and commit. Default: `0` (no restriction).|
-|» pipeline_cancel_limit_per_user_project|body|integer \| null|false|Maximum number of pipeline cancellations allowed per minute for a given project.|
-|» pipeline_retry_limit_per_user_project|body|integer \| null|false|Maximum number of pipeline retries allowed per minute for a given project.|
-|» runner_job_list_completed_statuses_limit_per_user|body|integer \| null|false|Maximum number of runner job list requests filtered by a completed status allowed per minute for a given user.|
+|» pipeline_cancel_limit_per_user_project|body|integer \| null|false|Maximum number of pipeline cancellations allowed per minute for a given project. Default: `120`.|
+|» pipeline_retry_limit_per_user_project|body|integer \| null|false|Maximum number of pipeline retries allowed per minute for a given project. Default: `200`.|
+|» runner_job_list_completed_statuses_limit_per_user|body|integer \| null|false|Maximum number of runner job list requests filtered by a completed status allowed per minute for a given user. Default: `330`.|
 |» runner_job_list_project_filtered_limit_per_user|body|integer \| null|false|Maximum number of runner job list requests filtered to the user's projects allowed per minute for a given user.|
 |» runner_manager_list_limit_per_user|body|integer \| null|false|Maximum number of runner managers a user can list per minute.|
 |» pipeline_schedule_management_limit_per_user|body|integer \| null|false|Maximum number of pipeline schedule changes (create, update, delete, take ownership) allowed per minute for a given user.|
 |» pipeline_trigger_management_limit_per_user|body|integer \| null|false|Maximum number of pipeline trigger token changes (create, update, delete) allowed per minute for a given user.|
-|» job_retry_limit_per_user_project|body|integer \| null|false|Maximum number of job retries allowed per minute for a given project.|
-|» job_play_limit_per_user_project|body|integer \| null|false|Maximum number of manual job runs allowed per minute for a given project.|
-|» pipeline_delete_limit_per_user_project|body|integer \| null|false|Maximum number of pipeline deletions allowed per minute for a given project.|
-|» job_erase_limit_per_user_project|body|integer \| null|false|Maximum number of job erasures allowed per minute for a given project.|
-|» job_cancel_limit_per_user_project|body|integer \| null|false|Maximum number of job cancellations allowed per minute for a given project.|
-|» ai_action_api_rate_limit|body|integer \| null|false|Maximum requests a user can make per 8 hours to aiAction endpoint|
+|» job_retry_limit_per_user_project|body|integer \| null|false|Maximum number of job retries allowed per minute for a given project. Default: `320`.|
+|» job_play_limit_per_user_project|body|integer \| null|false|Maximum number of manual job runs allowed per minute for a given project. Default: `200`.|
+|» pipeline_delete_limit_per_user_project|body|integer \| null|false|Maximum number of pipeline deletions allowed per minute for a given project. Default: `400`.|
+|» job_erase_limit_per_user_project|body|integer \| null|false|Maximum number of job erasures allowed per minute for a given project. Default: `400`.|
+|» job_cancel_limit_per_user_project|body|integer \| null|false|Maximum number of job cancellations allowed per minute for a given project. Default: `150`.|
+|» ai_action_api_rate_limit|body|integer \| null|false|Maximum requests a user can make per 8 hours to aiAction endpoint. Default: `160`. Must be greater than `0`.|
 |» code_suggestions_api_rate_limit|body|integer \| null|false|Maximum number of requests a user can make to the code suggestions endpoint per minute.|
 |» resource_usage_limits|body|object \| null|false|Definition for resource usage limits enforced in Sidekiq workers.|
-|» code_dropdown_custom_clients|body|[object]|false|Custom "Open with" clients shown in the project Code dropdown list|
+|» code_dropdown_custom_clients|body|[object]|false|Custom "Open with" clients shown in the project Code dropdown list. Each entry has a `name` and at least one of `ssh_url_template` or `http_url_template`, each containing `{url}` exactly once.|
 |» » name|body|string \| null|true|Name shown to users in the Code dropdown list|
 |» » ssh_url_template|body|string \| null|false|URL template opened for the SSH clone URL. Must contain {url} exactly once|
 |» » http_url_template|body|string \| null|false|URL template opened for the HTTPS clone URL. Must contain {url} exactly once|
-|» vscode_extension_marketplace|body|object \| null|false|Settings for VS Code Extension Marketplace.|
+|» vscode_extension_marketplace|body|object \| null|false|Settings for VS Code Extension Marketplace. Used by the Web IDE and workspaces.|
 |» » enabled|body|boolean \| null|false|If `true`, enables the VS Code extension marketplace for the Web IDE and Workspaces.|
 |» » preset|body|string \| null|false|The preset configuration of URL's for the VS Code Extension Marketplace|
 |» » custom_values|body|object \| null|false|VS Code Extension Marketplace URL's when preset is 'custom'|
@@ -74434,12 +74720,12 @@ Updates the current application settings for this GitLab instance. At least one 
 |» terraform_state_encryption_enabled|body|boolean \| null|false|Enable encryption for Terraform state files|
 |» logging_field_schema_version|body|integer \| null|false|Logging field schema version (v0, v1, …). Cannot be downgraded.|
 |» logging_field_dual_emit_target|body|integer \| null|false|Version to dual-emit alongside schema_version. Must be strictly greater than schema_version, or omit/null to disable.|
-|» rsa_key_restriction|body|integer \| null|false|Restrictions on the complexity of uploaded RSA keys. A value of -1 disables all RSA keys.|
-|» dsa_key_restriction|body|integer \| null|false|Restrictions on the complexity of uploaded DSA keys. A value of -1 disables all DSA keys.|
-|» ecdsa_key_restriction|body|integer \| null|false|Restrictions on the complexity of uploaded ECDSA keys. A value of -1 disables all ECDSA keys.|
-|» ed25519_key_restriction|body|integer \| null|false|Restrictions on the complexity of uploaded ED25519 keys. A value of -1 disables all ED25519 keys.|
-|» ecdsa_sk_key_restriction|body|integer \| null|false|Restrictions on the complexity of uploaded ECDSA_SK keys. A value of -1 disables all ECDSA_SK keys.|
-|» ed25519_sk_key_restriction|body|integer \| null|false|Restrictions on the complexity of uploaded ED25519_SK keys. A value of -1 disables all ED25519_SK keys.|
+|» rsa_key_restriction|body|integer \| null|false|Minimum allowed size of uploaded RSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all RSA keys. Default is `0` (no restriction).|
+|» dsa_key_restriction|body|integer \| null|false|Minimum allowed size of uploaded DSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all DSA keys. Default is `0` (no restriction).|
+|» ecdsa_key_restriction|body|integer \| null|false|Minimum allowed size of uploaded ECDSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ECDSA keys. Default is `0` (no restriction).|
+|» ed25519_key_restriction|body|integer \| null|false|Minimum allowed size of uploaded ED25519 keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ED25519 keys. Default is `0` (no restriction).|
+|» ecdsa_sk_key_restriction|body|integer \| null|false|Minimum allowed size of uploaded ECDSA_SK keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ECDSA_SK keys. Default is `0` (no restriction).|
+|» ed25519_sk_key_restriction|body|integer \| null|false|Minimum allowed size of uploaded ED25519_SK keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ED25519_SK keys. Default is `0` (no restriction).|
 |» allow_account_deletion|body|string \| null|false|If `true`, allows users to delete their accounts. Premium and Ultimate only.|
 |» allow_application_default_credentials_for_offline_transfer|body|string \| null|false|If `true`, allows Google Cloud Application Default Credentials for offline transfer. Even when enabled, only administrators can use these credentials, and the bucket name must start with `gitlab-offline-transfer-`. Has no effect on GitLab.com. For more information, see [Allow application default credentials for offline transfer](https://docs.gitlab.com/administration/settings/import_and_export_settings/#allow-application-default-credentials-for-offline-transfer). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/602489) in GitLab 19.3.|
 |» allow_bypass_placeholder_confirmation|body|string \| null|false|If `true`, skips confirmation when administrators reassign placeholder users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.0.|
@@ -74453,6 +74739,7 @@ Updates the current application settings for this GitLab instance. At least one 
 |» auto_accept_awarded_achievements|body|string \| null|false|If `true`, newly awarded achievements are accepted automatically and appear on user profiles immediately. Does not affect achievements awarded before this setting is enabled. Recipients can still hide any achievement. Default value: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607750) in GitLab 19.4.|
 |» auto_devops_domain|body|string \| null|false|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.|
 |» auto_devops_enabled|body|string \| null|false|If `true`, enables Auto DevOps for projects by default. Auto DevOps automatically builds, tests, and deploys applications based on a predefined CI/CD configuration.|
+|» block_jwt_for_reclaimed_paths|body|string \| null|false|If `true`, blocks CI/CD JWT and OIDC token generation for projects that have reclaimed a previously used namespace path. Default is `true`. Disable only if you accept the authentication bypass risk of namespace path reclamation. GitLab Self-Managed and GitLab Dedicated only.|
 |» bulk_import_max_download_file_size|body|string \| null|false|Maximum download file size when importing from source GitLab instances by direct transfer.|
 |» can_create_group|body|string \| null|false|If `true`, users can create top-level groups. Defaults to `true`.|
 |» ci_delete_pipelines_in_seconds_limit_human_readable|body|string \| null|false|Maximum value that is allowed for configuring pipeline retention. Defaults to `1 year`.|
@@ -74460,11 +74747,13 @@ Updates the current application settings for this GitLab instance. At least one 
 |» ci_partitions_in_seconds_limit|body|string \| null|false|Time window, in seconds, before new CI partitions are created and the system switches to the next set of partitions. Must be between 1 month and 6 months. Default is 1 month (`2592000`). Write-only. Not returned in GET responses. Deprecated. Use `ci_partitions_in_seconds_limit_human_readable` instead. Scheduled for removal in API v5.|
 |» ci_partitions_in_seconds_limit_human_readable|body|string \| null|false|Time window before new CI partitions are created and the system switches to the next set of partitions. Must be between `1 month` and `6 months`. Defaults to `1 month`.|
 |» commit_email_hostname|body|string \| null|false|Custom hostname (for private commit emails).|
+|» concurrent_relation_export_limit|body|string \| null|false|Maximum number of simultaneous project file exports to process. Default: `25`. Behind a feature flag named `limit_concurrent_project_exports`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4.|
 |» container_expiration_policies_enable_historic_entries|body|string \| null|false|If `true`, enables [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#enable-the-cleanup-policy) for all projects.|
 |» container_registry_cleanup_tags_service_max_list_size|body|string \| null|false|Maximum number of tags that can be deleted in a single execution of [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).|
 |» container_registry_delete_tags_service_timeout|body|string \| null|false|Maximum time, in seconds, that the cleanup process can take to delete a batch of tags for [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).|
 |» container_registry_expiration_policies_caching|body|string \| null|false|If `true`, enables caching during the execution of [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).|
 |» container_registry_expiration_policies_worker_capacity|body|string \| null|false|Number of workers for [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).|
+|» create_organization_api_limit|body|string \| null|false|Maximum number of requests every minute for each user to `POST /organizations`. Default: `10`. Set to `0` to disable the rate limit.|
 |» custom_http_clone_url_root|body|string \| null|false|Set a custom Git clone URL for HTTP(S).|
 |» default_branch_name|body|string \| null|false|[Set the initial branch name](https://docs.gitlab.com/user/project/repository/branches/default/#change-the-default-branch-name-for-new-projects-in-an-instance) for all projects in an instance.|
 |» default_dark_syntax_highlighting_theme|body|string \| null|false|Default dark mode syntax highlighting theme for users who are new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16).|
@@ -74502,17 +74791,31 @@ Updates the current application settings for this GitLab instance. At least one 
 |» gitlab_product_usage_data_enabled|body|string \| null|false|If `true`, product usage data collection is enabled. When the `GITLAB_PRODUCT_USAGE_DATA_ENABLED` environment variable is set, the API returns the effective value from the environment variable.|
 |» gitlab_shell_operation_limit|body|string \| null|false|Maximum number of Git operations per minute a user can perform. Default: `600`.|
 |» gitlab_shell_operation_per_actor_limit|body|integer \| null|false|Maximum number of Git operations one user or deploy key can perform every minute across all repositories. Default: `6000`. Set to `0` to disable the limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/267274) in GitLab 19.6. This attribute is in beta and might be changed or removed without notice.|
+|» group_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /groups/:id`. Default: `400`. Set to `0` to disable the rate limit.|
+|» group_archive_unarchive_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `POST /groups/:id/archive` and `POST /groups/:id/unarchive`. Default: `60`. Set to `0` to disable the rate limit.|
+|» group_create_limit|body|string \| null|false|Maximum number of requests every day for each user to `POST /groups`. Default: `200`. Set to `0` to disable the rate limit. Behind a feature flag named `namespace_create_rate_limit`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245318) in GitLab 19.3.|
 |» group_hooks_create_limit|body|string \| null|false|Maximum number of group webhooks a user can create per minute for a given group. Default: `10`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/635281) in GitLab 19.6.|
+|» group_download_export_limit|body|string \| null|false|Maximum number of group export downloads every minute for each user and group. Default: `1`. Set to `0` to disable the rate limit.|
+|» group_export_limit|body|string \| null|false|Maximum number of group exports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.|
+|» group_import_limit|body|string \| null|false|Maximum number of group imports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.|
+|» group_invited_groups_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /groups/:id/invited_groups`. Default: `60`. Set to `0` to disable the rate limit.|
+|» group_projects_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /groups/:id/projects`. Default: `600`. Set to `0` to disable the rate limit.|
+|» group_shared_groups_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /groups/:id/groups/shared`. Default: `60`. Set to `0` to disable the rate limit.|
+|» groups_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /groups`. Default: `200`. Set to `0` to disable the rate limit.|
 |» hashed_storage_enabled|body|string \| null|false|Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (Always enabled in GitLab versions 13.0 and later, configuration is scheduled for removal in 14.0)|
+|» helm_max_packages_count|body|string \| null|false|Maximum number of Helm packages that can be listed for each channel. Must be at least `1`. Default is `1000`.|
 |» hide_third_party_offers|body|string \| null|false|If `true`, hides offers from third parties in GitLab.|
+|» import_jobs_concurrency_limit|body|string \| null|false|Maximum number of concurrently running jobs for each import worker type: project and group file-based import, direct transfer, and the GitHub, Bitbucket Cloud, Bitbucket Server, and Jira importer stages. Applied independently for each worker type. Default is `100`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250280) in GitLab 19.1.|
 |» inactive_projects_delete_after_months|body|string \| null|false|If `delete_inactive_projects` is `true`, the time (in months) to wait before deleting dormant projects. Default is `2`.|
 |» inactive_projects_min_size_mb|body|string \| null|false|If `delete_inactive_projects` is `true`, the minimum repository size, in MB, for projects to be checked for inactivity. Default is `0`.|
 |» inactive_projects_send_warning_email_after_months|body|string \| null|false|If `delete_inactive_projects` is `true`, sets the time (in months) to wait before emailing Maintainers that the project is scheduled to be deleted because it is dormant. Default is `1`.|
 |» inactive_resource_access_tokens_delete_after_days|body|string \| null|false|Specifies retention period for inactive project and group access tokens. Default is `30`.|
 |» include_optional_metrics_in_service_ping|body|string \| null|false|If `true`, enables optional metrics in Service Ping.|
+|» issuable_csv_import_limit|body|string \| null|false|Maximum number of CSV imports of issues, work items, and requirements every hour for each user. Default: `20`. Set to `0` to disable the rate limit. Behind a feature flag named `issuable_csv_import_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
 |» keep_latest_artifact|body|string \| null|false|If `true`, prevents the deletion of the artifacts from the most recent successful jobs, regardless of the expiry time. Defaults to `true`.|
 |» kroki_diagram_proxy_enabled|body|string \| null|false|Enable Kroki diagram proxy. Default is `false`.|
 |» kroki_formats|body|string \| null|false|Additional formats supported by the Kroki instance. Possible values are `true` or `false` for formats `bpmn`, `blockdiag`, `excalidraw`, and `mermaid` in the format `<format>: true` or `<format>: false`.|
+|» label_delete_limit|body|string \| null|false|Maximum number of project and group label deletions every minute for each user. Default: `500`. Set to `0` to disable the rate limit. Behind a feature flag named `label_delete_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
 |» lock_require_sha_for_merge|body|string \| null|false|If `true`, enforces the `require_sha_for_merge` setting for all groups on the instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) in GitLab 19.2.|
 |» max_http_decompressed_size|body|string \| null|false|Maximum allowed size in MiB for Gzip-compressed HTTP responses from outbound requests after decompression. Set to `0` for unlimited.|
 |» max_http_response_csv_structural_chars|body|string \| null|false|Maximum allowed object count in CSV HTTP responses from outbound requests. Count is an estimate based on the number of `,`, `;`, `\t`, and `\n` occurrences in the response. Introduced in GitLab 18.4.|
@@ -74523,18 +74826,36 @@ Updates the current application settings for this GitLab instance. At least one 
 |» max_login_attempts|body|string \| null|false|Maximum number of sign-in attempts before locking out the user.|
 |» max_yaml_depth|body|string \| null|false|Maximum depth of nested CI/CD configuration added with the [`include` keyword](https://docs.gitlab.com/ci/yaml/#include). Default: `100`.|
 |» max_yaml_size_bytes|body|string \| null|false|Maximum size in bytes of a single CI/CD configuration file. Default: `2097152`.|
+|» members_delete_limit|body|string \| null|false|Maximum number of member deletions every minute for each user in each project or group. Default: `60`. Set to `0` to disable the rate limit.|
 |» minimum_password_length|body|string \| null|false|Indicates whether passwords require a minimum length. Premium and Ultimate only.|
 |» mirror_available|body|string \| null|false|If `true`, project Maintainers can configure repository mirroring. If `false`, only administrators can configure repository mirroring.|
 |» ml_experiment_tracking_run_retention_days|body|integer \| null|false|Number of days to keep model experiment runs that no model version uses, and experiments that have no runs left. Deletion starts no earlier than one period after retention is turned on. `0` keeps all runs and experiments. Maximum: `36500`. Default: `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/270962) in GitLab 19.7.|
+|» notes_create_limit|body|string \| null|false|Maximum number of note creation requests every minute for each user. Default: `300`. Set to `0` to disable the rate limit.|
+|» notes_create_limit_allowlist_raw|body|string \| null|false|Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `notes_create_limit` rate limit. Maximum: 100 usernames.|
 |» notify_on_unknown_sign_in|body|string \| null|false|If `true`, sends a notification when a sign-in from an unknown IP address occurs.|
+|» nuget_skip_metadata_url_validation|body|string \| null|false|If `true`, skips metadata URL validation for NuGet packages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145887) in GitLab 17.0.|
 |» offline_transfer_exports_enabled|body|string \| null|false|If `true`, enables exporting GitLab groups and projects by offline transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971) in GitLab 19.3.|
 |» offline_transfer_imports_enabled|body|string \| null|false|If `true`, enables importing GitLab groups and projects by offline transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971) in GitLab 19.3.|
 |» package_registry_allow_anyone_to_pull_option|body|string \| null|false|If `true`, makes the option to [allow anyone to pull from the package registry](https://docs.gitlab.com/user/packages/package_registry/#allow-anyone-to-pull-from-package-registry) visible and changeable in project settings.|
 |» package_registry_cleanup_policies_worker_capacity|body|string \| null|false|Number of workers assigned to the packages cleanup policies.|
+|» pages_deployments_api_limit|body|string \| null|false|Maximum number of times every minute the GraphQL `pagesDeployments` field can be resolved for each user. Each project a query resolves the field for counts once. Unauthenticated requests are limited for each IP address. Default: `2000`. Set to `0` to disable the rate limit. Behind a feature flag named `pages_deployments_api_rate_limit`, disabled by default. While the flag is disabled, requests over the limit are logged but not blocked. This parameter is in beta and might be changed or removed without notice.|
 |» pages_domain_verification_enabled|body|string \| null|false|If `true`, requires users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled.|
 |» pages_unique_domain_default_enabled|body|string \| null|false|If `true`, enables unique domains by default for Pages sites to avoid cookie sharing between sites under a given namespace. Defaults to `true`.|
+|» pg_ash_sample_interval_seconds|body|string \| null|false|Seconds between active session history samples. Must be between `1` and `60`. Default is `1`.|
+|» pg_ash_sampling_enabled|body|string \| null|false|If `true`, samples active session history. Has no effect until pg_ash is installed. Default is `false`.|
 |» plantuml_diagram_proxy_enabled|body|string \| null|false|Enable PlantUML diagram proxy. Default is `false`.|
+|» project_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /projects/:id`. Default: `400`. Set to `0` to disable the rate limit.|
+|» project_create_limit|body|string \| null|false|Maximum number of requests every day for each user to `POST /projects`. Default: `200`. Set to `0` to disable the rate limit. Behind a feature flag named `namespace_create_rate_limit`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245318) in GitLab 19.3.|
 |» project_hooks_create_limit|body|string \| null|false|Maximum number of project webhooks a user can create per minute for a given project. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605597) in GitLab 19.6.|
+|» project_download_export_limit|body|string \| null|false|Maximum number of project export downloads every minute for each user and project. Default: `1`. Set to `0` to disable the rate limit.|
+|» project_export_limit|body|string \| null|false|Maximum number of project exports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.|
+|» project_import_limit|body|string \| null|false|Maximum number of project imports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.|
+|» project_invited_groups_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /projects/:id/invited_groups`. Default: `60`. Set to `0` to disable the rate limit.|
+|» project_members_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /projects/:id/members/all` and `GET /groups/:id/members/all`. Default: `200`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578527) in GitLab 18.6.|
+|» project_repositories_blame_limit|body|string \| null|false|Maximum number of authenticated requests every minute to the file blame API (`GET /projects/:id/repository/files/:file_path/blame`) and the GraphQL `blame` field, for each user and project. Default: `400`. Set to `0` to disable the rate limit.|
+|» project_repositories_blame_unauthenticated_limit|body|string \| null|false|Maximum number of unauthenticated requests every minute to the file blame API (`GET /projects/:id/repository/files/:file_path/blame`) and the GraphQL `blame` field, for each IP address. Default: `400`. Set to `0` to disable the rate limit.|
+|» project_repositories_blobs_batch_limit|body|string \| null|false|Maximum number of requests every minute for each user and project to `POST /projects/:id/repository/blobs/batch`. Default: `5`. Set to `0` to disable the rate limit. The endpoint is behind a feature flag named `repository_blobs_batch_api`, disabled by default.|
+|» projects_api_limit|body|string \| null|false|Maximum number of authenticated requests every 10 minutes for each user to `GET /projects`. Default: `2000`. Set to `0` to disable the rate limit.|
 |» projects_api_rate_limit_unauthenticated|body|string \| null|false|Maximum number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](https://docs.gitlab.com/api/projects/#list-all-projects). Default: `400`. To disable throttling, set to `0`.|
 |» protected_ci_variables|body|string \| null|false|If `true`, CI/CD variables are protected by default.|
 |» rate_limiting_response_text|body|string \| null|false|When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. `Retry later` is sent if this is blank.|
@@ -74547,8 +74868,9 @@ Updates the current application settings for this GitLab instance. At least one 
 |» runner_jobs_endpoints_api_limit|body|string \| null|false|Maximum number of requests per minute per job token for requests to the `/jobs/*` runner jobs API endpoints. Default: `200`. To disable throttling, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537) in GitLab 18.5.|
 |» runner_jobs_patch_trace_api_limit|body|string \| null|false|Maximum number of requests per minute per runner token for requests to the `PATCH /jobs/:id/trace` runner jobs API endpoint. Default: 2000. To disable throttling, set to 0. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537) in GitLab 18.5.|
 |» runner_jobs_request_api_limit|body|string \| null|false|Maximum number of requests per minute per runner token for requests to the `/jobs/request` runner jobs API endpoint. Default: `2000`. To disable throttling, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537) in GitLab 18.5.|
-|» runner_manager_creation_limit|body|string \| null|false|Maximum number of runner managers each runner can create every 10 minutes. Applies only when the `log_runner_manager_creation_limit` or `enforce_runner_manager_creation_limit` feature flag is enabled. Default: `1000`. To disable the limit, set to `0`.|
+|» runner_manager_creation_limit|body|string \| null|false|Maximum number of runner managers each runner can create every 10 minutes. Applies only when the `log_runner_manager_creation_limit` or `enforce_runner_manager_creation_limit` feature flag is enabled. Default: `1000`. To disable the limit, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/267108) in GitLab 19.6.|
 |» search_rate_limit|body|string \| null|false|Maximum number of requests per minute for performing a search while authenticated. Default: `30`. To disable throttling, set to `0`.|
+|» search_rate_limit_allowlist_raw|body|string \| null|false|Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `search_rate_limit` rate limit. Maximum: 100 usernames.|
 |» search_rate_limit_unauthenticated|body|string \| null|false|Maximum number of requests per minute for performing a search while unauthenticated. Default: `10`. To disable throttling, set to `0`.|
 |» sidekiq_job_limiter_compression_threshold_bytes|body|string \| null|false|Threshold in bytes at which Sidekiq jobs are compressed before being stored in Redis. Default: 100,000 bytes (100 KB).|
 |» sidekiq_job_limiter_limit_bytes|body|string \| null|false|Threshold in bytes at which Sidekiq jobs are rejected. Default: 0 bytes (doesn't reject any job).|
@@ -74563,13 +74885,23 @@ Updates the current application settings for this GitLab instance. At least one 
 |» static_objects_external_storage_auth_token|body|string \| null|false|Authentication token for the external storage linked in `static_objects_external_storage_url`.|
 |» static_objects_external_storage_url|body|string \| null|false|URL to an external storage for repository static objects.|
 |» system_hooks_create_limit|body|string \| null|false|Maximum number of system hooks a user can create per minute. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/635281) in GitLab 19.6.|
+|» tags_create_limit|body|string \| null|false|Maximum number of tag creation requests allowed every 30 minutes for each project. Applies to the REST API endpoint for creating a tag, the GraphQL `tagCreate` mutation, tag creation in the UI, and the `/tag` quick action. Default: `100`. Set to `0` to disable the rate limit.|
 |» terms|body|string \| null|false|(**Required by**: `enforce_terms`) Markdown content for the ToS.|
 |» throttle_authenticated_api_enabled|body|string \| null|false|If `true`, enables the authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). Requires `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`.|
 |» throttle_authenticated_api_period_in_seconds|body|string \| null|false|Rate limit period in seconds.|
 |» throttle_authenticated_api_requests_per_period|body|string \| null|false|Maximum requests per period per user.|
+|» throttle_authenticated_deprecated_api_enabled|body|string \| null|false|If `true`, enforces the authenticated request rate limit for deprecated API endpoints. Default value: `false`.|
+|» throttle_authenticated_deprecated_api_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_authenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.|
+|» throttle_authenticated_deprecated_api_requests_per_period|body|string \| null|false|Maximum requests in each period for each user. `throttle_authenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.|
+|» throttle_authenticated_files_api_enabled|body|string \| null|false|If `true`, enforces the authenticated request rate limit for the Repository files API. Default value: `false`.|
+|» throttle_authenticated_files_api_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_authenticated_files_api_enabled` must be `true`. Default value: `15`.|
+|» throttle_authenticated_files_api_requests_per_period|body|string \| null|false|Maximum requests in each period for each user. `throttle_authenticated_files_api_enabled` must be `true`. Default value: `500`.|
 |» throttle_authenticated_git_http_enabled|body|string \| null|false|If `true`, enforces the authenticated Git HTTP request rate limit. Default value: `false`.|
 |» throttle_authenticated_git_http_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`.|
 |» throttle_authenticated_git_http_requests_per_period|body|string \| null|false|Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`.|
+|» throttle_authenticated_git_lfs_enabled|body|string \| null|false|If `true`, enforces the authenticated Git LFS request rate limit. Default value: `false`.|
+|» throttle_authenticated_git_lfs_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_authenticated_git_lfs_enabled` must be `true`. Default value: `60`.|
+|» throttle_authenticated_git_lfs_requests_per_period|body|string \| null|false|Maximum requests in each period for each user. `throttle_authenticated_git_lfs_enabled` must be `true`. Default value: `1000`.|
 |» throttle_authenticated_mcp_enabled|body|string \| null|false|If `true`, enforces the rate limit on requests to the MCP Server endpoint, `/api/v4/mcp`, for any HTTP method. Does not apply to other MCP endpoints. Default value: `false`.|
 |» throttle_authenticated_mcp_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_authenticated_mcp_enabled` must be `true`. Default value: `60`.|
 |» throttle_authenticated_mcp_requests_per_period|body|string \| null|false|Maximum requests per period per user. `throttle_authenticated_mcp_enabled` must be `true`. Default value: `600`.|
@@ -74582,9 +74914,18 @@ Updates the current application settings for this GitLab instance. At least one 
 |» throttle_authenticated_web_enabled|body|string \| null|false|If `true`, enables the authenticated web request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). Requires `throttle_authenticated_web_period_in_seconds` and `throttle_authenticated_web_requests_per_period`.|
 |» throttle_authenticated_web_period_in_seconds|body|string \| null|false|Rate limit period in seconds.|
 |» throttle_authenticated_web_requests_per_period|body|string \| null|false|Maximum requests per period per user.|
+|» throttle_protected_paths_enabled|body|string \| null|false|If `true`, enforces the rate limit on protected paths. Default value: `false`.|
+|» throttle_protected_paths_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_protected_paths_enabled` must be `true`. Default value: `60`.|
+|» throttle_protected_paths_requests_per_period|body|string \| null|false|Maximum requests in each period for each IP address. `throttle_protected_paths_enabled` must be `true`. Default value: `10`.|
 |» throttle_unauthenticated_api_enabled|body|string \| null|false|If `true`, enables the unauthenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). Requires `throttle_unauthenticated_api_period_in_seconds` and `throttle_unauthenticated_api_requests_per_period`.|
 |» throttle_unauthenticated_api_period_in_seconds|body|string \| null|false|Rate limit period in seconds.|
 |» throttle_unauthenticated_api_requests_per_period|body|string \| null|false|Maximum requests per period per IP.|
+|» throttle_unauthenticated_deprecated_api_enabled|body|string \| null|false|If `true`, enforces the unauthenticated request rate limit for deprecated API endpoints. Default value: `false`.|
+|» throttle_unauthenticated_deprecated_api_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_unauthenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.|
+|» throttle_unauthenticated_deprecated_api_requests_per_period|body|string \| null|false|Maximum requests in each period for each IP address. `throttle_unauthenticated_deprecated_api_enabled` must be `true`. Default value: `1800`.|
+|» throttle_unauthenticated_files_api_enabled|body|string \| null|false|If `true`, enforces the unauthenticated request rate limit for the Repository files API. Default value: `false`.|
+|» throttle_unauthenticated_files_api_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_unauthenticated_files_api_enabled` must be `true`. Default value: `15`.|
+|» throttle_unauthenticated_files_api_requests_per_period|body|string \| null|false|Maximum requests in each period for each IP address. `throttle_unauthenticated_files_api_enabled` must be `true`. Default value: `125`.|
 |» throttle_unauthenticated_enabled|body|string \| null|false|If `true`, enables the unauthenticated web request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). Requires `throttle_unauthenticated_period_in_seconds` and `throttle_unauthenticated_requests_per_period`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/335300) in GitLab 14.3. Use `throttle_unauthenticated_web_enabled` or `throttle_unauthenticated_api_enabled` instead.|
 |» throttle_unauthenticated_git_http_enabled|body|string \| null|false|If `true`, enforces the unauthenticated Git HTTP request rate limit. Default value: `false`.|
 |» throttle_unauthenticated_git_http_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_unauthenticated_git_http_enabled` must be `true`. Default value: `3600`.|
@@ -74598,25 +74939,34 @@ Updates the current application settings for this GitLab instance. At least one 
 |» throttle_unauthenticated_web_period_in_seconds|body|string \| null|false|Rate limit period in seconds.|
 |» throttle_unauthenticated_web_requests_per_period|body|string \| null|false|Maximum requests per period per IP.|
 |» time_tracking_limit_to_hours|body|string \| null|false|If `true`, limits display of time tracking units to hours. Default is `false`.|
+|» todos_list_api_limit|body|string \| null|false|Maximum number of requests every minute for each user to `GET /todos`. Default: `300`. Set to `0` to turn off the rate limit. Behind a feature flag named `todos_list_api_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
 |» top_level_group_creation_enabled|body|string \| null|false|If `true`, users can create top-level groups with the API. Defaults to `true`.|
 |» unique_ips_limit_enabled|body|string \| null|false|If `true`, limits sign-ins from multiple IP addresses. Requires `unique_ips_limit_per_user` and `unique_ips_limit_time_window`.|
 |» unique_ips_limit_per_user|body|string \| null|false|Maximum number of IPs per user.|
 |» unique_ips_limit_time_window|body|string \| null|false|How many seconds an IP is counted towards the limit.|
 |» update_runner_versions_enabled|body|string \| null|false|If `true`, fetches GitLab Runner release version data from GitLab.com. For more information, see how to [determine which runners need to be upgraded](https://docs.gitlab.com/ci/runners/runners_scope/#determine-which-runners-need-to-be-upgraded).|
 |» use_clickhouse_for_analytics|body|string \| null|false|If `true`, enables ClickHouse as a data source for analytics reports. ClickHouse must be configured for this setting to take effect. Premium and Ultimate only.|
+|» user_contributed_projects_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/contributed_projects`. Default: `100`. Set to `0` to disable the rate limit.|
 |» user_default_external|body|string \| null|false|If `true`, newly registered users are external by default.|
 |» user_default_internal_regex|body|string \| null|false|Specify an email address regex pattern to identify default internal users.|
 |» user_defaults_to_private_profile|body|string \| null|false|If `true`, newly created users have a private profile by default. Defaults to `false`.|
 |» user_oauth_applications|body|string \| null|false|If `true`, allows users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications.|
+|» user_projects_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/projects`. Default: `300`. Set to `0` to disable the rate limit.|
 |» user_show_add_ssh_key_message|body|string \| null|false|When set to `false` disable the `You won't be able to pull or push repositories via SSH until you add an SSH key to your profile` warning shown to users with no uploaded SSH key.|
+|» user_starred_projects_api_limit|body|string \| null|false|Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/starred_projects`. Default: `100`. Set to `0` to disable the rate limit.|
 |» users_api_limit_followers|body|string \| null|false|Maximum number of requests per minute, per user or IP address. Default: 100. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
 |» users_api_limit_following|body|string \| null|false|Maximum number of requests per minute, per user or IP address. Default: 100. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
 |» users_api_limit_gpg_key|body|string \| null|false|Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
 |» users_api_limit_gpg_keys|body|string \| null|false|Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
+|» users_api_limit_ssh_key|body|string \| null|false|Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
+|» users_api_limit_ssh_keys|body|string \| null|false|Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
 |» users_api_limit_status|body|string \| null|false|Maximum number of requests per minute, per user or IP address. Default: 240. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
+|» users_get_by_id_limit_allowlist_raw|body|string \| null|false|Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `users_get_by_id_limit` rate limit. Maximum: 100 usernames.|
 |» version_check_enabled|body|string \| null|false|If `true`, GitLab informs you when an update is available.|
 |» web_hook_event_resend_limit|body|string \| null|false|Maximum number of webhook event resend requests per minute, per user, for a given project or group. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3.|
 |» web_hook_test_limit|body|string \| null|false|Maximum number of webhook test requests per minute, per user, for a given project, group, or organization. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3.|
+|» wiki_read_request_limit_unauthenticated|body|string \| null|false|Maximum number of requests every minute from unauthenticated users to read a project or group wiki. Applies to the wiki pages in the UI and to the REST API endpoints that list and retrieve wiki pages. Default: `500`. Set to `0` to turn off the rate limit. Behind a feature flag named `wiki_read_unauthenticated_rate_limit_enforce`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
+|» work_item_hierarchy_add_children_limit|body|string \| null|false|Maximum number of child items each user can add to work items or epics every minute. Applies to the `workItemHierarchyAddChildrenItems` GraphQL mutation, `childrenIds` in the `workItemUpdate` GraphQL mutation, the `/add_child` quick action, and the REST API endpoints for assigning an issue to an epic and assigning a child epic. Default: `300`. Set to `0` to disable the rate limit. Behind a feature flag named `work_item_hierarchy_add_children_limits`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
 |» elasticsearch_aws|body|boolean \| null|false|If `true`, enables the use of AWS hosted Elasticsearch. Premium and Ultimate only.|
 |» elasticsearch_aws_access_key|body|string \| null|false|AWS IAM access key. Premium and Ultimate only.|
 |» elasticsearch_aws_region|body|string \| null|false|AWS region where the Elasticsearch domain is configured. Premium and Ultimate only.|
@@ -74636,7 +74986,7 @@ Updates the current application settings for this GitLab instance. At least one 
 |» secret_detection_token_revocation_url|body|string \| null|false|URL that GitLab sends leaked tokens to for revocation.|
 |» secret_detection_revocation_token_types_url|body|string \| null|false|URL that returns the token types that can be revoked.|
 |» email_additional_text|body|string \| null|false|Additional text added to the bottom of every email for legal/auditing/compliance reasons. Premium and Ultimate only.|
-|» default_project_deletion_protection|body|boolean \| null|false|If `true`, enables default project deletion protection so only administrators can delete projects. GitLab Self-Managed, Premium and Ultimate only.|
+|» default_project_deletion_protection|body|boolean \| null|false|If `true`, enables default project deletion protection so only administrators can delete projects. Default is `false`. GitLab Self-Managed, Premium and Ultimate only.|
 |» disable_personal_access_tokens|body|boolean \| null|false|If `true`, disables personal access tokens. GitLab Self-Managed, Premium and Ultimate only. There is no method available to enable a personal access token that's been disabled through the API. This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/399233). For more information about available workarounds, see [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/399233#workaround).|
 |» repository_size_limit|body|integer \| null|false|Size limit per repository (MB). Premium and Ultimate only.|
 |» file_template_project_id|body|integer \| null|false|ID of the project to load custom file templates from. Premium and Ultimate only.|
@@ -74649,10 +74999,10 @@ Updates the current application settings for this GitLab instance. At least one 
 |» pypi_package_requests_forwarding|body|boolean \| null|false|If `true`, forwards PyPI package requests to `pypi.org` when not found in the GitLab package registry. Premium and Ultimate only.|
 |» rubygems_package_requests_forwarding|body|boolean \| null|false|If `true`, forwards RubyGems package requests to `rubygems.org` when not found in the GitLab package registry. Premium and Ultimate only.|
 |» virtual_registries_endpoints_api_limit|body|integer \| null|false|Maximum number of requests on virtual registries endpoints, per IP address, per 15 seconds. Default: 4000. To disable limits, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521692) in GitLab 17.11.|
-|» audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user to the instance audit events API.|
-|» project_audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user per project to the project audit events API.|
-|» group_audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user per group to the group audit events API.|
-|» insights_query_limit|body|integer \| null|false|Maximum number of Insights chart queries per minute for each user or IP address, for each group or project. Default: `0`, which disables the rate limit. GitLab.com uses `60`.|
+|» audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user to the instance audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248055) in GitLab 19.4.|
+|» project_audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user per project to the project audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253781) in GitLab 19.5.|
+|» group_audit_events_api_limit|body|integer \| null|false|Maximum number of requests per minute per user per group to the group audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255336) in GitLab 19.5.|
+|» insights_query_limit|body|integer \| null|false|Maximum number of Insights chart queries per minute for each user or IP address, for each group or project. Default: `0`, which disables the rate limit. GitLab.com uses `60`. Ultimate only.|
 |» dast_configuration_show_limit|body|integer \| null|false|Maximum number of DAST configuration page views per minute for each user. Default: `0`, which disables the rate limit.|
 |» scanned_resources_artifacts_count_limit|body|integer \| null|false|Maximum number of DAST and API fuzzing artifacts parsed for the scanned resources CSV and GraphQL fields of a pipeline. Default: `0`, which disables the limit.|
 |» scanned_resources_artifacts_size_limit_megabytes|body|integer \| null|false|Maximum total size, in megabytes, of DAST and API fuzzing artifacts parsed for the scanned resources CSV and GraphQL fields of a pipeline. Default: `0`, which disables the limit.|
@@ -74675,6 +75025,8 @@ Updates the current application settings for this GitLab instance. At least one 
 |» credits_usage_per_minute_limit|body|integer \| null|false|Maximum number of `creditsUsage` GraphQL requests per minute per user. Default: `60`. Set to `0` to disable the rate limit.|
 |» credits_usage_per_hour_limit|body|integer \| null|false|Maximum number of `creditsUsage` GraphQL requests per hour per user. Default: `300`. Set to `0` to disable the rate limit.|
 |» credits_usage_per_day_limit|body|integer \| null|false|Maximum number of `creditsUsage` GraphQL requests per day per user. Default: `3000`. Set to `0` to disable the rate limit.|
+|» ci_minutes_usage_projects_per_minute_limit|body|integer \| null|false|Maximum number of `ciMinutesUsage` GraphQL requests that select `projects`, per minute per user. Default: `60`. Set to `0` to disable the rate limit.|
+|» ci_minutes_usage_projects_per_hour_limit|body|integer \| null|false|Maximum number of `ciMinutesUsage` GraphQL requests that select `projects`, per hour per user. Default: `600`. Set to `0` to disable the rate limit.|
 |» trial_create_limit|body|integer \| null|false|Maximum number of trial creation requests per hour per user. Default: `10`. Set to `0` to disable the rate limit.|
 |» hand_raise_lead_create_limit|body|integer \| null|false|Maximum number of hand-raise lead requests per hour per user. Default: `10`. Set to `0` to disable the rate limit.|
 |» user_add_on_assignment_bulk_create_limit|body|integer \| null|false|Maximum number of `userAddOnAssignmentBulkCreate` GraphQL mutation calls per minute per user. Default: `0`. Set to `0` to disable the rate limit.|
@@ -74703,15 +75055,17 @@ Updates the current application settings for this GitLab instance. At least one 
 |» duo_code_review_default_level|body|string \| null|false|Default review level for GitLab Duo Code Review Flow. One of `lite` or `standard`. Beta.|
 |» security_scan_stale_after_days|body|integer \| null|false|Number of days to retain security scan data before purging. Must be between 7 and 90 days. Default: 30 days for GitLab.com, 90 days for GitLab Self-Managed. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222998) in GitLab 18.9.|
 |» duo_custom_agents_enabled|body|boolean \| null|false|If `true`, allows custom agents for this instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
-|» lock_duo_custom_agents_enabled|body|boolean \| null|false|If `true`, enforces the custom agents enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
+|» lock_duo_custom_agents_enabled|body|boolean \| null|false|If `true`, enforces the custom agents enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
 |» duo_custom_flows_enabled|body|boolean \| null|false|If `true`, allows custom flows for this instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
-|» lock_duo_custom_flows_enabled|body|boolean \| null|false|If `true`, enforces the custom flows enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
+|» lock_duo_custom_flows_enabled|body|boolean \| null|false|If `true`, enforces the custom flows enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
 |» duo_external_agents_enabled|body|boolean \| null|false|If `true`, allows external agents for this instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
-|» lock_duo_external_agents_enabled|body|boolean \| null|false|If `true`, enforces the external agents enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
+|» lock_duo_external_agents_enabled|body|boolean \| null|false|If `true`, enforces the external agents enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
 |» duo_remote_flows_enabled|body|boolean \| null|false|If `true`, enables GitLab Duo remote flows for the instance.|
 |» lock_duo_remote_flows_enabled|body|boolean \| null|false|If `true`, enforces the GitLab Duo remote flows enabled setting for all subgroups.|
-|» duo_scheduled_automations_enabled|body|boolean \| null|false|If `true`, allows GitLab Duo flows to run on a schedule for the instance. Defaults to `true`.|
-|» lock_duo_scheduled_automations_enabled|body|boolean \| null|false|If `true`, enforces the scheduled automations enabled setting for all groups.|
+|» duo_scheduled_automations_enabled|body|boolean \| null|false|If `true`, allows GitLab Duo flows to run on a schedule for the instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/634139) in GitLab 19.6.|
+|» lock_duo_scheduled_automations_enabled|body|boolean \| null|false|If `true`, enforces the scheduled automations enabled setting for all groups. Defaults to `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/634139) in GitLab 19.6.|
+|» duo_code_suggestions_enabled|body|boolean \| null|false|If `true`, allows GitLab Duo Code Suggestions for the instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only.|
+|» lock_duo_code_suggestions_enabled|body|boolean \| null|false|If `true`, enforces the Code Suggestions enabled setting for all groups. Always `true` when `duo_code_suggestions_enabled` is `false`. Becomes `false` when `duo_code_suggestions_enabled` changes to `true`, unless the same request sets this attribute. GitLab Self-Managed, Premium and Ultimate only.|
 |» duo_workflows_default_image_registry|body|string \| null|false|Default container registry for Duo Agent Platform foundational flow images.|
 |» ci_telemetry_otel_endpoint|body|string \| null|false|OTEL Collector endpoint URL for CI job telemetry.|
 |» ci_job_telemetry_sampling_rate|body|number \| null|false|Sampling rate for CI job telemetry, ranging from 0.0 to 1.0.|
@@ -74731,7 +75085,14 @@ Updates the current application settings for this GitLab instance. At least one 
 |» automatic_purchased_storage_allocation|body|string \| null|false|If `true`, permits automatic allocation of purchased storage in a namespace. Relevant only to EE distributions.|
 |» check_namespace_plan|body|string \| null|false|If `true`, makes licensed EE features available to projects only if the project namespace's plan includes the feature or if the project is public. Premium and Ultimate only.|
 |» delete_unconfirmed_users|body|string \| null|false|If `true`, deletes users who have not confirmed their email after `unconfirmed_users_delete_after_days` days. Default is `false`. GitLab Self-Managed, Premium and Ultimate only.|
+|» dependency_firewall_policies_per_configuration_limit|body|string \| null|false|Maximum number of dependency firewall policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.|
+|» dependency_scanning_sbom_scan_api_download_limit|body|string \| null|false|Maximum number of scan result downloads every hour for each project through the dependency scanning SBOM scan API. Default: `6000`. Set to `0` to disable the rate limit. Ultimate only.|
+|» dependency_scanning_sbom_scan_api_upload_limit|body|string \| null|false|Maximum number of SBOM uploads every hour for each project through the dependency scanning SBOM scan API. Default: `400`. Set to `0` to disable the rate limit. Ultimate only.|
 |» disable_invite_members|body|string \| null|false|If `true`, disables the invite members functionality for groups.|
+|» duo_agent_platform_enabled|body|string \| null|false|If `true`, turns on GitLab Duo Agent Platform features for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only.|
+|» duo_availability|body|string \| null|false|GitLab Duo availability setting for this instance. Valid values are `always_on`, `default_on`, `default_off`, and `never_on`. `default_on` and `default_off` turn GitLab Duo on and off by default. `always_on` and `never_on` lock GitLab Duo on and off for a top-level group. `never_on` also turns off experiment and beta GitLab Duo features. Sets `duo_features_enabled` and `lock_duo_features_enabled`. GitLab Self-Managed, Premium and Ultimate only.|
+|» duo_token_usage_tracking_enabled|body|string \| null|false|If `true`, GitLab records the input and output tokens that each GitLab Duo Non-Agentic Chat request uses, by user and model. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/631777) in GitLab 19.6.|
+|» duo_workflow_file_attachments_enabled|body|string \| null|false|If `true`, users can attach files to GitLab Duo Chat messages. Defaults to `false`. GitLab Self-Managed and GitLab Dedicated, Premium and Ultimate only. [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20481) in GitLab 19.6.|
 |» elasticsearch_client_adapter|body|string \| null|false|Faraday adapter used by the Elasticsearch Ruby Client. Defaults to `typhoeus`. Possible values are `typhoeus` and `net_http`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550805) in GitLab 18.5. Premium and Ultimate only.|
 |» elasticsearch_indexed_field_length_limit|body|string \| null|false|Maximum size of text fields to index by Elasticsearch. A value of `0` means no limit. This does not apply to repository and wiki indexing. Premium and Ultimate only.|
 |» elasticsearch_indexed_file_size_limit_kb|body|string \| null|false|Maximum size, in KB, of repository and wiki files that are indexed by Elasticsearch. Premium and Ultimate only.|
@@ -74760,18 +75121,22 @@ Updates the current application settings for this GitLab instance. At least one 
 |» password_number_required|body|string \| null|false|If `true`, passwords require at least one number. Premium and Ultimate only.|
 |» password_symbol_required|body|string \| null|false|If `true`, passwords require at least one symbol character. Premium and Ultimate only.|
 |» password_uppercase_required|body|string \| null|false|If `true`, passwords require at least one uppercase letter. Premium and Ultimate only.|
+|» pipeline_execution_policies_per_configuration_limit|body|string \| null|false|Maximum number of pipeline execution policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.|
 |» project_secrets_limit|body|string \| null|false|Maximum number of secrets allowed per project in Secrets Manager. Default: 100. To disable the limit, set to `0`. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436) in GitLab 18.9.|
 |» scan_execution_policies_action_limit|body|string \| null|false|Maximum number of `actions` per scan execution policy. Defaults to `0` and cannot be set above `20`.|
+|» scan_execution_policies_per_configuration_limit|body|string \| null|false|Maximum number of scan execution policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.|
 |» scan_execution_policies_schedule_limit|body|string \| null|false|Maximum number of `type: schedule` rules per scan execution policy. Defaults to `0` and cannot be set above `20`.|
 |» secret_push_protection_available|body|string \| null|false|If `true`, allows projects to enable secret push protection. This does not enable secret push protection. Ultimate only.|
 |» security_approval_policies_limit|body|string \| null|false|Maximum number of active merge request approval policies per security policy project. Defaults to `5` and cannot be set above `20`.|
 |» security_mr_report_cache_lifetime_minutes|body|string \| null|false|Number of minutes to cache security reports on merge requests (10-60). Default: 10. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223399) in GitLab 18.10.|
 |» shared_runners_minutes|body|string \| null|false|Set the maximum number of compute minutes that a group can use on instance runners per month. Premium and Ultimate only.|
+|» throttle_incident_management_notification_enabled|body|string \| null|false|If `true`, enforces the inbound incident management alert rate limit for each project. Default value: `false`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.|
+|» throttle_incident_management_notification_per_period|body|string \| null|false|Maximum inbound alert requests in each period for each project. `throttle_incident_management_notification_enabled` must be `true`. Default value: `3600`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.|
+|» throttle_incident_management_notification_period_in_seconds|body|string \| null|false|Rate limit period in seconds. `throttle_incident_management_notification_enabled` must be `true`. Default value: `3600`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.|
 |» unconfirmed_users_delete_after_days|body|string \| null|false|Specifies how many days after account creation to delete users who have not confirmed their email. Only applicable if `delete_unconfirmed_users` is set to `true`. Must be `1` or greater. Default is `7`. GitLab Self-Managed, Premium and Ultimate only.|
+|» vulnerability_management_policies_per_configuration_limit|body|string \| null|false|Maximum number of vulnerability management policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.|
 |» allow_possible_spam|body|string \| null|false|none|
-|» import_jobs_concurrency_limit|body|string \| null|false|none|
 |» deny_all_requests_except_allowed|body|string \| null|false|none|
-|» block_jwt_for_reclaimed_paths|body|string \| null|false|none|
 |» root_moved_permanently_redirection|body|string \| null|false|none|
 |» domain_denylist_raw|body|string \| null|false|none|
 |» domain_allowlist_raw|body|string \| null|false|none|
@@ -74787,42 +75152,13 @@ Updates the current application settings for this GitLab instance. At least one 
 |» organization_cluster_agent_authorization_enabled|body|string \| null|false|none|
 |» instance_token_prefix|body|string \| null|false|none|
 |» pages_extra_deployments_default_expiry_seconds|body|string \| null|false|none|
-|» throttle_authenticated_git_lfs_enabled|body|string \| null|false|none|
-|» throttle_authenticated_git_lfs_period_in_seconds|body|string \| null|false|none|
-|» throttle_authenticated_git_lfs_requests_per_period|body|string \| null|false|none|
-|» throttle_authenticated_files_api_enabled|body|string \| null|false|none|
-|» throttle_authenticated_files_api_period_in_seconds|body|string \| null|false|none|
-|» throttle_authenticated_files_api_requests_per_period|body|string \| null|false|none|
-|» throttle_authenticated_deprecated_api_enabled|body|string \| null|false|none|
-|» throttle_authenticated_deprecated_api_period_in_seconds|body|string \| null|false|none|
-|» throttle_authenticated_deprecated_api_requests_per_period|body|string \| null|false|none|
-|» throttle_unauthenticated_files_api_enabled|body|string \| null|false|none|
-|» throttle_unauthenticated_files_api_period_in_seconds|body|string \| null|false|none|
-|» throttle_unauthenticated_files_api_requests_per_period|body|string \| null|false|none|
-|» throttle_unauthenticated_deprecated_api_enabled|body|string \| null|false|none|
-|» throttle_unauthenticated_deprecated_api_period_in_seconds|body|string \| null|false|none|
-|» throttle_unauthenticated_deprecated_api_requests_per_period|body|string \| null|false|none|
-|» throttle_protected_paths_enabled|body|string \| null|false|none|
-|» throttle_protected_paths_period_in_seconds|body|string \| null|false|none|
-|» throttle_protected_paths_requests_per_period|body|string \| null|false|none|
 |» protected_paths_raw|body|string \| null|false|none|
 |» protected_paths_for_get_request_raw|body|string \| null|false|none|
 |» usage_ping_generation_enabled|body|string \| null|false|none|
 |» usage_ping_features_enabled|body|string \| null|false|none|
-|» project_create_limit|body|string \| null|false|none|
-|» group_create_limit|body|string \| null|false|none|
-|» notes_create_limit|body|string \| null|false|none|
-|» notes_create_limit_allowlist_raw|body|string \| null|false|none|
 |» merge_request_diff_download_request_limit|body|string \| null|false|none|
 |» markdown_upload_limit_megabytes_per_day|body|string \| null|false|none|
-|» members_delete_limit|body|string \| null|false|none|
 |» milestone_destroy_limit|body|string \| null|false|none|
-|» project_import_limit|body|string \| null|false|none|
-|» project_export_limit|body|string \| null|false|none|
-|» project_download_export_limit|body|string \| null|false|none|
-|» group_import_limit|body|string \| null|false|none|
-|» group_export_limit|body|string \| null|false|none|
-|» group_download_export_limit|body|string \| null|false|none|
 |» resource_access_token_notify_inherited|body|string \| null|false|none|
 |» lock_resource_access_token_notify_inherited|body|string \| null|false|none|
 |» sentry_enabled|body|string \| null|false|none|
@@ -74830,53 +75166,25 @@ Updates the current application settings for this GitLab instance. At least one 
 |» sentry_clientside_dsn|body|string \| null|false|none|
 |» sentry_environment|body|string \| null|false|none|
 |» sentry_clientside_traces_sample_rate|body|string \| null|false|none|
-|» search_rate_limit_allowlist_raw|body|string \| null|false|none|
-|» users_get_by_id_limit_allowlist_raw|body|string \| null|false|none|
 |» invitation_flow_enforcement|body|string \| null|false|none|
 |» can_create_organization|body|string \| null|false|none|
-|» concurrent_relation_export_limit|body|string \| null|false|none|
 |» allow_contribution_mapping_to_admins|body|string \| null|false|none|
 |» deactivation_email_additional_text|body|string \| null|false|none|
 |» glql_db_seconds_per_ip_limit|body|string \| null|false|none|
 |» glql_db_seconds_per_query_limit|body|string \| null|false|none|
 |» glql_db_seconds_per_user_limit|body|string \| null|false|none|
 |» glql_duo_db_seconds_per_user_limit|body|string \| null|false|none|
-|» group_api_limit|body|string \| null|false|none|
-|» group_archive_unarchive_api_limit|body|string \| null|false|none|
-|» group_invited_groups_api_limit|body|string \| null|false|none|
-|» group_shared_groups_api_limit|body|string \| null|false|none|
-|» group_projects_api_limit|body|string \| null|false|none|
-|» groups_api_limit|body|string \| null|false|none|
-|» issuable_csv_import_limit|body|string \| null|false|none|
-|» label_delete_limit|body|string \| null|false|none|
 |» merge_requests_update_limit|body|string \| null|false|none|
-|» pages_deployments_api_limit|body|string \| null|false|none|
-|» project_api_limit|body|string \| null|false|none|
-|» project_invited_groups_api_limit|body|string \| null|false|none|
 |» project_repositories_archive_limit|body|string \| null|false|none|
 |» project_repositories_archive_unauthenticated_limit|body|string \| null|false|none|
-|» project_repositories_blame_limit|body|string \| null|false|none|
-|» project_repositories_blame_unauthenticated_limit|body|string \| null|false|none|
-|» project_repositories_blobs_batch_limit|body|string \| null|false|none|
 |» project_repository_commits_api_limit|body|string \| null|false|none|
 |» project_repositories_compare_limit|body|string \| null|false|none|
 |» project_repositories_compare_unauthenticated_limit|body|string \| null|false|none|
-|» projects_api_limit|body|string \| null|false|none|
-|» project_members_api_limit|body|string \| null|false|none|
 |» protected_branch_write_limit|body|string \| null|false|none|
-|» create_organization_api_limit|body|string \| null|false|none|
+|» delete_merged_branches_limit|body|string \| null|false|none|
 |» cross_reference_checks_limit|body|string \| null|false|none|
-|» user_contributed_projects_api_limit|body|string \| null|false|none|
-|» user_projects_api_limit|body|string \| null|false|none|
-|» user_starred_projects_api_limit|body|string \| null|false|none|
-|» users_api_limit_ssh_keys|body|string \| null|false|none|
-|» users_api_limit_ssh_key|body|string \| null|false|none|
-|» tags_create_limit|body|string \| null|false|none|
-|» todos_list_api_limit|body|string \| null|false|none|
-|» wiki_read_request_limit_unauthenticated|body|string \| null|false|none|
 |» merge_request_diffs_page_request_limit|body|string \| null|false|none|
 |» merge_request_diff_resources_request_limit|body|string \| null|false|none|
-|» work_item_hierarchy_add_children_limit|body|string \| null|false|none|
 |» work_item_move_limit|body|string \| null|false|none|
 |» work_item_update_limit|body|string \| null|false|none|
 |» track_namespace_visits_limit|body|string \| null|false|none|
@@ -74897,14 +75205,10 @@ Updates the current application settings for this GitLab instance. At least one 
 |» default_search_scope|body|string \| null|false|none|
 |» delay_user_account_self_deletion|body|string \| null|false|none|
 |» background_operations_max_jobs|body|string \| null|false|none|
-|» pg_ash_sampling_enabled|body|string \| null|false|none|
-|» pg_ash_sample_interval_seconds|body|string \| null|false|none|
 |» enforce_granular_tokens|body|string \| null|false|none|
 |» granular_tokens_enforced_after|body|string \| null|false|none|
 |» deactivate_dormant_users|body|string \| null|false|none|
 |» deactivate_dormant_users_period|body|string \| null|false|none|
-|» nuget_skip_metadata_url_validation|body|string \| null|false|none|
-|» helm_max_packages_count|body|string \| null|false|none|
 |» mcp_server_enabled|body|string \| null|false|none|
 |» dynamic_client_registration_enabled|body|string \| null|false|none|
 |» ci_cd_catalog_projects_allowlist|body|string \| null|false|none|
@@ -74924,24 +75228,18 @@ Updates the current application settings for this GitLab instance. At least one 
 |» lock_model_prompt_cache_enabled|body|string \| null|false|none|
 |» model_prompt_cache_enabled|body|string \| null|false|none|
 |» secret_detection_token_revocation_token|body|string \| null|false|none|
-|» throttle_incident_management_notification_enabled|body|string \| null|false|none|
-|» throttle_incident_management_notification_per_period|body|string \| null|false|none|
-|» throttle_incident_management_notification_period_in_seconds|body|string \| null|false|none|
 |» product_analytics_enabled|body|string \| null|false|none|
 |» product_analytics_data_collector_host|body|string \| null|false|none|
 |» product_analytics_configurator_connection_string|body|string \| null|false|none|
 |» cube_api_base_url|body|string \| null|false|none|
 |» cube_api_key|body|string \| null|false|none|
-|» duo_availability|body|string \| null|false|none|
-|» duo_agent_platform_enabled|body|string \| null|false|none|
 |» duo_cli_enabled|body|string \| null|false|none|
 |» ai_audit_events_streaming_enabled|body|string \| null|false|none|
-|» duo_token_usage_tracking_enabled|body|string \| null|false|none|
-|» duo_workflow_file_attachments_enabled|body|string \| null|false|none|
 |» duo_remote_flows_availability|body|string \| null|false|none|
 |» duo_foundational_flows_enabled|body|string \| null|false|none|
 |» duo_foundational_flows_availability|body|string \| null|false|none|
 |» duo_scheduled_automations_availability|body|string \| null|false|none|
+|» duo_code_suggestions_availability|body|string \| null|false|none|
 |» duo_custom_agents_availability|body|string \| null|false|none|
 |» duo_custom_flows_availability|body|string \| null|false|none|
 |» duo_external_agents_availability|body|string \| null|false|none|
@@ -74975,10 +75273,6 @@ Updates the current application settings for this GitLab instance. At least one 
 |» orbit_dap_enabled_by_default|body|string \| null|false|none|
 |» epic_move_list_limit|body|string \| null|false|none|
 |» duo_workflow_oauth_application_id|body|string \| null|false|none|
-|» pipeline_execution_policies_per_configuration_limit|body|string \| null|false|none|
-|» scan_execution_policies_per_configuration_limit|body|string \| null|false|none|
-|» vulnerability_management_policies_per_configuration_limit|body|string \| null|false|none|
-|» dependency_firewall_policies_per_configuration_limit|body|string \| null|false|none|
 |» policy_store_experiment_enabled|body|string \| null|false|none|
 |» secret_detection_service_auth_token|body|string \| null|false|none|
 |» secret_detection_service_url|body|string \| null|false|none|
@@ -74993,8 +75287,6 @@ Updates the current application settings for this GitLab instance. At least one 
 |» enable_member_promotion_management|body|string \| null|false|none|
 |» allow_deploy_tokens_and_keys_with_external_authn|body|string \| null|false|none|
 |» allow_top_level_group_owners_to_create_service_accounts|body|string \| null|false|none|
-|» dependency_scanning_sbom_scan_api_upload_limit|body|string \| null|false|none|
-|» dependency_scanning_sbom_scan_api_download_limit|body|string \| null|false|none|
 |» auto_duo_code_review_on_push_enabled|body|string \| null|false|none|
 
 #### Enumerated Values
@@ -75099,7 +75391,9 @@ Updates the current application settings for this GitLab instance. At least one 
   "archive_builds_in_human_readable": "string",
   "asset_proxy_enabled": "string",
   "asset_proxy_url": "string",
-  "asset_proxy_allowlist": "string",
+  "asset_proxy_allowlist": [
+    "string"
+  ],
   "static_objects_external_storage_auth_token": "string",
   "static_objects_external_storage_url": "string",
   "authn_data_retention_cleanup_enabled": "string",
@@ -75115,7 +75409,9 @@ Updates the current application settings for this GitLab instance. At least one 
   "ci_job_trace_update_interval_when_being_watched": 0,
   "ci_lint_api_require_authentication": "string",
   "ci_partitions_in_seconds_limit_human_readable": "string",
-  "code_dropdown_custom_clients": "string",
+  "code_dropdown_custom_clients": [
+    {}
+  ],
   "concurrent_github_import_jobs_limit": "string",
   "concurrent_bitbucket_import_jobs_limit": "string",
   "concurrent_bitbucket_server_import_jobs_limit": "string",
@@ -75129,7 +75425,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "default_artifacts_expire_in": "string",
   "default_branch_name": "string",
   "default_branch_protection": "string",
-  "default_branch_protection_defaults": "string",
+  "default_branch_protection_defaults": {},
   "default_ci_config_path": "string",
   "default_group_visibility": "string",
   "default_preferred_language": "string",
@@ -75143,20 +75439,28 @@ Updates the current application settings for this GitLab instance. At least one 
   "delete_inactive_projects": "string",
   "deletion_adjourned_period": "string",
   "deny_all_requests_except_allowed": "string",
-  "dependency_management_settings": "string",
+  "dependency_management_settings": {},
   "disable_admin_oauth_scopes": "string",
   "disable_feed_token": "string",
   "disable_password_authentication_for_users_with_sso_identities": "string",
   "block_jwt_for_reclaimed_paths": "string",
   "root_moved_permanently_redirection": "string",
-  "disabled_oauth_sign_in_sources": "string",
-  "domain_denylist": "string",
+  "disabled_oauth_sign_in_sources": [
+    "string"
+  ],
+  "domain_denylist": [
+    "string"
+  ],
   "domain_denylist_enabled": "string",
   "domain_denylist_raw": "string",
-  "domain_allowlist": "string",
+  "domain_allowlist": [
+    "string"
+  ],
   "domain_allowlist_raw": "string",
   "outbound_local_requests_allowlist_raw": "string",
-  "outbound_local_requests_whitelist": "string",
+  "outbound_local_requests_whitelist": [
+    "string"
+  ],
   "dsa_key_restriction": "string",
   "ecdsa_key_restriction": "string",
   "ecdsa_sk_key_restriction": "string",
@@ -75204,9 +75508,13 @@ Updates the current application settings for this GitLab instance. At least one 
   "housekeeping_optimize_repository_period": "string",
   "html_emails_enabled": "string",
   "iframe_rendering_enabled": "string",
-  "iframe_rendering_allowlist": "string",
+  "iframe_rendering_allowlist": [
+    "string"
+  ],
   "iframe_rendering_allowlist_raw": "string",
-  "import_sources": "string",
+  "import_sources": [
+    "string"
+  ],
   "inactive_resource_access_tokens_delete_after_days": "string",
   "inactive_projects_delete_after_months": "string",
   "inactive_projects_min_size_mb": "string",
@@ -75217,7 +75525,9 @@ Updates the current application settings for this GitLab instance. At least one 
   "jira_connect_public_key_storage_enabled": "string",
   "jira_connect_proxy_url": "string",
   "jira_connect_additional_audience_url": "string",
-  "jira_connect_domain_allowlist": "string",
+  "jira_connect_domain_allowlist": [
+    "string"
+  ],
   "jira_connect_domain_allowlist_raw": "string",
   "jira_forge_app_id": "string",
   "math_rendering_limits_enabled": "string",
@@ -75259,7 +75569,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "instance_token_prefix": "string",
   "kroki_enabled": "string",
   "kroki_url": "string",
-  "kroki_formats": "string",
+  "kroki_formats": {},
   "kroki_diagram_proxy_enabled": "string",
   "plantuml_enabled": "string",
   "plantuml_url": "string",
@@ -75280,13 +75590,15 @@ Updates the current application settings for this GitLab instance. At least one 
   "require_admin_two_factor_authentication": "string",
   "require_two_factor_authentication": "string",
   "remember_me_enabled": "string",
-  "restricted_visibility_levels": "string",
+  "restricted_visibility_levels": [
+    "string"
+  ],
   "rsa_key_restriction": "string",
   "session_expire_delay": "string",
   "session_expire_from_init": "string",
   "shared_runners_enabled": "string",
   "shared_runners_text": "string",
-  "sign_in_restrictions": "string",
+  "sign_in_restrictions": {},
   "signup_enabled": "string",
   "silent_mode_enabled": "string",
   "slack_app_enabled": "string",
@@ -75478,7 +75790,9 @@ Updates the current application settings for this GitLab instance. At least one 
   "offline_transfer_exports_enabled": "string",
   "offline_transfer_imports_enabled": "string",
   "allow_runner_registration_token": "string",
-  "valid_runner_registrars": "string",
+  "valid_runner_registrars": [
+    "string"
+  ],
   "user_defaults_to_private_profile": "string",
   "deactivation_email_additional_text": "string",
   "projects_api_rate_limit_unauthenticated": "string",
@@ -75510,6 +75824,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "project_members_api_limit": "string",
   "protected_branch_write_limit": "string",
   "create_organization_api_limit": "string",
+  "delete_merged_branches_limit": "string",
   "cross_reference_checks_limit": "string",
   "user_contributed_projects_api_limit": "string",
   "user_projects_api_limit": "string",
@@ -75531,6 +75846,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "wiki_read_request_limit_unauthenticated": "string",
   "merge_request_diffs_page_request_limit": "string",
   "merge_request_diff_resources_request_limit": "string",
+  "graphql_participant_fields_request_limit": "string",
   "work_item_hierarchy_add_children_limit": "string",
   "work_item_move_limit": "string",
   "work_item_update_limit": "string",
@@ -75584,7 +75900,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "global_search_block_anonymous_searches_enabled": "string",
   "enable_language_server_restrictions": "string",
   "minimum_language_server_version": "string",
-  "vscode_extension_marketplace": "string",
+  "vscode_extension_marketplace": {},
   "vscode_extension_marketplace_enabled": "string",
   "vscode_extension_marketplace_extension_host_domain": "string",
   "vscode_extension_marketplace_single_origin_fallback_enabled": "string",
@@ -75594,7 +75910,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "default_search_scope": "string",
   "git_push_pipeline_limit": "string",
   "delay_user_account_self_deletion": "string",
-  "resource_usage_limits": "string",
+  "resource_usage_limits": {},
   "runner_jobs_request_api_limit": "string",
   "runner_jobs_patch_trace_api_limit": "string",
   "runner_jobs_endpoints_api_limit": "string",
@@ -75615,11 +75931,15 @@ Updates the current application settings for this GitLab instance. At least one 
   "dynamic_client_registration_enabled": "string",
   "active_context_pause_indexing": "string",
   "allow_all_integrations": "string",
-  "allowed_integrations": "string",
+  "allowed_integrations": [
+    "string"
+  ],
   "allow_group_owners_to_manage_ldap": "string",
   "automatic_purchased_storage_allocation": "string",
   "check_namespace_plan": "string",
-  "ci_cd_catalog_projects_allowlist": "string",
+  "ci_cd_catalog_projects_allowlist": [
+    "string"
+  ],
   "ci_cd_catalog_projects_allowlist_raw": "string",
   "duo_chat_expiration_column": "string",
   "duo_chat_expiration_days": "string",
@@ -75640,15 +75960,21 @@ Updates the current application settings for this GitLab instance. At least one 
   "elasticsearch_max_bulk_concurrency": "string",
   "elasticsearch_max_bulk_size_mb": "string",
   "elasticsearch_max_code_indexing_concurrency": "string",
-  "elasticsearch_namespace_ids": "string",
+  "elasticsearch_namespace_ids": [
+    0
+  ],
   "elasticsearch_pause_indexing": "string",
   "elasticsearch_advanced_search_pause_indexing": "string",
-  "elasticsearch_project_ids": "string",
+  "elasticsearch_project_ids": [
+    0
+  ],
   "elasticsearch_retry_on_failure": "string",
   "elasticsearch_replicas": "string",
   "elasticsearch_search": "string",
   "elasticsearch_shards": "string",
-  "elasticsearch_url": "string",
+  "elasticsearch_url": [
+    "string"
+  ],
   "elasticsearch_username": "string",
   "elasticsearch_password": "string",
   "elasticsearch_analyzers_smartcn_enabled": "string",
@@ -75676,7 +76002,9 @@ Updates the current application settings for this GitLab instance. At least one 
   "throttle_incident_management_notification_enabled": "string",
   "throttle_incident_management_notification_per_period": "string",
   "throttle_incident_management_notification_period_in_seconds": "string",
-  "package_metadata_purl_types": "string",
+  "package_metadata_purl_types": [
+    0
+  ],
   "product_analytics_enabled": "string",
   "product_analytics_data_collector_host": "string",
   "product_analytics_configurator_connection_string": "string",
@@ -75692,13 +76020,17 @@ Updates the current application settings for this GitLab instance. At least one 
   "ai_audit_events_streaming_enabled": true,
   "duo_token_usage_tracking_enabled": true,
   "duo_workflow_file_attachments_enabled": true,
-  "duo_namespace_access_rules": "string",
+  "duo_namespace_access_rules": [
+    {}
+  ],
   "duo_remote_flows_enabled": "string",
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
   "duo_scheduled_automations_enabled": "string",
   "duo_scheduled_automations_availability": "string",
+  "duo_code_suggestions_enabled": true,
+  "duo_code_suggestions_availability": "string",
   "duo_custom_agents_enabled": true,
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_enabled": true,
@@ -75711,7 +76043,9 @@ Updates the current application settings for this GitLab instance. At least one 
   "duo_auto_mode_availability": "string",
   "enabled_expanded_logging": "string",
   "foundational_agents_default_enabled": "string",
-  "foundational_agents_statuses": "string",
+  "foundational_agents_statuses": [
+    {}
+  ],
   "zoekt_indexing_enabled": "string",
   "zoekt_search_enabled": "string",
   "zoekt_indexing_paused": "string",
@@ -75757,6 +76091,8 @@ Updates the current application settings for this GitLab instance. At least one 
   "credits_usage_per_minute_limit": "string",
   "credits_usage_per_hour_limit": "string",
   "credits_usage_per_day_limit": "string",
+  "ci_minutes_usage_projects_per_minute_limit": "string",
+  "ci_minutes_usage_projects_per_hour_limit": "string",
   "trial_create_limit": "string",
   "hand_raise_lead_create_limit": "string",
   "user_add_on_assignment_bulk_create_limit": "string",
@@ -75803,9 +76139,11 @@ Updates the current application settings for this GitLab instance. At least one 
   "password_authentication_enabled": "string",
   "signin_enabled": "string",
   "allow_local_requests_from_hooks_and_services": "string",
-  "asset_proxy_whitelist": "string",
-  "housekeeping_bitmaps_enabled": "string",
-  "repository_storages_weighted": "string",
+  "asset_proxy_whitelist": [
+    "string"
+  ],
+  "housekeeping_bitmaps_enabled": true,
+  "repository_storages_weighted": {},
   "gitlab_product_usage_data_source": "string",
   "container_registry_import_max_tags_count": "string",
   "container_registry_import_max_retries": "string",
@@ -75850,8 +76188,12 @@ Updates the current application settings for this GitLab instance. At least one 
   "git_two_factor_session_expiry": "string",
   "max_number_of_repository_downloads": "string",
   "max_number_of_repository_downloads_within_time_period": "string",
-  "git_rate_limit_users_allowlist": "string",
-  "git_rate_limit_users_alertlist": "string",
+  "git_rate_limit_users_allowlist": [
+    "string"
+  ],
+  "git_rate_limit_users_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string",
   "delete_unconfirmed_users": "string",
   "unconfirmed_users_delete_after_days": "string",
@@ -75859,6 +76201,7 @@ Updates the current application settings for this GitLab instance. At least one 
   "lock_duo_custom_agents_enabled": true,
   "lock_duo_custom_flows_enabled": true,
   "lock_duo_external_agents_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "duo_workflows_default_image_registry": "string",
   "duo_template_project_id": "string",
   "ci_telemetry_otel_endpoint": "string",
@@ -75909,7 +76252,7 @@ curl https://gitlab.com/api/v4/api/v4/application/statistics \
 
 `GET /api/v4/application/statistics`
 
-Retrieves the current application statistics for this GitLab instance.
+Retrieves the current application statistics for this GitLab instance. For values less than 10,000, an exact count is returned. For values of 10,000 and greater, the count might be approximate.
 
 > Example responses
 
@@ -76065,14 +76408,14 @@ site_name: string
 |body|body|[putApiV4ApplicationAppearanceRequest](#schemaputapiv4applicationappearancerequest)|false|none|
 |» title|body|string \| null|false|Instance title on the sign in / sign up page|
 |» description|body|string \| null|false|Markdown text shown on the sign in / sign up page|
-|» pwa_name|body|string \| null|false|Name of the Progressive Web App|
+|» pwa_name|body|string \| null|false|Name of the Progressive Web App. Used for the `name` attribute in `manifest.json`.|
 |» pwa_short_name|body|string \| null|false|Optional, short name for Progressive Web App|
-|» pwa_description|body|string \| null|false|An explanation of what the Progressive Web App does|
+|» pwa_description|body|string \| null|false|An explanation of what the Progressive Web App does. Used for the `description` attribute in `manifest.json`.|
 |» logo|body|string(binary) \| null|false|Instance image used on the sign in / sign up page|
 |» pwa_icon|body|string(binary) \| null|false|Icon used for Progressive Web App|
 |» header_logo|body|string(binary) \| null|false|Instance image used for the main navigation bar|
 |» favicon|body|string(binary) \| null|false|Instance favicon in .ico/.png format|
-|» member_guidelines|body|string \| null|false|Markdown text shown on the members page of a group or project|
+|» member_guidelines|body|string \| null|false|Markdown text shown on the members page of a group or project. Shown only to users with permission to change members.|
 |» new_project_guidelines|body|string \| null|false|Markdown text shown on the new project page|
 |» profile_image_guidelines|body|string \| null|false|Markdown text shown on the profile page below Public Avatar|
 |» header_message|body|string \| null|false|Message within the system header bar|
@@ -100976,7 +101319,7 @@ Lists all labels for a specified project. By default, this request returns 20 re
 |id|path|string \| integer|true|ID or URL-encoded path of the project.|
 |with_counts|query|boolean \| null|false|If `true`, includes issue and merge request counts.|
 |include_ancestor_groups|query|boolean \| null|false|If `true`, includes ancestor groups.|
-|search|query|string \| null|false|Keyword to filter labels by.|
+|search|query|string \| null|false|Keyword to filter labels by. Returns labels with an exact, case-insensitive name match first.|
 |archived|query|boolean \| null|false|If `true`, returns only archived labels. If `false`, returns only non-archived labels. If omitted, returns all labels. Introduced in GitLab 18.10.|
 |page|query|integer \| null|false|Page number of results to retrieve.|
 |per_page|query|integer \| null|false|Number of items to list per page.|
@@ -101627,7 +101970,7 @@ Lists all group labels for a specified group.
 |include_ancestor_groups|query|boolean \| null|false|If `true`, includes ancestor groups.|
 |include_descendant_groups|query|boolean \| null|false|If `true`, includes descendant groups.|
 |only_group_labels|query|boolean \| null|false|If `true`, returns only group labels. If `false`, also returns project labels.|
-|search|query|string \| null|false|Keyword to filter labels by.|
+|search|query|string \| null|false|Keyword to filter labels by. Returns labels with an exact, case-insensitive name match first.|
 |archived|query|boolean \| null|false|If `true`, returns only archived labels. If `false`, returns only non-archived labels. If omitted, returns all labels. Introduced in GitLab 18.10.|
 |page|query|integer \| null|false|Page number of results to retrieve.|
 |per_page|query|integer \| null|false|Number of items to list per page.|
@@ -102543,7 +102886,7 @@ curl https://gitlab.com/api/v4/api/v4/license/usage_export \
 
 `GET /api/v4/license/usage_export`
 
-Downloads usage data for the currently active license.
+Downloads usage data for the currently active license in CSV format.
 
 <h3 id="download-license-usage-data-responses">Responses</h3>
 
@@ -102720,7 +103063,7 @@ curl https://gitlab.com/api/v4/api/v4/licenses \
 
 `GET /api/v4/licenses`
 
-Lists all information about all licenses.
+Lists all information about all licenses. `overage` is the difference between the number of billable users and the licensed number of users. For an expired license, it uses the historical maximum billable user count (`historical_max`). Otherwise, it uses the current billable user count.
 
 > Example responses
 
@@ -109450,6 +109793,8 @@ Lists all approval rules and any associated details for a specified merge reques
         "duo_core_features_enabled": true,
         "duo_features_enabled": true,
         "lock_duo_features_enabled": true,
+        "duo_code_suggestions_enabled": true,
+        "lock_duo_code_suggestions_enabled": true,
         "auto_duo_code_review_enabled": "string",
         "duo_code_review_level_allowed": true,
         "duo_code_review_default_level": "lite",
@@ -109700,6 +110045,8 @@ Creates an approval rule for a specified merge request. If `approval_project_rul
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -109900,6 +110247,8 @@ Retrieves information about an approval rule for a specified merge request.
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -110142,6 +110491,8 @@ Updates a specified approval rule for a merge request. This endpoint removes any
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -111231,6 +111582,8 @@ Retrieves approval details for a specified merge request. If a user has modified
           "duo_core_features_enabled": true,
           "duo_features_enabled": true,
           "lock_duo_features_enabled": true,
+          "duo_code_suggestions_enabled": true,
+          "lock_duo_code_suggestions_enabled": true,
           "auto_duo_code_review_enabled": "string",
           "duo_code_review_level_allowed": true,
           "duo_code_review_default_level": "lite",
@@ -117867,7 +118220,7 @@ curl https://gitlab.com/api/v4/api/v4/version \
 
 `GET /api/v4/version`
 
-This feature was introduced in GitLab 8.13 and deprecated in 15.5. We recommend you instead use the Metadata API.
+Retrieves metadata information for the GitLab instance. Deprecated. Use `GET /metadata` instead.
 
 > Example responses
 
@@ -118216,7 +118569,7 @@ curl https://gitlab.com/api/v4/api/v4/usage_data/metric_definitions \
 
 `GET /api/v4/usage_data/metric_definitions`
 
-Downloads all metric definitions as a single YAML file.
+Downloads all metric definitions as a single YAML file, similar to the [Metrics Dictionary](https://metrics.gitlab.com/), for easier importing.
 
 <h3 id="download-metric-definitions-parameters">Parameters</h3>
 
@@ -119209,6 +119562,7 @@ http, oauth2, apiKey
 
 ```bash
 curl https://gitlab.com/api/v4/api/v4/projects/string/milestones/0/burndown_events \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -119223,13 +119577,35 @@ Lists all burndown chart events for a specified milestone.
 |id|path|string \| integer|true|ID or URL-encoded path of the project.|
 |milestone_id|path|integer|true|ID of the project milestone.|
 
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "created_at": "2021-03-01T10:00:00.000Z",
+    "weight": 2,
+    "action": "created"
+  }
+]
+```
+
 <h3 id="list-all-burndown-chart-events-for-a-milestone-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|None|
+|200|OK|OK|Inline|
 |400|Bad Request|Bad Request|None|
 |404|Not Found|Not Found|None|
+
+<h3 id="list-all-burndown-chart-events-for-a-milestone-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[APIEntitiesBurndownEvent](#schemaapientitiesburndownevent)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -120046,6 +120422,7 @@ http, oauth2, apiKey
 
 ```bash
 curl https://gitlab.com/api/v4/api/v4/groups/string/milestones/0/burndown_events \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -120060,13 +120437,35 @@ Lists all burndown chart events for a specified milestone.
 |id|path|string|true|ID or URL-encoded path of the group.|
 |milestone_id|path|integer|true|ID of the group milestone.|
 
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "created_at": "2021-03-01T10:00:00.000Z",
+    "weight": 2,
+    "action": "created"
+  }
+]
+```
+
 <h3 id="list-all-burndown-chart-events-for-a-milestone-1-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|None|
+|200|OK|OK|Inline|
 |400|Bad Request|Bad Request|None|
 |404|Not Found|Not Found|None|
+
+<h3 id="list-all-burndown-chart-events-for-a-milestone-1-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[APIEntitiesBurndownEvent](#schemaapientitiesburndownevent)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -120097,7 +120496,8 @@ curl https://gitlab.com/api/v4/api/v4/user/push_subscriptions \
     "device_name": "string",
     "app_version": "string",
     "locale": "string",
-    "payload_mode": "full"
+    "payload_mode": "full",
+    "content_key": "string"
   }'
 ```
 
@@ -120116,7 +120516,8 @@ Idempotently registers the calling user's device token for APNs push notificatio
   "device_name": "string",
   "app_version": "string",
   "locale": "string",
-  "payload_mode": "full"
+  "payload_mode": "full",
+  "content_key": "string"
 }
 ```
 
@@ -120133,6 +120534,7 @@ Idempotently registers the calling user's device token for APNs push notificatio
 |» app_version|body|string \| null|false|The installed application version|
 |» locale|body|string \| null|false|The device locale|
 |» payload_mode|body|string \| null|false|Whether notifications carry the full content or only identifiers|
+|» content_key|body|string \| null|false|A base64-encoded 32-byte key the device minted; with it, notification content is sent AES-256-GCM encrypted for the app's notification extension and the alert is generic|
 
 #### Enumerated Values
 
@@ -120152,7 +120554,8 @@ Idempotently registers the calling user's device token for APNs push notificatio
 ```json
 {
   "id": 1,
-  "created_at": "2026-07-30T12:00:00.000Z"
+  "created_at": "2026-07-30T12:00:00.000Z",
+  "content_key": "missing"
 }
 ```
 
@@ -127250,7 +127653,9 @@ Lists all packages for a specified project. All package types are included in re
     "creator_id": 1,
     "project_id": 2,
     "project_path": "gitlab/foo/bar",
-    "tags": "string",
+    "tags": [
+      {}
+    ],
     "pipeline": {
       "id": 1,
       "iid": 2,
@@ -127316,7 +127721,9 @@ Lists all packages for a specified project. All package types are included in re
         "id": "string",
         "version": "string",
         "created_at": "string",
-        "tags": "string",
+        "tags": [
+          {}
+        ],
         "pipeline": {
           "id": 1,
           "iid": 2,
@@ -127418,7 +127825,9 @@ Retrieves a specified project package. Only packages with status `default` or `d
   "creator_id": 1,
   "project_id": 2,
   "project_path": "gitlab/foo/bar",
-  "tags": "string",
+  "tags": [
+    {}
+  ],
   "pipeline": {
     "id": 1,
     "iid": 2,
@@ -127484,7 +127893,9 @@ Retrieves a specified project package. Only packages with status `default` or `d
       "id": "string",
       "version": "string",
       "created_at": "string",
-      "tags": "string",
+      "tags": [
+        {}
+      ],
       "pipeline": {
         "id": 1,
         "iid": 2,
@@ -128140,7 +128551,9 @@ Lists all packages for a specified group. When accessed without authentication, 
     "creator_id": 1,
     "project_id": 2,
     "project_path": "gitlab/foo/bar",
-    "tags": "string",
+    "tags": [
+      {}
+    ],
     "pipeline": {
       "id": 1,
       "iid": 2,
@@ -128206,7 +128619,9 @@ Lists all packages for a specified group. When accessed without authentication, 
         "id": "string",
         "version": "string",
         "created_at": "string",
-        "tags": "string",
+        "tags": [
+          {}
+        ],
         "pipeline": {
           "id": 1,
           "iid": 2,
@@ -140324,14 +140739,14 @@ Modify the limits of a plan on the GitLab instance.
 |» cargo_max_file_size|body|integer \| null|false|Maximum Cargo package file size in bytes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/33060) in GitLab 19.3.|
 |» ci_instance_level_variables|body|integer \| null|false|Maximum number of instance-level CI/CD variables that can be defined.|
 |» ci_pipeline_size|body|integer \| null|false|Maximum number of jobs in a single pipeline.|
-|» ci_pipeline_variables_count|body|integer \| null|false|Maximum number of pipeline variables in a single pipeline.|
-|» ci_variable_value_size|body|integer \| null|false|Maximum size of a CI/CD variable value in bytes.|
-|» ci_variable_file_value_size|body|integer \| null|false|Maximum size of a file type CI/CD variable value in bytes.|
+|» ci_pipeline_variables_count|body|integer \| null|false|Maximum number of pipeline variables in a single pipeline. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.|
+|» ci_variable_value_size|body|integer \| null|false|Maximum size of a CI/CD variable value in bytes. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.|
+|» ci_variable_file_value_size|body|integer \| null|false|Maximum size of a file type CI/CD variable value in bytes. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.|
 |» ci_active_jobs|body|integer \| null|false|Total number of jobs in currently active pipelines.|
 |» ci_project_subscriptions|body|integer \| null|false|Maximum number of pipeline subscriptions to and from a project.|
 |» ci_pipeline_schedules|body|integer \| null|false|Maximum number of pipeline schedules.|
 |» ci_needs_size_limit|body|integer \| null|false|Maximum number of `needs` dependencies that a job can have.|
-|» ci_job_variables_count|body|integer \| null|false|Maximum number of job variables in a single job.|
+|» ci_job_variables_count|body|integer \| null|false|Maximum number of job variables in a single job. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254701) in GitLab 19.6.|
 |» ci_registered_group_runners|body|integer \| null|false|Maximum number of runners created or active in a group during the past seven days.|
 |» ci_registered_project_runners|body|integer \| null|false|Maximum number of runners created or active in a project during the past seven days.|
 |» conan_max_file_size|body|integer \| null|false|Maximum Conan package file size in bytes.|
@@ -140356,8 +140771,8 @@ Modify the limits of a plan on the GitLab instance.
 |» web_hook_calls|body|integer \| null|false|Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571738) in GitLab 18.5.|
 |» web_hook_calls_low|body|integer \| null|false|Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for unlimited. GitLab.com only.|
 |» web_hook_calls_mid|body|integer \| null|false|Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for unlimited. GitLab.com only.|
-|» integration_executions|body|integer \| null|false|Maximum number of integration executions that can be enqueued per minute, per top-level namespace, excluding Datadog. Set to `0` for unlimited.|
-|» integration_executions_datadog|body|integer \| null|false|Maximum number of Datadog integration executions that can be enqueued per minute, per top-level namespace. Set to `0` for unlimited.|
+|» integration_executions|body|integer \| null|false|Maximum number of integration executions that can be enqueued per minute, per top-level namespace, excluding Datadog. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/636614) in GitLab 19.6. This parameter is in beta and might be changed or removed without notice.|
+|» integration_executions_datadog|body|integer \| null|false|Maximum number of Datadog integration executions that can be enqueued per minute, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/636614) in GitLab 19.6. This parameter is in beta and might be changed or removed without notice.|
 |» max_pipelines_per_merge_train|body|integer \| null|false|Maximum number of parallel pipelines per merge train. The default is `20` and the minimum is `1`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374188) in GitLab 19.0.|
 
 #### Enumerated Values
@@ -140904,6 +141319,8 @@ Retrieves the approval configuration for a project.
         "duo_core_features_enabled": true,
         "duo_features_enabled": true,
         "lock_duo_features_enabled": true,
+        "duo_code_suggestions_enabled": true,
+        "lock_duo_code_suggestions_enabled": true,
         "auto_duo_code_review_enabled": "string",
         "duo_code_review_level_allowed": true,
         "duo_code_review_default_level": "lite",
@@ -141120,6 +141537,8 @@ Creates or updates the approval configuration for a project. The currently authe
         "duo_core_features_enabled": true,
         "duo_features_enabled": true,
         "lock_duo_features_enabled": true,
+        "duo_code_suggestions_enabled": true,
+        "lock_duo_code_suggestions_enabled": true,
         "auto_duo_code_review_enabled": "string",
         "duo_code_review_level_allowed": true,
         "duo_code_review_default_level": "lite",
@@ -153672,7 +154091,7 @@ curl https://gitlab.com/api/v4/api/v4/projects/string/statistics \
 
 `GET /api/v4/projects/{id}/statistics`
 
-Retrieves the clone and pull statistics for the last 30 days from a specified project.
+Retrieves the clone and pull statistics for the last 30 days from a specified project. Requires at least the Reporter role for the project. Requires a token with the `read_api` or `api` scope.
 
 <h3 id="retrieve-the-statistics-of-the-last-30-days-parameters">Parameters</h3>
 
@@ -170487,6 +170906,7 @@ http, oauth2, apiKey
 
 ```bash
 curl https://gitlab.com/api/v4/api/v4/admin/search/migrations \
+  -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}"
 ```
 
@@ -170494,14 +170914,42 @@ curl https://gitlab.com/api/v4/api/v4/admin/search/migrations \
 
 Lists all advanced search migrations for the GitLab instance.
 
+> Example responses
+
+> 200 Response
+
+```json
+[
+  {
+    "version": 20230427555555,
+    "name": "BackfillHiddenOnMergeRequests",
+    "started_at": "2023-05-14T12:30:50.355Z",
+    "completed_at": "2023-05-16T12:30:50.355Z",
+    "completed": true,
+    "obsolete": false,
+    "migration_state": {
+      "task_id": "task_id"
+    }
+  }
+]
+```
+
 <h3 id="list-all-advanced-search-migrations-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
 |---|---|---|---|
-|200|OK|OK|None|
+|200|OK|OK|Inline|
 |401|Unauthorized|401 Unauthorized|None|
 |403|Forbidden|403 Forbidden|None|
 |404|Not Found|404 Not found|None|
+
+<h3 id="list-all-advanced-search-migrations-responseschema">Response Schema</h3>
+
+Status Code **200**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anonymous*|[[APIEntitiesSearchMigration](#schemaapientitiessearchmigration)]|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -170578,12 +171026,30 @@ curl 'https://gitlab.com/api/v4/api/v4/search?search=string&scope=wiki_blobs' \
 
 Searches for a term across the entire GitLab instance. The response depends on the requested scope.
 
+The `blobs` scope searches code. It is available only when advanced search or exact code search is enabled.
+The `wiki_blobs` scope searches wikis. The `commits`, `notes`, and `wiki_blobs` scopes are available only
+when advanced search is enabled.
+
+The `blobs` and `wiki_blobs` scopes support the `filename`, `path`, and `extension` filters. To use a filter,
+include it in the search query, for example `a query filename:some_name*`. Filters support wildcards (`*`)
+for glob matching. Elasticsearch syntax might not work with exact code search. For exact code search, use
+regular expressions instead of Elasticsearch wildcard queries.
+
+In `blobs` and `wiki_blobs` results, `filename` is deprecated in favor of `path`. Both return the full path
+of the file in the repository. In a future release, `filename` is planned to return only the file name.
+
+In `issues` results, `assignee` is deprecated in favor of `assignees`.
+
+To filter `work_items` results by more than one type, pass `type` as an array, for example
+`type[]=task&type[]=issue`.
+
+
 <h3 id="search-an-instance-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |search|query|string \| null|true|Search query.|
-|scope|query|string|true|Scope of the search.|
+|scope|query|string|true|Scope of the search. The `blobs` scope requires advanced search or exact code search. The `commits`, `notes`, and `wiki_blobs` scopes require advanced search.|
 |state|query|string \| null|false|Filter results by state. Applies only to the `issues`, `work_items`, and `merge_requests` scopes.|
 |confidential|query|boolean \| null|false|If `true`, returns only confidential results. If `false`, returns only non-confidential results. Applies only to the `issues` and `work_items` scopes.|
 |type|query|[string]|false|Filter work items by type. Only applies to work_items scope. Available types: issue, task, epic, incident, test_case, requirement, objective, key_result, ticket.|
@@ -170592,14 +171058,14 @@ Searches for a term across the entire GitLab instance. The response depends on t
 |exclude_forks|query|boolean \| null|false|If `true`, excludes forked projects from the search. If omitted, forks are excluded. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.|
 |num_context_lines|query|integer \| null|false|Number of context lines to include around each match in the results. Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217) in GitLab 18.11.|
 |regex|query|boolean \| null|false|If `true`, uses regular expressions to search for code. If omitted, regular expressions are used. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9.|
-|source_branch|query|string \| null|false|Filter merge requests by source branch. Available with advanced search and the merge_requests scope.|
-|target_branch|query|string \| null|false|Filter merge requests by target branch. Available with advanced search and the merge_requests scope.|
-|author_username|query|string \| null|false|Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes.|
-|label_name|query|[string]|false|Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes.|
+|source_branch|query|string \| null|false|Filter merge requests by source branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|target_branch|query|string \| null|false|Filter merge requests by target branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|author_username|query|string \| null|false|Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|label_name|query|[string]|false|Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
 |not|query|object \| null|false|Filter out results matching the parameters supplied. Supplying a filter together with its negation matches either condition, which widens the result set.|
-|not[source_branch]|query|string \| null|false|Exclude merge requests with this source branch|
-|not[target_branch]|query|string \| null|false|Exclude merge requests with this target branch|
-|not[author_username]|query|string \| null|false|Exclude results authored by this username|
+|not[source_branch]|query|string \| null|false|Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|not[target_branch]|query|string \| null|false|Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|not[author_username]|query|string \| null|false|Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
 |page|query|integer \| null|false|Page number of results to retrieve.|
 |per_page|query|integer \| null|false|Number of items to list per page.|
 
@@ -170650,7 +171116,25 @@ curl 'https://gitlab.com/api/v4/api/v4/groups/string/(-/)search?search=string&sc
 
 `GET /api/v4/groups/{id}/(-/)search`
 
-This feature was introduced in GitLab 10.5.
+The `groups` scope returns the subgroups of the specified group, not the group itself.
+
+The `blobs` scope searches code. It is available only when advanced search or exact code search is enabled.
+The `wiki_blobs` scope searches wikis. The `commits`, `notes`, and `wiki_blobs` scopes are available only
+when advanced search is enabled.
+
+The `blobs` and `wiki_blobs` scopes support the `filename`, `path`, and `extension` filters. To use a filter,
+include it in the search query, for example `a query filename:some_name*`. Filters support wildcards (`*`)
+for glob matching. Elasticsearch syntax might not work with exact code search. For exact code search, use
+regular expressions instead of Elasticsearch wildcard queries.
+
+In `blobs` and `wiki_blobs` results, `filename` is deprecated in favor of `path`. Both return the full path
+of the file in the repository. In a future release, `filename` is planned to return only the file name.
+
+In `issues` results, `assignee` is deprecated in favor of `assignees`.
+
+To filter `work_items` results by more than one type, pass `type` as an array, for example
+`type[]=task&type[]=issue`.
+
 
 <h3 id="search-on-gitlab-within-a-group-parameters">Parameters</h3>
 
@@ -170667,14 +171151,14 @@ This feature was introduced in GitLab 10.5.
 |exclude_forks|query|boolean \| null|false|If `true`, excludes forked projects from the search. If omitted, forks are excluded. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/493281) in GitLab 18.7.|
 |num_context_lines|query|integer \| null|false|Number of context lines to include around each match in the results. Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217) in GitLab 18.11.|
 |regex|query|boolean \| null|false|If `true`, uses regular expressions to search for code. If omitted, regular expressions are used. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9.|
-|source_branch|query|string \| null|false|Filter merge requests by source branch. Available with advanced search and the merge_requests scope.|
-|target_branch|query|string \| null|false|Filter merge requests by target branch. Available with advanced search and the merge_requests scope.|
-|author_username|query|string \| null|false|Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes.|
-|label_name|query|[string]|false|Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes.|
+|source_branch|query|string \| null|false|Filter merge requests by source branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|target_branch|query|string \| null|false|Filter merge requests by target branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|author_username|query|string \| null|false|Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|label_name|query|[string]|false|Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
 |not|query|object \| null|false|Filter out results matching the parameters supplied. Supplying a filter together with its negation matches either condition, which widens the result set.|
-|not[source_branch]|query|string \| null|false|Exclude merge requests with this source branch|
-|not[target_branch]|query|string \| null|false|Exclude merge requests with this target branch|
-|not[author_username]|query|string \| null|false|Exclude results authored by this username|
+|not[source_branch]|query|string \| null|false|Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|not[target_branch]|query|string \| null|false|Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|not[author_username]|query|string \| null|false|Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
 |page|query|integer \| null|false|Page number of results to retrieve.|
 |per_page|query|integer \| null|false|Number of items to list per page.|
 
@@ -170727,6 +171211,25 @@ curl 'https://gitlab.com/api/v4/api/v4/projects/string/(-/)search?search=string&
 
 Searches for content in a specified project.
 
+The `blobs` scope searches code and the `wiki_blobs` scope searches wikis. Both search filenames and
+contents. Results found in filenames are listed before results found in contents. A blob can appear in
+more than one result, because the search string can match both its filename and its content, or appear
+several times in its content.
+
+The `blobs` and `wiki_blobs` scopes support the `filename`, `path`, and `extension` filters. To use a filter,
+include it in the search query, for example `a query filename:some_name*`. Filters support wildcards (`*`)
+for glob matching. Elasticsearch syntax might not work with exact code search. For exact code search, use
+regular expressions instead of Elasticsearch wildcard queries.
+
+In `blobs` and `wiki_blobs` results, `filename` is deprecated in favor of `path`. Both return the full path
+of the file in the repository. In a future release, `filename` is planned to return only the file name.
+
+In `issues` results, `assignee` is deprecated in favor of `assignees`.
+
+To filter `work_items` results by more than one type, pass `type` as an array, for example
+`type[]=task&type[]=issue`.
+
+
 <h3 id="search-a-project-parameters">Parameters</h3>
 
 |Name|In|Type|Required|Description|
@@ -170741,14 +171244,14 @@ Searches for content in a specified project.
 |fields|query|[string]|false|Fields to search. Supports only `issues` and `merge_requests` scopes. Premium and Ultimate only.|
 |num_context_lines|query|integer \| null|false|Number of context lines to include around each match in the results. Available for advanced and exact code search only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/583217) in GitLab 18.11.|
 |regex|query|boolean \| null|false|If `true`, uses regular expressions to search for code. If omitted, regular expressions are used. Available for exact code search. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/521686) in GitLab 18.9.|
-|source_branch|query|string \| null|false|Filter merge requests by source branch. Available with advanced search and the merge_requests scope.|
-|target_branch|query|string \| null|false|Filter merge requests by target branch. Available with advanced search and the merge_requests scope.|
-|author_username|query|string \| null|false|Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes.|
-|label_name|query|[string]|false|Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes.|
+|source_branch|query|string \| null|false|Filter merge requests by source branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|target_branch|query|string \| null|false|Filter merge requests by target branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|author_username|query|string \| null|false|Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|label_name|query|[string]|false|Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
 |not|query|object \| null|false|Filter out results matching the parameters supplied. Supplying a filter together with its negation matches either condition, which widens the result set.|
-|not[source_branch]|query|string \| null|false|Exclude merge requests with this source branch|
-|not[target_branch]|query|string \| null|false|Exclude merge requests with this target branch|
-|not[author_username]|query|string \| null|false|Exclude results authored by this username|
+|not[source_branch]|query|string \| null|false|Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|not[target_branch]|query|string \| null|false|Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
+|not[author_username]|query|string \| null|false|Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.|
 |page|query|integer \| null|false|Page number of results to retrieve.|
 |per_page|query|integer \| null|false|Number of items to list per page.|
 
@@ -172143,7 +172646,7 @@ curl https://gitlab.com/api/v4/api/v4/admin/sidekiq/concurrency_limits/string \
 
 `GET /api/v4/admin/sidekiq/concurrency_limits/{worker_class}`
 
-Returns concurrency limits, override expiry and job counts.
+Returns concurrency limits, override expiry and job counts. Namespaced worker class names keep the `::` separator in the path. This feature was introduced in GitLab 19.6.
 
 <h3 id="get-a-sidekiq-worker-concurrency-limit-parameters">Parameters</h3>
 
@@ -172206,7 +172709,7 @@ curl https://gitlab.com/api/v4/api/v4/admin/sidekiq/concurrency_limits/string \
 
 `PUT /api/v4/admin/sidekiq/concurrency_limits/{worker_class}`
 
-Overrides adaptive throttling until the TTL expires or the override is deleted.
+Sets or replaces a temporary concurrency override. Overrides adaptive throttling until the TTL expires or the override is deleted. Replacing an override restarts its TTL. Workers without a limit can receive a temporary cap. A positive override takes precedence over adaptive throttling and the class default. Pausing takes precedence over an override. Disabled concurrency middleware ignores overrides. When an override expires or is cleared, the stored adaptive limit resumes if it remains valid. Otherwise, the worker's runtime default applies. Lowering a limit does not terminate running jobs. The override is rejected if the worker is paused, the `sidekiq_concurrency_limit_middleware` feature flag is disabled, the worker's `disable_sidekiq_concurrency_limit_middleware_<WorkerClass>` bypass flag is enabled, or the worker is `ConcurrencyLimit::ResumeWorker`, which resumes deferred jobs and cannot be limited. This feature was introduced in GitLab 19.6.
 
 > Body parameter
 
@@ -172276,7 +172779,7 @@ curl https://gitlab.com/api/v4/api/v4/admin/sidekiq/concurrency_limits/string \
 
 `DELETE /api/v4/admin/sidekiq/concurrency_limits/{worker_class}`
 
-Restores the adaptive limit if present, otherwise the worker default.
+Clears the temporary override and returns the updated concurrency-limit status. Restores the adaptive limit if present, otherwise the worker default. This feature was introduced in GitLab 19.6.
 
 <h3 id="delete-a-sidekiq-worker-concurrency-limit-override-parameters">Parameters</h3>
 
@@ -172333,7 +172836,7 @@ curl https://gitlab.com/api/v4/api/v4/admin/sidekiq/queues/string \
 
 `DELETE /api/v4/admin/sidekiq/queues/{queue_name}`
 
-Deletes jobs from a Sidekiq queue that match the specified metadata. At least one of 32 related parameters must be provided.
+Deletes jobs from a Sidekiq queue that match the specified metadata. The response has three fields: `deleted_jobs` is the number of jobs deleted by the request, `queue_size` is the remaining size of the queue after the request, and `completed` is whether the request processed the entire queue in time. If `completed` is `false`, retrying with the same parameters can delete more jobs, including jobs added after the first request. Only available to administrators. At least one of 32 related parameters must be provided.
 
 <h3 id="delete-jobs-from-a-sidekiq-queue-parameters">Parameters</h3>
 
@@ -172341,21 +172844,21 @@ Deletes jobs from a Sidekiq queue that match the specified metadata. At least on
 |---|---|---|---|---|
 |queue_name|path|string|true|Name of the queue to delete jobs from.|
 |organization_id|query|string \| null|false|Metadata key to match|
-|user|query|string \| null|false|Metadata key to match|
+|user|query|string \| null|false|Username of the user who scheduled the jobs.|
 |user_id|query|string \| null|false|Metadata key to match|
 |gl_user_id|query|string \| null|false|Metadata key to match|
 |scoped_user|query|string \| null|false|Metadata key to match|
 |scoped_user_id|query|string \| null|false|Metadata key to match|
-|project|query|string \| null|false|Metadata key to match|
-|root_namespace|query|string \| null|false|Metadata key to match|
+|project|query|string \| null|false|Full path of the project where the jobs were scheduled from.|
+|root_namespace|query|string \| null|false|Root namespace of the project.|
 |gl_root_namespace_id|query|string \| null|false|Metadata key to match|
 |client_id|query|string \| null|false|Metadata key to match|
-|caller_id|query|string \| null|false|Metadata key to match|
+|caller_id|query|string \| null|false|Endpoint or background job that scheduled the job, for example `ProjectsController#create`, `/api/:version/projects/:id`, or `PostReceive`.|
 |remote_ip|query|string \| null|false|Metadata key to match|
 |job_id|query|string \| null|false|Metadata key to match|
 |pipeline_id|query|string \| null|false|Metadata key to match|
 |related_class|query|string \| null|false|Metadata key to match|
-|feature_category|query|string \| null|false|Metadata key to match|
+|feature_category|query|string \| null|false|Feature category of the background job, for example `team_planning` or `code_review`.|
 |artifact_size|query|string \| null|false|Metadata key to match|
 |artifact_used_cdn|query|string \| null|false|Metadata key to match|
 |artifacts_dependencies_size|query|string \| null|false|Metadata key to match|
@@ -172366,12 +172869,12 @@ Deletes jobs from a Sidekiq queue that match the specified metadata. At least on
 |sidekiq_destination_shard_redis|query|string \| null|false|Metadata key to match|
 |kubernetes_agent_id|query|string \| null|false|Metadata key to match|
 |mvcc_manifest|query|string \| null|false|Metadata key to match|
-|client_type|query|string \| null|false|Metadata key to match|
-|client_name|query|string \| null|false|Metadata key to match|
-|client_version|query|string \| null|false|Metadata key to match|
-|subscription_plan|query|string \| null|false|Metadata key to match|
+|client_type|query|string \| null|false|Kind of client whose request scheduled the jobs, for example `browser`, `ide`, or `mobile`.|
+|client_name|query|string \| null|false|Client whose request scheduled the jobs, for example `vscode` or `gitlab-mobile-ios`.|
+|client_version|query|string \| null|false|Release of the client whose request scheduled the jobs, for example `6.21.0` or `1.2.0`.|
+|subscription_plan|query|string \| null|false|Subscription plan of the root namespace. GitLab.com only.|
 |ai_resource|query|string \| null|false|Metadata key to match|
-|worker_class|query|string \| null|false|Metadata key to match|
+|worker_class|query|string \| null|false|Class of the background job worker, for example `PostReceive` or `MergeWorker`.|
 
 <h3 id="delete-jobs-from-a-sidekiq-queue-responses">Responses</h3>
 
@@ -177226,12 +177729,18 @@ Retrieves latest version for a specified module.
 {
   "name": "string",
   "provider": "string",
-  "providers": "string",
-  "root": "string",
+  "providers": [
+    "string"
+  ],
+  "root": {},
   "source": "string",
-  "submodules": "string",
+  "submodules": [
+    "string"
+  ],
   "version": "string",
-  "versions": "string"
+  "versions": [
+    "string"
+  ]
 }
 ```
 
@@ -177358,12 +177867,18 @@ Get details about specific version of a module
 {
   "name": "string",
   "provider": "string",
-  "providers": "string",
-  "root": "string",
+  "providers": [
+    "string"
+  ],
+  "root": {},
   "source": "string",
-  "submodules": "string",
+  "submodules": [
+    "string"
+  ],
   "version": "string",
-  "versions": "string"
+  "versions": [
+    "string"
+  ]
 }
 ```
 
@@ -177858,13 +178373,15 @@ curl https://gitlab.com/api/v4/api/v4/token_exchange \
   -d '{
     "audience": "gitlab-artifact-registry",
     "expires_in": 300,
-    "organization_id": 0
+    "organization_id": 0,
+    "resource": "string",
+    "scope": "string"
   }'
 ```
 
 `POST /api/v4/token_exchange`
 
-Issues a short-lived RS256 JWT scoped to one modular-service audience (such as the Artifact Registry). Claims include the requesting user id (sub), organization id, and deployment realm (saas / self-managed). When called with a CI/CD ID token, the claims also carry its build metadata, a target_audience claim in the ID token names the audience, and an ID token older than 15 minutes is refused. Presented to the corresponding backend and verified against the instance JWKS. The response uses the RFC 8693 names. token and access_token have the same value, with access_token preferred where possible.
+Issues a short-lived RS256 JWT scoped to one modular-service audience (such as the Artifact Registry). Claims include the requesting user id (sub), organization id, and deployment realm (saas / self-managed). When called with a CI/CD ID token, the claims also carry its build metadata, a target_audience claim in the ID token names the audience, and an ID token older than 15 minutes is refused. Presented to the corresponding backend and verified against the instance JWKS. The response uses the RFC 8693 names. token and access_token have the same value, with access_token preferred where possible. For an audience bound to a resource, such as gitlab-repositories, pass the resource and optionally a scope. The token then stores the grant in authorization_details (RFC 9396). The request is refused unless the caller and the credential allow every requested action. A resource that is missing, not visible to the caller or of the wrong type returns 400 with error set to invalid_target and an error_description (RFC 8693).
 
 > Body parameter
 
@@ -177872,7 +178389,9 @@ Issues a short-lived RS256 JWT scoped to one modular-service audience (such as t
 {
   "audience": "gitlab-artifact-registry",
   "expires_in": 300,
-  "organization_id": 0
+  "organization_id": 0,
+  "resource": "string",
+  "scope": "string"
 }
 ```
 
@@ -177882,8 +178401,10 @@ Issues a short-lived RS256 JWT scoped to one modular-service audience (such as t
 |---|---|---|---|---|
 |body|body|[postApiV4TokenExchangeRequest](#schemapostapiv4tokenexchangerequest)|false|none|
 |» audience|body|string \| null|false|Target service audience. Required unless a CI/CD ID token names it in its target_audience claim. When both are sent, they must match.|
-|» expires_in|body|integer \| null|false|Requested token lifetime in seconds. The granted lifetime may be shorter than requested depending on the authentication method used to call this endpoint or the audience.|
+|» expires_in|body|integer \| null|false|Requested token lifetime in seconds. The granted lifetime may be shorter than requested depending on the authentication method used to call this endpoint or the audience. For an audience bound to a resource, it never outlasts the token used to request it.|
 |» organization_id|body|integer \| null|false|ID of the organization to mint the token for. Required for Artifact Registry when the caller belongs to more than one.|
+|» resource|body|string \| null|false|Global ID of the resource the token grants access to, such as gid://gitlab/Project/1. Required for gitlab-repositories, ignored for other audiences.|
+|» scope|body|string \| null|false|Space-separated actions to grant on the resource. For gitlab-repositories, read, write, or both. Defaults to read. Ignored for other audiences.|
 
 #### Enumerated Values
 
@@ -177891,6 +178412,7 @@ Issues a short-lived RS256 JWT scoped to one modular-service audience (such as t
 |---|---|
 |» audience|gitlab-artifact-registry|
 |» audience|gitlab-autoflow|
+|» audience|gitlab-repositories|
 
 > Example responses
 
@@ -177902,6 +178424,7 @@ Issues a short-lived RS256 JWT scoped to one modular-service audience (such as t
   "issued_token_type": "urn:ietf:params:oauth:token-type:jwt",
   "token_type": "Bearer",
   "expires_in": 300,
+  "scope": "read write",
   "token": "eyJhbGciOiJSUzI1NiJ9..."
 }
 ```
@@ -177916,6 +178439,7 @@ Issues a short-lived RS256 JWT scoped to one modular-service audience (such as t
 |403|Forbidden|Forbidden|None|
 |404|Not Found|Not found|None|
 |409|Conflict|Conflict|None|
+|429|Too Many Requests|Too many requests|None|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -178395,7 +178919,7 @@ curl https://gitlab.com/api/v4/api/v4/usage_data/track_event \
 
 `POST /api/v4/usage_data/track_event`
 
-Tracks a GitLab internal event. This action increments Service Ping counters in Redis and is optionally sent to Snowplow. Introduced in GitLab 16.2.
+Tracks a GitLab internal event. This action increments Service Ping counters in Redis and is optionally sent to Snowplow. To track multiple events in one request, send an array of events to the `/track_events` endpoint. The `/track_event` and `/track_events` endpoints share a rate limit of 200 events per minute for each user. Each event counts toward the limit, so a `/track_events` request counts one unit for each event in the array. The rate limit is behind a feature flag named `rate_limit_track_internal_events`. Disabled by default. Requires a personal access token with the `api` or `ai_workflows` scope.
 
 > Body parameter
 
@@ -178453,7 +178977,7 @@ curl https://gitlab.com/api/v4/api/v4/usage_data/service_ping \
 
 `GET /api/v4/usage_data/service_ping`
 
-Retrieves the Service Ping payload from the application cache as JSON. If no cached payload is available, returns an empty response. Requires a personal access token with the `read_service_ping` scope. Introduced in GitLab 16.9.
+Retrieves the Service Ping payload from the application cache as JSON. If no cached payload is available, returns an empty response. If the payload is empty, check that Service Ping is enabled and wait for the cron job to run, or generate the payload manually. Requires a personal access token with the `read_service_ping` scope.
 
 <h3 id="retrieve-service-ping-payload-responses">Responses</h3>
 
@@ -183770,19 +184294,27 @@ Lists all vulnerability findings for a specified project. Responses are paginate
     ],
     "description": "string",
     "description_html": "string",
-    "links": "string",
+    "links": [
+      {}
+    ],
     "location": "string",
-    "remediations": "string",
+    "remediations": [
+      {}
+    ],
     "solution": "string",
     "evidence": "string",
     "request": {
-      "headers": "string",
+      "headers": [
+        {}
+      ],
       "method": "string",
       "url": "string",
       "body": "string"
     },
     "response": {
-      "headers": "string",
+      "headers": [
+        {}
+      ],
       "reason_phrase": "string",
       "status_code": "string",
       "body": "string"
@@ -185607,6 +186139,7 @@ http, oauth2, apiKey
   "issued_token_type": "urn:ietf:params:oauth:token-type:jwt",
   "token_type": "Bearer",
   "expires_in": 300,
+  "scope": "read write",
   "token": "eyJhbGciOiJSUzI1NiJ9..."
 }
 ```
@@ -185619,6 +186152,7 @@ http, oauth2, apiKey
 |issued_token_type|string|false|none|none|
 |token_type|string|false|none|none|
 |expires_in|integer|false|none|none|
+|scope|string|false|none|The actions granted on the resource. Only for an audience bound to a resource.|
 |token|string|false|none|Same value as access_token, for clients that read token, such as Docker's registry token auth flow.|
 
 <h2 id="tocS_APIEntitiesAiSemanticCodeSnippetRange">APIEntitiesAiSemanticCodeSnippetRange</h2>
@@ -185830,6 +186364,7 @@ http, oauth2, apiKey
   "web_url": "https://gitlab.example.com/group/project/-/automate/agent-sessions/42",
   "project_id": 0,
   "namespace_id": 0,
+  "service_account_id": 0,
   "agent_privileges": [
     0
   ],
@@ -185865,6 +186400,7 @@ http, oauth2, apiKey
 |web_url|string|false|none|URL of the session in the GitLab UI. For a group session, the URL is on the top-level group.|
 |project_id|integer|false|none|ID of the associated project. `null` if not set.|
 |namespace_id|integer|false|none|ID of the associated namespace. `null` if not set.|
+|service_account_id|integer|false|none|ID of the service account the flow runs as. `null` if not set.|
 |agent_privileges|[integer]|false|none|Privilege IDs assigned to the agent.|
 |agent_privileges_names|[string]|false|none|Names corresponding to `agent_privileges`.|
 |pre_approved_agent_privileges|[integer]|false|none|Privilege IDs the agent can use without asking for approval.|
@@ -186419,6 +186955,33 @@ http, oauth2, apiKey
 |start_date|string(date)|false|none|none|
 |due_date|string(date)|false|none|none|
 |web_url|string|false|none|none|
+
+<h2 id="tocS_APIEntitiesDependenciesVulnerabilities">APIEntitiesDependenciesVulnerabilities</h2>
+<!-- backwards compatibility -->
+<a id="schemaapientitiesdependenciesvulnerabilities"></a>
+<a id="schema_APIEntitiesDependenciesVulnerabilities"></a>
+<a id="tocSapientitiesdependenciesvulnerabilities"></a>
+<a id="tocsapientitiesdependenciesvulnerabilities"></a>
+
+```json
+{
+  "occurrence_id": 0,
+  "id": 0,
+  "name": "string",
+  "url": "string",
+  "severity": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|occurrence_id|integer(int64)|false|none|none|
+|id|integer(int64)|false|none|none|
+|name|string|false|none|none|
+|url|string|false|none|none|
+|severity|string|false|none|none|
 
 <h2 id="tocS_APIEntitiesSamlGroupLink">APIEntitiesSamlGroupLink</h2>
 <!-- backwards compatibility -->
@@ -187071,8 +187634,8 @@ http, oauth2, apiKey
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |build_artifacts_size|integer|false|none|CI artifacts size in bytes.|
-|container_registry_size|integer|false|none|container registry size in bytes.|
-|container_registry_size_is_estimated|boolean|false|none|Indicates whether the deduplicated container registry size for the namespace is an estimated value or not.|
+|container_registry_size|integer|false|none|Total storage size in bytes used by all container repositories in the group and its subgroups. `0` when the container registry metadata database is not enabled.|
+|container_registry_size_is_estimated|boolean|false|none|Indicates whether the deduplicated container registry size for the namespace is an estimated value or not. `true` when the size is estimated due to performance constraints.|
 |dependency_proxy_size|integer|false|none|Dependency Proxy sizes in bytes.|
 |lfs_objects_size|integer|false|none|LFS objects size in bytes.|
 |packages_size|integer|false|none|Packages size in bytes.|
@@ -187211,6 +187774,8 @@ http, oauth2, apiKey
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -187276,6 +187841,8 @@ http, oauth2, apiKey
 |duo_core_features_enabled|boolean|false|none|[Experimental] Indicates whether GitLab Duo Core features are enabled for the group|
 |duo_features_enabled|boolean|false|none|If `true`, GitLab Duo features are enabled for the group. Premium and Ultimate only.|
 |lock_duo_features_enabled|boolean|false|none|If `true`, the GitLab Duo features enabled setting is enforced for all subgroups. Premium and Ultimate only.|
+|duo_code_suggestions_enabled|boolean|false|none|If `true`, GitLab Duo Code Suggestions is turned on for the group. Premium and Ultimate only.|
+|lock_duo_code_suggestions_enabled|boolean|false|none|If `true`, the Code Suggestions enabled setting is enforced for all subgroups. Premium and Ultimate only.|
 |auto_duo_code_review_enabled|string|false|none|none|
 |duo_code_review_level_allowed|boolean|false|none|none|
 |duo_code_review_default_level|string|false|none|none|
@@ -187450,6 +188017,8 @@ http, oauth2, apiKey
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -188809,7 +189378,9 @@ http, oauth2, apiKey
 
 ```json
 {
-  "headers": "string",
+  "headers": [
+    {}
+  ],
   "method": "string",
   "url": "string",
   "body": "string"
@@ -188820,7 +189391,7 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|headers|string|false|none|none|
+|headers|[object]|false|none|none|
 |method|string|false|none|none|
 |url|string|false|none|none|
 |body|string|false|none|none|
@@ -188834,7 +189405,9 @@ http, oauth2, apiKey
 
 ```json
 {
-  "headers": "string",
+  "headers": [
+    {}
+  ],
   "reason_phrase": "string",
   "status_code": "string",
   "body": "string"
@@ -188845,7 +189418,7 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|headers|string|false|none|none|
+|headers|[object]|false|none|none|
 |reason_phrase|string|false|none|none|
 |status_code|string|false|none|none|
 |body|string|false|none|none|
@@ -189273,19 +189846,27 @@ http, oauth2, apiKey
   ],
   "description": "string",
   "description_html": "string",
-  "links": "string",
+  "links": [
+    {}
+  ],
   "location": "string",
-  "remediations": "string",
+  "remediations": [
+    {}
+  ],
   "solution": "string",
   "evidence": "string",
   "request": {
-    "headers": "string",
+    "headers": [
+      {}
+    ],
     "method": "string",
     "url": "string",
     "body": "string"
   },
   "response": {
-    "headers": "string",
+    "headers": [
+      {}
+    ],
     "reason_phrase": "string",
     "status_code": "string",
     "body": "string"
@@ -189333,9 +189914,9 @@ http, oauth2, apiKey
 |merge_request_links|[[VulnerabilitiesMergeRequestLinkEntity](#schemavulnerabilitiesmergerequestlinkentity)]|false|none|none|
 |description|string|false|none|none|
 |description_html|string|false|none|none|
-|links|string|false|none|none|
+|links|[object]|false|none|none|
 |location|string|false|none|none|
-|remediations|string|false|none|none|
+|remediations|[object]|false|none|none|
 |solution|string|false|none|none|
 |evidence|string|false|none|none|
 |request|[VulnerabilitiesRequestEntity](#schemavulnerabilitiesrequestentity)|false|none|none|
@@ -189489,6 +190070,8 @@ http, oauth2, apiKey
     "duo_core_features_enabled": true,
     "duo_features_enabled": true,
     "lock_duo_features_enabled": true,
+    "duo_code_suggestions_enabled": true,
+    "lock_duo_code_suggestions_enabled": true,
     "auto_duo_code_review_enabled": "string",
     "duo_code_review_level_allowed": true,
     "duo_code_review_default_level": "lite",
@@ -189633,6 +190216,8 @@ http, oauth2, apiKey
         "duo_core_features_enabled": true,
         "duo_features_enabled": true,
         "lock_duo_features_enabled": true,
+        "duo_code_suggestions_enabled": true,
+        "lock_duo_code_suggestions_enabled": true,
         "auto_duo_code_review_enabled": "string",
         "duo_code_review_level_allowed": true,
         "duo_code_review_default_level": "lite",
@@ -195253,6 +195838,27 @@ http, oauth2, apiKey
 |epic|object|false|none|none|
 |issue|[APIEntitiesIssueBasic](#schemaapientitiesissuebasic)|false|none|none|
 
+<h2 id="tocS_APIEntitiesDoraMetric">APIEntitiesDoraMetric</h2>
+<!-- backwards compatibility -->
+<a id="schemaapientitiesdorametric"></a>
+<a id="schema_APIEntitiesDoraMetric"></a>
+<a id="tocSapientitiesdorametric"></a>
+<a id="tocsapientitiesdorametric"></a>
+
+```json
+{
+  "date": "2021-03-01",
+  "value": 3
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|date|string(date)|false|none|none|
+|value|number|false|none|none|
+
 <h2 id="tocS_APIEntitiesProtectedBranch">APIEntitiesProtectedBranch</h2>
 <!-- backwards compatibility -->
 <a id="schemaapientitiesprotectedbranch"></a>
@@ -195445,6 +196051,8 @@ http, oauth2, apiKey
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -195686,6 +196294,8 @@ http, oauth2, apiKey
           "duo_core_features_enabled": true,
           "duo_features_enabled": true,
           "lock_duo_features_enabled": true,
+          "duo_code_suggestions_enabled": true,
+          "lock_duo_code_suggestions_enabled": true,
           "auto_duo_code_review_enabled": "string",
           "duo_code_review_level_allowed": true,
           "duo_code_review_default_level": "lite",
@@ -196923,6 +197533,8 @@ http, oauth2, apiKey
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -197146,6 +197758,8 @@ http, oauth2, apiKey
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -197517,11 +198131,11 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|record_identifier|string \| integer|false|none|none|
-|model_class|string|false|none|none|
-|created_at|string(date-time)|false|none|none|
-|file_size|integer|false|none|none|
-|checksum_information|object|false|none|none|
+|record_identifier|string \| integer|false|none|Unique identifier of the record. An integer for single-column primary keys, or a Base64-encoded string for composite keys.|
+|model_class|string|false|none|Class name of the model.|
+|created_at|string(date-time)|false|none|Creation timestamp, if available.|
+|file_size|integer|false|none|Size of the object, if available.|
+|checksum_information|object|false|none|Geo checksum information. Returned only when Geo is enabled and verification is enabled for the model.|
 
 <h2 id="tocS_APIEntitiesAdminSecurityPolicySetting">APIEntitiesAdminSecurityPolicySetting</h2>
 <!-- backwards compatibility -->
@@ -197590,13 +198204,13 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version|integer|false|none|none|
-|name|string|false|none|none|
-|started_at|string(date-time)|false|none|none|
-|completed_at|string(date-time)|false|none|none|
-|completed|boolean|false|none|none|
-|obsolete|boolean|false|none|none|
-|migration_state|object|false|none|none|
+|version|integer|false|none|Version of the migration.|
+|name|string|false|none|Name of the migration.|
+|started_at|string(date-time)|false|none|Start date for the migration.|
+|completed_at|string(date-time)|false|none|Completion date for the migration.|
+|completed|boolean|false|none|If `true`, the migration is completed.|
+|obsolete|boolean|false|none|If `true`, the migration has been marked as obsolete.|
+|migration_state|object|false|none|Stored migration state.|
 
 <h2 id="tocS_APIEntitiesSearchZoektProjectIndexSuccess">APIEntitiesSearchZoektProjectIndexSuccess</h2>
 <!-- backwards compatibility -->
@@ -197780,11 +198394,11 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|key|string|false|none|none|
-|name|string|false|none|none|
-|nickname|string|false|none|none|
-|html_url|string|false|none|none|
-|source_url|string|false|none|none|
+|key|string|false|none|Key of the license.|
+|name|string|false|none|Full name of the license.|
+|nickname|string|false|none|Nickname of the license.|
+|html_url|string|false|none|URL of the license information page.|
+|source_url|string|false|none|URL of the license source. Always `null`.|
 
 <h2 id="tocS_APIEntitiesBasicProjectDetails">APIEntitiesBasicProjectDetails</h2>
 <!-- backwards compatibility -->
@@ -199604,9 +200218,9 @@ http, oauth2, apiKey
 |callback_url|string|false|none|none|
 |confidential|boolean|false|none|none|
 |scopes|array|false|none|none|
-|granular_scopes|[[APIEntitiesGranularScope](#schemaapientitiesgranularscope)]|false|none|none|
+|granular_scopes|[[APIEntitiesGranularScope](#schemaapientitiesgranularscope)]|false|none|Granular scopes stored on the application, each with `access`, `permissions`, `group_id`, and `project_id`.|
 |secret|string|false|none|none|
-|warnings|[string]|false|none|none|
+|warnings|[string]|false|none|Warnings returned when no `user` scope grants `execute_mcp_tool`. Tokens for such an application cannot use the GitLab MCP server.|
 
 <h2 id="tocS_APIEntitiesApplication">APIEntitiesApplication</h2>
 <!-- backwards compatibility -->
@@ -199649,7 +200263,7 @@ http, oauth2, apiKey
 |callback_url|string|false|none|none|
 |confidential|boolean|false|none|none|
 |scopes|array|false|none|none|
-|granular_scopes|[[APIEntitiesGranularScope](#schemaapientitiesgranularscope)]|false|none|none|
+|granular_scopes|[[APIEntitiesGranularScope](#schemaapientitiesgranularscope)]|false|none|Granular scopes stored on the application, each with `access`, `permissions`, `group_id`, and `project_id`.|
 
 <h2 id="tocS_APIEntitiesTodo">APIEntitiesTodo</h2>
 <!-- backwards compatibility -->
@@ -199758,17 +200372,17 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|key|string|false|none|none|
-|name|string|false|none|none|
-|nickname|string|false|none|none|
-|html_url|string|false|none|none|
-|source_url|string|false|none|none|
-|popular|boolean|false|none|none|
-|description|string|false|none|none|
-|conditions|[string]|false|none|none|
-|permissions|[string]|false|none|none|
-|limitations|[string]|false|none|none|
-|content|string|false|none|none|
+|key|string|false|none|Key of the license.|
+|name|string|false|none|Full name of the license.|
+|nickname|string|false|none|Nickname of the license.|
+|html_url|string|false|none|URL of the license information page.|
+|source_url|string|false|none|URL of the license source. Always `null`.|
+|popular|boolean|false|none|If `true`, the license is a popular license.|
+|description|string|false|none|Description of the license.|
+|conditions|[string]|false|none|Conditions of the license.|
+|permissions|[string]|false|none|Permissions the license grants.|
+|limitations|[string]|false|none|Limitations of the license.|
+|content|string|false|none|Content of the template.|
 
 <h2 id="tocS_APIEntitiesTemplatesList">APIEntitiesTemplatesList</h2>
 <!-- backwards compatibility -->
@@ -200300,7 +200914,9 @@ http, oauth2, apiKey
   "archive_builds_in_human_readable": "string",
   "asset_proxy_enabled": "string",
   "asset_proxy_url": "string",
-  "asset_proxy_allowlist": "string",
+  "asset_proxy_allowlist": [
+    "string"
+  ],
   "static_objects_external_storage_auth_token": "string",
   "static_objects_external_storage_url": "string",
   "authn_data_retention_cleanup_enabled": "string",
@@ -200316,7 +200932,9 @@ http, oauth2, apiKey
   "ci_job_trace_update_interval_when_being_watched": 0,
   "ci_lint_api_require_authentication": "string",
   "ci_partitions_in_seconds_limit_human_readable": "string",
-  "code_dropdown_custom_clients": "string",
+  "code_dropdown_custom_clients": [
+    {}
+  ],
   "concurrent_github_import_jobs_limit": "string",
   "concurrent_bitbucket_import_jobs_limit": "string",
   "concurrent_bitbucket_server_import_jobs_limit": "string",
@@ -200330,7 +200948,7 @@ http, oauth2, apiKey
   "default_artifacts_expire_in": "string",
   "default_branch_name": "string",
   "default_branch_protection": "string",
-  "default_branch_protection_defaults": "string",
+  "default_branch_protection_defaults": {},
   "default_ci_config_path": "string",
   "default_group_visibility": "string",
   "default_preferred_language": "string",
@@ -200344,20 +200962,28 @@ http, oauth2, apiKey
   "delete_inactive_projects": "string",
   "deletion_adjourned_period": "string",
   "deny_all_requests_except_allowed": "string",
-  "dependency_management_settings": "string",
+  "dependency_management_settings": {},
   "disable_admin_oauth_scopes": "string",
   "disable_feed_token": "string",
   "disable_password_authentication_for_users_with_sso_identities": "string",
   "block_jwt_for_reclaimed_paths": "string",
   "root_moved_permanently_redirection": "string",
-  "disabled_oauth_sign_in_sources": "string",
-  "domain_denylist": "string",
+  "disabled_oauth_sign_in_sources": [
+    "string"
+  ],
+  "domain_denylist": [
+    "string"
+  ],
   "domain_denylist_enabled": "string",
   "domain_denylist_raw": "string",
-  "domain_allowlist": "string",
+  "domain_allowlist": [
+    "string"
+  ],
   "domain_allowlist_raw": "string",
   "outbound_local_requests_allowlist_raw": "string",
-  "outbound_local_requests_whitelist": "string",
+  "outbound_local_requests_whitelist": [
+    "string"
+  ],
   "dsa_key_restriction": "string",
   "ecdsa_key_restriction": "string",
   "ecdsa_sk_key_restriction": "string",
@@ -200405,9 +201031,13 @@ http, oauth2, apiKey
   "housekeeping_optimize_repository_period": "string",
   "html_emails_enabled": "string",
   "iframe_rendering_enabled": "string",
-  "iframe_rendering_allowlist": "string",
+  "iframe_rendering_allowlist": [
+    "string"
+  ],
   "iframe_rendering_allowlist_raw": "string",
-  "import_sources": "string",
+  "import_sources": [
+    "string"
+  ],
   "inactive_resource_access_tokens_delete_after_days": "string",
   "inactive_projects_delete_after_months": "string",
   "inactive_projects_min_size_mb": "string",
@@ -200418,7 +201048,9 @@ http, oauth2, apiKey
   "jira_connect_public_key_storage_enabled": "string",
   "jira_connect_proxy_url": "string",
   "jira_connect_additional_audience_url": "string",
-  "jira_connect_domain_allowlist": "string",
+  "jira_connect_domain_allowlist": [
+    "string"
+  ],
   "jira_connect_domain_allowlist_raw": "string",
   "jira_forge_app_id": "string",
   "math_rendering_limits_enabled": "string",
@@ -200460,7 +201092,7 @@ http, oauth2, apiKey
   "instance_token_prefix": "string",
   "kroki_enabled": "string",
   "kroki_url": "string",
-  "kroki_formats": "string",
+  "kroki_formats": {},
   "kroki_diagram_proxy_enabled": "string",
   "plantuml_enabled": "string",
   "plantuml_url": "string",
@@ -200481,13 +201113,15 @@ http, oauth2, apiKey
   "require_admin_two_factor_authentication": "string",
   "require_two_factor_authentication": "string",
   "remember_me_enabled": "string",
-  "restricted_visibility_levels": "string",
+  "restricted_visibility_levels": [
+    "string"
+  ],
   "rsa_key_restriction": "string",
   "session_expire_delay": "string",
   "session_expire_from_init": "string",
   "shared_runners_enabled": "string",
   "shared_runners_text": "string",
-  "sign_in_restrictions": "string",
+  "sign_in_restrictions": {},
   "signup_enabled": "string",
   "silent_mode_enabled": "string",
   "slack_app_enabled": "string",
@@ -200679,7 +201313,9 @@ http, oauth2, apiKey
   "offline_transfer_exports_enabled": "string",
   "offline_transfer_imports_enabled": "string",
   "allow_runner_registration_token": "string",
-  "valid_runner_registrars": "string",
+  "valid_runner_registrars": [
+    "string"
+  ],
   "user_defaults_to_private_profile": "string",
   "deactivation_email_additional_text": "string",
   "projects_api_rate_limit_unauthenticated": "string",
@@ -200711,6 +201347,7 @@ http, oauth2, apiKey
   "project_members_api_limit": "string",
   "protected_branch_write_limit": "string",
   "create_organization_api_limit": "string",
+  "delete_merged_branches_limit": "string",
   "cross_reference_checks_limit": "string",
   "user_contributed_projects_api_limit": "string",
   "user_projects_api_limit": "string",
@@ -200732,6 +201369,7 @@ http, oauth2, apiKey
   "wiki_read_request_limit_unauthenticated": "string",
   "merge_request_diffs_page_request_limit": "string",
   "merge_request_diff_resources_request_limit": "string",
+  "graphql_participant_fields_request_limit": "string",
   "work_item_hierarchy_add_children_limit": "string",
   "work_item_move_limit": "string",
   "work_item_update_limit": "string",
@@ -200785,7 +201423,7 @@ http, oauth2, apiKey
   "global_search_block_anonymous_searches_enabled": "string",
   "enable_language_server_restrictions": "string",
   "minimum_language_server_version": "string",
-  "vscode_extension_marketplace": "string",
+  "vscode_extension_marketplace": {},
   "vscode_extension_marketplace_enabled": "string",
   "vscode_extension_marketplace_extension_host_domain": "string",
   "vscode_extension_marketplace_single_origin_fallback_enabled": "string",
@@ -200795,7 +201433,7 @@ http, oauth2, apiKey
   "default_search_scope": "string",
   "git_push_pipeline_limit": "string",
   "delay_user_account_self_deletion": "string",
-  "resource_usage_limits": "string",
+  "resource_usage_limits": {},
   "runner_jobs_request_api_limit": "string",
   "runner_jobs_patch_trace_api_limit": "string",
   "runner_jobs_endpoints_api_limit": "string",
@@ -200816,11 +201454,15 @@ http, oauth2, apiKey
   "dynamic_client_registration_enabled": "string",
   "active_context_pause_indexing": "string",
   "allow_all_integrations": "string",
-  "allowed_integrations": "string",
+  "allowed_integrations": [
+    "string"
+  ],
   "allow_group_owners_to_manage_ldap": "string",
   "automatic_purchased_storage_allocation": "string",
   "check_namespace_plan": "string",
-  "ci_cd_catalog_projects_allowlist": "string",
+  "ci_cd_catalog_projects_allowlist": [
+    "string"
+  ],
   "ci_cd_catalog_projects_allowlist_raw": "string",
   "duo_chat_expiration_column": "string",
   "duo_chat_expiration_days": "string",
@@ -200841,15 +201483,21 @@ http, oauth2, apiKey
   "elasticsearch_max_bulk_concurrency": "string",
   "elasticsearch_max_bulk_size_mb": "string",
   "elasticsearch_max_code_indexing_concurrency": "string",
-  "elasticsearch_namespace_ids": "string",
+  "elasticsearch_namespace_ids": [
+    0
+  ],
   "elasticsearch_pause_indexing": "string",
   "elasticsearch_advanced_search_pause_indexing": "string",
-  "elasticsearch_project_ids": "string",
+  "elasticsearch_project_ids": [
+    0
+  ],
   "elasticsearch_retry_on_failure": "string",
   "elasticsearch_replicas": "string",
   "elasticsearch_search": "string",
   "elasticsearch_shards": "string",
-  "elasticsearch_url": "string",
+  "elasticsearch_url": [
+    "string"
+  ],
   "elasticsearch_username": "string",
   "elasticsearch_password": "string",
   "elasticsearch_analyzers_smartcn_enabled": "string",
@@ -200877,7 +201525,9 @@ http, oauth2, apiKey
   "throttle_incident_management_notification_enabled": "string",
   "throttle_incident_management_notification_per_period": "string",
   "throttle_incident_management_notification_period_in_seconds": "string",
-  "package_metadata_purl_types": "string",
+  "package_metadata_purl_types": [
+    0
+  ],
   "product_analytics_enabled": "string",
   "product_analytics_data_collector_host": "string",
   "product_analytics_configurator_connection_string": "string",
@@ -200893,13 +201543,17 @@ http, oauth2, apiKey
   "ai_audit_events_streaming_enabled": true,
   "duo_token_usage_tracking_enabled": true,
   "duo_workflow_file_attachments_enabled": true,
-  "duo_namespace_access_rules": "string",
+  "duo_namespace_access_rules": [
+    {}
+  ],
   "duo_remote_flows_enabled": "string",
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
   "duo_scheduled_automations_enabled": "string",
   "duo_scheduled_automations_availability": "string",
+  "duo_code_suggestions_enabled": true,
+  "duo_code_suggestions_availability": "string",
   "duo_custom_agents_enabled": true,
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_enabled": true,
@@ -200912,7 +201566,9 @@ http, oauth2, apiKey
   "duo_auto_mode_availability": "string",
   "enabled_expanded_logging": "string",
   "foundational_agents_default_enabled": "string",
-  "foundational_agents_statuses": "string",
+  "foundational_agents_statuses": [
+    {}
+  ],
   "zoekt_indexing_enabled": "string",
   "zoekt_search_enabled": "string",
   "zoekt_indexing_paused": "string",
@@ -200958,6 +201614,8 @@ http, oauth2, apiKey
   "credits_usage_per_minute_limit": "string",
   "credits_usage_per_hour_limit": "string",
   "credits_usage_per_day_limit": "string",
+  "ci_minutes_usage_projects_per_minute_limit": "string",
+  "ci_minutes_usage_projects_per_hour_limit": "string",
   "trial_create_limit": "string",
   "hand_raise_lead_create_limit": "string",
   "user_add_on_assignment_bulk_create_limit": "string",
@@ -201004,9 +201662,11 @@ http, oauth2, apiKey
   "password_authentication_enabled": "string",
   "signin_enabled": "string",
   "allow_local_requests_from_hooks_and_services": "string",
-  "asset_proxy_whitelist": "string",
-  "housekeeping_bitmaps_enabled": "string",
-  "repository_storages_weighted": "string",
+  "asset_proxy_whitelist": [
+    "string"
+  ],
+  "housekeeping_bitmaps_enabled": true,
+  "repository_storages_weighted": {},
   "gitlab_product_usage_data_source": "string",
   "container_registry_import_max_tags_count": "string",
   "container_registry_import_max_retries": "string",
@@ -201051,8 +201711,12 @@ http, oauth2, apiKey
   "git_two_factor_session_expiry": "string",
   "max_number_of_repository_downloads": "string",
   "max_number_of_repository_downloads_within_time_period": "string",
-  "git_rate_limit_users_allowlist": "string",
-  "git_rate_limit_users_alertlist": "string",
+  "git_rate_limit_users_allowlist": [
+    "string"
+  ],
+  "git_rate_limit_users_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string",
   "delete_unconfirmed_users": "string",
   "unconfirmed_users_delete_after_days": "string",
@@ -201060,6 +201724,7 @@ http, oauth2, apiKey
   "lock_duo_custom_agents_enabled": true,
   "lock_duo_custom_flows_enabled": true,
   "lock_duo_external_agents_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "duo_workflows_default_image_registry": "string",
   "duo_template_project_id": "string",
   "ci_telemetry_otel_endpoint": "string",
@@ -201101,7 +201766,7 @@ http, oauth2, apiKey
 |archive_builds_in_human_readable|string|false|none|none|
 |asset_proxy_enabled|string|false|none|none|
 |asset_proxy_url|string|false|none|none|
-|asset_proxy_allowlist|string|false|none|none|
+|asset_proxy_allowlist|[string]|false|none|none|
 |static_objects_external_storage_auth_token|string|false|none|none|
 |static_objects_external_storage_url|string|false|none|none|
 |authn_data_retention_cleanup_enabled|string|false|none|none|
@@ -201117,7 +201782,7 @@ http, oauth2, apiKey
 |ci_job_trace_update_interval_when_being_watched|integer|false|none|none|
 |ci_lint_api_require_authentication|string|false|none|none|
 |ci_partitions_in_seconds_limit_human_readable|string|false|none|none|
-|code_dropdown_custom_clients|string|false|none|none|
+|code_dropdown_custom_clients|[object]|false|none|none|
 |concurrent_github_import_jobs_limit|string|false|none|none|
 |concurrent_bitbucket_import_jobs_limit|string|false|none|none|
 |concurrent_bitbucket_server_import_jobs_limit|string|false|none|none|
@@ -201131,7 +201796,7 @@ http, oauth2, apiKey
 |default_artifacts_expire_in|string|false|none|none|
 |default_branch_name|string|false|none|none|
 |default_branch_protection|string|false|none|none|
-|default_branch_protection_defaults|string|false|none|none|
+|default_branch_protection_defaults|object|false|none|none|
 |default_ci_config_path|string|false|none|none|
 |default_group_visibility|string|false|none|none|
 |default_preferred_language|string|false|none|none|
@@ -201145,20 +201810,20 @@ http, oauth2, apiKey
 |delete_inactive_projects|string|false|none|none|
 |deletion_adjourned_period|string|false|none|none|
 |deny_all_requests_except_allowed|string|false|none|none|
-|dependency_management_settings|string|false|none|none|
+|dependency_management_settings|object|false|none|none|
 |disable_admin_oauth_scopes|string|false|none|none|
 |disable_feed_token|string|false|none|none|
 |disable_password_authentication_for_users_with_sso_identities|string|false|none|none|
 |block_jwt_for_reclaimed_paths|string|false|none|none|
 |root_moved_permanently_redirection|string|false|none|none|
-|disabled_oauth_sign_in_sources|string|false|none|none|
-|domain_denylist|string|false|none|none|
+|disabled_oauth_sign_in_sources|[string]|false|none|none|
+|domain_denylist|[string]|false|none|none|
 |domain_denylist_enabled|string|false|none|none|
 |domain_denylist_raw|string|false|none|none|
-|domain_allowlist|string|false|none|none|
+|domain_allowlist|[string]|false|none|none|
 |domain_allowlist_raw|string|false|none|none|
 |outbound_local_requests_allowlist_raw|string|false|none|none|
-|outbound_local_requests_whitelist|string|false|none|none|
+|outbound_local_requests_whitelist|[string]|false|none|none|
 |dsa_key_restriction|string|false|none|none|
 |ecdsa_key_restriction|string|false|none|none|
 |ecdsa_sk_key_restriction|string|false|none|none|
@@ -201206,9 +201871,9 @@ http, oauth2, apiKey
 |housekeeping_optimize_repository_period|string|false|none|none|
 |html_emails_enabled|string|false|none|none|
 |iframe_rendering_enabled|string|false|none|none|
-|iframe_rendering_allowlist|string|false|none|none|
+|iframe_rendering_allowlist|[string]|false|none|none|
 |iframe_rendering_allowlist_raw|string|false|none|none|
-|import_sources|string|false|none|none|
+|import_sources|[string]|false|none|none|
 |inactive_resource_access_tokens_delete_after_days|string|false|none|none|
 |inactive_projects_delete_after_months|string|false|none|none|
 |inactive_projects_min_size_mb|string|false|none|none|
@@ -201219,7 +201884,7 @@ http, oauth2, apiKey
 |jira_connect_public_key_storage_enabled|string|false|none|none|
 |jira_connect_proxy_url|string|false|none|none|
 |jira_connect_additional_audience_url|string|false|none|none|
-|jira_connect_domain_allowlist|string|false|none|none|
+|jira_connect_domain_allowlist|[string]|false|none|none|
 |jira_connect_domain_allowlist_raw|string|false|none|none|
 |jira_forge_app_id|string|false|none|none|
 |math_rendering_limits_enabled|string|false|none|none|
@@ -201261,7 +201926,7 @@ http, oauth2, apiKey
 |instance_token_prefix|string|false|none|none|
 |kroki_enabled|string|false|none|none|
 |kroki_url|string|false|none|none|
-|kroki_formats|string|false|none|none|
+|kroki_formats|object|false|none|none|
 |kroki_diagram_proxy_enabled|string|false|none|none|
 |plantuml_enabled|string|false|none|none|
 |plantuml_url|string|false|none|none|
@@ -201282,13 +201947,13 @@ http, oauth2, apiKey
 |require_admin_two_factor_authentication|string|false|none|none|
 |require_two_factor_authentication|string|false|none|none|
 |remember_me_enabled|string|false|none|none|
-|restricted_visibility_levels|string|false|none|none|
+|restricted_visibility_levels|[string]|false|none|none|
 |rsa_key_restriction|string|false|none|none|
 |session_expire_delay|string|false|none|none|
 |session_expire_from_init|string|false|none|none|
 |shared_runners_enabled|string|false|none|none|
 |shared_runners_text|string|false|none|none|
-|sign_in_restrictions|string|false|none|none|
+|sign_in_restrictions|object|false|none|none|
 |signup_enabled|string|false|none|none|
 |silent_mode_enabled|string|false|none|none|
 |slack_app_enabled|string|false|none|none|
@@ -201480,7 +202145,7 @@ http, oauth2, apiKey
 |offline_transfer_exports_enabled|string|false|none|none|
 |offline_transfer_imports_enabled|string|false|none|none|
 |allow_runner_registration_token|string|false|none|none|
-|valid_runner_registrars|string|false|none|none|
+|valid_runner_registrars|[string]|false|none|none|
 |user_defaults_to_private_profile|string|false|none|none|
 |deactivation_email_additional_text|string|false|none|none|
 |projects_api_rate_limit_unauthenticated|string|false|none|none|
@@ -201512,6 +202177,7 @@ http, oauth2, apiKey
 |project_members_api_limit|string|false|none|none|
 |protected_branch_write_limit|string|false|none|none|
 |create_organization_api_limit|string|false|none|none|
+|delete_merged_branches_limit|string|false|none|none|
 |cross_reference_checks_limit|string|false|none|none|
 |user_contributed_projects_api_limit|string|false|none|none|
 |user_projects_api_limit|string|false|none|none|
@@ -201533,6 +202199,7 @@ http, oauth2, apiKey
 |wiki_read_request_limit_unauthenticated|string|false|none|none|
 |merge_request_diffs_page_request_limit|string|false|none|none|
 |merge_request_diff_resources_request_limit|string|false|none|none|
+|graphql_participant_fields_request_limit|string|false|none|none|
 |work_item_hierarchy_add_children_limit|string|false|none|none|
 |work_item_move_limit|string|false|none|none|
 |work_item_update_limit|string|false|none|none|
@@ -201586,7 +202253,7 @@ http, oauth2, apiKey
 |global_search_block_anonymous_searches_enabled|string|false|none|none|
 |enable_language_server_restrictions|string|false|none|none|
 |minimum_language_server_version|string|false|none|none|
-|vscode_extension_marketplace|string|false|none|none|
+|vscode_extension_marketplace|object|false|none|none|
 |vscode_extension_marketplace_enabled|string|false|none|none|
 |vscode_extension_marketplace_extension_host_domain|string|false|none|none|
 |vscode_extension_marketplace_single_origin_fallback_enabled|string|false|none|none|
@@ -201596,7 +202263,7 @@ http, oauth2, apiKey
 |default_search_scope|string|false|none|none|
 |git_push_pipeline_limit|string|false|none|none|
 |delay_user_account_self_deletion|string|false|none|none|
-|resource_usage_limits|string|false|none|none|
+|resource_usage_limits|object|false|none|none|
 |runner_jobs_request_api_limit|string|false|none|none|
 |runner_jobs_patch_trace_api_limit|string|false|none|none|
 |runner_jobs_endpoints_api_limit|string|false|none|none|
@@ -201617,11 +202284,11 @@ http, oauth2, apiKey
 |dynamic_client_registration_enabled|string|false|none|none|
 |active_context_pause_indexing|string|false|none|none|
 |allow_all_integrations|string|false|none|none|
-|allowed_integrations|string|false|none|none|
+|allowed_integrations|[string]|false|none|none|
 |allow_group_owners_to_manage_ldap|string|false|none|none|
 |automatic_purchased_storage_allocation|string|false|none|none|
 |check_namespace_plan|string|false|none|none|
-|ci_cd_catalog_projects_allowlist|string|false|none|none|
+|ci_cd_catalog_projects_allowlist|[string]|false|none|none|
 |ci_cd_catalog_projects_allowlist_raw|string|false|none|none|
 |duo_chat_expiration_column|string|false|none|none|
 |duo_chat_expiration_days|string|false|none|none|
@@ -201642,15 +202309,15 @@ http, oauth2, apiKey
 |elasticsearch_max_bulk_concurrency|string|false|none|none|
 |elasticsearch_max_bulk_size_mb|string|false|none|none|
 |elasticsearch_max_code_indexing_concurrency|string|false|none|none|
-|elasticsearch_namespace_ids|string|false|none|none|
+|elasticsearch_namespace_ids|[integer]|false|none|none|
 |elasticsearch_pause_indexing|string|false|none|none|
 |elasticsearch_advanced_search_pause_indexing|string|false|none|none|
-|elasticsearch_project_ids|string|false|none|none|
+|elasticsearch_project_ids|[integer]|false|none|none|
 |elasticsearch_retry_on_failure|string|false|none|none|
 |elasticsearch_replicas|string|false|none|none|
 |elasticsearch_search|string|false|none|none|
 |elasticsearch_shards|string|false|none|none|
-|elasticsearch_url|string|false|none|none|
+|elasticsearch_url|[string]|false|none|none|
 |elasticsearch_username|string|false|none|none|
 |elasticsearch_password|string|false|none|none|
 |elasticsearch_analyzers_smartcn_enabled|string|false|none|none|
@@ -201678,7 +202345,7 @@ http, oauth2, apiKey
 |throttle_incident_management_notification_enabled|string|false|none|none|
 |throttle_incident_management_notification_per_period|string|false|none|none|
 |throttle_incident_management_notification_period_in_seconds|string|false|none|none|
-|package_metadata_purl_types|string|false|none|none|
+|package_metadata_purl_types|[integer]|false|none|none|
 |product_analytics_enabled|string|false|none|none|
 |product_analytics_data_collector_host|string|false|none|none|
 |product_analytics_configurator_connection_string|string|false|none|none|
@@ -201694,13 +202361,15 @@ http, oauth2, apiKey
 |ai_audit_events_streaming_enabled|boolean|false|none|none|
 |duo_token_usage_tracking_enabled|boolean|false|none|none|
 |duo_workflow_file_attachments_enabled|boolean|false|none|none|
-|duo_namespace_access_rules|string|false|none|none|
+|duo_namespace_access_rules|[object]|false|none|none|
 |duo_remote_flows_enabled|string|false|none|none|
 |duo_remote_flows_availability|string|false|none|none|
 |duo_foundational_flows_enabled|string|false|none|none|
 |duo_foundational_flows_availability|string|false|none|none|
 |duo_scheduled_automations_enabled|string|false|none|none|
 |duo_scheduled_automations_availability|string|false|none|none|
+|duo_code_suggestions_enabled|boolean|false|none|none|
+|duo_code_suggestions_availability|string|false|none|none|
 |duo_custom_agents_enabled|boolean|false|none|none|
 |duo_custom_agents_availability|string|false|none|none|
 |duo_custom_flows_enabled|boolean|false|none|none|
@@ -201713,7 +202382,7 @@ http, oauth2, apiKey
 |duo_auto_mode_availability|string|false|none|none|
 |enabled_expanded_logging|string|false|none|none|
 |foundational_agents_default_enabled|string|false|none|none|
-|foundational_agents_statuses|string|false|none|none|
+|foundational_agents_statuses|[object]|false|none|none|
 |zoekt_indexing_enabled|string|false|none|none|
 |zoekt_search_enabled|string|false|none|none|
 |zoekt_indexing_paused|string|false|none|none|
@@ -201759,6 +202428,8 @@ http, oauth2, apiKey
 |credits_usage_per_minute_limit|string|false|none|none|
 |credits_usage_per_hour_limit|string|false|none|none|
 |credits_usage_per_day_limit|string|false|none|none|
+|ci_minutes_usage_projects_per_minute_limit|string|false|none|none|
+|ci_minutes_usage_projects_per_hour_limit|string|false|none|none|
 |trial_create_limit|string|false|none|none|
 |hand_raise_lead_create_limit|string|false|none|none|
 |user_add_on_assignment_bulk_create_limit|string|false|none|none|
@@ -201805,10 +202476,10 @@ http, oauth2, apiKey
 |password_authentication_enabled|string|false|none|none|
 |signin_enabled|string|false|none|none|
 |allow_local_requests_from_hooks_and_services|string|false|none|none|
-|asset_proxy_whitelist|string|false|none|none|
-|housekeeping_bitmaps_enabled|string|false|none|none|
-|repository_storages_weighted|string|false|none|none|
-|gitlab_product_usage_data_source|string|false|none|none|
+|asset_proxy_whitelist|[string]|false|none|none|
+|housekeeping_bitmaps_enabled|boolean|false|none|Deprecated. Git packfile bitmap creation is always enabled. Always returns `true`.|
+|repository_storages_weighted|object|false|none|none|
+|gitlab_product_usage_data_source|string|false|none|Source of the `gitlab_product_usage_data_enabled` setting. Returns `environment` if the `GITLAB_PRODUCT_USAGE_DATA_ENABLED` environment variable is set, otherwise `database`.|
 |container_registry_import_max_tags_count|string|false|none|none|
 |container_registry_import_max_retries|string|false|none|none|
 |container_registry_import_start_max_retries|string|false|none|none|
@@ -201852,8 +202523,8 @@ http, oauth2, apiKey
 |git_two_factor_session_expiry|string|false|none|none|
 |max_number_of_repository_downloads|string|false|none|none|
 |max_number_of_repository_downloads_within_time_period|string|false|none|none|
-|git_rate_limit_users_allowlist|string|false|none|none|
-|git_rate_limit_users_alertlist|string|false|none|none|
+|git_rate_limit_users_allowlist|[string]|false|none|none|
+|git_rate_limit_users_alertlist|[integer]|false|none|none|
 |auto_ban_user_on_excessive_projects_download|string|false|none|none|
 |delete_unconfirmed_users|string|false|none|none|
 |unconfirmed_users_delete_after_days|string|false|none|none|
@@ -201861,6 +202532,7 @@ http, oauth2, apiKey
 |lock_duo_custom_agents_enabled|boolean|false|none|none|
 |lock_duo_custom_flows_enabled|boolean|false|none|none|
 |lock_duo_external_agents_enabled|boolean|false|none|none|
+|lock_duo_code_suggestions_enabled|boolean|false|none|none|
 |duo_workflows_default_image_registry|string|false|none|none|
 |duo_template_project_id|string|false|none|none|
 |ci_telemetry_otel_endpoint|string|false|none|none|
@@ -202048,6 +202720,29 @@ http, oauth2, apiKey
 |destination_storage_name|string|false|none|none|
 |error_message|string|false|none|none|
 |project|[APIEntitiesProjectIdentity](#schemaapientitiesprojectidentity)|false|none|none|
+
+<h2 id="tocS_APIEntitiesBurndownEvent">APIEntitiesBurndownEvent</h2>
+<!-- backwards compatibility -->
+<a id="schemaapientitiesburndownevent"></a>
+<a id="schema_APIEntitiesBurndownEvent"></a>
+<a id="tocSapientitiesburndownevent"></a>
+<a id="tocsapientitiesburndownevent"></a>
+
+```json
+{
+  "created_at": "2021-03-01T10:00:00.000Z",
+  "weight": 2,
+  "action": "created"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|created_at|string(date-time)|false|none|none|
+|weight|integer|false|none|none|
+|action|string|false|none|none|
 
 <h2 id="tocS_APIEntitiesGlobalNotificationSetting">APIEntitiesGlobalNotificationSetting</h2>
 <!-- backwards compatibility -->
@@ -202373,17 +203068,17 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|worker_class|string|false|none|none|
+|worker_class|string|false|none|Registered worker class name.|
 |class_limit|integer|false|none|Explicit class limit. null when the worker has no explicit limit.|
 |effective_limit|integer|false|none|Effective limit. Zero means unlimited. Negative values mean paused. null means unknown without shard context.|
 |adaptive_limit|integer|false|none|Stored adaptive limit, or null when absent.|
-|default_limit_requires_shard_context|boolean|false|none|none|
-|middleware_enabled|boolean|false|none|none|
-|disabled_for_worker|boolean|false|none|none|
+|default_limit_requires_shard_context|boolean|false|none|If `true`, the default limit is derived from shard size and cannot be reported outside a Sidekiq process. `false` when `sidekiq_concurrency_limit_default_calculation` is disabled, because the default is then `0`.|
+|middleware_enabled|boolean|false|none|If `true`, the concurrency limit middleware is enabled.|
+|disabled_for_worker|boolean|false|none|If `true`, the worker-specific bypass flag disables enforcement in the client and server middleware.|
 |override_limit|integer|false|none|Temporary override, or null when absent.|
 |override_ttl|integer|false|none|Remaining override lifetime in seconds, or null when absent.|
-|running_jobs|integer|false|none|none|
-|deferred_jobs|integer|false|none|none|
+|running_jobs|integer|false|none|Approximate number of running jobs.|
+|deferred_jobs|integer|false|none|Approximate number of deferred jobs.|
 
 <h2 id="tocS_APIEntitiesWikiPageBasic">APIEntitiesWikiPageBasic</h2>
 <!-- backwards compatibility -->
@@ -202611,12 +203306,18 @@ http, oauth2, apiKey
 {
   "name": "string",
   "provider": "string",
-  "providers": "string",
-  "root": "string",
+  "providers": [
+    "string"
+  ],
+  "root": {},
   "source": "string",
-  "submodules": "string",
+  "submodules": [
+    "string"
+  ],
   "version": "string",
-  "versions": "string"
+  "versions": [
+    "string"
+  ]
 }
 ```
 
@@ -202626,12 +203327,12 @@ http, oauth2, apiKey
 |---|---|---|---|---|
 |name|string|false|none|none|
 |provider|string|false|none|none|
-|providers|string|false|none|none|
-|root|string|false|none|none|
+|providers|[string]|false|none|none|
+|root|object|false|none|none|
 |source|string|false|none|none|
-|submodules|string|false|none|none|
+|submodules|[string]|false|none|none|
 |version|string|false|none|none|
-|versions|string|false|none|none|
+|versions|[string]|false|none|none|
 
 <h2 id="tocS_APIEntitiesCommit">APIEntitiesCommit</h2>
 <!-- backwards compatibility -->
@@ -204368,17 +205069,17 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|commit_count|integer|false|none|none|
-|storage_size|integer|false|none|none|
-|repository_size|integer|false|none|none|
-|wiki_size|integer|false|none|none|
-|lfs_objects_size|integer|false|none|none|
-|job_artifacts_size|integer|false|none|none|
-|pipeline_artifacts_size|integer|false|none|none|
-|packages_size|integer|false|none|none|
-|snippets_size|integer|false|none|none|
-|uploads_size|integer|false|none|none|
-|container_registry_size|integer|false|none|none|
+|commit_count|integer|false|none|Number of commits in the project.|
+|storage_size|integer|false|none|Total storage size in bytes.|
+|repository_size|integer|false|none|Repository storage size in bytes.|
+|wiki_size|integer|false|none|Wiki storage size in bytes.|
+|lfs_objects_size|integer|false|none|LFS objects storage size in bytes.|
+|job_artifacts_size|integer|false|none|Job artifacts storage size in bytes.|
+|pipeline_artifacts_size|integer|false|none|Pipeline artifacts storage size in bytes.|
+|packages_size|integer|false|none|Packages storage size in bytes.|
+|snippets_size|integer|false|none|Snippets storage size in bytes.|
+|uploads_size|integer|false|none|Uploads storage size in bytes.|
+|container_registry_size|integer|false|none|Total container registry storage size in bytes used by all container repositories in the project. Updates when container images are pushed or deleted. On GitLab Self-Managed, requires the container registry metadata database.|
 
 <h2 id="tocS_APIEntitiesProjectAccess">APIEntitiesProjectAccess</h2>
 <!-- backwards compatibility -->
@@ -205886,7 +206587,7 @@ http, oauth2, apiKey
 |merge_request_title_regex|string|false|none|Regular expression that merge request titles must match. Premium and Ultimate only.|
 |merge_request_title_regex_description|string|false|none|Description of the merge request title regular expression. Premium and Ultimate only.|
 |permissions|object|false|none|Access levels the current user has for the project.|
-|cicd_catalog_enabled|boolean|false|none|none|
+|cicd_catalog_enabled|boolean|false|none|Whether the project is published to the CI/CD Catalog. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3.|
 
 <h2 id="tocS_APIEntitiesProjectsWithCatalogSetting">APIEntitiesProjectsWithCatalogSetting</h2>
 <!-- backwards compatibility -->
@@ -206359,7 +207060,7 @@ http, oauth2, apiKey
 |security_policy_pipeline_must_succeed|boolean|false|none|Require all security policy pipelines to succeed before merge requests can be merged.|
 |merge_request_title_regex|string|false|none|Regular expression that merge request titles must match. Premium and Ultimate only.|
 |merge_request_title_regex_description|string|false|none|Description of the merge request title regular expression. Premium and Ultimate only.|
-|cicd_catalog_enabled|boolean|false|none|none|
+|cicd_catalog_enabled|boolean|false|none|Whether the project is published to the CI/CD Catalog. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3.|
 
 <h2 id="tocS_APIEntitiesProjectGroupLink">APIEntitiesProjectGroupLink</h2>
 <!-- backwards compatibility -->
@@ -206461,7 +207162,7 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|fetches|object|false|none|none|
+|fetches|object|false|none|Fetch statistics of the project for the last 30 days.|
 
 <h2 id="tocS_APIEntitiesProjectSnippet">APIEntitiesProjectSnippet</h2>
 <!-- backwards compatibility -->
@@ -206631,7 +207332,9 @@ http, oauth2, apiKey
   "id": "string",
   "version": "string",
   "created_at": "string",
-  "tags": "string",
+  "tags": [
+    {}
+  ],
   "pipeline": {
     "id": 1,
     "iid": 2,
@@ -206671,7 +207374,7 @@ http, oauth2, apiKey
 |id|string|false|none|none|
 |version|string|false|none|none|
 |created_at|string|false|none|none|
-|tags|string|false|none|none|
+|tags|[object]|false|none|none|
 |pipeline|[APIEntitiesPackagePipeline](#schemaapientitiespackagepipeline)|false|none|none|
 
 <h2 id="tocS_APIEntitiesPackage">APIEntitiesPackage</h2>
@@ -206698,7 +207401,9 @@ http, oauth2, apiKey
   "creator_id": 1,
   "project_id": 2,
   "project_path": "gitlab/foo/bar",
-  "tags": "string",
+  "tags": [
+    {}
+  ],
   "pipeline": {
     "id": 1,
     "iid": 2,
@@ -206764,7 +207469,9 @@ http, oauth2, apiKey
       "id": "string",
       "version": "string",
       "created_at": "string",
-      "tags": "string",
+      "tags": [
+        {}
+      ],
       "pipeline": {
         "id": 1,
         "iid": 2,
@@ -206815,7 +207522,7 @@ http, oauth2, apiKey
 |creator_id|integer(int64)|false|none|ID of the user who created the package|
 |project_id|integer(int64)|false|none|none|
 |project_path|string|false|none|none|
-|tags|string|false|none|none|
+|tags|[object]|false|none|none|
 |pipeline|[APIEntitiesPackagePipeline](#schemaapientitiespackagepipeline)|false|none|none|
 |pipelines|[[APIEntitiesPackagePipeline](#schemaapientitiespackagepipeline)]|false|none|none|
 |versions|[[APIEntitiesPackageVersion](#schemaapientitiespackageversion)]|false|none|none|
@@ -207878,6 +208585,145 @@ http, oauth2, apiKey
 |management_project|[APIEntitiesProjectIdentity](#schemaapientitiesprojectidentity)|false|none|none|
 |project|[APIEntitiesBasicProjectDetails](#schemaapientitiesbasicprojectdetails)|false|none|none|
 
+<h2 id="tocS_APIEntitiesGroupAssociationDetails">APIEntitiesGroupAssociationDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaapientitiesgroupassociationdetails"></a>
+<a id="schema_APIEntitiesGroupAssociationDetails"></a>
+<a id="tocSapientitiesgroupassociationdetails"></a>
+<a id="tocsapientitiesgroupassociationdetails"></a>
+
+```json
+{
+  "id": 0,
+  "web_url": "http://gitlab.example.com/groups/diaspora",
+  "name": "Diaspora",
+  "parent_id": 1,
+  "organization_id": 1,
+  "access_levels": 50,
+  "visibility": "public"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int64)|false|none|ID of the group.|
+|web_url|string|false|none|URL to access the group in a browser.|
+|name|string|false|none|Name of the group.|
+|parent_id|integer(int64)|false|none|none|
+|organization_id|integer(int64)|false|none|none|
+|access_levels|integer|false|none|none|
+|visibility|string|false|none|none|
+
+<h2 id="tocS_APIEntitiesProjectAssociationDetails">APIEntitiesProjectAssociationDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaapientitiesprojectassociationdetails"></a>
+<a id="schema_APIEntitiesProjectAssociationDetails"></a>
+<a id="tocSapientitiesprojectassociationdetails"></a>
+<a id="tocsapientitiesprojectassociationdetails"></a>
+
+```json
+{
+  "id": 1,
+  "description": "desc",
+  "name": "project1",
+  "name_with_namespace": "John Doe / project1",
+  "path": "project1",
+  "path_with_namespace": "namespace1/project1",
+  "created_at": "2020-05-07T04:27:17.016Z",
+  "access_levels": {
+    "project_access_level": 50,
+    "group_access_level": 50
+  },
+  "visibility": "public",
+  "web_url": "https://gitlab.example.com/gitlab/gitlab",
+  "namespace": {
+    "id": 2,
+    "name": "project",
+    "path": "my_project",
+    "kind": "project",
+    "full_path": "group/my_project",
+    "parent_id": 1,
+    "avatar_url": "https://example.com/avatar/12345",
+    "web_url": "https://example.com/group/my_project"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|integer(int64)|false|none|ID of the project.|
+|description|string|false|none|Description of the project.|
+|name|string|false|none|Name of the project.|
+|name_with_namespace|string|false|none|Name of the project with its namespace.|
+|path|string|false|none|Path of the project.|
+|path_with_namespace|string|false|none|Path of the project with its namespace.|
+|created_at|string(date-time)|false|none|Date and time when the project was created.|
+|access_levels|object|false|none|none|
+|visibility|string|false|none|none|
+|web_url|string|false|none|none|
+|namespace|[APIEntitiesNamespaceBasic](#schemaapientitiesnamespacebasic)|false|none|none|
+
+<h2 id="tocS_APIEntitiesPersonalAccessTokenAssociations">APIEntitiesPersonalAccessTokenAssociations</h2>
+<!-- backwards compatibility -->
+<a id="schemaapientitiespersonalaccesstokenassociations"></a>
+<a id="schema_APIEntitiesPersonalAccessTokenAssociations"></a>
+<a id="tocSapientitiespersonalaccesstokenassociations"></a>
+<a id="tocsapientitiespersonalaccesstokenassociations"></a>
+
+```json
+{
+  "groups": [
+    {
+      "id": 0,
+      "web_url": "http://gitlab.example.com/groups/diaspora",
+      "name": "Diaspora",
+      "parent_id": 1,
+      "organization_id": 1,
+      "access_levels": 50,
+      "visibility": "public"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "description": "desc",
+      "name": "project1",
+      "name_with_namespace": "John Doe / project1",
+      "path": "project1",
+      "path_with_namespace": "namespace1/project1",
+      "created_at": "2020-05-07T04:27:17.016Z",
+      "access_levels": {
+        "project_access_level": 50,
+        "group_access_level": 50
+      },
+      "visibility": "public",
+      "web_url": "https://gitlab.example.com/gitlab/gitlab",
+      "namespace": {
+        "id": 2,
+        "name": "project",
+        "path": "my_project",
+        "kind": "project",
+        "full_path": "group/my_project",
+        "parent_id": 1,
+        "avatar_url": "https://example.com/avatar/12345",
+        "web_url": "https://example.com/group/my_project"
+      }
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|groups|[[APIEntitiesGroupAssociationDetails](#schemaapientitiesgroupassociationdetails)]|false|none|none|
+|projects|[[APIEntitiesProjectAssociationDetails](#schemaapientitiesprojectassociationdetails)]|false|none|none|
+
 <h2 id="tocS_APIEntitiesPagesDomainCertificateExpiration">APIEntitiesPagesDomainCertificateExpiration</h2>
 <!-- backwards compatibility -->
 <a id="schemaapientitiespagesdomaincertificateexpiration"></a>
@@ -208053,7 +208899,7 @@ http, oauth2, apiKey
 |deployments|[[APIEntitiesPagesDeployments](#schemaapientitiespagesdeployments)]|false|none|List of current active deployments.|
 |is_unique_domain_enabled|boolean|false|none|If `true`, unique domain is enabled.|
 |force_https|boolean|false|none|If `true`, the project is set to force HTTPS.|
-|pages_primary_domain|string|false|none|Primary domain that all Pages requests are redirected to.|
+|pages_primary_domain|string|false|none|Primary domain that all Pages requests are redirected to. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334) in GitLab 17.8.|
 
 <h2 id="tocS_APIEntitiesPackageFile">APIEntitiesPackageFile</h2>
 <!-- backwards compatibility -->
@@ -208971,7 +209817,8 @@ http, oauth2, apiKey
 ```json
 {
   "id": 1,
-  "created_at": "2026-07-30T12:00:00.000Z"
+  "created_at": "2026-07-30T12:00:00.000Z",
+  "content_key": "missing"
 }
 ```
 
@@ -208981,6 +209828,14 @@ http, oauth2, apiKey
 |---|---|---|---|---|
 |id|integer(int64)|false|none|ID of the subscription.|
 |created_at|string(date-time)|false|none|Date and time when the subscription was created.|
+|content_key|string|false|none|`present` when a content key younger than 90 days is stored for this device, `missing` otherwise.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|content_key|missing|
+|content_key|present|
 
 <h2 id="tocS_APIEntitiesMetadata">APIEntitiesMetadata</h2>
 <!-- backwards compatibility -->
@@ -209008,11 +209863,11 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|version|string|false|none|none|
-|revision|string|false|none|none|
-|kas|object|false|none|none|
-|enterprise|boolean|false|none|none|
-|plan|string|false|none|none|
+|version|string|false|none|Version of the GitLab instance.|
+|revision|string|false|none|Revision of the GitLab instance.|
+|kas|object|false|none|Metadata about the GitLab agent server for Kubernetes (KAS).|
+|enterprise|boolean|false|none|If `true`, the instance runs GitLab Enterprise Edition.|
+|plan|string|false|none|Plan of the license the instance runs under. An active trial license reports its plan the same way as a paid license. `free` on an instance with no license or with an expired trial. An expired paid license still reports its plan, because its licensed features remain available. `null` where subscriptions are scoped for each namespace rather than for an instance, such as GitLab.com.|
 
 <h2 id="tocS_APIEntitiesMergeRequestDiff">APIEntitiesMergeRequestDiff</h2>
 <!-- backwards compatibility -->
@@ -209431,6 +210286,8 @@ http, oauth2, apiKey
       "duo_core_features_enabled": true,
       "duo_features_enabled": true,
       "lock_duo_features_enabled": true,
+      "duo_code_suggestions_enabled": true,
+      "lock_duo_code_suggestions_enabled": true,
       "auto_duo_code_review_enabled": "string",
       "duo_code_review_level_allowed": true,
       "duo_code_review_default_level": "lite",
@@ -209641,6 +210498,8 @@ http, oauth2, apiKey
           "duo_core_features_enabled": true,
           "duo_features_enabled": true,
           "lock_duo_features_enabled": true,
+          "duo_code_suggestions_enabled": true,
+          "lock_duo_code_suggestions_enabled": true,
           "auto_duo_code_review_enabled": "string",
           "duo_code_review_level_allowed": true,
           "duo_code_review_default_level": "lite",
@@ -216525,23 +217384,51 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|duo_agent_platform_enabled|boolean|false|none|none|
-|duo_workflow_mcp_enabled|boolean|false|none|none|
-|foundational_agents_default_enabled|boolean|false|none|none|
-|ai_catalog_restricted_to_group_hierarchy|boolean|false|none|none|
-|ai_usage_data_collection_enabled|boolean|false|none|none|
-|prompt_injection_protection_level|string|false|none|none|
-|web_search_enabled|boolean|false|none|none|
-|duo_workflow_file_attachments_enabled|boolean|false|none|none|
-|external_agent_audit_event_content_enabled|boolean|false|none|none|
-|include_recommended_allowed|boolean|false|none|none|
-|allow_all_unix_sockets|boolean|false|none|none|
-|allow_project_extension|boolean|false|none|none|
-|require_sandbox|boolean|false|none|none|
-|minimum_access_level_execute|string|false|none|none|
-|minimum_access_level_execute_async|string|false|none|none|
-|minimum_access_level_manage|string|false|none|none|
-|minimum_access_level_enable_on_projects|string|false|none|none|
+|duo_agent_platform_enabled|boolean|false|none|If `true`, GitLab Duo Agent Platform features are enabled for the group.|
+|duo_workflow_mcp_enabled|boolean|false|none|If `true`, MCP support for GitLab Duo Agent Platform is enabled.|
+|foundational_agents_default_enabled|boolean|false|none|If `true`, new foundational agents are enabled by default for the group.|
+|ai_catalog_restricted_to_group_hierarchy|boolean|false|none|If `true`, the AI Catalog is restricted to items in the top-level group hierarchy.|
+|ai_usage_data_collection_enabled|boolean|false|none|If `true`, AI usage data collection is enabled for the group.|
+|prompt_injection_protection_level|string|false|none|Prompt injection protection level.|
+|web_search_enabled|boolean|false|none|If `true`, web search is enabled in GitLab Duo Chat for the group.|
+|duo_workflow_file_attachments_enabled|boolean|false|none|If `true`, file attachments are allowed in GitLab Duo Chat for the group. Returned only for top-level groups on GitLab.com.|
+|external_agent_audit_event_content_enabled|boolean|false|none|If `true`, AI audit events from external agent sessions that `glab` uploads keep content such as prompts and tool arguments. If `false`, they keep metadata only. Returned for top-level groups only, and applies to all their subgroups and projects.|
+|include_recommended_allowed|boolean|false|none|If `true`, recommended domains are included in the network access allowlist for GitLab Duo Agent Platform.|
+|allow_all_unix_sockets|boolean|false|none|If `true`, all Unix sockets are allowed for GitLab Duo Agent Platform.|
+|allow_project_extension|boolean|false|none|If `true`, projects can extend the network access domain allowlist for GitLab Duo Agent Platform.|
+|require_sandbox|boolean|false|none|If `true`, flows that run on GitLab Runner fail when the execution environment sandbox is unavailable, instead of running without it. Applies only to top-level groups on GitLab.com.|
+|minimum_access_level_execute|string|false|none|Minimum access level required to use GitLab Duo Agent Platform features. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
+|minimum_access_level_execute_async|string|false|none|Minimum access level required to run GitLab Duo Agent Platform features in CI/CD. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
+|minimum_access_level_manage|string|false|none|Minimum access level required to manage GitLab Duo Agent Platform. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
+|minimum_access_level_enable_on_projects|string|false|none|Minimum access level required to enable GitLab Duo Agent Platform on projects. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|prompt_injection_protection_level|log_only|
+|prompt_injection_protection_level|no_checks|
+|prompt_injection_protection_level|interrupt|
+|minimum_access_level_execute|guest|
+|minimum_access_level_execute|planner|
+|minimum_access_level_execute|reporter|
+|minimum_access_level_execute|security_manager|
+|minimum_access_level_execute|developer|
+|minimum_access_level_execute|maintainer|
+|minimum_access_level_execute|owner|
+|minimum_access_level_execute|admin|
+|minimum_access_level_execute_async|developer|
+|minimum_access_level_execute_async|maintainer|
+|minimum_access_level_execute_async|owner|
+|minimum_access_level_execute_async|admin|
+|minimum_access_level_manage|developer|
+|minimum_access_level_manage|maintainer|
+|minimum_access_level_manage|owner|
+|minimum_access_level_manage|admin|
+|minimum_access_level_enable_on_projects|developer|
+|minimum_access_level_enable_on_projects|maintainer|
+|minimum_access_level_enable_on_projects|owner|
+|minimum_access_level_enable_on_projects|admin|
 
 <h2 id="tocS_APIEntitiesGroupDetail">APIEntitiesGroupDetail</h2>
 <!-- backwards compatibility -->
@@ -216644,6 +217531,8 @@ http, oauth2, apiKey
   "duo_core_features_enabled": true,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "auto_duo_code_review_enabled": "string",
   "duo_code_review_level_allowed": true,
   "duo_code_review_default_level": "lite",
@@ -217283,8 +218172,12 @@ http, oauth2, apiKey
   "only_allow_merge_if_all_discussions_are_resolved": "string",
   "unique_project_download_limit": "string",
   "unique_project_download_limit_interval_in_seconds": "string",
-  "unique_project_download_limit_allowlist": "string",
-  "unique_project_download_limit_alertlist": "string",
+  "unique_project_download_limit_allowlist": [
+    "string"
+  ],
+  "unique_project_download_limit_alertlist": [
+    0
+  ],
   "auto_ban_user_on_excessive_projects_download": "string"
 }
 ```
@@ -217342,6 +218235,8 @@ http, oauth2, apiKey
 |duo_core_features_enabled|boolean|false|none|[Experimental] Indicates whether GitLab Duo Core features are enabled for the group|
 |duo_features_enabled|boolean|false|none|If `true`, GitLab Duo features are enabled for the group. Premium and Ultimate only.|
 |lock_duo_features_enabled|boolean|false|none|If `true`, the GitLab Duo features enabled setting is enforced for all subgroups. Premium and Ultimate only.|
+|duo_code_suggestions_enabled|boolean|false|none|If `true`, GitLab Duo Code Suggestions is turned on for the group. Premium and Ultimate only.|
+|lock_duo_code_suggestions_enabled|boolean|false|none|If `true`, the Code Suggestions enabled setting is enforced for all subgroups. Premium and Ultimate only.|
 |auto_duo_code_review_enabled|string|false|none|none|
 |duo_code_review_level_allowed|boolean|false|none|none|
 |duo_code_review_default_level|string|false|none|none|
@@ -217377,8 +218272,8 @@ http, oauth2, apiKey
 |only_allow_merge_if_all_discussions_are_resolved|string|false|none|none|
 |unique_project_download_limit|string|false|none|none|
 |unique_project_download_limit_interval_in_seconds|string|false|none|none|
-|unique_project_download_limit_allowlist|string|false|none|none|
-|unique_project_download_limit_alertlist|string|false|none|none|
+|unique_project_download_limit_allowlist|[string]|false|none|none|
+|unique_project_download_limit_alertlist|[integer]|false|none|none|
 |auto_ban_user_on_excessive_projects_download|string|false|none|none|
 
 <h2 id="tocS_APIEntitiesSshCertificate">APIEntitiesSshCertificate</h2>
@@ -218032,14 +218927,25 @@ http, oauth2, apiKey
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|none|
-|job_class_name|string|false|none|none|
-|table_name|string|false|none|none|
-|column_name|string|false|none|none|
-|status|string|false|none|none|
-|progress|number|false|none|none|
-|created_at|string(date-time)|false|none|none|
-|estimated_time_remaining|string|false|none|none|
+|id|string|false|none|ID of the batched background migration.|
+|job_class_name|string|false|none|Name of the migration job class.|
+|table_name|string|false|none|Name of the table the migration iterates over.|
+|column_name|string|false|none|Name of the column the migration iterates over.|
+|status|string|false|none|Status of the migration.|
+|progress|number|false|none|Completion percentage of the migration.|
+|created_at|string(date-time)|false|none|Timestamp when the migration was created.|
+|estimated_time_remaining|string|false|none|Estimated time until the migration completes. `null` when the migration is finished or no estimate is available.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|paused|
+|status|active|
+|status|finished|
+|status|failed|
+|status|finalizing|
+|status|finalized|
 
 <h2 id="tocS_APIEntitiesAccessRequester">APIEntitiesAccessRequester</h2>
 <!-- backwards compatibility -->
@@ -218425,7 +219331,9 @@ http, oauth2, apiKey
 {
   "audience": "gitlab-artifact-registry",
   "expires_in": 300,
-  "organization_id": 0
+  "organization_id": 0,
+  "resource": "string",
+  "scope": "string"
 }
 ```
 
@@ -218434,8 +219342,10 @@ http, oauth2, apiKey
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |audience|string \| null|false|none|Target service audience. Required unless a CI/CD ID token names it in its target_audience claim. When both are sent, they must match.|
-|expires_in|integer \| null|false|none|Requested token lifetime in seconds. The granted lifetime may be shorter than requested depending on the authentication method used to call this endpoint or the audience.|
+|expires_in|integer \| null|false|none|Requested token lifetime in seconds. The granted lifetime may be shorter than requested depending on the authentication method used to call this endpoint or the audience. For an audience bound to a resource, it never outlasts the token used to request it.|
 |organization_id|integer \| null|false|none|ID of the organization to mint the token for. Required for Artifact Registry when the caller belongs to more than one.|
+|resource|string \| null|false|none|Global ID of the resource the token grants access to, such as gid://gitlab/Project/1. Required for gitlab-repositories, ignored for other audiences.|
+|scope|string \| null|false|none|Space-separated actions to grant on the resource. For gitlab-repositories, read, write, or both. Defaults to read. Ignored for other audiences.|
 
 #### Enumerated Values
 
@@ -218443,6 +219353,7 @@ http, oauth2, apiKey
 |---|---|
 |audience|gitlab-artifact-registry|
 |audience|gitlab-autoflow|
+|audience|gitlab-repositories|
 
 <h2 id="tocS_postApiV4CodeSuggestionsCompletionsRequest">postApiV4CodeSuggestionsCompletionsRequest</h2>
 <!-- backwards compatibility -->
@@ -223730,7 +224641,8 @@ http, oauth2, apiKey
   "default_projects_limit": 0,
   "default_snippet_visibility": "private",
   "dependency_management_settings": {
-    "security_update_scheduler_max_concurrency": 0
+    "security_update_scheduler_max_concurrency": 0,
+    "security_update_scheduler_project_period_in_seconds": 0
   },
   "disable_admin_oauth_scopes": true,
   "disable_feed_token": true,
@@ -223770,6 +224682,7 @@ http, oauth2, apiKey
   "gitaly_timeout_medium": 0,
   "grafana_enabled": true,
   "grafana_url": "string",
+  "graphql_participant_fields_request_limit": 0,
   "gravatar_enabled": true,
   "help_page_hide_commercial_content": true,
   "help_page_support_url": "string",
@@ -223985,6 +224898,7 @@ http, oauth2, apiKey
   "auto_accept_awarded_achievements": "string",
   "auto_devops_domain": "string",
   "auto_devops_enabled": "string",
+  "block_jwt_for_reclaimed_paths": "string",
   "bulk_import_max_download_file_size": "string",
   "can_create_group": "string",
   "ci_delete_pipelines_in_seconds_limit_human_readable": "string",
@@ -223992,11 +224906,13 @@ http, oauth2, apiKey
   "ci_partitions_in_seconds_limit": "string",
   "ci_partitions_in_seconds_limit_human_readable": "string",
   "commit_email_hostname": "string",
+  "concurrent_relation_export_limit": "string",
   "container_expiration_policies_enable_historic_entries": "string",
   "container_registry_cleanup_tags_service_max_list_size": "string",
   "container_registry_delete_tags_service_timeout": "string",
   "container_registry_expiration_policies_caching": "string",
   "container_registry_expiration_policies_worker_capacity": "string",
+  "create_organization_api_limit": "string",
   "custom_http_clone_url_root": "string",
   "default_branch_name": "string",
   "default_dark_syntax_highlighting_theme": "string",
@@ -224034,17 +224950,31 @@ http, oauth2, apiKey
   "gitlab_product_usage_data_enabled": "string",
   "gitlab_shell_operation_limit": "string",
   "gitlab_shell_operation_per_actor_limit": 0,
+  "group_api_limit": "string",
+  "group_archive_unarchive_api_limit": "string",
+  "group_create_limit": "string",
   "group_hooks_create_limit": "string",
+  "group_download_export_limit": "string",
+  "group_export_limit": "string",
+  "group_import_limit": "string",
+  "group_invited_groups_api_limit": "string",
+  "group_projects_api_limit": "string",
+  "group_shared_groups_api_limit": "string",
+  "groups_api_limit": "string",
   "hashed_storage_enabled": "string",
+  "helm_max_packages_count": "string",
   "hide_third_party_offers": "string",
+  "import_jobs_concurrency_limit": "string",
   "inactive_projects_delete_after_months": "string",
   "inactive_projects_min_size_mb": "string",
   "inactive_projects_send_warning_email_after_months": "string",
   "inactive_resource_access_tokens_delete_after_days": "string",
   "include_optional_metrics_in_service_ping": "string",
+  "issuable_csv_import_limit": "string",
   "keep_latest_artifact": "string",
   "kroki_diagram_proxy_enabled": "string",
   "kroki_formats": "string",
+  "label_delete_limit": "string",
   "lock_require_sha_for_merge": "string",
   "max_http_decompressed_size": "string",
   "max_http_response_csv_structural_chars": "string",
@@ -224055,18 +224985,36 @@ http, oauth2, apiKey
   "max_login_attempts": "string",
   "max_yaml_depth": "string",
   "max_yaml_size_bytes": "string",
+  "members_delete_limit": "string",
   "minimum_password_length": "string",
   "mirror_available": "string",
   "ml_experiment_tracking_run_retention_days": 0,
+  "notes_create_limit": "string",
+  "notes_create_limit_allowlist_raw": "string",
   "notify_on_unknown_sign_in": "string",
+  "nuget_skip_metadata_url_validation": "string",
   "offline_transfer_exports_enabled": "string",
   "offline_transfer_imports_enabled": "string",
   "package_registry_allow_anyone_to_pull_option": "string",
   "package_registry_cleanup_policies_worker_capacity": "string",
+  "pages_deployments_api_limit": "string",
   "pages_domain_verification_enabled": "string",
   "pages_unique_domain_default_enabled": "string",
+  "pg_ash_sample_interval_seconds": "string",
+  "pg_ash_sampling_enabled": "string",
   "plantuml_diagram_proxy_enabled": "string",
+  "project_api_limit": "string",
+  "project_create_limit": "string",
   "project_hooks_create_limit": "string",
+  "project_download_export_limit": "string",
+  "project_export_limit": "string",
+  "project_import_limit": "string",
+  "project_invited_groups_api_limit": "string",
+  "project_members_api_limit": "string",
+  "project_repositories_blame_limit": "string",
+  "project_repositories_blame_unauthenticated_limit": "string",
+  "project_repositories_blobs_batch_limit": "string",
+  "projects_api_limit": "string",
   "projects_api_rate_limit_unauthenticated": "string",
   "protected_ci_variables": "string",
   "rate_limiting_response_text": "string",
@@ -224081,6 +225029,7 @@ http, oauth2, apiKey
   "runner_jobs_request_api_limit": "string",
   "runner_manager_creation_limit": "string",
   "search_rate_limit": "string",
+  "search_rate_limit_allowlist_raw": "string",
   "search_rate_limit_unauthenticated": "string",
   "sidekiq_job_limiter_compression_threshold_bytes": "string",
   "sidekiq_job_limiter_limit_bytes": "string",
@@ -224095,13 +225044,23 @@ http, oauth2, apiKey
   "static_objects_external_storage_auth_token": "string",
   "static_objects_external_storage_url": "string",
   "system_hooks_create_limit": "string",
+  "tags_create_limit": "string",
   "terms": "string",
   "throttle_authenticated_api_enabled": "string",
   "throttle_authenticated_api_period_in_seconds": "string",
   "throttle_authenticated_api_requests_per_period": "string",
+  "throttle_authenticated_deprecated_api_enabled": "string",
+  "throttle_authenticated_deprecated_api_period_in_seconds": "string",
+  "throttle_authenticated_deprecated_api_requests_per_period": "string",
+  "throttle_authenticated_files_api_enabled": "string",
+  "throttle_authenticated_files_api_period_in_seconds": "string",
+  "throttle_authenticated_files_api_requests_per_period": "string",
   "throttle_authenticated_git_http_enabled": "string",
   "throttle_authenticated_git_http_period_in_seconds": "string",
   "throttle_authenticated_git_http_requests_per_period": "string",
+  "throttle_authenticated_git_lfs_enabled": "string",
+  "throttle_authenticated_git_lfs_period_in_seconds": "string",
+  "throttle_authenticated_git_lfs_requests_per_period": "string",
   "throttle_authenticated_mcp_enabled": "string",
   "throttle_authenticated_mcp_period_in_seconds": "string",
   "throttle_authenticated_mcp_requests_per_period": "string",
@@ -224114,9 +225073,18 @@ http, oauth2, apiKey
   "throttle_authenticated_web_enabled": "string",
   "throttle_authenticated_web_period_in_seconds": "string",
   "throttle_authenticated_web_requests_per_period": "string",
+  "throttle_protected_paths_enabled": "string",
+  "throttle_protected_paths_period_in_seconds": "string",
+  "throttle_protected_paths_requests_per_period": "string",
   "throttle_unauthenticated_api_enabled": "string",
   "throttle_unauthenticated_api_period_in_seconds": "string",
   "throttle_unauthenticated_api_requests_per_period": "string",
+  "throttle_unauthenticated_deprecated_api_enabled": "string",
+  "throttle_unauthenticated_deprecated_api_period_in_seconds": "string",
+  "throttle_unauthenticated_deprecated_api_requests_per_period": "string",
+  "throttle_unauthenticated_files_api_enabled": "string",
+  "throttle_unauthenticated_files_api_period_in_seconds": "string",
+  "throttle_unauthenticated_files_api_requests_per_period": "string",
   "throttle_unauthenticated_enabled": "string",
   "throttle_unauthenticated_git_http_enabled": "string",
   "throttle_unauthenticated_git_http_period_in_seconds": "string",
@@ -224130,25 +225098,34 @@ http, oauth2, apiKey
   "throttle_unauthenticated_web_period_in_seconds": "string",
   "throttle_unauthenticated_web_requests_per_period": "string",
   "time_tracking_limit_to_hours": "string",
+  "todos_list_api_limit": "string",
   "top_level_group_creation_enabled": "string",
   "unique_ips_limit_enabled": "string",
   "unique_ips_limit_per_user": "string",
   "unique_ips_limit_time_window": "string",
   "update_runner_versions_enabled": "string",
   "use_clickhouse_for_analytics": "string",
+  "user_contributed_projects_api_limit": "string",
   "user_default_external": "string",
   "user_default_internal_regex": "string",
   "user_defaults_to_private_profile": "string",
   "user_oauth_applications": "string",
+  "user_projects_api_limit": "string",
   "user_show_add_ssh_key_message": "string",
+  "user_starred_projects_api_limit": "string",
   "users_api_limit_followers": "string",
   "users_api_limit_following": "string",
   "users_api_limit_gpg_key": "string",
   "users_api_limit_gpg_keys": "string",
+  "users_api_limit_ssh_key": "string",
+  "users_api_limit_ssh_keys": "string",
   "users_api_limit_status": "string",
+  "users_get_by_id_limit_allowlist_raw": "string",
   "version_check_enabled": "string",
   "web_hook_event_resend_limit": "string",
   "web_hook_test_limit": "string",
+  "wiki_read_request_limit_unauthenticated": "string",
+  "work_item_hierarchy_add_children_limit": "string",
   "elasticsearch_aws": true,
   "elasticsearch_aws_access_key": "string",
   "elasticsearch_aws_region": "string",
@@ -224211,6 +225188,8 @@ http, oauth2, apiKey
   "credits_usage_per_minute_limit": 0,
   "credits_usage_per_hour_limit": 0,
   "credits_usage_per_day_limit": 0,
+  "ci_minutes_usage_projects_per_minute_limit": 0,
+  "ci_minutes_usage_projects_per_hour_limit": 0,
   "trial_create_limit": 0,
   "hand_raise_lead_create_limit": 0,
   "user_add_on_assignment_bulk_create_limit": 0,
@@ -224252,6 +225231,8 @@ http, oauth2, apiKey
   "lock_duo_remote_flows_enabled": true,
   "duo_scheduled_automations_enabled": true,
   "lock_duo_scheduled_automations_enabled": true,
+  "duo_code_suggestions_enabled": true,
+  "lock_duo_code_suggestions_enabled": true,
   "duo_workflows_default_image_registry": "string",
   "ci_telemetry_otel_endpoint": "string",
   "ci_job_telemetry_sampling_rate": 0,
@@ -224277,7 +225258,14 @@ http, oauth2, apiKey
   "automatic_purchased_storage_allocation": "string",
   "check_namespace_plan": "string",
   "delete_unconfirmed_users": "string",
+  "dependency_firewall_policies_per_configuration_limit": "string",
+  "dependency_scanning_sbom_scan_api_download_limit": "string",
+  "dependency_scanning_sbom_scan_api_upload_limit": "string",
   "disable_invite_members": "string",
+  "duo_agent_platform_enabled": "string",
+  "duo_availability": "string",
+  "duo_token_usage_tracking_enabled": "string",
+  "duo_workflow_file_attachments_enabled": "string",
   "elasticsearch_client_adapter": "string",
   "elasticsearch_indexed_field_length_limit": "string",
   "elasticsearch_indexed_file_size_limit_kb": "string",
@@ -224306,18 +225294,22 @@ http, oauth2, apiKey
   "password_number_required": "string",
   "password_symbol_required": "string",
   "password_uppercase_required": "string",
+  "pipeline_execution_policies_per_configuration_limit": "string",
   "project_secrets_limit": "string",
   "scan_execution_policies_action_limit": "string",
+  "scan_execution_policies_per_configuration_limit": "string",
   "scan_execution_policies_schedule_limit": "string",
   "secret_push_protection_available": "string",
   "security_approval_policies_limit": "string",
   "security_mr_report_cache_lifetime_minutes": "string",
   "shared_runners_minutes": "string",
+  "throttle_incident_management_notification_enabled": "string",
+  "throttle_incident_management_notification_per_period": "string",
+  "throttle_incident_management_notification_period_in_seconds": "string",
   "unconfirmed_users_delete_after_days": "string",
+  "vulnerability_management_policies_per_configuration_limit": "string",
   "allow_possible_spam": "string",
-  "import_jobs_concurrency_limit": "string",
   "deny_all_requests_except_allowed": "string",
-  "block_jwt_for_reclaimed_paths": "string",
   "root_moved_permanently_redirection": "string",
   "domain_denylist_raw": "string",
   "domain_allowlist_raw": "string",
@@ -224333,42 +225325,13 @@ http, oauth2, apiKey
   "organization_cluster_agent_authorization_enabled": "string",
   "instance_token_prefix": "string",
   "pages_extra_deployments_default_expiry_seconds": "string",
-  "throttle_authenticated_git_lfs_enabled": "string",
-  "throttle_authenticated_git_lfs_period_in_seconds": "string",
-  "throttle_authenticated_git_lfs_requests_per_period": "string",
-  "throttle_authenticated_files_api_enabled": "string",
-  "throttle_authenticated_files_api_period_in_seconds": "string",
-  "throttle_authenticated_files_api_requests_per_period": "string",
-  "throttle_authenticated_deprecated_api_enabled": "string",
-  "throttle_authenticated_deprecated_api_period_in_seconds": "string",
-  "throttle_authenticated_deprecated_api_requests_per_period": "string",
-  "throttle_unauthenticated_files_api_enabled": "string",
-  "throttle_unauthenticated_files_api_period_in_seconds": "string",
-  "throttle_unauthenticated_files_api_requests_per_period": "string",
-  "throttle_unauthenticated_deprecated_api_enabled": "string",
-  "throttle_unauthenticated_deprecated_api_period_in_seconds": "string",
-  "throttle_unauthenticated_deprecated_api_requests_per_period": "string",
-  "throttle_protected_paths_enabled": "string",
-  "throttle_protected_paths_period_in_seconds": "string",
-  "throttle_protected_paths_requests_per_period": "string",
   "protected_paths_raw": "string",
   "protected_paths_for_get_request_raw": "string",
   "usage_ping_generation_enabled": "string",
   "usage_ping_features_enabled": "string",
-  "project_create_limit": "string",
-  "group_create_limit": "string",
-  "notes_create_limit": "string",
-  "notes_create_limit_allowlist_raw": "string",
   "merge_request_diff_download_request_limit": "string",
   "markdown_upload_limit_megabytes_per_day": "string",
-  "members_delete_limit": "string",
   "milestone_destroy_limit": "string",
-  "project_import_limit": "string",
-  "project_export_limit": "string",
-  "project_download_export_limit": "string",
-  "group_import_limit": "string",
-  "group_export_limit": "string",
-  "group_download_export_limit": "string",
   "resource_access_token_notify_inherited": "string",
   "lock_resource_access_token_notify_inherited": "string",
   "sentry_enabled": "string",
@@ -224376,53 +225339,25 @@ http, oauth2, apiKey
   "sentry_clientside_dsn": "string",
   "sentry_environment": "string",
   "sentry_clientside_traces_sample_rate": "string",
-  "search_rate_limit_allowlist_raw": "string",
-  "users_get_by_id_limit_allowlist_raw": "string",
   "invitation_flow_enforcement": "string",
   "can_create_organization": "string",
-  "concurrent_relation_export_limit": "string",
   "allow_contribution_mapping_to_admins": "string",
   "deactivation_email_additional_text": "string",
   "glql_db_seconds_per_ip_limit": "string",
   "glql_db_seconds_per_query_limit": "string",
   "glql_db_seconds_per_user_limit": "string",
   "glql_duo_db_seconds_per_user_limit": "string",
-  "group_api_limit": "string",
-  "group_archive_unarchive_api_limit": "string",
-  "group_invited_groups_api_limit": "string",
-  "group_shared_groups_api_limit": "string",
-  "group_projects_api_limit": "string",
-  "groups_api_limit": "string",
-  "issuable_csv_import_limit": "string",
-  "label_delete_limit": "string",
   "merge_requests_update_limit": "string",
-  "pages_deployments_api_limit": "string",
-  "project_api_limit": "string",
-  "project_invited_groups_api_limit": "string",
   "project_repositories_archive_limit": "string",
   "project_repositories_archive_unauthenticated_limit": "string",
-  "project_repositories_blame_limit": "string",
-  "project_repositories_blame_unauthenticated_limit": "string",
-  "project_repositories_blobs_batch_limit": "string",
   "project_repository_commits_api_limit": "string",
   "project_repositories_compare_limit": "string",
   "project_repositories_compare_unauthenticated_limit": "string",
-  "projects_api_limit": "string",
-  "project_members_api_limit": "string",
   "protected_branch_write_limit": "string",
-  "create_organization_api_limit": "string",
+  "delete_merged_branches_limit": "string",
   "cross_reference_checks_limit": "string",
-  "user_contributed_projects_api_limit": "string",
-  "user_projects_api_limit": "string",
-  "user_starred_projects_api_limit": "string",
-  "users_api_limit_ssh_keys": "string",
-  "users_api_limit_ssh_key": "string",
-  "tags_create_limit": "string",
-  "todos_list_api_limit": "string",
-  "wiki_read_request_limit_unauthenticated": "string",
   "merge_request_diffs_page_request_limit": "string",
   "merge_request_diff_resources_request_limit": "string",
-  "work_item_hierarchy_add_children_limit": "string",
   "work_item_move_limit": "string",
   "work_item_update_limit": "string",
   "track_namespace_visits_limit": "string",
@@ -224443,14 +225378,10 @@ http, oauth2, apiKey
   "default_search_scope": "string",
   "delay_user_account_self_deletion": "string",
   "background_operations_max_jobs": "string",
-  "pg_ash_sampling_enabled": "string",
-  "pg_ash_sample_interval_seconds": "string",
   "enforce_granular_tokens": "string",
   "granular_tokens_enforced_after": "string",
   "deactivate_dormant_users": "string",
   "deactivate_dormant_users_period": "string",
-  "nuget_skip_metadata_url_validation": "string",
-  "helm_max_packages_count": "string",
   "mcp_server_enabled": "string",
   "dynamic_client_registration_enabled": "string",
   "ci_cd_catalog_projects_allowlist": "string",
@@ -224470,24 +225401,18 @@ http, oauth2, apiKey
   "lock_model_prompt_cache_enabled": "string",
   "model_prompt_cache_enabled": "string",
   "secret_detection_token_revocation_token": "string",
-  "throttle_incident_management_notification_enabled": "string",
-  "throttle_incident_management_notification_per_period": "string",
-  "throttle_incident_management_notification_period_in_seconds": "string",
   "product_analytics_enabled": "string",
   "product_analytics_data_collector_host": "string",
   "product_analytics_configurator_connection_string": "string",
   "cube_api_base_url": "string",
   "cube_api_key": "string",
-  "duo_availability": "string",
-  "duo_agent_platform_enabled": "string",
   "duo_cli_enabled": "string",
   "ai_audit_events_streaming_enabled": "string",
-  "duo_token_usage_tracking_enabled": "string",
-  "duo_workflow_file_attachments_enabled": "string",
   "duo_remote_flows_availability": "string",
   "duo_foundational_flows_enabled": "string",
   "duo_foundational_flows_availability": "string",
   "duo_scheduled_automations_availability": "string",
+  "duo_code_suggestions_availability": "string",
   "duo_custom_agents_availability": "string",
   "duo_custom_flows_availability": "string",
   "duo_external_agents_availability": "string",
@@ -224521,10 +225446,6 @@ http, oauth2, apiKey
   "orbit_dap_enabled_by_default": "string",
   "epic_move_list_limit": "string",
   "duo_workflow_oauth_application_id": "string",
-  "pipeline_execution_policies_per_configuration_limit": "string",
-  "scan_execution_policies_per_configuration_limit": "string",
-  "vulnerability_management_policies_per_configuration_limit": "string",
-  "dependency_firewall_policies_per_configuration_limit": "string",
   "policy_store_experiment_enabled": "string",
   "secret_detection_service_auth_token": "string",
   "secret_detection_service_url": "string",
@@ -224539,8 +225460,6 @@ http, oauth2, apiKey
   "enable_member_promotion_management": "string",
   "allow_deploy_tokens_and_keys_with_external_authn": "string",
   "allow_top_level_group_owners_to_create_service_accounts": "string",
-  "dependency_scanning_sbom_scan_api_upload_limit": "string",
-  "dependency_scanning_sbom_scan_api_download_limit": "string",
   "auto_duo_code_review_on_push_enabled": "string"
 }
 ```
@@ -224554,29 +225473,29 @@ http, oauth2, apiKey
 |abuse_notification_email|string \| null|false|none|If set, [abuse reports](https://docs.gitlab.com/administration/review_abuse_reports/) are sent to this address. Abuse reports are always available in the **Admin** area.|
 |after_sign_up_text|string \| null|false|none|Text shown after sign up.|
 |after_sign_out_path|string \| null|false|none|Users are redirected to this page after they sign out.|
-|akismet_enabled|boolean \| null|false|none|If `true`, helps prevent bots from creating issues. Requires `akismet_api_key`.|
-|akismet_api_key|string \| null|false|none|Generate API key at http://www.akismet.com|
-|asset_proxy_enabled|boolean \| null|false|none|Enable proxying of assets|
-|asset_proxy_url|string \| null|false|none|URL of the asset proxy server|
-|asset_proxy_secret_key|string \| null|false|none|Shared secret with the asset proxy server|
+|akismet_enabled|boolean \| null|false|none|If `true`, enables Akismet spam protection, which helps prevent bots from creating issues. Requires `akismet_api_key`.|
+|akismet_api_key|string \| null|false|none|API key for Akismet spam protection. Generate API key at http://www.akismet.com|
+|asset_proxy_enabled|boolean \| null|false|none|Enable proxying of assets. Requires `asset_proxy_url` and `asset_proxy_secret_key`. GitLab restart is required to apply changes.|
+|asset_proxy_url|string \| null|false|none|URL of the asset proxy server. GitLab restart is required to apply changes.|
+|asset_proxy_secret_key|string \| null|false|none|Shared secret with the asset proxy server. GitLab restart is required to apply changes.|
 |asset_proxy_whitelist|[string]|false|none|Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes. Deprecated. Use `asset_proxy_allowlist` instead.|
 |asset_proxy_allowlist|[string]|false|none|Assets that match these domains are not proxied. Wildcards allowed. Your GitLab installation URL is automatically allowlisted. GitLab restart is required to apply changes.|
-|authn_data_retention_cleanup_enabled|boolean \| null|false|none|If `true`, runs cleanup workers that permanently delete authentication login history older than one year, and previously revoked OAuth access tokens and grants older than one month. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579002) in GitLab 18.7.|
+|authn_data_retention_cleanup_enabled|boolean \| null|false|none|If `true`, runs cleanup workers that permanently delete authentication login history older than one year, and previously revoked OAuth access tokens and grants older than one month. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579002) in GitLab 18.7.|
 |container_registry_token_expire_delay|integer \| null|false|none|Duration, in minutes, that container registry authorization tokens remain valid.|
 |oauth_access_token_expires_in|integer \| null|false|none|Maximum lifetime in seconds of all new OAuth access tokens issued by the instance. Minimum value: `300` (5 minutes). Default value: `7200` (2 hours). If blank or `null`, uses default value. Does not affect existing OAuth access tokens.|
 |decompress_archive_file_timeout|integer \| null|false|none|Timeout for decompressing archived files, in seconds. Set to `0` to disable the timeout.|
 |default_artifacts_expire_in|string \| null|false|none|Set the default expiration time for each job's artifacts.|
 |default_ci_config_path|string \| null|false|none|Default CI/CD configuration file and path for new projects. If empty, new projects use `.gitlab-ci.yml`.|
 |default_project_creation|integer \| null|false|none|Default minimum role required to create projects. Can take: `0` _(No one)_, `1` _(Maintainers)_, `2` _(Developers)_, `3` _(Administrators)_, or `4` _(Owners)_.|
-|default_remove_source_branch_after_merge|boolean \| null|false|none|Enable the delete source branch option by default for new projects|
+|default_remove_source_branch_after_merge|boolean \| null|false|none|Enable the delete source branch option by default for new projects. Default is `true`.|
 |default_branch_protection|integer \| null|false|none|Level of protection for the default branch. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.|
 |default_branch_protection_defaults|object \| null|false|none|Default branch protection settings. For available options, see [Options for `default_branch_protection_defaults`](https://docs.gitlab.com/api/groups/#options-for-default_branch_protection_defaults). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0.|
 |default_group_visibility|string \| null|false|none|What visibility level new groups receive. Default is `private`. Cannot be set to any levels in `restricted_visibility_levels`.|
 |default_project_visibility|string \| null|false|none|What visibility level new projects receive. Default is `private`. Cannot be set to any levels in `restricted_visibility_levels`.|
 |default_projects_limit|integer \| null|false|none|Maximum number of personal projects per user. Default is `100000`.|
 |default_snippet_visibility|string \| null|false|none|What visibility level new snippets receive. Default is `private`.|
-|dependency_management_settings|object \| null|false|none|Dependency management settings. Set `security_update_scheduler_max_concurrency` (integer) to cap the number of security update scheduler jobs that run concurrently across the Sidekiq fleet. Default: `30`. Capped at `200`. Set to `0` to remove the concurrency limit. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239173) in GitLab 19.1.|
-|disable_admin_oauth_scopes|boolean \| null|false|none|Stop administrators from connecting to non-trusted OAuth applications.|
+|dependency_management_settings|object \| null|false|none|Dependency management settings. Set `security_update_scheduler_max_concurrency` (integer) to cap the number of security update scheduler jobs that run concurrently across the Sidekiq fleet. Default: `30`. Capped at `200`. Set to `0` to remove the concurrency limit. Set `security_update_scheduler_project_period_in_seconds` (integer) to the seconds between security update scheduler runs for each project. Default: `300`. Maximum: `86400`. Set the period to `0` to remove the rate limit. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239173) in GitLab 19.1.|
+|disable_admin_oauth_scopes|boolean \| null|false|none|Stop administrators from connecting to non-trusted OAuth applications that have the `api`, `read_api`, `read_repository`, `write_repository`, `read_registry`, `write_registry`, `sudo`, `admin_mode`, or `read_service_ping` scopes.|
 |disable_feed_token|boolean \| null|false|none|Disable display of RSS/Atom and Calendar `feed_tokens`|
 |disabled_oauth_sign_in_sources|[string]|false|none|OAuth sign-in sources to disable.|
 |discussions_resolve_limit|integer \| null|false|none|Maximum number of thread resolve and unresolve requests per minute for each user. Default: `0`, which disables the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/606720) in GitLab 19.6.|
@@ -224585,9 +225504,9 @@ http, oauth2, apiKey
 |domain_denylist|[string]|false|none|Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com|
 |domain_allowlist|[string]|false|none|Only users with email addresses that match these domains can sign up. Wildcards allowed. For example, `domain.com` or `*.domain.com`. If empty, all domains are allowed.|
 |outbound_local_requests_whitelist|[string]|false|none|List of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled.|
-|email_otp_enabled|boolean \| null|false|none|If `true`, enables email-based one-time passwords (OTP) as a multi-factor authentication method. Requires `require_email_verification_on_account_locked` to be `true`.|
+|email_otp_enabled|boolean \| null|false|none|If `true`, enables email-based one-time passwords (OTP) as a multi-factor authentication method. Requires `require_email_verification_on_account_locked` to be `true`. Default is `false`.|
 |environment_delete_rows_limit_per_user|integer \| null|false|none|Maximum number of deployment, job, and merge request link rows each user can delete with environments every minute.|
-|iframe_rendering_enabled|boolean \| null|false|none|If `true`, allows rendering of iframes in Markdown.|
+|iframe_rendering_enabled|boolean \| null|false|none|If `true`, allows rendering of iframes in Markdown. Default is `false`.|
 |iframe_rendering_allowlist|[string]|false|none|IDs of embed providers users can embed content from. Enter multiple entries separated by commas or on separate lines.|
 |iframe_rendering_allowlist_raw|string \| null|false|none|Raw newline- or comma-separated list of IDs of embed providers users can embed content from.|
 |eks_integration_enabled|boolean \| null|false|none|Enable integration with Amazon EKS|
@@ -224597,33 +225516,34 @@ http, oauth2, apiKey
 |email_author_in_body|boolean \| null|false|none|If `true`, includes the name of the issue, merge request, or comment author in the email body. Useful when email servers do not support overriding the sender name.|
 |email_confirmation_setting|string \| null|false|none|Specifies whether users must confirm their email address before signing in. `off` does not require confirmation, `soft` allows sign-in during a confirmation period, and `hard` requires confirmation before sign-in.|
 |enabled_git_access_protocol|string \| null|false|none|Protocol allowed for Git access. Set to `all` to allow both SSH and HTTP(S).|
-|gitpod_enabled|boolean \| null|false|none|If `true`, enables [Ona integration](https://docs.gitlab.com/integration/gitpod/). Requires `gitpod_url`.|
+|gitpod_enabled|boolean \| null|false|none|If `true`, enables [Ona integration](https://docs.gitlab.com/integration/gitpod/). Default is `false`. Requires `gitpod_url`.|
 |gitpod_url|string \| null|false|none|Ona instance URL for the integration.|
 |gitaly_timeout_default|integer \| null|false|none|Default Gitaly timeout, in seconds. Set to `0` to disable timeouts.|
 |gitaly_timeout_fast|integer \| null|false|none|Gitaly fast operation timeout, in seconds. Set to 0 to disable timeouts.|
-|gitaly_timeout_medium|integer \| null|false|none|Medium Gitaly timeout, in seconds. Set to 0 to disable timeouts.|
+|gitaly_timeout_medium|integer \| null|false|none|Medium Gitaly timeout, in seconds. Must be between `gitaly_timeout_fast` and `gitaly_timeout_default`. Set to 0 to disable timeouts.|
 |grafana_enabled|boolean \| null|false|none|If `true`, enables Grafana.|
 |grafana_url|string \| null|false|none|Grafana URL.|
+|graphql_participant_fields_request_limit|integer \| null|false|none|Maximum number of GraphQL requests per minute for each user, or for each IP address for unauthenticated requests, that resolve the `participants` and `subscribed` fields more than 20 times in total. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/271502) in GitLab 19.7.|
 |gravatar_enabled|boolean \| null|false|none|If `true`, enables the Gravatar service.|
 |help_page_hide_commercial_content|boolean \| null|false|none|If `true`, hides marketing-related entries from help.|
 |help_page_support_url|string \| null|false|none|Alternate support URL for help page and help dropdown.|
 |help_page_documentation_base_url|string \| null|false|none|Alternate documentation pages URL.|
 |help_page_text|string \| null|false|none|Custom text displayed on the help page.|
 |home_page_url|string \| null|false|none|Users who are not signed in are redirected to this page.|
-|housekeeping_enabled|boolean \| null|false|none|Enable automatic repository housekeeping (git repack, git gc)|
+|housekeeping_enabled|boolean \| null|false|none|Enable automatic repository housekeeping (git repack, git gc). When `true`, also set either `housekeeping_optimize_repository_period` or all of `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period`.|
 |housekeeping_full_repack_period|integer \| null|false|none|Number of Git pushes after which a full `git repack` is run. Deprecated. Use `housekeeping_optimize_repository_period` instead. All or none of `housekeeping_full_repack_period`, `housekeeping_gc_period`, `housekeeping_incremental_repack_period` must be provided.|
 |housekeeping_gc_period|integer \| null|false|none|Number of Git pushes after which `git gc` is run. Deprecated. Use `housekeeping_optimize_repository_period` instead. All or none of `housekeeping_full_repack_period`, `housekeeping_gc_period`, `housekeeping_incremental_repack_period` must be provided.|
 |housekeeping_incremental_repack_period|integer \| null|false|none|Number of Git pushes after which an incremental `git repack` is run. Deprecated. Use `housekeeping_optimize_repository_period` instead. Exactly one of `housekeeping_incremental_repack_period`, `housekeeping_optimize_repository_period` must be provided. All or none of `housekeeping_full_repack_period`, `housekeeping_gc_period`, `housekeeping_incremental_repack_period` must be provided.|
 |housekeeping_optimize_repository_period|integer \| null|false|none|Number of Git pushes after which Gitaly is asked to optimize a repository. Exactly one of `housekeeping_incremental_repack_period`, `housekeeping_optimize_repository_period` must be provided.|
 |html_emails_enabled|boolean \| null|false|none|If `true`, sends emails in both HTML and plain text formats. If `false`, sends emails in plain text only. Defaults to `true`.|
 |import_sources|[string]|false|none|Sources to allow project import from. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com.|
-|invisible_captcha_enabled|boolean \| null|false|none|If `true`, enables Invisible CAPTCHA spam detection during account creation.|
+|invisible_captcha_enabled|boolean \| null|false|none|If `true`, enables Invisible CAPTCHA spam detection during account creation. Default is `false`.|
 |max_artifacts_size|integer \| null|false|none|Maximum file size, in MB, for each job's artifacts.|
 |max_attachment_size|integer \| null|false|none|Maximum attachment size in MB.|
-|max_export_size|integer \| null|false|none|Maximum export size in MB|
+|max_export_size|integer \| null|false|none|Maximum export size in MB. Set to `0` for unlimited. Default is `0`.|
 |max_github_response_size_limit|integer \| null|false|none|Maximum size in MB for GitHub API responses. Set to `0` for unlimited size.|
 |max_github_response_json_value_count|integer \| null|false|none|Maximum object count for GitHub API responses. Set to `0` for unlimited. The count is an estimate based on the number of `:`, `,`, `{`, and `[` characters in the response.|
-|max_import_size|integer \| null|false|none|Maximum import size in MB|
+|max_import_size|integer \| null|false|none|Maximum import size in MB. Set to `0` for unlimited. Default is `0`.|
 |max_import_record_size|integer \| null|false|none|Maximum size in MiB of a single record in an import file. Set to `0` for unlimited. Default is `50`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/631025) in GitLab 19.7.|
 |max_import_remote_file_size|integer \| null|false|none|Maximum remote file size in MB for imports from external object storages|
 |max_decompressed_archive_size|integer \| null|false|none|Maximum decompressed file size for imported archives in MB. Set to `0` for unlimited. Default is `25600`.|
@@ -224637,8 +225557,8 @@ http, oauth2, apiKey
 |metrics_method_call_threshold|integer \| null|false|none|Method call is only tracked if it takes longer than this threshold, in milliseconds.|
 |o11y_provisioner_api_key|string \| null|false|none|API key GitLab sends to the Observability provisioner. GitLab.com only. Not returned in responses.|
 |o11y_provisioner_url|string \| null|false|none|URL of the Observability provisioner API. GitLab.com only.|
-|pages_domain_create_limit|integer \| null|false|none|Maximum number of Pages custom domains each user can create per day. Default: `50`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/635642) in GitLab 19.6.|
-|pages_domain_verify_limit|integer \| null|false|none|Maximum number of Pages custom domain verification requests per minute for each user. Default: `5`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/635642) in GitLab 19.6.|
+|pages_domain_create_limit|integer \| null|false|none|Maximum number of Pages custom domains each user can create per day. Default: `50`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268633) in GitLab 19.6.|
+|pages_domain_verify_limit|integer \| null|false|none|Maximum number of Pages custom domain verification requests per minute for each user. Default: `5`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268633) in GitLab 19.6.|
 |password_authentication_enabled|boolean \| null|false|none|Flag indicating if password authentication is enabled for the web interface. Mutually exclusive with `password_authentication_enabled_for_web`, `signin_enabled`.|
 |password_authentication_enabled_for_web|boolean \| null|false|none|If `true`, enables authentication for the web interface via a GitLab account password. Defaults to `true`. Mutually exclusive with `password_authentication_enabled`, `signin_enabled`.|
 |signin_enabled|boolean \| null|false|none|If `true`, enables password authentication for the web interface. Deprecated. Use `password_authentication_enabled_for_web` instead. Mutually exclusive with `password_authentication_enabled_for_web`, `password_authentication_enabled`.|
@@ -224648,9 +225568,9 @@ http, oauth2, apiKey
 |performance_bar_enabled|string \| null|false|none|Deprecated: Pass `performance_bar_allowed_group_path: nil` instead. Allow enabling the performance.|
 |personal_access_token_prefix|string \| null|false|none|Prefix to prepend to all personal access tokens.|
 |require_personal_access_token_expiry|boolean \| null|false|none|If `true`, requires an expiration date on group and project access tokens, and on personal access tokens not owned by service accounts.|
-|kroki_enabled|boolean \| null|false|none|If `true`, enables [Kroki integration](https://docs.gitlab.com/administration/integration/kroki/). Requires `kroki_url`.|
+|kroki_enabled|boolean \| null|false|none|If `true`, enables [Kroki integration](https://docs.gitlab.com/administration/integration/kroki/). Default is `false`. Requires `kroki_url`.|
 |kroki_url|string \| null|false|none|Kroki server URL.|
-|plantuml_enabled|boolean \| null|false|none|If `true`, enables [PlantUML integration](https://docs.gitlab.com/administration/integration/plantuml/). Requires `plantuml_url`.|
+|plantuml_enabled|boolean \| null|false|none|If `true`, enables [PlantUML integration](https://docs.gitlab.com/administration/integration/plantuml/). Default is `false`. Requires `plantuml_url`.|
 |plantuml_url|string \| null|false|none|The PlantUML server URL|
 |diagramsnet_enabled|boolean \| null|false|none|If `true`, enables [Diagrams.net integration](https://docs.gitlab.com/administration/integration/diagrams_net/). Requires `diagramsnet_url`. Defaults to `true`.|
 |diagramsnet_url|string \| null|false|none|The Diagrams.net server URL|
@@ -224660,9 +225580,9 @@ http, oauth2, apiKey
 |push_event_hooks_limit|integer \| null|false|none|Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. Default: `3`.|
 |push_event_activities_limit|integer \| null|false|none|Maximum number of changes (branches or tags) in a single push above which a bulk push event is created. Setting to `0` does not disable throttling.|
 |recaptcha_enabled|boolean \| null|false|none|If `true`, enables reCAPTCHA. Requires `recaptcha_private_key` and `recaptcha_site_key`.|
-|recaptcha_site_key|string \| null|false|none|Generate site key at http://www.google.com/recaptcha|
-|recaptcha_private_key|string \| null|false|none|Generate private key at http://www.google.com/recaptcha|
-|login_recaptcha_protection_enabled|boolean \| null|false|none|Helps prevent brute-force attacks|
+|recaptcha_site_key|string \| null|false|none|Site key for reCAPTCHA. Generate site key at http://www.google.com/recaptcha|
+|recaptcha_private_key|string \| null|false|none|Private key for reCAPTCHA. Generate private key at http://www.google.com/recaptcha|
+|login_recaptcha_protection_enabled|boolean \| null|false|none|If `true`, enables reCAPTCHA for login, which helps prevent brute-force attacks.|
 |repository_checks_enabled|boolean \| null|false|none|If `true`, GitLab periodically runs `git fsck` in all project and wiki repositories to look for silent disk corruption issues.|
 |repository_storages_weighted|object \| null|false|none|Hash of names of storages taken from `gitlab.yml` to [weights](https://docs.gitlab.com/administration/repository_storage_paths/#configure-where-new-repositories-are-stored) ranging from 0 to 100. New projects are created in one of these stores, chosen by a weighted random selection.|
 |require_two_factor_authentication|boolean \| null|false|none|If `true`, requires all users to set up two-factor authentication. Requires `two_factor_grace_period`.|
@@ -224670,14 +225590,14 @@ http, oauth2, apiKey
 |restricted_visibility_levels|[string]|false|none|Selected levels cannot be used by non-administrator users for groups, projects, or snippets. Can take `private`, `internal`, and `public` as a parameter. If the `public` level is restricted, user profiles are only visible to signed-in users. If empty, no levels are restricted. Cannot select levels that are set as `default_project_visibility` and `default_group_visibility`.|
 |session_expire_delay|integer \| null|false|none|Session duration in minutes. Requires a GitLab restart to apply changes.|
 |session_expire_from_init|boolean \| null|false|none|If `true`, sessions expire a number of minutes after the session was created rather than after the last activity. The session lifetime is defined by `session_expire_delay`.|
-|shared_runners_enabled|boolean \| null|false|none|Enable shared runners for new projects|
+|shared_runners_enabled|boolean \| null|false|none|Enable shared runners for new projects. Requires `shared_runners_text`.|
 |shared_runners_text|string \| null|false|none|Shared runners text |
 |valid_runner_registrars|[string]|false|none|List of types which are allowed to register a GitLab Runner. Can be `[]`, `['group']`, `['project']`, or `['group', 'project']`.|
 |signup_enabled|boolean \| null|false|none|If `true`, enables registration. Defaults to `true`.|
-|sourcegraph_enabled|boolean \| null|false|none|If `true`, enables Sourcegraph integration. Requires `sourcegraph_url`.|
+|sourcegraph_enabled|boolean \| null|false|none|If `true`, enables Sourcegraph integration. Default is `false`. Requires `sourcegraph_url`.|
 |sourcegraph_public_only|boolean \| null|false|none|If `true`, blocks Sourcegraph from being loaded on private and internal projects. Defaults to `true`.|
 |sourcegraph_url|string \| null|false|none|Configured Sourcegraph instance URL.|
-|spam_check_endpoint_enabled|boolean \| null|false|none|Enable Spam Check via external API endpoint|
+|spam_check_endpoint_enabled|boolean \| null|false|none|Enable Spam Check via external API endpoint. Default is `false`.|
 |spam_check_endpoint_url|string \| null|false|none|URL of the external Spamcheck service endpoint. Valid URI schemes are `grpc` or `tls`. Specifying `tls` forces communication to be encrypted.|
 |terminal_max_session_time|integer \| null|false|none|Maximum time for a web terminal WebSocket connection, in seconds. Set to `0` for unlimited time.|
 |usage_ping_enabled|boolean \| null|false|none|Every week GitLab will report license usage back to GitLab, Inc.|
@@ -224689,14 +225609,14 @@ http, oauth2, apiKey
 |snowplow_collector_hostname|string \| null|false|none|The Snowplow collector hostname|
 |snowplow_cookie_domain|string \| null|false|none|Snowplow cookie domain, for example `.gitlab.com`.|
 |snowplow_app_id|string \| null|false|none|Snowplow site name or application ID, for example `gitlab`.|
-|issues_create_limit|integer \| null|false|none|Maximum number of issue creation requests allowed per minute per user. Set to 0 for unlimited requests per minute.|
+|issues_create_limit|integer \| null|false|none|Maximum number of issue creation requests allowed per minute per user. Set to 0 for unlimited requests per minute. Default is `300`.|
 |raw_blob_request_limit|integer \| null|false|none|Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling.|
 |raw_blob_request_limit_unauthenticated|integer \| null|false|none|Maximum number of unauthenticated requests per minute across all raw paths in a project (default is `800`). Set to `0` to disable throttling.|
 |release_evidence_collections_limit_per_user|integer \| null|false|none|Maximum number of release evidence collection requests a user can make per minute. Set to `0` to disable the limit.|
 |release_writes_limit_per_project|integer \| null|false|none|Maximum number of release create and update requests per minute for each project. Set to `0` to disable the limit.|
 |release_writes_limit_per_user|integer \| null|false|none|Maximum number of release create and update requests a user can make per minute. Set to `0` to disable the limit.|
 |wiki_page_max_content_bytes|integer \| null|false|none|Maximum wiki page content size in bytes. Default: 5242880 bytes (5 MB). The minimum value is 1024 bytes.|
-|description_and_note_max_size|integer \| null|false|none|Maximum work item, merge request, and vulnerability description and comment content size in bytes.|
+|description_and_note_max_size|integer \| null|false|none|Maximum work item, merge request, and vulnerability description and comment content size in bytes. Default is `1048576`.|
 |wiki_asciidoc_allow_uri_includes|boolean \| null|false|none|If `true`, allows URI includes for AsciiDoc wiki pages.|
 |require_admin_approval_after_user_signup|boolean \| null|false|none|If `true`, requires explicit administrator approval for new signups.|
 |whats_new_variant|string \| null|false|none|Which features [What's new](https://docs.gitlab.com/administration/whats-new/) shows. `all_tiers` shows features for all tiers, `current_tier` shows only features for the instance's tier, and `disabled` hides What's new.|
@@ -224704,7 +225624,7 @@ http, oauth2, apiKey
 |user_deactivation_emails_enabled|boolean \| null|false|none|If `true`, sends emails to users when their account is deactivated.|
 |show_migrate_from_jenkins_banner|boolean \| null|false|none|If `true`, shows the Jenkins migration banner.|
 |enable_artifact_external_redirect_warning_page|boolean \| null|false|none|If `true`, shows the external redirect page that warns about user-generated content in GitLab Pages.|
-|users_get_by_id_limit|integer \| null|false|none|Maximum number of calls to the `/users/:id` API per 10 minutes per user. Set to `0` for unlimited requests.|
+|users_get_by_id_limit|integer \| null|false|none|Maximum number of calls to the `/users/:id` API per 10 minutes per user. Set to `0` for unlimited requests. Default: `300`.|
 |runner_token_expiration_interval|integer \| null|false|none|Set the expiration time (in seconds) of authentication tokens of newly registered instance runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](https://docs.gitlab.com/ci/runners/configure_runners/#automatically-rotate-runner-authentication-tokens).|
 |group_runner_token_expiration_interval|integer \| null|false|none|Set the expiration time (in seconds) of authentication tokens of newly registered group runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](https://docs.gitlab.com/ci/runners/configure_runners/#automatically-rotate-runner-authentication-tokens).|
 |project_runner_token_expiration_interval|integer \| null|false|none|Set the expiration time (in seconds) of authentication tokens of newly registered project runners. Minimum value is 7200 seconds. For more information, see [Automatically rotate authentication tokens](https://docs.gitlab.com/ci/runners/configure_runners/#automatically-rotate-runner-authentication-tokens).|
@@ -224718,12 +225638,12 @@ http, oauth2, apiKey
 |jira_connect_domain_allowlist_raw|string \| null|false|none|Raw newline- or comma-separated list of Jira domains that can install the GitLab for Jira Cloud app. Applies to the Connect app only.|
 |jira_forge_app_id|string \| null|false|none|Atlassian Forge app ID (ARI) of the GitLab for Jira Cloud app, used to verify inbound Forge Invocation Tokens.|
 |bulk_import_concurrent_pipeline_batch_limit|integer \| null|false|none|Maximum number of simultaneous direct transfer batch exports to process.|
-|concurrent_relation_batch_export_limit|integer \| null|false|none|Maximum number of simultaneous batch export jobs to process.|
+|concurrent_relation_batch_export_limit|integer \| null|false|none|Maximum number of simultaneous batch export jobs to process. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6.|
 |project_export_limit_per_root_namespace|integer \| null|false|none|Maximum number of project export requests every 10 minutes for each top-level group or personal namespace, across all its projects. Default: 0. Set to `0` for no limit.|
-|project_relations_export_limit|integer \| null|false|none|Maximum number of project relations export requests per minute per user for each project during direct transfer migrations. Set to `0` to disable the rate limit.|
-|project_relations_export_download_limit|integer \| null|false|none|Maximum number of project relations export downloads per minute per user for each project during direct transfer migrations. Set to `0` to disable the rate limit.|
-|group_relations_export_limit|integer \| null|false|none|Maximum number of group relations export requests per minute per user for each group during direct transfer migrations. Set to `0` to disable the rate limit.|
-|group_relations_export_download_limit|integer \| null|false|none|Maximum number of group relations export downloads per minute per user for each group during direct transfer migrations. Set to `0` to disable the rate limit.|
+|project_relations_export_limit|integer \| null|false|none|Maximum number of project relations export requests per minute per user for each project during direct transfer migrations. Default: `6`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.|
+|project_relations_export_download_limit|integer \| null|false|none|Maximum number of project relations export downloads per minute per user for each project during direct transfer migrations. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.|
+|group_relations_export_limit|integer \| null|false|none|Maximum number of group relations export requests per minute per user for each group during direct transfer migrations. Default: `6`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.|
+|group_relations_export_download_limit|integer \| null|false|none|Maximum number of group relations export downloads per minute per user for each group during direct transfer migrations. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.|
 |bulk_import_enabled|boolean \| null|false|none|If `true`, enables migrating GitLab groups and projects by direct transfer.|
 |bulk_import_max_download_file|integer \| null|false|none|Maximum download file size, in MB, when importing from source GitLab instances by direct transfer.|
 |autocomplete_users_limit|integer \| null|false|none|Maximum number of authenticated requests per minute per user to the users autocomplete endpoint.|
@@ -224741,11 +225661,11 @@ http, oauth2, apiKey
 |ci_runner_manager_creation_ceiling|integer \| null|false|none|Number of runner managers for each runner at which the runner cannot create new runner managers. Existing runner managers continue to work. Applies only when the `log_runner_manager_cap` or `enforce_runner_manager_ceiling` feature flag is enabled. Default: `150000`. To disable the limit, set to `0`.|
 |ci_stale_runner_managers_cleanup_deletions_per_run|integer \| null|false|none|Maximum number of stale runner managers deleted by each run of the stale runner manager cleanup. Applies only when the `stale_runner_manager_cleanup_by_partition` feature flag is enabled. Default: `500`.|
 |ci_stale_runner_managers_cleanup_backlog_limit|integer \| null|false|none|Number of deleted runner manager records still waiting for background cleanup, above which the stale runner manager cleanup stops deleting. If higher than `ci_runner_manager_cap_cleanup_backlog_limit`, that value is used instead. Applies only when the `stale_runner_manager_cleanup_by_partition` feature flag is enabled. Default: `5000`.|
-|ci_lint_api_require_authentication|boolean \| null|false|none|If `true`, `GET /projects/:id/ci/lint` requires authentication, including for public projects.|
+|ci_lint_api_require_authentication|boolean \| null|false|none|If `true`, `GET /projects/:id/ci/lint` requires authentication, including for public projects. Default is `false`.|
 |release_evidence_max_size_bytes|integer \| null|false|none|Maximum size of a release evidence, in bytes. Applies only when the `release_evidence_size_limit` feature flag is enabled. Default: `2097152` (2 MiB). To disable the limit, set to `0`.|
 |ci_job_live_trace_enabled|boolean \| null|false|none|If `true`, turns on incremental logging for job logs. Archived job logs are incrementally uploaded to object storage, which must be configured.|
-|ci_job_trace_update_interval|integer \| null|false|none|Job log update interval when the job log is not open, in seconds.|
-|ci_job_trace_update_interval_when_being_watched|integer \| null|false|none|Job log update interval when the job log is open, in seconds.|
+|ci_job_trace_update_interval|integer \| null|false|none|Job log update interval when the job log is not open, in seconds. Must be between `3` and `3600`. Default is `60`.|
+|ci_job_trace_update_interval_when_being_watched|integer \| null|false|none|Job log update interval when the job log is open, in seconds. Must be between `3` and `3600` and less than or equal to `ci_job_trace_update_interval`. Default is `3`.|
 |git_push_pipeline_limit|integer \| null|false|none|Maximum number of branch or tag pipelines that can be triggered by a single Git push. Set to `0` to disable the limit.|
 |security_policy_global_group_approvers_enabled|boolean \| null|false|none|If `true`, looks up merge request approval policy approval groups globally. If `false`, looks them up within project hierarchies.|
 |slack_app_enabled|boolean \| null|false|none|If `true`, enables the GitLab for Slack app. Requires `slack_app_id`, `slack_app_secret`, `slack_app_signing_secret`, and `slack_app_verification_token`.|
@@ -224754,37 +225674,37 @@ http, oauth2, apiKey
 |slack_app_signing_secret|string \| null|false|none|Signing secret of the GitLab for Slack app. Used for authenticating API requests from the app.|
 |slack_app_verification_token|string \| null|false|none|Verification token of the GitLab for Slack app. This method of authentication is deprecated by Slack and used only for authenticating slash commands from the app.|
 |namespace_aggregation_schedule_lease_duration_in_seconds|integer \| null|false|none|Maximum duration, in seconds, between refreshes of namespace statistics. Defaults to `300`.|
-|project_jobs_api_rate_limit|integer \| null|false|none|Maximum authenticated requests to /project/:id/jobs per minute|
+|project_jobs_api_rate_limit|integer \| null|false|none|Maximum authenticated requests to /project/:id/jobs per minute. Default: `600`.|
 |security_txt_content|string \| null|false|none|Public security contact information made available at https://gitlab.example.com/.well-known/security.txt.|
 |downstream_pipeline_trigger_limit_per_project_user_sha|integer \| null|false|none|[Maximum number of downstream pipelines](https://docs.gitlab.com/administration/cicd/limits/#limit-downstream-pipeline-trigger-rate) that can be triggered per minute for a given project, user, and commit. Default: `0` (no restriction).|
-|pipeline_cancel_limit_per_user_project|integer \| null|false|none|Maximum number of pipeline cancellations allowed per minute for a given project.|
-|pipeline_retry_limit_per_user_project|integer \| null|false|none|Maximum number of pipeline retries allowed per minute for a given project.|
-|runner_job_list_completed_statuses_limit_per_user|integer \| null|false|none|Maximum number of runner job list requests filtered by a completed status allowed per minute for a given user.|
+|pipeline_cancel_limit_per_user_project|integer \| null|false|none|Maximum number of pipeline cancellations allowed per minute for a given project. Default: `120`.|
+|pipeline_retry_limit_per_user_project|integer \| null|false|none|Maximum number of pipeline retries allowed per minute for a given project. Default: `200`.|
+|runner_job_list_completed_statuses_limit_per_user|integer \| null|false|none|Maximum number of runner job list requests filtered by a completed status allowed per minute for a given user. Default: `330`.|
 |runner_job_list_project_filtered_limit_per_user|integer \| null|false|none|Maximum number of runner job list requests filtered to the user's projects allowed per minute for a given user.|
 |runner_manager_list_limit_per_user|integer \| null|false|none|Maximum number of runner managers a user can list per minute.|
 |pipeline_schedule_management_limit_per_user|integer \| null|false|none|Maximum number of pipeline schedule changes (create, update, delete, take ownership) allowed per minute for a given user.|
 |pipeline_trigger_management_limit_per_user|integer \| null|false|none|Maximum number of pipeline trigger token changes (create, update, delete) allowed per minute for a given user.|
-|job_retry_limit_per_user_project|integer \| null|false|none|Maximum number of job retries allowed per minute for a given project.|
-|job_play_limit_per_user_project|integer \| null|false|none|Maximum number of manual job runs allowed per minute for a given project.|
-|pipeline_delete_limit_per_user_project|integer \| null|false|none|Maximum number of pipeline deletions allowed per minute for a given project.|
-|job_erase_limit_per_user_project|integer \| null|false|none|Maximum number of job erasures allowed per minute for a given project.|
-|job_cancel_limit_per_user_project|integer \| null|false|none|Maximum number of job cancellations allowed per minute for a given project.|
-|ai_action_api_rate_limit|integer \| null|false|none|Maximum requests a user can make per 8 hours to aiAction endpoint|
+|job_retry_limit_per_user_project|integer \| null|false|none|Maximum number of job retries allowed per minute for a given project. Default: `320`.|
+|job_play_limit_per_user_project|integer \| null|false|none|Maximum number of manual job runs allowed per minute for a given project. Default: `200`.|
+|pipeline_delete_limit_per_user_project|integer \| null|false|none|Maximum number of pipeline deletions allowed per minute for a given project. Default: `400`.|
+|job_erase_limit_per_user_project|integer \| null|false|none|Maximum number of job erasures allowed per minute for a given project. Default: `400`.|
+|job_cancel_limit_per_user_project|integer \| null|false|none|Maximum number of job cancellations allowed per minute for a given project. Default: `150`.|
+|ai_action_api_rate_limit|integer \| null|false|none|Maximum requests a user can make per 8 hours to aiAction endpoint. Default: `160`. Must be greater than `0`.|
 |code_suggestions_api_rate_limit|integer \| null|false|none|Maximum number of requests a user can make to the code suggestions endpoint per minute.|
 |resource_usage_limits|object \| null|false|none|Definition for resource usage limits enforced in Sidekiq workers.|
-|code_dropdown_custom_clients|[object]|false|none|Custom "Open with" clients shown in the project Code dropdown list|
-|vscode_extension_marketplace|object \| null|false|none|Settings for VS Code Extension Marketplace.|
+|code_dropdown_custom_clients|[object]|false|none|Custom "Open with" clients shown in the project Code dropdown list. Each entry has a `name` and at least one of `ssh_url_template` or `http_url_template`, each containing `{url}` exactly once.|
+|vscode_extension_marketplace|object \| null|false|none|Settings for VS Code Extension Marketplace. Used by the Web IDE and workspaces.|
 |enable_language_server_restrictions|boolean \| null|false|none|Enables enforcing language server restrictions|
 |minimum_language_server_version|string \| null|false|none|Minimum language server version to accept requests from.|
 |terraform_state_encryption_enabled|boolean \| null|false|none|Enable encryption for Terraform state files|
 |logging_field_schema_version|integer \| null|false|none|Logging field schema version (v0, v1, …). Cannot be downgraded.|
 |logging_field_dual_emit_target|integer \| null|false|none|Version to dual-emit alongside schema_version. Must be strictly greater than schema_version, or omit/null to disable.|
-|rsa_key_restriction|integer \| null|false|none|Restrictions on the complexity of uploaded RSA keys. A value of -1 disables all RSA keys.|
-|dsa_key_restriction|integer \| null|false|none|Restrictions on the complexity of uploaded DSA keys. A value of -1 disables all DSA keys.|
-|ecdsa_key_restriction|integer \| null|false|none|Restrictions on the complexity of uploaded ECDSA keys. A value of -1 disables all ECDSA keys.|
-|ed25519_key_restriction|integer \| null|false|none|Restrictions on the complexity of uploaded ED25519 keys. A value of -1 disables all ED25519 keys.|
-|ecdsa_sk_key_restriction|integer \| null|false|none|Restrictions on the complexity of uploaded ECDSA_SK keys. A value of -1 disables all ECDSA_SK keys.|
-|ed25519_sk_key_restriction|integer \| null|false|none|Restrictions on the complexity of uploaded ED25519_SK keys. A value of -1 disables all ED25519_SK keys.|
+|rsa_key_restriction|integer \| null|false|none|Minimum allowed size of uploaded RSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all RSA keys. Default is `0` (no restriction).|
+|dsa_key_restriction|integer \| null|false|none|Minimum allowed size of uploaded DSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all DSA keys. Default is `0` (no restriction).|
+|ecdsa_key_restriction|integer \| null|false|none|Minimum allowed size of uploaded ECDSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ECDSA keys. Default is `0` (no restriction).|
+|ed25519_key_restriction|integer \| null|false|none|Minimum allowed size of uploaded ED25519 keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ED25519 keys. Default is `0` (no restriction).|
+|ecdsa_sk_key_restriction|integer \| null|false|none|Minimum allowed size of uploaded ECDSA_SK keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ECDSA_SK keys. Default is `0` (no restriction).|
+|ed25519_sk_key_restriction|integer \| null|false|none|Minimum allowed size of uploaded ED25519_SK keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ED25519_SK keys. Default is `0` (no restriction).|
 |allow_account_deletion|string \| null|false|none|If `true`, allows users to delete their accounts. Premium and Ultimate only.|
 |allow_application_default_credentials_for_offline_transfer|string \| null|false|none|If `true`, allows Google Cloud Application Default Credentials for offline transfer. Even when enabled, only administrators can use these credentials, and the bucket name must start with `gitlab-offline-transfer-`. Has no effect on GitLab.com. For more information, see [Allow application default credentials for offline transfer](https://docs.gitlab.com/administration/settings/import_and_export_settings/#allow-application-default-credentials-for-offline-transfer). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/602489) in GitLab 19.3.|
 |allow_bypass_placeholder_confirmation|string \| null|false|none|If `true`, skips confirmation when administrators reassign placeholder users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.0.|
@@ -224798,6 +225718,7 @@ http, oauth2, apiKey
 |auto_accept_awarded_achievements|string \| null|false|none|If `true`, newly awarded achievements are accepted automatically and appear on user profiles immediately. Does not affect achievements awarded before this setting is enabled. Recipients can still hide any achievement. Default value: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/607750) in GitLab 19.4.|
 |auto_devops_domain|string \| null|false|none|Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages.|
 |auto_devops_enabled|string \| null|false|none|If `true`, enables Auto DevOps for projects by default. Auto DevOps automatically builds, tests, and deploys applications based on a predefined CI/CD configuration.|
+|block_jwt_for_reclaimed_paths|string \| null|false|none|If `true`, blocks CI/CD JWT and OIDC token generation for projects that have reclaimed a previously used namespace path. Default is `true`. Disable only if you accept the authentication bypass risk of namespace path reclamation. GitLab Self-Managed and GitLab Dedicated only.|
 |bulk_import_max_download_file_size|string \| null|false|none|Maximum download file size when importing from source GitLab instances by direct transfer.|
 |can_create_group|string \| null|false|none|If `true`, users can create top-level groups. Defaults to `true`.|
 |ci_delete_pipelines_in_seconds_limit_human_readable|string \| null|false|none|Maximum value that is allowed for configuring pipeline retention. Defaults to `1 year`.|
@@ -224805,11 +225726,13 @@ http, oauth2, apiKey
 |ci_partitions_in_seconds_limit|string \| null|false|none|Time window, in seconds, before new CI partitions are created and the system switches to the next set of partitions. Must be between 1 month and 6 months. Default is 1 month (`2592000`). Write-only. Not returned in GET responses. Deprecated. Use `ci_partitions_in_seconds_limit_human_readable` instead. Scheduled for removal in API v5.|
 |ci_partitions_in_seconds_limit_human_readable|string \| null|false|none|Time window before new CI partitions are created and the system switches to the next set of partitions. Must be between `1 month` and `6 months`. Defaults to `1 month`.|
 |commit_email_hostname|string \| null|false|none|Custom hostname (for private commit emails).|
+|concurrent_relation_export_limit|string \| null|false|none|Maximum number of simultaneous project file exports to process. Default: `25`. Behind a feature flag named `limit_concurrent_project_exports`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4.|
 |container_expiration_policies_enable_historic_entries|string \| null|false|none|If `true`, enables [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#enable-the-cleanup-policy) for all projects.|
 |container_registry_cleanup_tags_service_max_list_size|string \| null|false|none|Maximum number of tags that can be deleted in a single execution of [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).|
 |container_registry_delete_tags_service_timeout|string \| null|false|none|Maximum time, in seconds, that the cleanup process can take to delete a batch of tags for [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).|
 |container_registry_expiration_policies_caching|string \| null|false|none|If `true`, enables caching during the execution of [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).|
 |container_registry_expiration_policies_worker_capacity|string \| null|false|none|Number of workers for [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).|
+|create_organization_api_limit|string \| null|false|none|Maximum number of requests every minute for each user to `POST /organizations`. Default: `10`. Set to `0` to disable the rate limit.|
 |custom_http_clone_url_root|string \| null|false|none|Set a custom Git clone URL for HTTP(S).|
 |default_branch_name|string \| null|false|none|[Set the initial branch name](https://docs.gitlab.com/user/project/repository/branches/default/#change-the-default-branch-name-for-new-projects-in-an-instance) for all projects in an instance.|
 |default_dark_syntax_highlighting_theme|string \| null|false|none|Default dark mode syntax highlighting theme for users who are new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16).|
@@ -224847,17 +225770,31 @@ http, oauth2, apiKey
 |gitlab_product_usage_data_enabled|string \| null|false|none|If `true`, product usage data collection is enabled. When the `GITLAB_PRODUCT_USAGE_DATA_ENABLED` environment variable is set, the API returns the effective value from the environment variable.|
 |gitlab_shell_operation_limit|string \| null|false|none|Maximum number of Git operations per minute a user can perform. Default: `600`.|
 |gitlab_shell_operation_per_actor_limit|integer \| null|false|none|Maximum number of Git operations one user or deploy key can perform every minute across all repositories. Default: `6000`. Set to `0` to disable the limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/267274) in GitLab 19.6. This attribute is in beta and might be changed or removed without notice.|
+|group_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /groups/:id`. Default: `400`. Set to `0` to disable the rate limit.|
+|group_archive_unarchive_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `POST /groups/:id/archive` and `POST /groups/:id/unarchive`. Default: `60`. Set to `0` to disable the rate limit.|
+|group_create_limit|string \| null|false|none|Maximum number of requests every day for each user to `POST /groups`. Default: `200`. Set to `0` to disable the rate limit. Behind a feature flag named `namespace_create_rate_limit`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245318) in GitLab 19.3.|
 |group_hooks_create_limit|string \| null|false|none|Maximum number of group webhooks a user can create per minute for a given group. Default: `10`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/635281) in GitLab 19.6.|
+|group_download_export_limit|string \| null|false|none|Maximum number of group export downloads every minute for each user and group. Default: `1`. Set to `0` to disable the rate limit.|
+|group_export_limit|string \| null|false|none|Maximum number of group exports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.|
+|group_import_limit|string \| null|false|none|Maximum number of group imports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.|
+|group_invited_groups_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /groups/:id/invited_groups`. Default: `60`. Set to `0` to disable the rate limit.|
+|group_projects_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /groups/:id/projects`. Default: `600`. Set to `0` to disable the rate limit.|
+|group_shared_groups_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /groups/:id/groups/shared`. Default: `60`. Set to `0` to disable the rate limit.|
+|groups_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /groups`. Default: `200`. Set to `0` to disable the rate limit.|
 |hashed_storage_enabled|string \| null|false|none|Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (Always enabled in GitLab versions 13.0 and later, configuration is scheduled for removal in 14.0)|
+|helm_max_packages_count|string \| null|false|none|Maximum number of Helm packages that can be listed for each channel. Must be at least `1`. Default is `1000`.|
 |hide_third_party_offers|string \| null|false|none|If `true`, hides offers from third parties in GitLab.|
+|import_jobs_concurrency_limit|string \| null|false|none|Maximum number of concurrently running jobs for each import worker type: project and group file-based import, direct transfer, and the GitHub, Bitbucket Cloud, Bitbucket Server, and Jira importer stages. Applied independently for each worker type. Default is `100`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250280) in GitLab 19.1.|
 |inactive_projects_delete_after_months|string \| null|false|none|If `delete_inactive_projects` is `true`, the time (in months) to wait before deleting dormant projects. Default is `2`.|
 |inactive_projects_min_size_mb|string \| null|false|none|If `delete_inactive_projects` is `true`, the minimum repository size, in MB, for projects to be checked for inactivity. Default is `0`.|
 |inactive_projects_send_warning_email_after_months|string \| null|false|none|If `delete_inactive_projects` is `true`, sets the time (in months) to wait before emailing Maintainers that the project is scheduled to be deleted because it is dormant. Default is `1`.|
 |inactive_resource_access_tokens_delete_after_days|string \| null|false|none|Specifies retention period for inactive project and group access tokens. Default is `30`.|
 |include_optional_metrics_in_service_ping|string \| null|false|none|If `true`, enables optional metrics in Service Ping.|
+|issuable_csv_import_limit|string \| null|false|none|Maximum number of CSV imports of issues, work items, and requirements every hour for each user. Default: `20`. Set to `0` to disable the rate limit. Behind a feature flag named `issuable_csv_import_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
 |keep_latest_artifact|string \| null|false|none|If `true`, prevents the deletion of the artifacts from the most recent successful jobs, regardless of the expiry time. Defaults to `true`.|
 |kroki_diagram_proxy_enabled|string \| null|false|none|Enable Kroki diagram proxy. Default is `false`.|
 |kroki_formats|string \| null|false|none|Additional formats supported by the Kroki instance. Possible values are `true` or `false` for formats `bpmn`, `blockdiag`, `excalidraw`, and `mermaid` in the format `<format>: true` or `<format>: false`.|
+|label_delete_limit|string \| null|false|none|Maximum number of project and group label deletions every minute for each user. Default: `500`. Set to `0` to disable the rate limit. Behind a feature flag named `label_delete_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
 |lock_require_sha_for_merge|string \| null|false|none|If `true`, enforces the `require_sha_for_merge` setting for all groups on the instance. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/236732) in GitLab 19.2.|
 |max_http_decompressed_size|string \| null|false|none|Maximum allowed size in MiB for Gzip-compressed HTTP responses from outbound requests after decompression. Set to `0` for unlimited.|
 |max_http_response_csv_structural_chars|string \| null|false|none|Maximum allowed object count in CSV HTTP responses from outbound requests. Count is an estimate based on the number of `,`, `;`, `\t`, and `\n` occurrences in the response. Introduced in GitLab 18.4.|
@@ -224868,18 +225805,36 @@ http, oauth2, apiKey
 |max_login_attempts|string \| null|false|none|Maximum number of sign-in attempts before locking out the user.|
 |max_yaml_depth|string \| null|false|none|Maximum depth of nested CI/CD configuration added with the [`include` keyword](https://docs.gitlab.com/ci/yaml/#include). Default: `100`.|
 |max_yaml_size_bytes|string \| null|false|none|Maximum size in bytes of a single CI/CD configuration file. Default: `2097152`.|
+|members_delete_limit|string \| null|false|none|Maximum number of member deletions every minute for each user in each project or group. Default: `60`. Set to `0` to disable the rate limit.|
 |minimum_password_length|string \| null|false|none|Indicates whether passwords require a minimum length. Premium and Ultimate only.|
 |mirror_available|string \| null|false|none|If `true`, project Maintainers can configure repository mirroring. If `false`, only administrators can configure repository mirroring.|
 |ml_experiment_tracking_run_retention_days|integer \| null|false|none|Number of days to keep model experiment runs that no model version uses, and experiments that have no runs left. Deletion starts no earlier than one period after retention is turned on. `0` keeps all runs and experiments. Maximum: `36500`. Default: `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/270962) in GitLab 19.7.|
+|notes_create_limit|string \| null|false|none|Maximum number of note creation requests every minute for each user. Default: `300`. Set to `0` to disable the rate limit.|
+|notes_create_limit_allowlist_raw|string \| null|false|none|Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `notes_create_limit` rate limit. Maximum: 100 usernames.|
 |notify_on_unknown_sign_in|string \| null|false|none|If `true`, sends a notification when a sign-in from an unknown IP address occurs.|
+|nuget_skip_metadata_url_validation|string \| null|false|none|If `true`, skips metadata URL validation for NuGet packages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145887) in GitLab 17.0.|
 |offline_transfer_exports_enabled|string \| null|false|none|If `true`, enables exporting GitLab groups and projects by offline transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971) in GitLab 19.3.|
 |offline_transfer_imports_enabled|string \| null|false|none|If `true`, enables importing GitLab groups and projects by offline transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/588971) in GitLab 19.3.|
 |package_registry_allow_anyone_to_pull_option|string \| null|false|none|If `true`, makes the option to [allow anyone to pull from the package registry](https://docs.gitlab.com/user/packages/package_registry/#allow-anyone-to-pull-from-package-registry) visible and changeable in project settings.|
 |package_registry_cleanup_policies_worker_capacity|string \| null|false|none|Number of workers assigned to the packages cleanup policies.|
+|pages_deployments_api_limit|string \| null|false|none|Maximum number of times every minute the GraphQL `pagesDeployments` field can be resolved for each user. Each project a query resolves the field for counts once. Unauthenticated requests are limited for each IP address. Default: `2000`. Set to `0` to disable the rate limit. Behind a feature flag named `pages_deployments_api_rate_limit`, disabled by default. While the flag is disabled, requests over the limit are logged but not blocked. This parameter is in beta and might be changed or removed without notice.|
 |pages_domain_verification_enabled|string \| null|false|none|If `true`, requires users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled.|
 |pages_unique_domain_default_enabled|string \| null|false|none|If `true`, enables unique domains by default for Pages sites to avoid cookie sharing between sites under a given namespace. Defaults to `true`.|
+|pg_ash_sample_interval_seconds|string \| null|false|none|Seconds between active session history samples. Must be between `1` and `60`. Default is `1`.|
+|pg_ash_sampling_enabled|string \| null|false|none|If `true`, samples active session history. Has no effect until pg_ash is installed. Default is `false`.|
 |plantuml_diagram_proxy_enabled|string \| null|false|none|Enable PlantUML diagram proxy. Default is `false`.|
+|project_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /projects/:id`. Default: `400`. Set to `0` to disable the rate limit.|
+|project_create_limit|string \| null|false|none|Maximum number of requests every day for each user to `POST /projects`. Default: `200`. Set to `0` to disable the rate limit. Behind a feature flag named `namespace_create_rate_limit`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245318) in GitLab 19.3.|
 |project_hooks_create_limit|string \| null|false|none|Maximum number of project webhooks a user can create per minute for a given project. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605597) in GitLab 19.6.|
+|project_download_export_limit|string \| null|false|none|Maximum number of project export downloads every minute for each user and project. Default: `1`. Set to `0` to disable the rate limit.|
+|project_export_limit|string \| null|false|none|Maximum number of project exports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.|
+|project_import_limit|string \| null|false|none|Maximum number of project imports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.|
+|project_invited_groups_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /projects/:id/invited_groups`. Default: `60`. Set to `0` to disable the rate limit.|
+|project_members_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /projects/:id/members/all` and `GET /groups/:id/members/all`. Default: `200`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578527) in GitLab 18.6.|
+|project_repositories_blame_limit|string \| null|false|none|Maximum number of authenticated requests every minute to the file blame API (`GET /projects/:id/repository/files/:file_path/blame`) and the GraphQL `blame` field, for each user and project. Default: `400`. Set to `0` to disable the rate limit.|
+|project_repositories_blame_unauthenticated_limit|string \| null|false|none|Maximum number of unauthenticated requests every minute to the file blame API (`GET /projects/:id/repository/files/:file_path/blame`) and the GraphQL `blame` field, for each IP address. Default: `400`. Set to `0` to disable the rate limit.|
+|project_repositories_blobs_batch_limit|string \| null|false|none|Maximum number of requests every minute for each user and project to `POST /projects/:id/repository/blobs/batch`. Default: `5`. Set to `0` to disable the rate limit. The endpoint is behind a feature flag named `repository_blobs_batch_api`, disabled by default.|
+|projects_api_limit|string \| null|false|none|Maximum number of authenticated requests every 10 minutes for each user to `GET /projects`. Default: `2000`. Set to `0` to disable the rate limit.|
 |projects_api_rate_limit_unauthenticated|string \| null|false|none|Maximum number of requests per 10 minutes per IP address for unauthenticated requests to the [list all projects API](https://docs.gitlab.com/api/projects/#list-all-projects). Default: `400`. To disable throttling, set to `0`.|
 |protected_ci_variables|string \| null|false|none|If `true`, CI/CD variables are protected by default.|
 |rate_limiting_response_text|string \| null|false|none|When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. `Retry later` is sent if this is blank.|
@@ -224892,8 +225847,9 @@ http, oauth2, apiKey
 |runner_jobs_endpoints_api_limit|string \| null|false|none|Maximum number of requests per minute per job token for requests to the `/jobs/*` runner jobs API endpoints. Default: `200`. To disable throttling, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537) in GitLab 18.5.|
 |runner_jobs_patch_trace_api_limit|string \| null|false|none|Maximum number of requests per minute per runner token for requests to the `PATCH /jobs/:id/trace` runner jobs API endpoint. Default: 2000. To disable throttling, set to 0. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537) in GitLab 18.5.|
 |runner_jobs_request_api_limit|string \| null|false|none|Maximum number of requests per minute per runner token for requests to the `/jobs/request` runner jobs API endpoint. Default: `2000`. To disable throttling, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462537) in GitLab 18.5.|
-|runner_manager_creation_limit|string \| null|false|none|Maximum number of runner managers each runner can create every 10 minutes. Applies only when the `log_runner_manager_creation_limit` or `enforce_runner_manager_creation_limit` feature flag is enabled. Default: `1000`. To disable the limit, set to `0`.|
+|runner_manager_creation_limit|string \| null|false|none|Maximum number of runner managers each runner can create every 10 minutes. Applies only when the `log_runner_manager_creation_limit` or `enforce_runner_manager_creation_limit` feature flag is enabled. Default: `1000`. To disable the limit, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/267108) in GitLab 19.6.|
 |search_rate_limit|string \| null|false|none|Maximum number of requests per minute for performing a search while authenticated. Default: `30`. To disable throttling, set to `0`.|
+|search_rate_limit_allowlist_raw|string \| null|false|none|Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `search_rate_limit` rate limit. Maximum: 100 usernames.|
 |search_rate_limit_unauthenticated|string \| null|false|none|Maximum number of requests per minute for performing a search while unauthenticated. Default: `10`. To disable throttling, set to `0`.|
 |sidekiq_job_limiter_compression_threshold_bytes|string \| null|false|none|Threshold in bytes at which Sidekiq jobs are compressed before being stored in Redis. Default: 100,000 bytes (100 KB).|
 |sidekiq_job_limiter_limit_bytes|string \| null|false|none|Threshold in bytes at which Sidekiq jobs are rejected. Default: 0 bytes (doesn't reject any job).|
@@ -224908,13 +225864,23 @@ http, oauth2, apiKey
 |static_objects_external_storage_auth_token|string \| null|false|none|Authentication token for the external storage linked in `static_objects_external_storage_url`.|
 |static_objects_external_storage_url|string \| null|false|none|URL to an external storage for repository static objects.|
 |system_hooks_create_limit|string \| null|false|none|Maximum number of system hooks a user can create per minute. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/635281) in GitLab 19.6.|
+|tags_create_limit|string \| null|false|none|Maximum number of tag creation requests allowed every 30 minutes for each project. Applies to the REST API endpoint for creating a tag, the GraphQL `tagCreate` mutation, tag creation in the UI, and the `/tag` quick action. Default: `100`. Set to `0` to disable the rate limit.|
 |terms|string \| null|false|none|(**Required by**: `enforce_terms`) Markdown content for the ToS.|
 |throttle_authenticated_api_enabled|string \| null|false|none|If `true`, enables the authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). Requires `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`.|
 |throttle_authenticated_api_period_in_seconds|string \| null|false|none|Rate limit period in seconds.|
 |throttle_authenticated_api_requests_per_period|string \| null|false|none|Maximum requests per period per user.|
+|throttle_authenticated_deprecated_api_enabled|string \| null|false|none|If `true`, enforces the authenticated request rate limit for deprecated API endpoints. Default value: `false`.|
+|throttle_authenticated_deprecated_api_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_authenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.|
+|throttle_authenticated_deprecated_api_requests_per_period|string \| null|false|none|Maximum requests in each period for each user. `throttle_authenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.|
+|throttle_authenticated_files_api_enabled|string \| null|false|none|If `true`, enforces the authenticated request rate limit for the Repository files API. Default value: `false`.|
+|throttle_authenticated_files_api_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_authenticated_files_api_enabled` must be `true`. Default value: `15`.|
+|throttle_authenticated_files_api_requests_per_period|string \| null|false|none|Maximum requests in each period for each user. `throttle_authenticated_files_api_enabled` must be `true`. Default value: `500`.|
 |throttle_authenticated_git_http_enabled|string \| null|false|none|If `true`, enforces the authenticated Git HTTP request rate limit. Default value: `false`.|
 |throttle_authenticated_git_http_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`.|
 |throttle_authenticated_git_http_requests_per_period|string \| null|false|none|Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`.|
+|throttle_authenticated_git_lfs_enabled|string \| null|false|none|If `true`, enforces the authenticated Git LFS request rate limit. Default value: `false`.|
+|throttle_authenticated_git_lfs_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_authenticated_git_lfs_enabled` must be `true`. Default value: `60`.|
+|throttle_authenticated_git_lfs_requests_per_period|string \| null|false|none|Maximum requests in each period for each user. `throttle_authenticated_git_lfs_enabled` must be `true`. Default value: `1000`.|
 |throttle_authenticated_mcp_enabled|string \| null|false|none|If `true`, enforces the rate limit on requests to the MCP Server endpoint, `/api/v4/mcp`, for any HTTP method. Does not apply to other MCP endpoints. Default value: `false`.|
 |throttle_authenticated_mcp_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_authenticated_mcp_enabled` must be `true`. Default value: `60`.|
 |throttle_authenticated_mcp_requests_per_period|string \| null|false|none|Maximum requests per period per user. `throttle_authenticated_mcp_enabled` must be `true`. Default value: `600`.|
@@ -224927,9 +225893,18 @@ http, oauth2, apiKey
 |throttle_authenticated_web_enabled|string \| null|false|none|If `true`, enables the authenticated web request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). Requires `throttle_authenticated_web_period_in_seconds` and `throttle_authenticated_web_requests_per_period`.|
 |throttle_authenticated_web_period_in_seconds|string \| null|false|none|Rate limit period in seconds.|
 |throttle_authenticated_web_requests_per_period|string \| null|false|none|Maximum requests per period per user.|
+|throttle_protected_paths_enabled|string \| null|false|none|If `true`, enforces the rate limit on protected paths. Default value: `false`.|
+|throttle_protected_paths_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_protected_paths_enabled` must be `true`. Default value: `60`.|
+|throttle_protected_paths_requests_per_period|string \| null|false|none|Maximum requests in each period for each IP address. `throttle_protected_paths_enabled` must be `true`. Default value: `10`.|
 |throttle_unauthenticated_api_enabled|string \| null|false|none|If `true`, enables the unauthenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). Requires `throttle_unauthenticated_api_period_in_seconds` and `throttle_unauthenticated_api_requests_per_period`.|
 |throttle_unauthenticated_api_period_in_seconds|string \| null|false|none|Rate limit period in seconds.|
 |throttle_unauthenticated_api_requests_per_period|string \| null|false|none|Maximum requests per period per IP.|
+|throttle_unauthenticated_deprecated_api_enabled|string \| null|false|none|If `true`, enforces the unauthenticated request rate limit for deprecated API endpoints. Default value: `false`.|
+|throttle_unauthenticated_deprecated_api_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_unauthenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.|
+|throttle_unauthenticated_deprecated_api_requests_per_period|string \| null|false|none|Maximum requests in each period for each IP address. `throttle_unauthenticated_deprecated_api_enabled` must be `true`. Default value: `1800`.|
+|throttle_unauthenticated_files_api_enabled|string \| null|false|none|If `true`, enforces the unauthenticated request rate limit for the Repository files API. Default value: `false`.|
+|throttle_unauthenticated_files_api_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_unauthenticated_files_api_enabled` must be `true`. Default value: `15`.|
+|throttle_unauthenticated_files_api_requests_per_period|string \| null|false|none|Maximum requests in each period for each IP address. `throttle_unauthenticated_files_api_enabled` must be `true`. Default value: `125`.|
 |throttle_unauthenticated_enabled|string \| null|false|none|If `true`, enables the unauthenticated web request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). Requires `throttle_unauthenticated_period_in_seconds` and `throttle_unauthenticated_requests_per_period`. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/335300) in GitLab 14.3. Use `throttle_unauthenticated_web_enabled` or `throttle_unauthenticated_api_enabled` instead.|
 |throttle_unauthenticated_git_http_enabled|string \| null|false|none|If `true`, enforces the unauthenticated Git HTTP request rate limit. Default value: `false`.|
 |throttle_unauthenticated_git_http_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_unauthenticated_git_http_enabled` must be `true`. Default value: `3600`.|
@@ -224943,25 +225918,34 @@ http, oauth2, apiKey
 |throttle_unauthenticated_web_period_in_seconds|string \| null|false|none|Rate limit period in seconds.|
 |throttle_unauthenticated_web_requests_per_period|string \| null|false|none|Maximum requests per period per IP.|
 |time_tracking_limit_to_hours|string \| null|false|none|If `true`, limits display of time tracking units to hours. Default is `false`.|
+|todos_list_api_limit|string \| null|false|none|Maximum number of requests every minute for each user to `GET /todos`. Default: `300`. Set to `0` to turn off the rate limit. Behind a feature flag named `todos_list_api_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
 |top_level_group_creation_enabled|string \| null|false|none|If `true`, users can create top-level groups with the API. Defaults to `true`.|
 |unique_ips_limit_enabled|string \| null|false|none|If `true`, limits sign-ins from multiple IP addresses. Requires `unique_ips_limit_per_user` and `unique_ips_limit_time_window`.|
 |unique_ips_limit_per_user|string \| null|false|none|Maximum number of IPs per user.|
 |unique_ips_limit_time_window|string \| null|false|none|How many seconds an IP is counted towards the limit.|
 |update_runner_versions_enabled|string \| null|false|none|If `true`, fetches GitLab Runner release version data from GitLab.com. For more information, see how to [determine which runners need to be upgraded](https://docs.gitlab.com/ci/runners/runners_scope/#determine-which-runners-need-to-be-upgraded).|
 |use_clickhouse_for_analytics|string \| null|false|none|If `true`, enables ClickHouse as a data source for analytics reports. ClickHouse must be configured for this setting to take effect. Premium and Ultimate only.|
+|user_contributed_projects_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/contributed_projects`. Default: `100`. Set to `0` to disable the rate limit.|
 |user_default_external|string \| null|false|none|If `true`, newly registered users are external by default.|
 |user_default_internal_regex|string \| null|false|none|Specify an email address regex pattern to identify default internal users.|
 |user_defaults_to_private_profile|string \| null|false|none|If `true`, newly created users have a private profile by default. Defaults to `false`.|
 |user_oauth_applications|string \| null|false|none|If `true`, allows users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications.|
+|user_projects_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/projects`. Default: `300`. Set to `0` to disable the rate limit.|
 |user_show_add_ssh_key_message|string \| null|false|none|When set to `false` disable the `You won't be able to pull or push repositories via SSH until you add an SSH key to your profile` warning shown to users with no uploaded SSH key.|
+|user_starred_projects_api_limit|string \| null|false|none|Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/starred_projects`. Default: `100`. Set to `0` to disable the rate limit.|
 |users_api_limit_followers|string \| null|false|none|Maximum number of requests per minute, per user or IP address. Default: 100. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
 |users_api_limit_following|string \| null|false|none|Maximum number of requests per minute, per user or IP address. Default: 100. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
 |users_api_limit_gpg_key|string \| null|false|none|Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
 |users_api_limit_gpg_keys|string \| null|false|none|Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
+|users_api_limit_ssh_key|string \| null|false|none|Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
+|users_api_limit_ssh_keys|string \| null|false|none|Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
 |users_api_limit_status|string \| null|false|none|Maximum number of requests per minute, per user or IP address. Default: 240. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.|
+|users_get_by_id_limit_allowlist_raw|string \| null|false|none|Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `users_get_by_id_limit` rate limit. Maximum: 100 usernames.|
 |version_check_enabled|string \| null|false|none|If `true`, GitLab informs you when an update is available.|
 |web_hook_event_resend_limit|string \| null|false|none|Maximum number of webhook event resend requests per minute, per user, for a given project or group. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3.|
 |web_hook_test_limit|string \| null|false|none|Maximum number of webhook test requests per minute, per user, for a given project, group, or organization. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3.|
+|wiki_read_request_limit_unauthenticated|string \| null|false|none|Maximum number of requests every minute from unauthenticated users to read a project or group wiki. Applies to the wiki pages in the UI and to the REST API endpoints that list and retrieve wiki pages. Default: `500`. Set to `0` to turn off the rate limit. Behind a feature flag named `wiki_read_unauthenticated_rate_limit_enforce`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
+|work_item_hierarchy_add_children_limit|string \| null|false|none|Maximum number of child items each user can add to work items or epics every minute. Applies to the `workItemHierarchyAddChildrenItems` GraphQL mutation, `childrenIds` in the `workItemUpdate` GraphQL mutation, the `/add_child` quick action, and the REST API endpoints for assigning an issue to an epic and assigning a child epic. Default: `300`. Set to `0` to disable the rate limit. Behind a feature flag named `work_item_hierarchy_add_children_limits`, disabled by default. This parameter is in beta and might be changed or removed without notice.|
 |elasticsearch_aws|boolean \| null|false|none|If `true`, enables the use of AWS hosted Elasticsearch. Premium and Ultimate only.|
 |elasticsearch_aws_access_key|string \| null|false|none|AWS IAM access key. Premium and Ultimate only.|
 |elasticsearch_aws_region|string \| null|false|none|AWS region where the Elasticsearch domain is configured. Premium and Ultimate only.|
@@ -224981,7 +225965,7 @@ http, oauth2, apiKey
 |secret_detection_token_revocation_url|string \| null|false|none|URL that GitLab sends leaked tokens to for revocation.|
 |secret_detection_revocation_token_types_url|string \| null|false|none|URL that returns the token types that can be revoked.|
 |email_additional_text|string \| null|false|none|Additional text added to the bottom of every email for legal/auditing/compliance reasons. Premium and Ultimate only.|
-|default_project_deletion_protection|boolean \| null|false|none|If `true`, enables default project deletion protection so only administrators can delete projects. GitLab Self-Managed, Premium and Ultimate only.|
+|default_project_deletion_protection|boolean \| null|false|none|If `true`, enables default project deletion protection so only administrators can delete projects. Default is `false`. GitLab Self-Managed, Premium and Ultimate only.|
 |disable_personal_access_tokens|boolean \| null|false|none|If `true`, disables personal access tokens. GitLab Self-Managed, Premium and Ultimate only. There is no method available to enable a personal access token that's been disabled through the API. This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/399233). For more information about available workarounds, see [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/399233#workaround).|
 |repository_size_limit|integer \| null|false|none|Size limit per repository (MB). Premium and Ultimate only.|
 |file_template_project_id|integer \| null|false|none|ID of the project to load custom file templates from. Premium and Ultimate only.|
@@ -224994,10 +225978,10 @@ http, oauth2, apiKey
 |pypi_package_requests_forwarding|boolean \| null|false|none|If `true`, forwards PyPI package requests to `pypi.org` when not found in the GitLab package registry. Premium and Ultimate only.|
 |rubygems_package_requests_forwarding|boolean \| null|false|none|If `true`, forwards RubyGems package requests to `rubygems.org` when not found in the GitLab package registry. Premium and Ultimate only.|
 |virtual_registries_endpoints_api_limit|integer \| null|false|none|Maximum number of requests on virtual registries endpoints, per IP address, per 15 seconds. Default: 4000. To disable limits, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521692) in GitLab 17.11.|
-|audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user to the instance audit events API.|
-|project_audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user per project to the project audit events API.|
-|group_audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user per group to the group audit events API.|
-|insights_query_limit|integer \| null|false|none|Maximum number of Insights chart queries per minute for each user or IP address, for each group or project. Default: `0`, which disables the rate limit. GitLab.com uses `60`.|
+|audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user to the instance audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248055) in GitLab 19.4.|
+|project_audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user per project to the project audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253781) in GitLab 19.5.|
+|group_audit_events_api_limit|integer \| null|false|none|Maximum number of requests per minute per user per group to the group audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255336) in GitLab 19.5.|
+|insights_query_limit|integer \| null|false|none|Maximum number of Insights chart queries per minute for each user or IP address, for each group or project. Default: `0`, which disables the rate limit. GitLab.com uses `60`. Ultimate only.|
 |dast_configuration_show_limit|integer \| null|false|none|Maximum number of DAST configuration page views per minute for each user. Default: `0`, which disables the rate limit.|
 |scanned_resources_artifacts_count_limit|integer \| null|false|none|Maximum number of DAST and API fuzzing artifacts parsed for the scanned resources CSV and GraphQL fields of a pipeline. Default: `0`, which disables the limit.|
 |scanned_resources_artifacts_size_limit_megabytes|integer \| null|false|none|Maximum total size, in megabytes, of DAST and API fuzzing artifacts parsed for the scanned resources CSV and GraphQL fields of a pipeline. Default: `0`, which disables the limit.|
@@ -225020,6 +226004,8 @@ http, oauth2, apiKey
 |credits_usage_per_minute_limit|integer \| null|false|none|Maximum number of `creditsUsage` GraphQL requests per minute per user. Default: `60`. Set to `0` to disable the rate limit.|
 |credits_usage_per_hour_limit|integer \| null|false|none|Maximum number of `creditsUsage` GraphQL requests per hour per user. Default: `300`. Set to `0` to disable the rate limit.|
 |credits_usage_per_day_limit|integer \| null|false|none|Maximum number of `creditsUsage` GraphQL requests per day per user. Default: `3000`. Set to `0` to disable the rate limit.|
+|ci_minutes_usage_projects_per_minute_limit|integer \| null|false|none|Maximum number of `ciMinutesUsage` GraphQL requests that select `projects`, per minute per user. Default: `60`. Set to `0` to disable the rate limit.|
+|ci_minutes_usage_projects_per_hour_limit|integer \| null|false|none|Maximum number of `ciMinutesUsage` GraphQL requests that select `projects`, per hour per user. Default: `600`. Set to `0` to disable the rate limit.|
 |trial_create_limit|integer \| null|false|none|Maximum number of trial creation requests per hour per user. Default: `10`. Set to `0` to disable the rate limit.|
 |hand_raise_lead_create_limit|integer \| null|false|none|Maximum number of hand-raise lead requests per hour per user. Default: `10`. Set to `0` to disable the rate limit.|
 |user_add_on_assignment_bulk_create_limit|integer \| null|false|none|Maximum number of `userAddOnAssignmentBulkCreate` GraphQL mutation calls per minute per user. Default: `0`. Set to `0` to disable the rate limit.|
@@ -225048,15 +226034,17 @@ http, oauth2, apiKey
 |duo_code_review_default_level|string \| null|false|none|Default review level for GitLab Duo Code Review Flow. One of `lite` or `standard`. Beta.|
 |security_scan_stale_after_days|integer \| null|false|none|Number of days to retain security scan data before purging. Must be between 7 and 90 days. Default: 30 days for GitLab.com, 90 days for GitLab Self-Managed. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/222998) in GitLab 18.9.|
 |duo_custom_agents_enabled|boolean \| null|false|none|If `true`, allows custom agents for this instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
-|lock_duo_custom_agents_enabled|boolean \| null|false|none|If `true`, enforces the custom agents enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
+|lock_duo_custom_agents_enabled|boolean \| null|false|none|If `true`, enforces the custom agents enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
 |duo_custom_flows_enabled|boolean \| null|false|none|If `true`, allows custom flows for this instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
-|lock_duo_custom_flows_enabled|boolean \| null|false|none|If `true`, enforces the custom flows enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
+|lock_duo_custom_flows_enabled|boolean \| null|false|none|If `true`, enforces the custom flows enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
 |duo_external_agents_enabled|boolean \| null|false|none|If `true`, allows external agents for this instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
-|lock_duo_external_agents_enabled|boolean \| null|false|none|If `true`, enforces the external agents enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
+|lock_duo_external_agents_enabled|boolean \| null|false|none|If `true`, enforces the external agents enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.|
 |duo_remote_flows_enabled|boolean \| null|false|none|If `true`, enables GitLab Duo remote flows for the instance.|
 |lock_duo_remote_flows_enabled|boolean \| null|false|none|If `true`, enforces the GitLab Duo remote flows enabled setting for all subgroups.|
-|duo_scheduled_automations_enabled|boolean \| null|false|none|If `true`, allows GitLab Duo flows to run on a schedule for the instance. Defaults to `true`.|
-|lock_duo_scheduled_automations_enabled|boolean \| null|false|none|If `true`, enforces the scheduled automations enabled setting for all groups.|
+|duo_scheduled_automations_enabled|boolean \| null|false|none|If `true`, allows GitLab Duo flows to run on a schedule for the instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/634139) in GitLab 19.6.|
+|lock_duo_scheduled_automations_enabled|boolean \| null|false|none|If `true`, enforces the scheduled automations enabled setting for all groups. Defaults to `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/634139) in GitLab 19.6.|
+|duo_code_suggestions_enabled|boolean \| null|false|none|If `true`, allows GitLab Duo Code Suggestions for the instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only.|
+|lock_duo_code_suggestions_enabled|boolean \| null|false|none|If `true`, enforces the Code Suggestions enabled setting for all groups. Always `true` when `duo_code_suggestions_enabled` is `false`. Becomes `false` when `duo_code_suggestions_enabled` changes to `true`, unless the same request sets this attribute. GitLab Self-Managed, Premium and Ultimate only.|
 |duo_workflows_default_image_registry|string \| null|false|none|Default container registry for Duo Agent Platform foundational flow images.|
 |ci_telemetry_otel_endpoint|string \| null|false|none|OTEL Collector endpoint URL for CI job telemetry.|
 |ci_job_telemetry_sampling_rate|number \| null|false|none|Sampling rate for CI job telemetry, ranging from 0.0 to 1.0.|
@@ -225071,7 +226059,14 @@ http, oauth2, apiKey
 |automatic_purchased_storage_allocation|string \| null|false|none|If `true`, permits automatic allocation of purchased storage in a namespace. Relevant only to EE distributions.|
 |check_namespace_plan|string \| null|false|none|If `true`, makes licensed EE features available to projects only if the project namespace's plan includes the feature or if the project is public. Premium and Ultimate only.|
 |delete_unconfirmed_users|string \| null|false|none|If `true`, deletes users who have not confirmed their email after `unconfirmed_users_delete_after_days` days. Default is `false`. GitLab Self-Managed, Premium and Ultimate only.|
+|dependency_firewall_policies_per_configuration_limit|string \| null|false|none|Maximum number of dependency firewall policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.|
+|dependency_scanning_sbom_scan_api_download_limit|string \| null|false|none|Maximum number of scan result downloads every hour for each project through the dependency scanning SBOM scan API. Default: `6000`. Set to `0` to disable the rate limit. Ultimate only.|
+|dependency_scanning_sbom_scan_api_upload_limit|string \| null|false|none|Maximum number of SBOM uploads every hour for each project through the dependency scanning SBOM scan API. Default: `400`. Set to `0` to disable the rate limit. Ultimate only.|
 |disable_invite_members|string \| null|false|none|If `true`, disables the invite members functionality for groups.|
+|duo_agent_platform_enabled|string \| null|false|none|If `true`, turns on GitLab Duo Agent Platform features for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only.|
+|duo_availability|string \| null|false|none|GitLab Duo availability setting for this instance. Valid values are `always_on`, `default_on`, `default_off`, and `never_on`. `default_on` and `default_off` turn GitLab Duo on and off by default. `always_on` and `never_on` lock GitLab Duo on and off for a top-level group. `never_on` also turns off experiment and beta GitLab Duo features. Sets `duo_features_enabled` and `lock_duo_features_enabled`. GitLab Self-Managed, Premium and Ultimate only.|
+|duo_token_usage_tracking_enabled|string \| null|false|none|If `true`, GitLab records the input and output tokens that each GitLab Duo Non-Agentic Chat request uses, by user and model. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/631777) in GitLab 19.6.|
+|duo_workflow_file_attachments_enabled|string \| null|false|none|If `true`, users can attach files to GitLab Duo Chat messages. Defaults to `false`. GitLab Self-Managed and GitLab Dedicated, Premium and Ultimate only. [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20481) in GitLab 19.6.|
 |elasticsearch_client_adapter|string \| null|false|none|Faraday adapter used by the Elasticsearch Ruby Client. Defaults to `typhoeus`. Possible values are `typhoeus` and `net_http`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550805) in GitLab 18.5. Premium and Ultimate only.|
 |elasticsearch_indexed_field_length_limit|string \| null|false|none|Maximum size of text fields to index by Elasticsearch. A value of `0` means no limit. This does not apply to repository and wiki indexing. Premium and Ultimate only.|
 |elasticsearch_indexed_file_size_limit_kb|string \| null|false|none|Maximum size, in KB, of repository and wiki files that are indexed by Elasticsearch. Premium and Ultimate only.|
@@ -225100,18 +226095,22 @@ http, oauth2, apiKey
 |password_number_required|string \| null|false|none|If `true`, passwords require at least one number. Premium and Ultimate only.|
 |password_symbol_required|string \| null|false|none|If `true`, passwords require at least one symbol character. Premium and Ultimate only.|
 |password_uppercase_required|string \| null|false|none|If `true`, passwords require at least one uppercase letter. Premium and Ultimate only.|
+|pipeline_execution_policies_per_configuration_limit|string \| null|false|none|Maximum number of pipeline execution policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.|
 |project_secrets_limit|string \| null|false|none|Maximum number of secrets allowed per project in Secrets Manager. Default: 100. To disable the limit, set to `0`. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/219436) in GitLab 18.9.|
 |scan_execution_policies_action_limit|string \| null|false|none|Maximum number of `actions` per scan execution policy. Defaults to `0` and cannot be set above `20`.|
+|scan_execution_policies_per_configuration_limit|string \| null|false|none|Maximum number of scan execution policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.|
 |scan_execution_policies_schedule_limit|string \| null|false|none|Maximum number of `type: schedule` rules per scan execution policy. Defaults to `0` and cannot be set above `20`.|
 |secret_push_protection_available|string \| null|false|none|If `true`, allows projects to enable secret push protection. This does not enable secret push protection. Ultimate only.|
 |security_approval_policies_limit|string \| null|false|none|Maximum number of active merge request approval policies per security policy project. Defaults to `5` and cannot be set above `20`.|
 |security_mr_report_cache_lifetime_minutes|string \| null|false|none|Number of minutes to cache security reports on merge requests (10-60). Default: 10. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/223399) in GitLab 18.10.|
 |shared_runners_minutes|string \| null|false|none|Set the maximum number of compute minutes that a group can use on instance runners per month. Premium and Ultimate only.|
+|throttle_incident_management_notification_enabled|string \| null|false|none|If `true`, enforces the inbound incident management alert rate limit for each project. Default value: `false`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.|
+|throttle_incident_management_notification_per_period|string \| null|false|none|Maximum inbound alert requests in each period for each project. `throttle_incident_management_notification_enabled` must be `true`. Default value: `3600`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.|
+|throttle_incident_management_notification_period_in_seconds|string \| null|false|none|Rate limit period in seconds. `throttle_incident_management_notification_enabled` must be `true`. Default value: `3600`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.|
 |unconfirmed_users_delete_after_days|string \| null|false|none|Specifies how many days after account creation to delete users who have not confirmed their email. Only applicable if `delete_unconfirmed_users` is set to `true`. Must be `1` or greater. Default is `7`. GitLab Self-Managed, Premium and Ultimate only.|
+|vulnerability_management_policies_per_configuration_limit|string \| null|false|none|Maximum number of vulnerability management policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.|
 |allow_possible_spam|string \| null|false|none|none|
-|import_jobs_concurrency_limit|string \| null|false|none|none|
 |deny_all_requests_except_allowed|string \| null|false|none|none|
-|block_jwt_for_reclaimed_paths|string \| null|false|none|none|
 |root_moved_permanently_redirection|string \| null|false|none|none|
 |domain_denylist_raw|string \| null|false|none|none|
 |domain_allowlist_raw|string \| null|false|none|none|
@@ -225127,42 +226126,13 @@ http, oauth2, apiKey
 |organization_cluster_agent_authorization_enabled|string \| null|false|none|none|
 |instance_token_prefix|string \| null|false|none|none|
 |pages_extra_deployments_default_expiry_seconds|string \| null|false|none|none|
-|throttle_authenticated_git_lfs_enabled|string \| null|false|none|none|
-|throttle_authenticated_git_lfs_period_in_seconds|string \| null|false|none|none|
-|throttle_authenticated_git_lfs_requests_per_period|string \| null|false|none|none|
-|throttle_authenticated_files_api_enabled|string \| null|false|none|none|
-|throttle_authenticated_files_api_period_in_seconds|string \| null|false|none|none|
-|throttle_authenticated_files_api_requests_per_period|string \| null|false|none|none|
-|throttle_authenticated_deprecated_api_enabled|string \| null|false|none|none|
-|throttle_authenticated_deprecated_api_period_in_seconds|string \| null|false|none|none|
-|throttle_authenticated_deprecated_api_requests_per_period|string \| null|false|none|none|
-|throttle_unauthenticated_files_api_enabled|string \| null|false|none|none|
-|throttle_unauthenticated_files_api_period_in_seconds|string \| null|false|none|none|
-|throttle_unauthenticated_files_api_requests_per_period|string \| null|false|none|none|
-|throttle_unauthenticated_deprecated_api_enabled|string \| null|false|none|none|
-|throttle_unauthenticated_deprecated_api_period_in_seconds|string \| null|false|none|none|
-|throttle_unauthenticated_deprecated_api_requests_per_period|string \| null|false|none|none|
-|throttle_protected_paths_enabled|string \| null|false|none|none|
-|throttle_protected_paths_period_in_seconds|string \| null|false|none|none|
-|throttle_protected_paths_requests_per_period|string \| null|false|none|none|
 |protected_paths_raw|string \| null|false|none|none|
 |protected_paths_for_get_request_raw|string \| null|false|none|none|
 |usage_ping_generation_enabled|string \| null|false|none|none|
 |usage_ping_features_enabled|string \| null|false|none|none|
-|project_create_limit|string \| null|false|none|none|
-|group_create_limit|string \| null|false|none|none|
-|notes_create_limit|string \| null|false|none|none|
-|notes_create_limit_allowlist_raw|string \| null|false|none|none|
 |merge_request_diff_download_request_limit|string \| null|false|none|none|
 |markdown_upload_limit_megabytes_per_day|string \| null|false|none|none|
-|members_delete_limit|string \| null|false|none|none|
 |milestone_destroy_limit|string \| null|false|none|none|
-|project_import_limit|string \| null|false|none|none|
-|project_export_limit|string \| null|false|none|none|
-|project_download_export_limit|string \| null|false|none|none|
-|group_import_limit|string \| null|false|none|none|
-|group_export_limit|string \| null|false|none|none|
-|group_download_export_limit|string \| null|false|none|none|
 |resource_access_token_notify_inherited|string \| null|false|none|none|
 |lock_resource_access_token_notify_inherited|string \| null|false|none|none|
 |sentry_enabled|string \| null|false|none|none|
@@ -225170,53 +226140,25 @@ http, oauth2, apiKey
 |sentry_clientside_dsn|string \| null|false|none|none|
 |sentry_environment|string \| null|false|none|none|
 |sentry_clientside_traces_sample_rate|string \| null|false|none|none|
-|search_rate_limit_allowlist_raw|string \| null|false|none|none|
-|users_get_by_id_limit_allowlist_raw|string \| null|false|none|none|
 |invitation_flow_enforcement|string \| null|false|none|none|
 |can_create_organization|string \| null|false|none|none|
-|concurrent_relation_export_limit|string \| null|false|none|none|
 |allow_contribution_mapping_to_admins|string \| null|false|none|none|
 |deactivation_email_additional_text|string \| null|false|none|none|
 |glql_db_seconds_per_ip_limit|string \| null|false|none|none|
 |glql_db_seconds_per_query_limit|string \| null|false|none|none|
 |glql_db_seconds_per_user_limit|string \| null|false|none|none|
 |glql_duo_db_seconds_per_user_limit|string \| null|false|none|none|
-|group_api_limit|string \| null|false|none|none|
-|group_archive_unarchive_api_limit|string \| null|false|none|none|
-|group_invited_groups_api_limit|string \| null|false|none|none|
-|group_shared_groups_api_limit|string \| null|false|none|none|
-|group_projects_api_limit|string \| null|false|none|none|
-|groups_api_limit|string \| null|false|none|none|
-|issuable_csv_import_limit|string \| null|false|none|none|
-|label_delete_limit|string \| null|false|none|none|
 |merge_requests_update_limit|string \| null|false|none|none|
-|pages_deployments_api_limit|string \| null|false|none|none|
-|project_api_limit|string \| null|false|none|none|
-|project_invited_groups_api_limit|string \| null|false|none|none|
 |project_repositories_archive_limit|string \| null|false|none|none|
 |project_repositories_archive_unauthenticated_limit|string \| null|false|none|none|
-|project_repositories_blame_limit|string \| null|false|none|none|
-|project_repositories_blame_unauthenticated_limit|string \| null|false|none|none|
-|project_repositories_blobs_batch_limit|string \| null|false|none|none|
 |project_repository_commits_api_limit|string \| null|false|none|none|
 |project_repositories_compare_limit|string \| null|false|none|none|
 |project_repositories_compare_unauthenticated_limit|string \| null|false|none|none|
-|projects_api_limit|string \| null|false|none|none|
-|project_members_api_limit|string \| null|false|none|none|
 |protected_branch_write_limit|string \| null|false|none|none|
-|create_organization_api_limit|string \| null|false|none|none|
+|delete_merged_branches_limit|string \| null|false|none|none|
 |cross_reference_checks_limit|string \| null|false|none|none|
-|user_contributed_projects_api_limit|string \| null|false|none|none|
-|user_projects_api_limit|string \| null|false|none|none|
-|user_starred_projects_api_limit|string \| null|false|none|none|
-|users_api_limit_ssh_keys|string \| null|false|none|none|
-|users_api_limit_ssh_key|string \| null|false|none|none|
-|tags_create_limit|string \| null|false|none|none|
-|todos_list_api_limit|string \| null|false|none|none|
-|wiki_read_request_limit_unauthenticated|string \| null|false|none|none|
 |merge_request_diffs_page_request_limit|string \| null|false|none|none|
 |merge_request_diff_resources_request_limit|string \| null|false|none|none|
-|work_item_hierarchy_add_children_limit|string \| null|false|none|none|
 |work_item_move_limit|string \| null|false|none|none|
 |work_item_update_limit|string \| null|false|none|none|
 |track_namespace_visits_limit|string \| null|false|none|none|
@@ -225237,14 +226179,10 @@ http, oauth2, apiKey
 |default_search_scope|string \| null|false|none|none|
 |delay_user_account_self_deletion|string \| null|false|none|none|
 |background_operations_max_jobs|string \| null|false|none|none|
-|pg_ash_sampling_enabled|string \| null|false|none|none|
-|pg_ash_sample_interval_seconds|string \| null|false|none|none|
 |enforce_granular_tokens|string \| null|false|none|none|
 |granular_tokens_enforced_after|string \| null|false|none|none|
 |deactivate_dormant_users|string \| null|false|none|none|
 |deactivate_dormant_users_period|string \| null|false|none|none|
-|nuget_skip_metadata_url_validation|string \| null|false|none|none|
-|helm_max_packages_count|string \| null|false|none|none|
 |mcp_server_enabled|string \| null|false|none|none|
 |dynamic_client_registration_enabled|string \| null|false|none|none|
 |ci_cd_catalog_projects_allowlist|string \| null|false|none|none|
@@ -225264,24 +226202,18 @@ http, oauth2, apiKey
 |lock_model_prompt_cache_enabled|string \| null|false|none|none|
 |model_prompt_cache_enabled|string \| null|false|none|none|
 |secret_detection_token_revocation_token|string \| null|false|none|none|
-|throttle_incident_management_notification_enabled|string \| null|false|none|none|
-|throttle_incident_management_notification_per_period|string \| null|false|none|none|
-|throttle_incident_management_notification_period_in_seconds|string \| null|false|none|none|
 |product_analytics_enabled|string \| null|false|none|none|
 |product_analytics_data_collector_host|string \| null|false|none|none|
 |product_analytics_configurator_connection_string|string \| null|false|none|none|
 |cube_api_base_url|string \| null|false|none|none|
 |cube_api_key|string \| null|false|none|none|
-|duo_availability|string \| null|false|none|none|
-|duo_agent_platform_enabled|string \| null|false|none|none|
 |duo_cli_enabled|string \| null|false|none|none|
 |ai_audit_events_streaming_enabled|string \| null|false|none|none|
-|duo_token_usage_tracking_enabled|string \| null|false|none|none|
-|duo_workflow_file_attachments_enabled|string \| null|false|none|none|
 |duo_remote_flows_availability|string \| null|false|none|none|
 |duo_foundational_flows_enabled|string \| null|false|none|none|
 |duo_foundational_flows_availability|string \| null|false|none|none|
 |duo_scheduled_automations_availability|string \| null|false|none|none|
+|duo_code_suggestions_availability|string \| null|false|none|none|
 |duo_custom_agents_availability|string \| null|false|none|none|
 |duo_custom_flows_availability|string \| null|false|none|none|
 |duo_external_agents_availability|string \| null|false|none|none|
@@ -225315,10 +226247,6 @@ http, oauth2, apiKey
 |orbit_dap_enabled_by_default|string \| null|false|none|none|
 |epic_move_list_limit|string \| null|false|none|none|
 |duo_workflow_oauth_application_id|string \| null|false|none|none|
-|pipeline_execution_policies_per_configuration_limit|string \| null|false|none|none|
-|scan_execution_policies_per_configuration_limit|string \| null|false|none|none|
-|vulnerability_management_policies_per_configuration_limit|string \| null|false|none|none|
-|dependency_firewall_policies_per_configuration_limit|string \| null|false|none|none|
 |policy_store_experiment_enabled|string \| null|false|none|none|
 |secret_detection_service_auth_token|string \| null|false|none|none|
 |secret_detection_service_url|string \| null|false|none|none|
@@ -225333,8 +226261,6 @@ http, oauth2, apiKey
 |enable_member_promotion_management|string \| null|false|none|none|
 |allow_deploy_tokens_and_keys_with_external_authn|string \| null|false|none|none|
 |allow_top_level_group_owners_to_create_service_accounts|string \| null|false|none|none|
-|dependency_scanning_sbom_scan_api_upload_limit|string \| null|false|none|none|
-|dependency_scanning_sbom_scan_api_download_limit|string \| null|false|none|none|
 |auto_duo_code_review_on_push_enabled|string \| null|false|none|none|
 
 #### Enumerated Values
@@ -231716,7 +232642,8 @@ http, oauth2, apiKey
   "device_name": "string",
   "app_version": "string",
   "locale": "string",
-  "payload_mode": "full"
+  "payload_mode": "full",
+  "content_key": "string"
 }
 ```
 
@@ -231732,6 +232659,7 @@ http, oauth2, apiKey
 |app_version|string \| null|false|none|The installed application version|
 |locale|string \| null|false|none|The device locale|
 |payload_mode|string \| null|false|none|Whether notifications carry the full content or only identifiers|
+|content_key|string \| null|false|none|A base64-encoded 32-byte key the device minted; with it, notification content is sent AES-256-GCM encrypted for the app's notification extension and the alert is generic|
 
 #### Enumerated Values
 
@@ -232378,7 +233306,7 @@ http, oauth2, apiKey
 {
   "content": "string",
   "dry_run": false,
-  "include_jobs": true,
+  "include_jobs": false,
   "ref": "string"
 }
 ```
@@ -241727,6 +242655,7 @@ http, oauth2, apiKey
   "duo_remote_flows_availability": true,
   "duo_foundational_flows_availability": true,
   "duo_scheduled_automations_availability": true,
+  "duo_code_suggestions_availability": true,
   "duo_custom_agents_availability": true,
   "duo_custom_flows_availability": true,
   "duo_external_agents_availability": true,
@@ -241755,6 +242684,7 @@ http, oauth2, apiKey
     "allow_all_unix_sockets": true,
     "allow_project_extension": true,
     "require_sandbox": true,
+    "auto_model_routing_enabled": true,
     "minimum_access_level_execute": 10,
     "minimum_access_level_execute_async": 30,
     "minimum_access_level_manage": 30,
@@ -241803,6 +242733,7 @@ http, oauth2, apiKey
 |duo_remote_flows_availability|boolean \| null|false|none|Enable GitLab Duo remote flows for this group|
 |duo_foundational_flows_availability|boolean \| null|false|none|Enable GitLab foundational Duo flows for this group|
 |duo_scheduled_automations_availability|boolean \| null|false|none|Allow GitLab Duo flows in this group to run on a schedule|
+|duo_code_suggestions_availability|boolean \| null|false|none|Enable GitLab Duo Code Suggestions for this group|
 |duo_custom_agents_availability|boolean \| null|false|none|Enable GitLab Duo custom agents for this group|
 |duo_custom_flows_availability|boolean \| null|false|none|Enable GitLab Duo custom flows for this group|
 |duo_external_agents_availability|boolean \| null|false|none|Enable GitLab Duo external agents for this group|
@@ -241908,6 +242839,7 @@ http, oauth2, apiKey
   "duo_remote_flows_availability": true,
   "duo_foundational_flows_availability": true,
   "duo_scheduled_automations_availability": true,
+  "duo_code_suggestions_availability": true,
   "duo_custom_agents_availability": true,
   "duo_custom_flows_availability": true,
   "duo_external_agents_availability": true,
@@ -241936,6 +242868,7 @@ http, oauth2, apiKey
     "allow_all_unix_sockets": true,
     "allow_project_extension": true,
     "require_sandbox": true,
+    "auto_model_routing_enabled": true,
     "minimum_access_level_execute": 10,
     "minimum_access_level_execute_async": 30,
     "minimum_access_level_manage": 30,
@@ -242039,6 +242972,7 @@ http, oauth2, apiKey
 |duo_remote_flows_availability|boolean \| null|false|none|Enable GitLab Duo remote flows for this group|
 |duo_foundational_flows_availability|boolean \| null|false|none|Enable GitLab foundational Duo flows for this group|
 |duo_scheduled_automations_availability|boolean \| null|false|none|Allow GitLab Duo flows in this group to run on a schedule|
+|duo_code_suggestions_availability|boolean \| null|false|none|Enable GitLab Duo Code Suggestions for this group|
 |duo_custom_agents_availability|boolean \| null|false|none|Enable GitLab Duo custom agents for this group|
 |duo_custom_flows_availability|boolean \| null|false|none|Enable GitLab Duo custom flows for this group|
 |duo_external_agents_availability|boolean \| null|false|none|Enable GitLab Duo external agents for this group|
@@ -242642,14 +243576,14 @@ http, oauth2, apiKey
 |---|---|---|---|---|
 |title|string \| null|false|none|Instance title on the sign in / sign up page|
 |description|string \| null|false|none|Markdown text shown on the sign in / sign up page|
-|pwa_name|string \| null|false|none|Name of the Progressive Web App|
+|pwa_name|string \| null|false|none|Name of the Progressive Web App. Used for the `name` attribute in `manifest.json`.|
 |pwa_short_name|string \| null|false|none|Optional, short name for Progressive Web App|
-|pwa_description|string \| null|false|none|An explanation of what the Progressive Web App does|
+|pwa_description|string \| null|false|none|An explanation of what the Progressive Web App does. Used for the `description` attribute in `manifest.json`.|
 |logo|string(binary) \| null|false|none|Instance image used on the sign in / sign up page|
 |pwa_icon|string(binary) \| null|false|none|Icon used for Progressive Web App|
 |header_logo|string(binary) \| null|false|none|Instance image used for the main navigation bar|
 |favicon|string(binary) \| null|false|none|Instance favicon in .ico/.png format|
-|member_guidelines|string \| null|false|none|Markdown text shown on the members page of a group or project|
+|member_guidelines|string \| null|false|none|Markdown text shown on the members page of a group or project. Shown only to users with permission to change members.|
 |new_project_guidelines|string \| null|false|none|Markdown text shown on the new project page|
 |profile_image_guidelines|string \| null|false|none|Markdown text shown on the profile page below Public Avatar|
 |header_message|string \| null|false|none|Message within the system header bar|
@@ -242781,14 +243715,14 @@ http, oauth2, apiKey
 |cargo_max_file_size|integer \| null|false|none|Maximum Cargo package file size in bytes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/33060) in GitLab 19.3.|
 |ci_instance_level_variables|integer \| null|false|none|Maximum number of instance-level CI/CD variables that can be defined.|
 |ci_pipeline_size|integer \| null|false|none|Maximum number of jobs in a single pipeline.|
-|ci_pipeline_variables_count|integer \| null|false|none|Maximum number of pipeline variables in a single pipeline.|
-|ci_variable_value_size|integer \| null|false|none|Maximum size of a CI/CD variable value in bytes.|
-|ci_variable_file_value_size|integer \| null|false|none|Maximum size of a file type CI/CD variable value in bytes.|
+|ci_pipeline_variables_count|integer \| null|false|none|Maximum number of pipeline variables in a single pipeline. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.|
+|ci_variable_value_size|integer \| null|false|none|Maximum size of a CI/CD variable value in bytes. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.|
+|ci_variable_file_value_size|integer \| null|false|none|Maximum size of a file type CI/CD variable value in bytes. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.|
 |ci_active_jobs|integer \| null|false|none|Total number of jobs in currently active pipelines.|
 |ci_project_subscriptions|integer \| null|false|none|Maximum number of pipeline subscriptions to and from a project.|
 |ci_pipeline_schedules|integer \| null|false|none|Maximum number of pipeline schedules.|
 |ci_needs_size_limit|integer \| null|false|none|Maximum number of `needs` dependencies that a job can have.|
-|ci_job_variables_count|integer \| null|false|none|Maximum number of job variables in a single job.|
+|ci_job_variables_count|integer \| null|false|none|Maximum number of job variables in a single job. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254701) in GitLab 19.6.|
 |ci_registered_group_runners|integer \| null|false|none|Maximum number of runners created or active in a group during the past seven days.|
 |ci_registered_project_runners|integer \| null|false|none|Maximum number of runners created or active in a project during the past seven days.|
 |conan_max_file_size|integer \| null|false|none|Maximum Conan package file size in bytes.|
@@ -242813,8 +243747,8 @@ http, oauth2, apiKey
 |web_hook_calls|integer \| null|false|none|Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571738) in GitLab 18.5.|
 |web_hook_calls_low|integer \| null|false|none|Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for unlimited. GitLab.com only.|
 |web_hook_calls_mid|integer \| null|false|none|Maximum number of times a webhook can be called per minute, per top-level namespace. Set to `0` for unlimited. GitLab.com only.|
-|integration_executions|integer \| null|false|none|Maximum number of integration executions that can be enqueued per minute, per top-level namespace, excluding Datadog. Set to `0` for unlimited.|
-|integration_executions_datadog|integer \| null|false|none|Maximum number of Datadog integration executions that can be enqueued per minute, per top-level namespace. Set to `0` for unlimited.|
+|integration_executions|integer \| null|false|none|Maximum number of integration executions that can be enqueued per minute, per top-level namespace, excluding Datadog. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/636614) in GitLab 19.6. This parameter is in beta and might be changed or removed without notice.|
+|integration_executions_datadog|integer \| null|false|none|Maximum number of Datadog integration executions that can be enqueued per minute, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/636614) in GitLab 19.6. This parameter is in beta and might be changed or removed without notice.|
 |max_pipelines_per_merge_train|integer \| null|false|none|Maximum number of parallel pipelines per merge train. The default is `20` and the minimum is `1`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374188) in GitLab 19.0.|
 
 #### Enumerated Values
@@ -243047,11 +243981,11 @@ http, oauth2, apiKey
 |ends_at|string(date-time) \| null|false|none|Ending time, in UTC. When creating a message, defaults to one hour after the current time.|
 |color|string \| null|false|none|Background color hex code. Deprecated. Use `theme` instead.|
 |font|string \| null|false|none|Foreground color hex code. Deprecated. Use `theme` instead.|
-|target_access_levels|[integer]|false|none|Target access levels (roles) of the broadcast message.|
+|target_access_levels|[integer]|false|none|Target access levels (roles) of the broadcast message. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner).|
 |target_path|string \| null|false|none|Target path of the broadcast message.|
 |broadcast_type|string \| null|false|none|Appearance type of the broadcast message.|
 |dismissable|boolean \| null|false|none|If `true`, the user can dismiss the message.|
-|theme|string \| null|false|none|Color theme for the broadcast message. Applies only to banners.|
+|theme|string \| null|false|none|Color theme for the broadcast message. Applies only to banners. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498900) in GitLab 17.6.|
 
 #### Enumerated Values
 
@@ -243109,11 +244043,11 @@ http, oauth2, apiKey
 |ends_at|string(date-time) \| null|false|none|Ending time, in UTC. When creating a message, defaults to one hour after the current time.|
 |color|string \| null|false|none|Background color hex code. Deprecated. Use `theme` instead.|
 |font|string \| null|false|none|Foreground color hex code. Deprecated. Use `theme` instead.|
-|target_access_levels|[integer]|false|none|Target access levels (roles) of the broadcast message.|
+|target_access_levels|[integer]|false|none|Target access levels (roles) of the broadcast message. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner).|
 |target_path|string \| null|false|none|Target path of the broadcast message.|
 |broadcast_type|string \| null|false|none|Appearance type of the broadcast message.|
 |dismissable|boolean \| null|false|none|If `true`, the user can dismiss the message.|
-|theme|string \| null|false|none|Color theme for the broadcast message. Applies only to banners.|
+|theme|string \| null|false|none|Color theme for the broadcast message. Applies only to banners. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498900) in GitLab 17.6.|
 
 #### Enumerated Values
 

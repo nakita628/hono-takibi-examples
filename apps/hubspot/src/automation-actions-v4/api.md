@@ -23,7 +23,9 @@ Base URLs:
 |---|---|
 |automation||
 |workflows.delete||
+|workflows.publish||
 |workflows.read||
+|workflows.trigger||
 |workflows.write||
 
 <h1 id="automation-actions-v4-callbacks">Callbacks</h1>
@@ -76,7 +78,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: automation ), oauth2 ( Scopes: workflows.write ), oauth2 ( Scopes: workflows.delete ), oauth2 ( Scopes: workflows.read )
+oauth2 ( Scopes: automation ), oauth2 ( Scopes: workflows.trigger ), oauth2 ( Scopes: workflows.write ), oauth2 ( Scopes: workflows.publish ), oauth2 ( Scopes: workflows.delete ), oauth2 ( Scopes: workflows.read )
 </aside>
 
 ## Completes a callback
@@ -131,7 +133,7 @@ null
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
-oauth2 ( Scopes: automation ), oauth2 ( Scopes: workflows.write ), oauth2 ( Scopes: workflows.delete ), oauth2 ( Scopes: workflows.read )
+oauth2 ( Scopes: automation ), oauth2 ( Scopes: workflows.trigger ), oauth2 ( Scopes: workflows.write ), oauth2 ( Scopes: workflows.publish ), oauth2 ( Scopes: workflows.delete ), oauth2 ( Scopes: workflows.read )
 </aside>
 
 <h1 id="automation-actions-v4-definitions">Definitions</h1>

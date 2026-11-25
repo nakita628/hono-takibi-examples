@@ -2492,32 +2492,15 @@ Get players who have played this hero
 
 ```json
 [
-  [
-    {
-      "account_id": 0,
-      "steamid": "string",
-      "avatar": "string",
-      "avatarmedium": "string",
-      "avatarfull": "string",
-      "profileurl": "string",
-      "personaname": "420 booty wizard",
-      "last_login": "1970-01-01T00:00:00Z",
-      "full_history_time": "1970-01-01T00:00:00Z",
-      "cheese": 0,
-      "fh_unavailable": true,
-      "loccountrycode": "string",
-      "name": "string",
-      "country_code": "string",
-      "fantasy_role": 0,
-      "team_id": 0,
-      "team_name": "Newbee",
-      "team_tag": "string",
-      "is_locked": true,
-      "is_pro": true,
-      "locked_until": 0,
-      "computed_mmr": 0
-    }
-  ]
+  {
+    "account_id": 0,
+    "name": "string",
+    "team_id": 0,
+    "team_name": "Newbee",
+    "team_tag": "string",
+    "games_played": 0,
+    "wins": 0
+  }
 ]
 ```
 
@@ -2533,7 +2516,7 @@ Status Code **200**
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anonymous*|[[[PlayerObjectResponse](#schemaplayerobjectresponse)]]|false|none|none|
+|*anonymous*|[[HeroPlayersResponse](#schemaheroplayersresponse)]|false|none|none|
 
 <aside class="success">
 This operation does not require authentication
@@ -4609,6 +4592,37 @@ Object containing information on the match
 |is_pro|boolean|false|none|Whether the player is professional or not|
 |locked_until|integer|false|none|When the roster lock will end|
 |computed_mmr|integer \| null|false|none|Rating estimate based on ranked matches|
+
+<h2 id="tocS_HeroPlayersResponse">HeroPlayersResponse</h2>
+<!-- backwards compatibility -->
+<a id="schemaheroplayersresponse"></a>
+<a id="schema_HeroPlayersResponse"></a>
+<a id="tocSheroplayersresponse"></a>
+<a id="tocsheroplayersresponse"></a>
+
+```json
+{
+  "account_id": 0,
+  "name": "string",
+  "team_id": 0,
+  "team_name": "Newbee",
+  "team_tag": "string",
+  "games_played": 0,
+  "wins": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|account_id|integer|false|none|The player account ID|
+|name|string \| null|false|none|Verified player name, e.g. 'Miracle-'|
+|team_id|integer \| null|false|none|Player's team identifier|
+|team_name|string \| null|false|none|Team name|
+|team_tag|string \| null|false|none|Player's team shorthand tag, e.g. 'EG'|
+|games_played|integer|false|none|Number of games played|
+|wins|integer|false|none|Number of games won|
 
 <h2 id="tocS_PlayerPeersResponse">PlayerPeersResponse</h2>
 <!-- backwards compatibility -->

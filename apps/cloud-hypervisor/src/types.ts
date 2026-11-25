@@ -167,17 +167,18 @@ type PmemConfig = {
   pci_device_id?: number | undefined
   id?: string | undefined
 }
+type TcpConsoleConfig = { address: string; server?: true | undefined }
 type ConsoleMode = 'Off' | 'Pty' | 'Tty' | 'File' | 'Socket' | 'Tcp' | 'Null'
 type SerialConfig = {
   file?: string | undefined
   socket?: string | undefined
-  tcp?: { address: string; server?: true | undefined } | undefined
+  tcp?: TcpConsoleConfig | undefined
   mode: ConsoleMode
 }
 type ConsoleConfig = {
   file?: string | undefined
   socket?: string | undefined
-  tcp?: { address: string; server?: true | undefined } | undefined
+  tcp?: TcpConsoleConfig | undefined
   mode: ConsoleMode
   iommu?: IommuType | undefined
   id?: string | undefined
@@ -292,7 +293,7 @@ type VmConfig = {
 type VmState = 'Created' | 'Running' | 'Shutdown' | 'Paused' | 'BreakPoint'
 type DeviceNode = {
   id: string
-  resources: { [x: string]: unknown }[]
+  resources: { [key: string]: unknown }[]
   parent?: string | undefined
   children: string[]
   pci_bdf?: string | undefined
@@ -301,9 +302,9 @@ type VmInfo = {
   config: VmConfig
   state: VmState
   memory_actual_size: bigint
-  device_tree?: { [x: string]: DeviceNode } | undefined
+  device_tree?: { [key: string]: DeviceNode } | undefined
 }
-type VmCounters = { [x: string]: { device_type: string } }
+type VmCounters = { [key: string]: { device_type: string } }
 type BalloonStats = {
   swap_in?: bigint | undefined
   swap_out?: bigint | undefined
@@ -323,92 +324,359 @@ type BalloonStats = {
   direct_reclaims?: bigint | undefined
 }
 type BalloonStatsResponse = { balloon_actual: bigint; last_update: bigint; stats: BalloonStats }
-type VmResize = {
-  desired_vcpus?: number | undefined
-  desired_ram?: bigint | undefined
-  desired_balloon?: bigint | undefined
+type CpuTopologyInput = {
+  threads_per_core: number
+  cores_per_die: number
+  dies_per_package: number
+  packages: number
 }
-type VmResizeDisk = { id: string; desired_size: bigint }
-type VmResizeZone = { id: string; desired_ram: bigint }
-type PciDeviceInfo = { id: string; bdf: string }
-type VmRemoveDevice = { id: string }
-type VmAddUserDevice = {
+type CpuAffinityInput = { vcpu: number; host_cpus: number[] }
+type CpuFeaturesInput = { amx?: boolean }
+type CoreSchedulingModeInput = 'Vm' | 'Vcpu' | 'Off'
+type CpuProfileConfigInput = 'Host' | { File: string }
+type CpuidValueInput = string
+type CpuidOverrideInput = {
+  leaf: CpuidValueInput
+  subleaf: CpuidValueInput
+  eax: CpuidValueInput
+  ebx: CpuidValueInput
+  ecx: CpuidValueInput
+  edx: CpuidValueInput
+}
+type CpusConfigInput = {
+  boot_vcpus: number
+  max_vcpus: number
+  topology?: CpuTopologyInput
+  kvm_hyperv?: boolean
+  kvm_hint_realtime?: boolean
+  max_phys_bits?: number
+  nested?: boolean
+  affinity?: CpuAffinityInput[]
+  features?: CpuFeaturesInput
+  core_scheduling?: CoreSchedulingModeInput
+  profile?: CpuProfileConfigInput
+  'x-cpuid-overrides'?: CpuidOverrideInput[]
+}
+type MemoryZoneConfigInput = {
+  id: string
+  size: bigint
+  file?: string
+  mergeable?: boolean
+  shared?: boolean
+  hugepages?: boolean
+  hugepage_size?: bigint
+  host_numa_node?: number
+  hotplug_size?: bigint
+  hotplugged_size?: bigint
+  prefault?: boolean
+  reserve?: boolean
+}
+type MemoryConfigInput = {
+  size: bigint
+  hotplug_size?: bigint
+  hotplugged_size?: bigint
+  mergeable?: boolean
+  hotplug_method?: 'Acpi' | 'VirtioMem'
+  shared?: boolean
+  hugepages?: boolean
+  hugepage_size?: bigint
+  prefault?: boolean
+  reserve?: boolean
+  thp?: boolean
+  zones?: MemoryZoneConfigInput[]
+}
+type PayloadConfigInput = {
+  firmware?: string
+  kernel?: string
+  cmdline?: string
+  initramfs?: string
+  igvm?: string
+  host_data?: string
+}
+type TokenBucketInput = {
+  size: bigint
+  one_time_burst?: bigint
+  refill_time: bigint
+  burst_rate?: bigint
+  burst_seconds?: bigint
+  burst_recharge_seconds?: bigint
+}
+type RateLimiterConfigInput = { bandwidth?: TokenBucketInput; ops?: TokenBucketInput }
+type RateLimitGroupConfigInput = { id: string; rate_limiter_config: RateLimiterConfigInput }
+type IommuTypeInput = 'Off' | 'Virtio' | 'Smmuv3'
+type VirtQueueAffinityInput = { queue_index: number; host_cpus: number[] }
+type ImageTypeInput = 'FlatVmdk' | 'FixedVhd' | 'Qcow2' | 'Raw' | 'Vhdx' | 'Unknown'
+type LockGranularityInput = 'ByteRange' | 'Full'
+type DiskConfigInput = {
+  path?: string
+  readonly?: boolean
+  direct?: boolean
+  iommu?: IommuTypeInput
+  num_queues?: number
+  queue_size?: number
+  vhost_user?: boolean
+  vhost_socket?: string
+  rate_limiter_config?: RateLimiterConfigInput
+  pci_segment?: number
+  pci_device_id?: number
+  id?: string
+  serial?: string
+  rate_limit_group?: string
+  queue_affinity?: VirtQueueAffinityInput[]
+  backing_files?: boolean
+  sparse?: boolean
+  image_type?: ImageTypeInput
+  lock_granularity?: LockGranularityInput
+  guest_block_size?: number
+}
+type NetConfigInput = {
+  tap?: string
+  ip?: string
+  mask?: string
+  mac?: string
+  host_mac?: string
+  mtu?: number
+  iommu?: IommuTypeInput
+  num_queues?: number
+  queue_size?: number
+  vhost_user?: boolean
+  vhost_socket?: string
+  vhost_mode?: 'Client' | 'Server'
+  id?: string
+  pci_segment?: number
+  pci_device_id?: number
+  rate_limiter_config?: RateLimiterConfigInput
+  offload_tso?: boolean
+  offload_ufo?: boolean
+  offload_csum?: boolean
+}
+type RngConfigInput = {
+  id?: string
+  pci_segment?: number
+  pci_device_id?: number
+  iommu?: IommuTypeInput
+  src: string
+}
+type BalloonConfigInput = {
+  id?: string
+  pci_segment?: number
+  pci_device_id?: number
+  iommu?: IommuTypeInput
+  size: bigint
+  deflate_on_oom?: boolean
+  free_page_reporting?: boolean
+}
+type FsConfigInput = {
+  tag: string
   socket: string
-  pci_segment?: number | undefined
-  pci_device_id?: number | undefined
-  id?: string | undefined
+  num_queues?: number
+  queue_size?: number
+  pci_segment?: number
+  pci_device_id?: number
+  id?: string
 }
-type VmSnapshotConfig = { destination_url: string }
-type VmCoredumpData = { destination_url: string }
-type MemoryRestoreMode = 'Copy' | 'OnDemand' | 'OnDemandNoBackgroundFetchPages' | 'CopyOnWrite'
-type RestoredNetConfig = { id: string; num_fds?: bigint | undefined; fds?: number[] | undefined }
-type RestoredVfioConfig = { id: string; fd?: number | undefined }
-type VmMemoryZoneUpdateData = { id: string; host_numa_node: number }
-type ExternalFdTarget = { Net: { id: string } } | { Vfio: { id: string } } | 'Iommu'
-type RestoreConfig = {
+type GenericVhostUserConfigInput = {
+  socket: string
+  queue_sizes: number[]
+  pci_segment?: number
+  pci_device_id?: number
+  id?: string
+  device_type: number
+}
+type PmemConfigInput = {
+  file: string
+  size?: bigint
+  iommu?: IommuTypeInput
+  discard_writes?: boolean
+  pci_segment?: number
+  pci_device_id?: number
+  id?: string
+}
+type TcpConsoleConfigInput = { address: string; server?: true }
+type ConsoleModeInput = 'Off' | 'Pty' | 'Tty' | 'File' | 'Socket' | 'Tcp' | 'Null'
+type SerialConfigInput = {
+  file?: string
+  socket?: string
+  tcp?: TcpConsoleConfigInput
+  mode: ConsoleModeInput
+}
+type ConsoleConfigInput = {
+  file?: string
+  socket?: string
+  tcp?: TcpConsoleConfigInput
+  mode: ConsoleModeInput
+  iommu?: IommuTypeInput
+  id?: string
+  pci_segment?: number
+  pci_device_id?: number
+}
+type DebugConsoleConfigInput = {
+  file?: string
+  mode: 'Off' | 'Tty' | 'File' | 'Null'
+  iobase?: number
+}
+type DeviceConfigInput = {
+  path?: string
+  iommu?: IommuTypeInput
+  pci_segment?: number
+  pci_device_id?: number
+  id?: string
+  x_nv_gpudirect_clique?: number
+  x_exclude_mmap_bars?: bigint[]
+}
+type UserDeviceConfigInput = {
+  socket: string
+  id?: string
+  pci_segment?: number
+  pci_device_id?: number
+}
+type VdpaConfigInput = {
+  path: string
+  num_queues?: number
+  iommu?: IommuTypeInput
+  pci_segment?: number
+  pci_device_id?: number
+  id?: string
+}
+type VsockConfigInput = {
+  cid: bigint
+  socket: string
+  socket_type?: 'Stream' | 'SeqPacket'
+  iommu?: IommuTypeInput
+  pci_segment?: number
+  pci_device_id?: number
+  id?: string
+}
+type NumaDistanceInput = { destination: number; distance: number }
+type NumaConfigInput = {
+  guest_numa_id: number
+  cpus?: number[]
+  distances?: NumaDistanceInput[]
+  memory_zones?: string[]
+  pci_segments?: number[]
+  device_id?: string
+}
+type RtcConfigInput = {
+  id?: string
+  pci_segment?: number
+  pci_device_id?: number
+  iommu?: IommuTypeInput
+}
+type PciSegmentConfigInput = {
+  pci_segment?: number
+  mmio32_aperture_weight?: number
+  mmio64_aperture_weight?: number
+}
+type PlatformConfigInput = {
+  num_pci_segments?: number
+  iommu_segments?: number[]
+  iommu_address_width_bits?: number
+  system_serial_number?: string
+  system_uuid?: string
+  oem_strings?: string[]
+  system_manufacturer?: string
+  system_product_name?: string
+  system_version?: string
+  system_family?: string
+  system_sku_number?: string
+  chassis_asset_tag?: string
+  sev_snp?: boolean
+  iommufd?: boolean
+  vfio_p2p_dma?: boolean
+}
+type TpmConfigInput = { socket: string }
+type LandlockConfigInput = { path: string; access: string }
+type VmConfigInput = {
+  cpus?: CpusConfigInput
+  memory?: MemoryConfigInput
+  payload: PayloadConfigInput
+  rate_limit_groups?: RateLimitGroupConfigInput[]
+  disks?: DiskConfigInput[]
+  net?: NetConfigInput[]
+  rng?: RngConfigInput
+  balloon?: BalloonConfigInput
+  fs?: FsConfigInput[]
+  generic_vhost_user?: GenericVhostUserConfigInput[]
+  pmem?: PmemConfigInput[]
+  serial?: SerialConfigInput
+  console?: ConsoleConfigInput
+  debug_console?: DebugConsoleConfigInput
+  devices?: DeviceConfigInput[]
+  user_devices?: UserDeviceConfigInput[]
+  vdpa?: VdpaConfigInput[]
+  vsock?: VsockConfigInput
+  numa?: NumaConfigInput[]
+  watchdog?: boolean
+  rtc?: RtcConfigInput
+  pvpanic?: boolean
+  pci_segments?: PciSegmentConfigInput[]
+  platform?: PlatformConfigInput
+  tpm?: TpmConfigInput
+  landlock_enable?: boolean
+  landlock_rules?: LandlockConfigInput[]
+}
+type VmResizeInput = { desired_vcpus?: number; desired_ram?: bigint; desired_balloon?: bigint }
+type VmResizeDiskInput = { id: string; desired_size: bigint }
+type VmResizeZoneInput = { id: string; desired_ram: bigint }
+type PciDeviceInfo = { id: string; bdf: string }
+type VmRemoveDeviceInput = { id: string }
+type VmAddUserDeviceInput = {
+  socket: string
+  pci_segment?: number
+  pci_device_id?: number
+  id?: string
+}
+type VmSnapshotConfigInput = { destination_url: string }
+type VmCoredumpDataInput = { destination_url: string }
+type MemoryRestoreModeInput = 'Copy' | 'OnDemand' | 'OnDemandNoBackgroundFetchPages' | 'CopyOnWrite'
+type RestoredNetConfigInput = { id: string; num_fds?: bigint; fds?: number[] }
+type RestoredVfioConfigInput = { id: string; fd?: number }
+type SnapshotClockModeInput = 'Advance' | 'Preserve'
+type VmMemoryZoneUpdateDataInput = { id: string; host_numa_node: number }
+type ExternalFdDeviceIdInput = { id: string }
+type ExternalFdNetTargetInput = { Net: ExternalFdDeviceIdInput }
+type ExternalFdVfioTargetInput = { Vfio: ExternalFdDeviceIdInput }
+type ExternalFdDeviceTargetInput = ExternalFdNetTargetInput | ExternalFdVfioTargetInput
+type ExternalFdVmTargetInput = 'Iommu'
+type ExternalFdTargetInput = ExternalFdDeviceTargetInput | ExternalFdVmTargetInput
+type RestoreConfigInput = {
   source_url: string
-  prefault?: boolean | undefined
-  memory_restore_mode?: MemoryRestoreMode | undefined
-  net_fds?: RestoredNetConfig[] | undefined
-  vfio_fds?: RestoredVfioConfig[] | undefined
-  iommufd_fd?: number | undefined
-  resume?: boolean | undefined
-  zone_updates?: VmMemoryZoneUpdateData[] | undefined
-  serial?:
-    | {
-        file?: string | undefined
-        socket?: string | undefined
-        tcp?: { address: string; server?: true | undefined } | undefined
-        mode: ConsoleMode
-      }
-    | undefined
-  console?:
-    | {
-        file?: string | undefined
-        socket?: string | undefined
-        tcp?: { address: string; server?: true | undefined } | undefined
-        mode: ConsoleMode
-      }
-    | undefined
-  external_fds?: { target: ExternalFdTarget; expected_fds: bigint }[] | undefined
+  prefault?: boolean
+  memory_restore_mode?: MemoryRestoreModeInput
+  net_fds?: RestoredNetConfigInput[]
+  vfio_fds?: RestoredVfioConfigInput[]
+  iommufd_fd?: number
+  resume?: boolean
+  clock_restore_mode?: SnapshotClockModeInput
+  zone_updates?: VmMemoryZoneUpdateDataInput[]
+  serial?: SerialConfigInput
+  console?: SerialConfigInput
+  external_fds?: { target: ExternalFdTargetInput; expected_fds: bigint }[]
 }
-type ReceiveMigrationData = {
+type ReceiveMigrationDataInput = {
   receiver_url: string
-  vfio_fds?: RestoredVfioConfig[] | undefined
-  iommufd_fd?: number | undefined
-  tls_dir?: string | undefined
-  zone_updates?: VmMemoryZoneUpdateData[] | undefined
-  background_fetch_pages?: boolean | undefined
-  serial?:
-    | {
-        file?: string | undefined
-        socket?: string | undefined
-        tcp?: { address: string; server?: true | undefined } | undefined
-        mode: ConsoleMode
-      }
-    | undefined
-  console?:
-    | {
-        file?: string | undefined
-        socket?: string | undefined
-        tcp?: { address: string; server?: true | undefined } | undefined
-        mode: ConsoleMode
-      }
-    | undefined
-  external_fds?: { target: ExternalFdTarget; expected_fds: bigint }[] | undefined
+  clock_restore_mode?: SnapshotClockModeInput
+  vfio_fds?: RestoredVfioConfigInput[]
+  iommufd_fd?: number
+  tls_dir?: string
+  zone_updates?: VmMemoryZoneUpdateDataInput[]
+  background_fetch_pages?: boolean
+  serial?: SerialConfigInput
+  console?: SerialConfigInput
+  external_fds?: { target: ExternalFdTargetInput; expected_fds: bigint }[]
 }
-type TimeoutStrategy = 'Cancel' | 'Ignore'
-type MigrationMode = 'MemFDs' | 'Precopy' | 'Postcopy'
-type SendMigrationData = {
+type TimeoutStrategyInput = 'Cancel' | 'Ignore'
+type MigrationModeInput = 'MemFDs' | 'Precopy' | 'Postcopy'
+type SendMigrationDataInput = {
   destination_url: string
-  local?: boolean | undefined
-  preserve_source?: boolean | undefined
-  downtime_ms?: bigint | undefined
-  timeout_s?: bigint | undefined
-  timeout_strategy?: TimeoutStrategy | undefined
-  connections?: bigint | undefined
-  tls_dir?: string | undefined
-  memory_mode?: MigrationMode | undefined
+  local?: boolean
+  preserve_source?: boolean
+  downtime_ms?: bigint
+  timeout_s?: bigint
+  timeout_strategy?: TimeoutStrategyInput
+  connections?: bigint
+  tls_dir?: string
+  memory_mode?: MigrationModeInput
 }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
@@ -442,8 +710,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/vm.create': {
       $put:
-        | { input: { json: VmConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VmConfig }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VmConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VmConfigInput }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/vm.delete': {
@@ -501,152 +769,207 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/vm.resize': {
       $put:
-        | { input: { json: VmResize }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VmResize }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VmResize }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: VmResize }; output: {}; outputFormat: string; status: 429 }
+        | { input: { json: VmResizeInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VmResizeInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VmResizeInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VmResizeInput }; output: {}; outputFormat: string; status: 429 }
     }
   } & {
     '/vm.resize-disk': {
       $put:
-        | { input: { json: VmResizeDisk }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VmResizeDisk }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VmResizeDisk }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: VmResizeDisk }; output: {}; outputFormat: string; status: 500 }
+        | { input: { json: VmResizeDiskInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VmResizeDiskInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VmResizeDiskInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VmResizeDiskInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.resize-zone': {
       $put:
-        | { input: { json: VmResizeZone }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VmResizeZone }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VmResizeZone }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: VmResizeZone }; output: {}; outputFormat: string; status: 500 }
+        | { input: { json: VmResizeZoneInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VmResizeZoneInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VmResizeZoneInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VmResizeZoneInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.add-device': {
       $put:
         | {
-            input: { json: DeviceConfig }
+            input: { json: DeviceConfigInput }
             output: PciDeviceInfo
             outputFormat: 'json'
             status: 200
           }
-        | { input: { json: DeviceConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: DeviceConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: DeviceConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: DeviceConfig }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: DeviceConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: DeviceConfigInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: DeviceConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: DeviceConfigInput }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/vm.remove-device': {
       $put:
-        | { input: { json: VmRemoveDevice }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VmRemoveDevice }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VmRemoveDevice }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VmRemoveDeviceInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VmRemoveDeviceInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VmRemoveDeviceInput }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/vm.add-disk': {
       $put:
-        | { input: { json: DiskConfig }; output: PciDeviceInfo; outputFormat: 'json'; status: 200 }
-        | { input: { json: DiskConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: DiskConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: DiskConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: DiskConfig }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: DiskConfig }; output: {}; outputFormat: string; status: 500 }
+        | {
+            input: { json: DiskConfigInput }
+            output: PciDeviceInfo
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: DiskConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: DiskConfigInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: DiskConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: DiskConfigInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: DiskConfigInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.add-fs': {
       $put:
-        | { input: { json: FsConfig }; output: PciDeviceInfo; outputFormat: 'json'; status: 200 }
-        | { input: { json: FsConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: FsConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: FsConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: FsConfig }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: FsConfig }; output: {}; outputFormat: string; status: 500 }
+        | {
+            input: { json: FsConfigInput }
+            output: PciDeviceInfo
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: FsConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: FsConfigInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: FsConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: FsConfigInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: FsConfigInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.add-generic-vhost-user': {
       $put:
         | {
-            input: { json: GenericVhostUserConfig }
+            input: { json: GenericVhostUserConfigInput }
             output: PciDeviceInfo
             outputFormat: 'json'
             status: 200
           }
-        | { input: { json: GenericVhostUserConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: GenericVhostUserConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: GenericVhostUserConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: GenericVhostUserConfig }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: GenericVhostUserConfig }; output: {}; outputFormat: string; status: 500 }
+        | {
+            input: { json: GenericVhostUserConfigInput }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: GenericVhostUserConfigInput }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: GenericVhostUserConfigInput }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { json: GenericVhostUserConfigInput }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { json: GenericVhostUserConfigInput }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/vm.add-pmem': {
       $put:
-        | { input: { json: PmemConfig }; output: PciDeviceInfo; outputFormat: 'json'; status: 200 }
-        | { input: { json: PmemConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: PmemConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: PmemConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: PmemConfig }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: PmemConfig }; output: {}; outputFormat: string; status: 500 }
+        | {
+            input: { json: PmemConfigInput }
+            output: PciDeviceInfo
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: PmemConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: PmemConfigInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: PmemConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: PmemConfigInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: PmemConfigInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.add-net': {
       $put:
-        | { input: { json: NetConfig }; output: PciDeviceInfo; outputFormat: 'json'; status: 200 }
-        | { input: { json: NetConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: NetConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: NetConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: NetConfig }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: NetConfig }; output: {}; outputFormat: string; status: 500 }
+        | {
+            input: { json: NetConfigInput }
+            output: PciDeviceInfo
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: NetConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: NetConfigInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: NetConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: NetConfigInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: NetConfigInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.add-vsock': {
       $put:
-        | { input: { json: VsockConfig }; output: PciDeviceInfo; outputFormat: 'json'; status: 200 }
-        | { input: { json: VsockConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VsockConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: VsockConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VsockConfig }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: VsockConfig }; output: {}; outputFormat: string; status: 500 }
+        | {
+            input: { json: VsockConfigInput }
+            output: PciDeviceInfo
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: VsockConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VsockConfigInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: VsockConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VsockConfigInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VsockConfigInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.add-vdpa': {
       $put:
-        | { input: { json: VdpaConfig }; output: PciDeviceInfo; outputFormat: 'json'; status: 200 }
-        | { input: { json: VdpaConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VdpaConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: VdpaConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VdpaConfig }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: VdpaConfig }; output: {}; outputFormat: string; status: 500 }
+        | {
+            input: { json: VdpaConfigInput }
+            output: PciDeviceInfo
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: VdpaConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VdpaConfigInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: VdpaConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VdpaConfigInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VdpaConfigInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.add-user-device': {
       $put:
         | {
-            input: { json: VmAddUserDevice }
+            input: { json: VmAddUserDeviceInput }
             output: PciDeviceInfo
             outputFormat: 'json'
             status: 200
           }
-        | { input: { json: VmAddUserDevice }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VmAddUserDevice }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: VmAddUserDevice }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VmAddUserDevice }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VmAddUserDeviceInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VmAddUserDeviceInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: VmAddUserDeviceInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VmAddUserDeviceInput }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/vm.snapshot': {
       $put:
-        | { input: { json: VmSnapshotConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VmSnapshotConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VmSnapshotConfig }; output: {}; outputFormat: string; status: 405 }
-        | { input: { json: VmSnapshotConfig }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VmSnapshotConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VmSnapshotConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VmSnapshotConfigInput }; output: {}; outputFormat: string; status: 405 }
+        | { input: { json: VmSnapshotConfigInput }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/vm.coredump': {
       $put:
-        | { input: { json: VmCoredumpData }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: VmCoredumpData }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: VmCoredumpData }; output: {}; outputFormat: string; status: 405 }
-        | { input: { json: VmCoredumpData }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: VmCoredumpDataInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: VmCoredumpDataInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: VmCoredumpDataInput }; output: {}; outputFormat: string; status: 405 }
+        | { input: { json: VmCoredumpDataInput }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/vm.nmi': {
@@ -657,24 +980,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/vm.restore': {
       $put:
-        | { input: { json: RestoreConfig }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: RestoreConfig }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: RestoreConfig }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: RestoreConfig }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: RestoreConfigInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: RestoreConfigInput }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: RestoreConfigInput }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: RestoreConfigInput }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/vm.receive-migration': {
       $put:
-        | { input: { json: ReceiveMigrationData }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: ReceiveMigrationData }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: ReceiveMigrationData }; output: {}; outputFormat: string; status: 500 }
+        | {
+            input: { json: ReceiveMigrationDataInput }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: ReceiveMigrationDataInput }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { json: ReceiveMigrationDataInput }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/vm.send-migration': {
       $put:
-        | { input: { json: SendMigrationData }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: SendMigrationData }; output: {}; outputFormat: string; status: 409 }
-        | { input: { json: SendMigrationData }; output: {}; outputFormat: string; status: 500 }
+        | { input: { json: SendMigrationDataInput }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: SendMigrationDataInput }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: SendMigrationDataInput }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/vm.cancel-migration': {

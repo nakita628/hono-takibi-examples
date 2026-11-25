@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   getTeamsRoute,
-  getTeamsTeamIdHeroesRoute,
+  getTeamsTeamIdRoute,
   getTeamsTeamIdMatchesRoute,
   getTeamsTeamIdPlayersRoute,
-  getTeamsTeamIdRoute,
+  getTeamsTeamIdHeroesRoute,
 } from '../routes'
 
 export const getTeamsRouteHandler: RouteHandler<typeof getTeamsRoute> = async (c) => {

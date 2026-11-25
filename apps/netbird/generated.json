@@ -6,9 +6,14 @@
     "config": "a1838b864d563ba538b8f493edd15ff8715aec631435adcf109dd9a047e28865",
     "sources": {
       "https://raw.githubusercontent.com/netbirdio/netbird/main/shared/management/http/api/openapi.yml": {
-        "etag": "W/\"2d7b06b5776e7722bfacf139fe70d30fcbcdd4d9ed0f85f78428d1cb6d71344f\"",
-        "sha256": "f3392d977b2fb705577dab609569cbdb14aae786e08aef249b41f46f8165f39b"
+        "etag": "W/\"5d57618dd66bf5448ee9a20e27d795747799accc765d8419ecafebbc59be425f\"",
+        "sha256": "73c2343bfd9776179360ce49eb78e8301bb4b57233997e18d0e2d29ec6237cdc"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.12",
+      "date": "2026-11-25",
+      "error": "Error parsing https://raw.githubusercontent.com/netbirdio/netbird/main/shared/management/http/api/openapi.yml: deficient indentation (2441:11)"
     }
   }
 }

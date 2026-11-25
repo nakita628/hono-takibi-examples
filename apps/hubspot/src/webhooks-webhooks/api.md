@@ -573,6 +573,7 @@ null
 |subscriptionId|path|integer(int32)|true|The unique identifier of the subscription to update.|
 |body|body|[SubscriptionPatchRequest](#schemasubscriptionpatchrequest)|true|none|
 |» active|body|boolean|false|A boolean indicating whether the subscription is active. If true, the subscription is active; if false, it is inactive.|
+|» enabled|body|boolean|false|none|
 
 > Example responses
 
@@ -2694,6 +2695,7 @@ null
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |active|boolean|false|none|A boolean indicating whether the subscription is active. If true, the subscription is active; if false, it is inactive.|
+|enabled|boolean|false|none|none|
 
 <h2 id="tocS_SubscriptionResponse">SubscriptionResponse</h2>
 <!-- backwards compatibility -->

@@ -1,6 +1,11 @@
 import { defineConfig } from 'hono-takibi'
 
 export default defineConfig({
+  // Generated from a downloaded copy of the document, with only `input` changed: when swagger-parser 13.1.0 reads
+  // it from a URL it throws `Cannot convert undefined or null to object` (lib/util.js, fixOasRelativeServers) on the
+  // `x-an-extension-null: null` entry under `paths` (nakita628/hono-takibi#654). The same file generates from disk, so
+  // `scripts/regen.sh` (which reads the URL) fails on it and keeps this output. hono-takibi 0.35.12 reads the `x-*`
+  // entries correctly (nakita628/hono-takibi#416).
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/extensionsEverywhere.yaml',
   output: './src/3-0-extensionseverywhere/routes.ts',
   template: { routeHandler: true },

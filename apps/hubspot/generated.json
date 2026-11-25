@@ -15,14 +15,15 @@
     }
   },
   "configs/account-audit-logs.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "bff805a76001f9db30e3bdb5698e15b3d7e7ce938df4b8c9f912085a4fa1a8af",
     "sources": {
       "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Account/Audit%20Logs/Rollouts/144923/2026-09/auditLogs.json": {
-        "etag": "W/\"1df9cd92561b921ca69e7e3438e9acd35acf1bdca2ced5fce3550390e8dd4039\"",
-        "sha256": "a72e651dd43b3a933a9393dc0b4e758b569993f527cb55af2469f9241e99648e"
+        "etag": "W/\"654aa56db6a90b7a71cb72a46cccf0d05a2f3a9f836df48be983c72ca2da2f6f\"",
+        "sha256": "6a70fdf4758816a3a51701421890302953ca06d121512a9990ac74f76deb9f2e",
+        "canonical": "2e69d69a79b7a939e76a479ec8c2558cf25eee0e7fa8708a50036c4f07c3d72d"
       }
     },
     "typecheck": {
@@ -45,14 +46,15 @@
     }
   },
   "configs/automation-actions-v4.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "480a00a4b397a57c9cd55fa9aa1f8a8864035fd03986a0c8812077da49d58c98",
     "sources": {
       "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Automation/Actions%20V4/Rollouts/148901/2026-09/actionsV4.json": {
-        "etag": "W/\"30a08e91797509c59097fd5246d6288a96ed3b4ce119eac48ca3443aab924f52\"",
-        "sha256": "0d17b5d8b20a65e0b83a059860a2490649c656474567149c1640eb690f89344b"
+        "etag": "W/\"fed049807dda6ba39b68a5aeb475af99ec50adf9b25d78bce0a20a844b05180d\"",
+        "sha256": "f73f21ffcd69b3354ea6cddd8e410cdb292da398a48087ac0387706ca35c4474",
+        "canonical": "9d35182b015a7f2a4186fcb38e9d718df57c869db21e88f1ade0822a0f9af538"
       }
     },
     "typecheck": {
@@ -267,14 +269,15 @@
     }
   },
   "configs/cms-url-mappings.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "9f5512122fd06da03ad1c338bdfc46e4f6f0d906e0f928aca3e7fe0bf0cf6eb4",
     "sources": {
       "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Url%20Mappings/Rollouts/149915/2026-09/urlMappings.json": {
-        "etag": "W/\"11c2035159d6a9bf2da331fe5288b208192fc7359066f4190537a648c356001d\"",
-        "sha256": "5ca8cce2666fb4c37aee65c4eeb342fd36c3604bafdc4b427de2eb47b2ad7bc1"
+        "etag": "W/\"9b72da6b144231814288cba23dad472e6329707dc7385cf936774f4bc3e859d4\"",
+        "sha256": "1782c5ee7ff6176ea5326d0acbf2b563b668eb0112abf3e1228ce440ae9e4fc7",
+        "canonical": "50ec3db520bec1fcc544273ace6c5b1abdf139752bc524f4e68fa4ad596f5738"
       }
     },
     "typecheck": {
@@ -372,14 +375,15 @@
     }
   },
   "configs/conversations-custom-channels.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "e59d942786c73f25276cc55eb1f2e91296dccc294e0747bebf223b06742b7f93",
     "sources": {
       "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Conversations/Custom%20Channels/Rollouts/160898/2026-09/customChannels.json": {
-        "etag": "W/\"4887ae0da0e613e9036cd129e47420a9e21e18c7359d236b6bc368eca58f1cd5\"",
-        "sha256": "105ab42b5c263ebf442587da061741032fc0be404646b82009104fd86bdf368d"
+        "etag": "W/\"bec01553fa6317fdf79d1e4e6c95c1f5a61c5eade659a30157a2b2135bf19077\"",
+        "sha256": "eebf33320711fbdc0bcd355a6ab66208a3a8174b1c1ec9b2e810bb01b81d76fd",
+        "canonical": "0186cc7fe7b1ef853f6af73f2edbe9ef297cbcd0482dece4fa229b8f9f4591d3"
       }
     },
     "typecheck": {
@@ -1647,14 +1651,15 @@
     }
   },
   "configs/webhooks-webhooks.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.12",
+    "date": "2026-11-25",
     "generated": true,
     "config": "11cc32c5e3bcba59acc858d28202df5c6c77b4ebed1b2e30a9156dbd7a90c33e",
     "sources": {
       "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Webhooks/Webhooks/Rollouts/147891/2026-09/webhooks.json": {
-        "etag": "W/\"1a7ad0e6b945fe4ab09de236d5991f9126c1f35aec7e0c4f0a3f9bd1e654cbb6\"",
-        "sha256": "75835773f8c4510cb61957b03586d1955e004c86545d61cb3b7b591beda6bacd"
+        "etag": "W/\"981945be69de78ba49b0f2e14089a777164b5d520b90871576e9bef4b187390b\"",
+        "sha256": "087188a6bf83ae774b28dca128a9db8685e7fee7dbd28c68ffd38d1bfc465544",
+        "canonical": "691ba7bfa9e2044ccaa73124050d7a6057aa0cd0ecb89e96aad3c7ab1d0b2ea1"
       }
     },
     "typecheck": {

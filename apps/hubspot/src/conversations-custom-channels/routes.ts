@@ -767,6 +767,7 @@ const PreResolvedContactSchema = z
             'hs_messaging_engagement_score',
             'hs_mobile_sdk_push_tokens',
             'hs_next_renewal_date',
+            'hs_normalized_email',
             'hs_notes_last_activity',
             'hs_notes_next_activity',
             'hs_notes_next_activity_type',

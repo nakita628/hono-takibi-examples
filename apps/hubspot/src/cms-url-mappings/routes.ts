@@ -442,10 +442,14 @@ const Oauth2SecurityScheme = {
     authorizationCode: {
       authorizationUrl: 'https://app.hubspot.com/oauth/authorize',
       tokenUrl: 'https://api.hubapi.com/oauth/v1/token',
-      scopes: { content: '' },
+      scopes: { 'cms.url_redirects.read': '', 'cms.url_redirects.write': '', content: '' },
     },
   },
-  'x-hubspot-app-availability': { content: { portal: ['public', 'private'], developer: false } },
+  'x-hubspot-app-availability': {
+    'cms.url_redirects.read': { portal: ['public', 'private'], developer: false },
+    'cms.url_redirects.write': { portal: ['public', 'private'], developer: false },
+    content: { portal: ['public', 'private'], developer: false },
+  },
 }
 
 export const getUrlMappings202609UrlMappingsRoute = createRoute({
@@ -468,7 +472,7 @@ export const getUrlMappings202609UrlMappingsRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['content'] }, { oauth2: ['cms.url_redirects.read'] }],
 })
 
 export const postUrlMappings202609UrlMappingsRoute = createRoute({
@@ -486,7 +490,7 @@ export const postUrlMappings202609UrlMappingsRoute = createRoute({
     },
   },
   responses: { default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.url_redirects.write'] }, { oauth2: ['content'] }],
 })
 
 export const getUrlMappings202609UrlMappingsIdRoute = createRoute({
@@ -529,7 +533,7 @@ export const getUrlMappings202609UrlMappingsIdRoute = createRoute({
     },
     default: ErrorResponse,
   },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['content'] }, { oauth2: ['cms.url_redirects.read'] }],
 })
 
 export const deleteUrlMappings202609UrlMappingsIdRoute = createRoute({
@@ -565,5 +569,5 @@ export const deleteUrlMappings202609UrlMappingsIdRoute = createRoute({
     }),
   },
   responses: { 204: { description: 'No content' }, default: ErrorResponse },
-  security: [{ oauth2: ['content'] }],
+  security: [{ oauth2: ['cms.url_redirects.write'] }, { oauth2: ['content'] }],
 })

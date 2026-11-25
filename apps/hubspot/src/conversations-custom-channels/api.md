@@ -1551,6 +1551,7 @@ null
 |contactPropertiesLeadingToMatch|hs_messaging_engagement_score|
 |contactPropertiesLeadingToMatch|hs_mobile_sdk_push_tokens|
 |contactPropertiesLeadingToMatch|hs_next_renewal_date|
+|contactPropertiesLeadingToMatch|hs_normalized_email|
 |contactPropertiesLeadingToMatch|hs_notes_last_activity|
 |contactPropertiesLeadingToMatch|hs_notes_next_activity|
 |contactPropertiesLeadingToMatch|hs_notes_next_activity_type|

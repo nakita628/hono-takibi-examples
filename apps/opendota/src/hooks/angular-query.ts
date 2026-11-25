@@ -1,17 +1,9 @@
-import {
-  injectQuery,
-  injectMutation,
-  queryOptions,
-  mutationOptions,
-} from '@tanstack/angular-query-experimental'
+import { injectQuery, injectMutation, queryOptions, mutationOptions } from '@tanstack/angular-query'
 import type {
   CreateQueryOptions,
   CreateMutationOptions,
   DefaultError,
-  InjectQueryOptions,
-  InjectInfiniteQueryOptions,
-  InjectMutationOptions,
-} from '@tanstack/angular-query-experimental'
+} from '@tanstack/angular-query'
 import type { ClientRequestOptions, InferRequestType } from 'hono/client'
 import { parseResponse } from 'hono/client'
 import { client } from '../client'
@@ -177,12 +169,11 @@ export function injectMatchesMatchId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMatchesMatchIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdQueryKey(
@@ -251,12 +242,11 @@ export function injectPlayersAccountId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getPlayersAccountIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdWlQueryKey(
@@ -331,12 +321,11 @@ export function injectPlayersAccountIdWl<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getPlayersAccountIdWlQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdRecentMatchesQueryKey(
@@ -411,7 +400,6 @@ export function injectPlayersAccountIdRecentMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -419,7 +407,7 @@ export function injectPlayersAccountIdRecentMatches<
       ...getPlayersAccountIdRecentMatchesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdMatchesQueryKey(
@@ -494,7 +482,6 @@ export function injectPlayersAccountIdMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -502,7 +489,7 @@ export function injectPlayersAccountIdMatches<
       ...getPlayersAccountIdMatchesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdHeroesQueryKey(
@@ -577,7 +564,6 @@ export function injectPlayersAccountIdHeroes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -585,7 +571,7 @@ export function injectPlayersAccountIdHeroes<
       ...getPlayersAccountIdHeroesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdPeersQueryKey(
@@ -660,7 +646,6 @@ export function injectPlayersAccountIdPeers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -668,7 +653,7 @@ export function injectPlayersAccountIdPeers<
       ...getPlayersAccountIdPeersQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdProsQueryKey(
@@ -743,7 +728,6 @@ export function injectPlayersAccountIdPros<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -751,7 +735,7 @@ export function injectPlayersAccountIdPros<
       ...getPlayersAccountIdProsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdTotalsQueryKey(
@@ -826,7 +810,6 @@ export function injectPlayersAccountIdTotals<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -834,7 +817,7 @@ export function injectPlayersAccountIdTotals<
       ...getPlayersAccountIdTotalsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdCountsQueryKey(
@@ -909,7 +892,6 @@ export function injectPlayersAccountIdCounts<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -917,7 +899,7 @@ export function injectPlayersAccountIdCounts<
       ...getPlayersAccountIdCountsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdHistogramsFieldQueryKey(
@@ -998,7 +980,6 @@ export function injectPlayersAccountIdHistogramsField<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1006,7 +987,7 @@ export function injectPlayersAccountIdHistogramsField<
       ...getPlayersAccountIdHistogramsFieldQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdWardmapQueryKey(
@@ -1081,7 +1062,6 @@ export function injectPlayersAccountIdWardmap<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1089,7 +1069,7 @@ export function injectPlayersAccountIdWardmap<
       ...getPlayersAccountIdWardmapQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdWordcloudQueryKey(
@@ -1164,7 +1144,6 @@ export function injectPlayersAccountIdWordcloud<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1172,7 +1151,7 @@ export function injectPlayersAccountIdWordcloud<
       ...getPlayersAccountIdWordcloudQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdRatingsQueryKey(
@@ -1247,7 +1226,6 @@ export function injectPlayersAccountIdRatings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1255,7 +1233,7 @@ export function injectPlayersAccountIdRatings<
       ...getPlayersAccountIdRatingsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPlayersAccountIdRankingsQueryKey(
@@ -1330,7 +1308,6 @@ export function injectPlayersAccountIdRankings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -1338,7 +1315,7 @@ export function injectPlayersAccountIdRankings<
       ...getPlayersAccountIdRankingsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getPostPlayersAccountIdRefreshMutationKey() {
@@ -1389,7 +1366,6 @@ export function injectPostPlayersAccountIdRefresh<TError = DefaultError, TOnMuta
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -1401,7 +1377,7 @@ export function injectPostPlayersAccountIdRefresh<TError = DefaultError, TOnMuta
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTopPlayersQueryKey(args: InferRequestType<typeof client.topPlayers.$get>) {
@@ -1450,12 +1426,11 @@ export function injectTopPlayers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTopPlayersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getProPlayersQueryKey() {
@@ -1503,12 +1478,11 @@ export function injectProPlayers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getProPlayersQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getProMatchesQueryKey(args: InferRequestType<typeof client.proMatches.$get>) {
@@ -1557,12 +1531,11 @@ export function injectProMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getProMatchesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPublicMatchesQueryKey(args: InferRequestType<typeof client.publicMatches.$get>) {
@@ -1613,12 +1586,11 @@ export function injectPublicMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getPublicMatchesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getParsedMatchesQueryKey(args: InferRequestType<typeof client.parsedMatches.$get>) {
@@ -1669,12 +1641,11 @@ export function injectParsedMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getParsedMatchesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getExplorerQueryKey(args: InferRequestType<typeof client.explorer.$get>) {
@@ -1721,12 +1692,11 @@ export function injectExplorer<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getExplorerQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getMetadataQueryKey() {
@@ -1772,12 +1742,11 @@ export function injectMetadata<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getMetadataQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getDistributionsQueryKey() {
@@ -1827,12 +1796,11 @@ export function injectDistributions<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getDistributionsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSearchQueryKey(args: InferRequestType<typeof client.search.$get>) {
@@ -1875,12 +1843,11 @@ export function injectSearch<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSearchQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getRankingsQueryKey(args: InferRequestType<typeof client.rankings.$get>) {
@@ -1927,12 +1894,11 @@ export function injectRankings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRankingsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getBenchmarksQueryKey(args: InferRequestType<typeof client.benchmarks.$get>) {
@@ -1981,12 +1947,11 @@ export function injectBenchmarks<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getBenchmarksQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHealthQueryKey() {
@@ -2028,12 +1993,11 @@ export function injectHealth<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getHealthQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getRequestJobIdQueryKey(
@@ -2093,12 +2057,11 @@ export function injectRequestJobId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRequestJobIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getPostRequestMatchIdMutationKey() {
@@ -2143,7 +2106,6 @@ export function injectPostRequestMatchId<TError = DefaultError, TOnMutateResult 
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectMutationOptions,
 ) {
   return injectMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
@@ -2155,7 +2117,7 @@ export function injectPostRequestMatchId<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
-  }, injectOptions)
+  })
 }
 
 export function getFindMatchesQueryKey(args: InferRequestType<typeof client.findMatches.$get>) {
@@ -2204,12 +2166,11 @@ export function injectFindMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getFindMatchesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHeroesQueryKey() {
@@ -2251,12 +2212,11 @@ export function injectHeroes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getHeroesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHeroStatsQueryKey() {
@@ -2304,12 +2264,11 @@ export function injectHeroStats<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getHeroStatsQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHeroesHeroIdMatchesQueryKey(
@@ -2384,12 +2343,11 @@ export function injectHeroesHeroIdMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getHeroesHeroIdMatchesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHeroesHeroIdMatchupsQueryKey(
@@ -2464,7 +2422,6 @@ export function injectHeroesHeroIdMatchups<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2472,7 +2429,7 @@ export function injectHeroesHeroIdMatchups<
       ...getHeroesHeroIdMatchupsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHeroesHeroIdDurationsQueryKey(
@@ -2547,7 +2504,6 @@ export function injectHeroesHeroIdDurations<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2555,7 +2511,7 @@ export function injectHeroesHeroIdDurations<
       ...getHeroesHeroIdDurationsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getHeroesHeroIdPlayersQueryKey(
@@ -2630,12 +2586,11 @@ export function injectHeroesHeroIdPlayers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getHeroesHeroIdPlayersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getHeroesHeroIdItemPopularityQueryKey(
@@ -2710,7 +2665,6 @@ export function injectHeroesHeroIdItemPopularity<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2718,7 +2672,7 @@ export function injectHeroesHeroIdItemPopularity<
       ...getHeroesHeroIdItemPopularityQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getLeaguesQueryKey() {
@@ -2764,12 +2718,11 @@ export function injectLeagues<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLeaguesQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getLeaguesLeagueIdQueryKey(
@@ -2833,12 +2786,11 @@ export function injectLeaguesLeagueId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLeaguesLeagueIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getLeaguesLeagueIdMatchesQueryKey(
@@ -2913,7 +2865,6 @@ export function injectLeaguesLeagueIdMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -2921,7 +2872,7 @@ export function injectLeaguesLeagueIdMatches<
       ...getLeaguesLeagueIdMatchesQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getLeaguesLeagueIdMatchIdsQueryKey(
@@ -2996,7 +2947,6 @@ export function injectLeaguesLeagueIdMatchIds<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3004,7 +2954,7 @@ export function injectLeaguesLeagueIdMatchIds<
       ...getLeaguesLeagueIdMatchIdsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getLeaguesLeagueIdTeamsQueryKey(
@@ -3079,7 +3029,6 @@ export function injectLeaguesLeagueIdTeams<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3087,7 +3036,7 @@ export function injectLeaguesLeagueIdTeams<
       ...getLeaguesLeagueIdTeamsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getTeamsQueryKey(args: InferRequestType<typeof client.teams.$get>) {
@@ -3130,12 +3079,11 @@ export function injectTeams<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTeamsQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTeamsTeamIdQueryKey(
@@ -3195,12 +3143,11 @@ export function injectTeamsTeamId<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTeamsTeamIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTeamsTeamIdMatchesQueryKey(
@@ -3275,12 +3222,11 @@ export function injectTeamsTeamIdMatches<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTeamsTeamIdMatchesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTeamsTeamIdPlayersQueryKey(
@@ -3355,12 +3301,11 @@ export function injectTeamsTeamIdPlayers<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTeamsTeamIdPlayersQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getTeamsTeamIdHeroesQueryKey(
@@ -3431,12 +3376,11 @@ export function injectTeamsTeamIdHeroes<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getTeamsTeamIdHeroesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getRecordsFieldQueryKey(
@@ -3496,12 +3440,11 @@ export function injectRecordsField<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getRecordsFieldQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getLiveQueryKey() {
@@ -3543,12 +3486,11 @@ export function injectLive<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getLiveQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getScenariosItemTimingsQueryKey(
@@ -3608,7 +3550,6 @@ export function injectScenariosItemTimings<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
@@ -3616,7 +3557,7 @@ export function injectScenariosItemTimings<
       ...getScenariosItemTimingsQueryOptions<TData, TError>(args(), clientOptions),
       ...query,
     }
-  }, injectOptions)
+  })
 }
 
 export function getScenariosLaneRolesQueryKey(
@@ -3671,12 +3612,11 @@ export function injectScenariosLaneRoles<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getScenariosLaneRolesQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getScenariosMiscQueryKey(
@@ -3729,12 +3669,11 @@ export function injectScenariosMisc<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getScenariosMiscQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getSchemaQueryKey() {
@@ -3776,12 +3715,11 @@ export function injectSchema<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getSchemaQueryOptions<TData, TError>(clientOptions), ...query }
-  }, injectOptions)
+  })
 }
 
 export function getConstantsResourceQueryKey(
@@ -3850,10 +3788,9 @@ export function injectConstantsResource<
     >
     options?: ClientRequestOptions
   },
-  injectOptions?: InjectQueryOptions,
 ) {
   return injectQuery(() => {
     const { query, options: clientOptions } = options?.() ?? {}
     return { ...getConstantsResourceQueryOptions<TData, TError>(args(), clientOptions), ...query }
-  }, injectOptions)
+  })
 }

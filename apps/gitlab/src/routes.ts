@@ -1014,6 +1014,14 @@ const APIEntitiesAuthnTokenExchangeSchema = z
       .openapi({ example: 'urn:ietf:params:oauth:token-type:jwt' }),
     token_type: z.string().exactOptional().openapi({ example: 'Bearer' }),
     expires_in: z.int().exactOptional().openapi({ example: 300 }),
+    scope: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The actions granted on the resource. Only for an audience bound to a resource.',
+        example: 'read write',
+      }),
     token: z
       .string()
       .exactOptional()
@@ -1138,6 +1146,10 @@ const APIEntitiesAiDuoWorkflowsWorkflowSchema = z
       .int()
       .exactOptional()
       .openapi({ description: 'ID of the associated namespace. `null` if not set.' }),
+    service_account_id: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'ID of the service account the flow runs as. `null` if not set.' }),
     agent_privileges: z
       .array(z.int())
       .exactOptional()
@@ -1736,6 +1748,39 @@ const APIEntitiesIterationSchema = z
   .openapi({ required: [] })
   .openapi('APIEntitiesIteration')
 
+const APIEntitiesDependenciesVulnerabilitiesSchema = z
+  .object({
+    occurrence_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64' }),
+    name: z.string().exactOptional(),
+    url: z.string().exactOptional(),
+    severity: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('APIEntitiesDependenciesVulnerabilities')
+
 const APIEntitiesSamlGroupLinkSchema = z
   .object({
     name: z
@@ -2296,13 +2341,16 @@ const APIEntitiesNamespaceRootStorageStatisticsSchema = z
     container_registry_size: z
       .int()
       .exactOptional()
-      .openapi({ description: 'container registry size in bytes.' }),
+      .openapi({
+        description:
+          'Total storage size in bytes used by all container repositories in the group and its subgroups. `0` when the container registry metadata database is not enabled.',
+      }),
     container_registry_size_is_estimated: z
       .boolean()
       .exactOptional()
       .openapi({
         description:
-          'Indicates whether the deduplicated container registry size for the namespace is an estimated value or not.',
+          'Indicates whether the deduplicated container registry size for the namespace is an estimated value or not. `true` when the size is estimated due to performance constraints.',
       }),
     dependency_proxy_size: z
       .int()
@@ -2473,6 +2521,20 @@ const APIEntitiesGroupSchema = z
       .openapi({
         description:
           'If `true`, the GitLab Duo features enabled setting is enforced for all subgroups. Premium and Ultimate only.',
+      }),
+    duo_code_suggestions_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, GitLab Duo Code Suggestions is turned on for the group. Premium and Ultimate only.',
+      }),
+    lock_duo_code_suggestions_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, the Code Suggestions enabled setting is enforced for all subgroups. Premium and Ultimate only.',
       }),
     auto_duo_code_review_enabled: z.string().exactOptional(),
     duo_code_review_level_allowed: z.boolean().exactOptional(),
@@ -3293,7 +3355,7 @@ const VulnerabilitiesMergeRequestLinkEntitySchema = z
 
 const VulnerabilitiesRequestEntitySchema = z
   .object({
-    headers: z.string().exactOptional(),
+    headers: z.array(z.looseObject({})).exactOptional(),
     method: z.string().exactOptional(),
     url: z.string().exactOptional(),
     body: z.string().exactOptional(),
@@ -3303,7 +3365,7 @@ const VulnerabilitiesRequestEntitySchema = z
 
 const VulnerabilitiesResponseEntitySchema = z
   .object({
-    headers: z.string().exactOptional(),
+    headers: z.array(z.looseObject({})).exactOptional(),
     reason_phrase: z.string().exactOptional(),
     status_code: z.string().exactOptional(),
     body: z.string().exactOptional(),
@@ -3336,9 +3398,9 @@ const VulnerabilitiesFindingEntitySchema = z
     merge_request_links: z.array(VulnerabilitiesMergeRequestLinkEntitySchema).exactOptional(),
     description: z.string().exactOptional(),
     description_html: z.string().exactOptional(),
-    links: z.string().exactOptional(),
+    links: z.array(z.looseObject({})).exactOptional(),
     location: z.string().exactOptional(),
-    remediations: z.string().exactOptional(),
+    remediations: z.array(z.looseObject({})).exactOptional(),
     solution: z.string().exactOptional(),
     evidence: z.string().exactOptional(),
     request: VulnerabilitiesRequestEntitySchema.exactOptional(),
@@ -7043,6 +7105,14 @@ const APIEntitiesEpicIssueLinkSchema = z
   .openapi({ required: [] })
   .openapi('APIEntitiesEpicIssueLink')
 
+const APIEntitiesDoraMetricSchema = z
+  .object({
+    date: z.iso.date().exactOptional().openapi({ example: '2021-03-01' }),
+    value: z.number().exactOptional().openapi({ example: 3 }),
+  })
+  .openapi({ required: [] })
+  .openapi('APIEntitiesDoraMetric')
+
 const APIEntitiesProtectedBranchSchema = z
   .object({
     id: z
@@ -8308,13 +8378,29 @@ const APIEntitiesAiSuggestedReviewerSchema = z
 
 const APIEntitiesAdminModelSchema = z
   .object({
-    record_identifier: z.xor([z.string(), z.int()]).exactOptional().openapi({ example: 'abc123' }),
-    model_class: z.string().exactOptional().openapi({ example: 'Project' }),
+    record_identifier: z
+      .xor([z.string(), z.int()])
+      .exactOptional()
+      .openapi({
+        description:
+          'Unique identifier of the record. An integer for single-column primary keys, or a Base64-encoded string for composite keys.',
+        example: 'abc123',
+      }),
+    model_class: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Class name of the model.', example: 'Project' }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
-      .openapi({ example: '2025-01-31T15:10:45.080Z' }),
-    file_size: z.int().exactOptional().openapi({ example: 123 }),
+      .openapi({
+        description: 'Creation timestamp, if available.',
+        example: '2025-01-31T15:10:45.080Z',
+      }),
+    file_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Size of the object, if available.', example: 123 }),
     checksum_information: z
       .object({
         checksum: z.string().exactOptional(),
@@ -8325,7 +8411,11 @@ const APIEntitiesAdminModelSchema = z
         checksum_failure: z.string().exactOptional(),
       })
       .exactOptional()
-      .openapi({ required: [] }),
+      .openapi({
+        description:
+          'Geo checksum information. Returned only when Geo is enabled and verification is enabled for the model.',
+        required: [],
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesAdminModel')
@@ -8384,22 +8474,43 @@ const APIEntitiesAnalyticsKnowledgeGraphEnabledNamespaceSchema = z
 
 const APIEntitiesSearchMigrationSchema = z
   .object({
-    version: z.int().exactOptional().openapi({ example: 20230427555555 }),
-    name: z.string().exactOptional().openapi({ example: 'BackfillHiddenOnMergeRequests' }),
+    version: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Version of the migration.', example: 20230427555555 }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the migration.', example: 'BackfillHiddenOnMergeRequests' }),
     started_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
-      .openapi({ example: '2023-05-14T12:30:50.355Z' }),
+      .openapi({
+        description: 'Start date for the migration.',
+        example: '2023-05-14T12:30:50.355Z',
+      }),
     completed_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
-      .openapi({ example: '2023-05-16T12:30:50.355Z' }),
-    completed: z.boolean().exactOptional().openapi({ example: true }),
-    obsolete: z.boolean().exactOptional().openapi({ example: false }),
+      .openapi({
+        description: 'Completion date for the migration.',
+        example: '2023-05-16T12:30:50.355Z',
+      }),
+    completed: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If `true`, the migration is completed.', example: true }),
+    obsolete: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, the migration has been marked as obsolete.',
+        example: false,
+      }),
     migration_state: z
       .looseObject({})
       .exactOptional()
-      .openapi({ example: { task_id: 'task_id' } }),
+      .openapi({ description: 'Stored migration state.', example: { task_id: 'task_id' } }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesSearchMigration')
@@ -8529,14 +8640,32 @@ const APIEntitiesAiActiveContextCodeEnabledNamespaceSchema = z
 
 const APIEntitiesLicenseBasicSchema = z
   .object({
-    key: z.string().exactOptional().openapi({ example: 'gpl-3.0' }),
-    name: z.string().exactOptional().openapi({ example: 'GNU General Public License v3.0' }),
-    nickname: z.string().exactOptional().openapi({ example: 'GNU GPLv3' }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Key of the license.', example: 'gpl-3.0' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Full name of the license.',
+        example: 'GNU General Public License v3.0',
+      }),
+    nickname: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Nickname of the license.', example: 'GNU GPLv3' }),
     html_url: z
       .string()
       .exactOptional()
-      .openapi({ example: 'http://choosealicense.com/licenses/gpl-3.0' }),
-    source_url: z.string().exactOptional(),
+      .openapi({
+        description: 'URL of the license information page.',
+        example: 'http://choosealicense.com/licenses/gpl-3.0',
+      }),
+    source_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL of the license source. Always `null`.' }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesLicenseBasic')
@@ -9770,7 +9899,13 @@ const APIEntitiesApplicationWithSecretSchema = z
       .array(z.any())
       .exactOptional()
       .openapi({ example: ['api', 'read_user'] }),
-    granular_scopes: z.array(APIEntitiesGranularScopeSchema).exactOptional(),
+    granular_scopes: z
+      .array(APIEntitiesGranularScopeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Granular scopes stored on the application, each with `access`, `permissions`, `group_id`, and `project_id`.',
+      }),
     secret: z
       .string()
       .exactOptional()
@@ -9779,6 +9914,8 @@ const APIEntitiesApplicationWithSecretSchema = z
       .array(z.string())
       .exactOptional()
       .openapi({
+        description:
+          'Warnings returned when no `user` scope grants `execute_mcp_tool`. Tokens for such an application cannot use the GitLab MCP server.',
         example: [
           'Tokens cannot use the MCP server without a user-level scope granting execute_mcp_tool.',
         ],
@@ -9812,7 +9949,13 @@ const APIEntitiesApplicationSchema = z
       .array(z.any())
       .exactOptional()
       .openapi({ example: ['api', 'read_user'] }),
-    granular_scopes: z.array(APIEntitiesGranularScopeSchema).exactOptional(),
+    granular_scopes: z
+      .array(APIEntitiesGranularScopeSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'Granular scopes stored on the application, each with `access`, `permissions`, `group_id`, and `project_id`.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesApplication')
@@ -9857,29 +10000,56 @@ const APIEntitiesTodoSchema = z
 
 const APIEntitiesLicenseSchema = z
   .object({
-    key: z.string().exactOptional().openapi({ example: 'gpl-3.0' }),
-    name: z.string().exactOptional().openapi({ example: 'GNU General Public License v3.0' }),
-    nickname: z.string().exactOptional().openapi({ example: 'GNU GPLv3' }),
+    key: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Key of the license.', example: 'gpl-3.0' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Full name of the license.',
+        example: 'GNU General Public License v3.0',
+      }),
+    nickname: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Nickname of the license.', example: 'GNU GPLv3' }),
     html_url: z
       .string()
       .exactOptional()
-      .openapi({ example: 'http://choosealicense.com/licenses/gpl-3.0' }),
-    source_url: z.string().exactOptional(),
-    popular: z.boolean().exactOptional(),
-    description: z.string().exactOptional().openapi({ example: 'A simple license' }),
+      .openapi({
+        description: 'URL of the license information page.',
+        example: 'http://choosealicense.com/licenses/gpl-3.0',
+      }),
+    source_url: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'URL of the license source. Always `null`.' }),
+    popular: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If `true`, the license is a popular license.' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the license.', example: 'A simple license' }),
     conditions: z
       .array(z.string())
       .exactOptional()
-      .openapi({ example: ['include-copyright'] }),
+      .openapi({ description: 'Conditions of the license.', example: ['include-copyright'] }),
     permissions: z
       .array(z.string())
       .exactOptional()
-      .openapi({ example: ['commercial-use'] }),
+      .openapi({ description: 'Permissions the license grants.', example: ['commercial-use'] }),
     limitations: z
       .array(z.string())
       .exactOptional()
-      .openapi({ example: ['liability'] }),
-    content: z.string().exactOptional().openapi({ example: 'GNU GENERAL PUBLIC LICENSE' }),
+      .openapi({ description: 'Limitations of the license.', example: ['liability'] }),
+    content: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Content of the template.', example: 'GNU GENERAL PUBLIC LICENSE' }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesLicense')
@@ -10269,7 +10439,7 @@ const APIEntitiesApplicationSettingSchema = z
     archive_builds_in_human_readable: z.string().exactOptional(),
     asset_proxy_enabled: z.string().exactOptional(),
     asset_proxy_url: z.string().exactOptional(),
-    asset_proxy_allowlist: z.string().exactOptional(),
+    asset_proxy_allowlist: z.array(z.string()).exactOptional(),
     static_objects_external_storage_auth_token: z.string().exactOptional(),
     static_objects_external_storage_url: z.string().exactOptional(),
     authn_data_retention_cleanup_enabled: z.string().exactOptional(),
@@ -10285,7 +10455,7 @@ const APIEntitiesApplicationSettingSchema = z
     ci_job_trace_update_interval_when_being_watched: z.int().exactOptional(),
     ci_lint_api_require_authentication: z.string().exactOptional(),
     ci_partitions_in_seconds_limit_human_readable: z.string().exactOptional(),
-    code_dropdown_custom_clients: z.string().exactOptional(),
+    code_dropdown_custom_clients: z.array(z.looseObject({})).exactOptional(),
     concurrent_github_import_jobs_limit: z.string().exactOptional(),
     concurrent_bitbucket_import_jobs_limit: z.string().exactOptional(),
     concurrent_bitbucket_server_import_jobs_limit: z.string().exactOptional(),
@@ -10299,7 +10469,7 @@ const APIEntitiesApplicationSettingSchema = z
     default_artifacts_expire_in: z.string().exactOptional(),
     default_branch_name: z.string().exactOptional(),
     default_branch_protection: z.string().exactOptional(),
-    default_branch_protection_defaults: z.string().exactOptional(),
+    default_branch_protection_defaults: z.looseObject({}).exactOptional(),
     default_ci_config_path: z.string().exactOptional(),
     default_group_visibility: z.string().exactOptional(),
     default_preferred_language: z.string().exactOptional(),
@@ -10313,20 +10483,20 @@ const APIEntitiesApplicationSettingSchema = z
     delete_inactive_projects: z.string().exactOptional(),
     deletion_adjourned_period: z.string().exactOptional(),
     deny_all_requests_except_allowed: z.string().exactOptional(),
-    dependency_management_settings: z.string().exactOptional(),
+    dependency_management_settings: z.looseObject({}).exactOptional(),
     disable_admin_oauth_scopes: z.string().exactOptional(),
     disable_feed_token: z.string().exactOptional(),
     disable_password_authentication_for_users_with_sso_identities: z.string().exactOptional(),
     block_jwt_for_reclaimed_paths: z.string().exactOptional(),
     root_moved_permanently_redirection: z.string().exactOptional(),
-    disabled_oauth_sign_in_sources: z.string().exactOptional(),
-    domain_denylist: z.string().exactOptional(),
+    disabled_oauth_sign_in_sources: z.array(z.string()).exactOptional(),
+    domain_denylist: z.array(z.string()).exactOptional(),
     domain_denylist_enabled: z.string().exactOptional(),
     domain_denylist_raw: z.string().exactOptional(),
-    domain_allowlist: z.string().exactOptional(),
+    domain_allowlist: z.array(z.string()).exactOptional(),
     domain_allowlist_raw: z.string().exactOptional(),
     outbound_local_requests_allowlist_raw: z.string().exactOptional(),
-    outbound_local_requests_whitelist: z.string().exactOptional(),
+    outbound_local_requests_whitelist: z.array(z.string()).exactOptional(),
     dsa_key_restriction: z.string().exactOptional(),
     ecdsa_key_restriction: z.string().exactOptional(),
     ecdsa_sk_key_restriction: z.string().exactOptional(),
@@ -10374,9 +10544,9 @@ const APIEntitiesApplicationSettingSchema = z
     housekeeping_optimize_repository_period: z.string().exactOptional(),
     html_emails_enabled: z.string().exactOptional(),
     iframe_rendering_enabled: z.string().exactOptional(),
-    iframe_rendering_allowlist: z.string().exactOptional(),
+    iframe_rendering_allowlist: z.array(z.string()).exactOptional(),
     iframe_rendering_allowlist_raw: z.string().exactOptional(),
-    import_sources: z.string().exactOptional(),
+    import_sources: z.array(z.string()).exactOptional(),
     inactive_resource_access_tokens_delete_after_days: z.string().exactOptional(),
     inactive_projects_delete_after_months: z.string().exactOptional(),
     inactive_projects_min_size_mb: z.string().exactOptional(),
@@ -10387,7 +10557,7 @@ const APIEntitiesApplicationSettingSchema = z
     jira_connect_public_key_storage_enabled: z.string().exactOptional(),
     jira_connect_proxy_url: z.string().exactOptional(),
     jira_connect_additional_audience_url: z.string().exactOptional(),
-    jira_connect_domain_allowlist: z.string().exactOptional(),
+    jira_connect_domain_allowlist: z.array(z.string()).exactOptional(),
     jira_connect_domain_allowlist_raw: z.string().exactOptional(),
     jira_forge_app_id: z.string().exactOptional(),
     math_rendering_limits_enabled: z.string().exactOptional(),
@@ -10429,7 +10599,7 @@ const APIEntitiesApplicationSettingSchema = z
     instance_token_prefix: z.string().exactOptional(),
     kroki_enabled: z.string().exactOptional(),
     kroki_url: z.string().exactOptional(),
-    kroki_formats: z.string().exactOptional(),
+    kroki_formats: z.looseObject({}).exactOptional(),
     kroki_diagram_proxy_enabled: z.string().exactOptional(),
     plantuml_enabled: z.string().exactOptional(),
     plantuml_url: z.string().exactOptional(),
@@ -10450,13 +10620,13 @@ const APIEntitiesApplicationSettingSchema = z
     require_admin_two_factor_authentication: z.string().exactOptional(),
     require_two_factor_authentication: z.string().exactOptional(),
     remember_me_enabled: z.string().exactOptional(),
-    restricted_visibility_levels: z.string().exactOptional(),
+    restricted_visibility_levels: z.array(z.string()).exactOptional(),
     rsa_key_restriction: z.string().exactOptional(),
     session_expire_delay: z.string().exactOptional(),
     session_expire_from_init: z.string().exactOptional(),
     shared_runners_enabled: z.string().exactOptional(),
     shared_runners_text: z.string().exactOptional(),
-    sign_in_restrictions: z.string().exactOptional(),
+    sign_in_restrictions: z.looseObject({}).exactOptional(),
     signup_enabled: z.string().exactOptional(),
     silent_mode_enabled: z.string().exactOptional(),
     slack_app_enabled: z.string().exactOptional(),
@@ -10648,7 +10818,7 @@ const APIEntitiesApplicationSettingSchema = z
     offline_transfer_exports_enabled: z.string().exactOptional(),
     offline_transfer_imports_enabled: z.string().exactOptional(),
     allow_runner_registration_token: z.string().exactOptional(),
-    valid_runner_registrars: z.string().exactOptional(),
+    valid_runner_registrars: z.array(z.string()).exactOptional(),
     user_defaults_to_private_profile: z.string().exactOptional(),
     deactivation_email_additional_text: z.string().exactOptional(),
     projects_api_rate_limit_unauthenticated: z.string().exactOptional(),
@@ -10680,6 +10850,7 @@ const APIEntitiesApplicationSettingSchema = z
     project_members_api_limit: z.string().exactOptional(),
     protected_branch_write_limit: z.string().exactOptional(),
     create_organization_api_limit: z.string().exactOptional(),
+    delete_merged_branches_limit: z.string().exactOptional(),
     cross_reference_checks_limit: z.string().exactOptional(),
     user_contributed_projects_api_limit: z.string().exactOptional(),
     user_projects_api_limit: z.string().exactOptional(),
@@ -10701,6 +10872,7 @@ const APIEntitiesApplicationSettingSchema = z
     wiki_read_request_limit_unauthenticated: z.string().exactOptional(),
     merge_request_diffs_page_request_limit: z.string().exactOptional(),
     merge_request_diff_resources_request_limit: z.string().exactOptional(),
+    graphql_participant_fields_request_limit: z.string().exactOptional(),
     work_item_hierarchy_add_children_limit: z.string().exactOptional(),
     work_item_move_limit: z.string().exactOptional(),
     work_item_update_limit: z.string().exactOptional(),
@@ -10754,7 +10926,7 @@ const APIEntitiesApplicationSettingSchema = z
     global_search_block_anonymous_searches_enabled: z.string().exactOptional(),
     enable_language_server_restrictions: z.string().exactOptional(),
     minimum_language_server_version: z.string().exactOptional(),
-    vscode_extension_marketplace: z.string().exactOptional(),
+    vscode_extension_marketplace: z.looseObject({}).exactOptional(),
     vscode_extension_marketplace_enabled: z.string().exactOptional(),
     vscode_extension_marketplace_extension_host_domain: z.string().exactOptional(),
     vscode_extension_marketplace_single_origin_fallback_enabled: z.string().exactOptional(),
@@ -10764,7 +10936,7 @@ const APIEntitiesApplicationSettingSchema = z
     default_search_scope: z.string().exactOptional(),
     git_push_pipeline_limit: z.string().exactOptional(),
     delay_user_account_self_deletion: z.string().exactOptional(),
-    resource_usage_limits: z.string().exactOptional(),
+    resource_usage_limits: z.looseObject({}).exactOptional(),
     runner_jobs_request_api_limit: z.string().exactOptional(),
     runner_jobs_patch_trace_api_limit: z.string().exactOptional(),
     runner_jobs_endpoints_api_limit: z.string().exactOptional(),
@@ -10785,11 +10957,11 @@ const APIEntitiesApplicationSettingSchema = z
     dynamic_client_registration_enabled: z.string().exactOptional(),
     active_context_pause_indexing: z.string().exactOptional(),
     allow_all_integrations: z.string().exactOptional(),
-    allowed_integrations: z.string().exactOptional(),
+    allowed_integrations: z.array(z.string()).exactOptional(),
     allow_group_owners_to_manage_ldap: z.string().exactOptional(),
     automatic_purchased_storage_allocation: z.string().exactOptional(),
     check_namespace_plan: z.string().exactOptional(),
-    ci_cd_catalog_projects_allowlist: z.string().exactOptional(),
+    ci_cd_catalog_projects_allowlist: z.array(z.string()).exactOptional(),
     ci_cd_catalog_projects_allowlist_raw: z.string().exactOptional(),
     duo_chat_expiration_column: z.string().exactOptional(),
     duo_chat_expiration_days: z.string().exactOptional(),
@@ -10810,15 +10982,15 @@ const APIEntitiesApplicationSettingSchema = z
     elasticsearch_max_bulk_concurrency: z.string().exactOptional(),
     elasticsearch_max_bulk_size_mb: z.string().exactOptional(),
     elasticsearch_max_code_indexing_concurrency: z.string().exactOptional(),
-    elasticsearch_namespace_ids: z.string().exactOptional(),
+    elasticsearch_namespace_ids: z.array(z.int()).exactOptional(),
     elasticsearch_pause_indexing: z.string().exactOptional(),
     elasticsearch_advanced_search_pause_indexing: z.string().exactOptional(),
-    elasticsearch_project_ids: z.string().exactOptional(),
+    elasticsearch_project_ids: z.array(z.int()).exactOptional(),
     elasticsearch_retry_on_failure: z.string().exactOptional(),
     elasticsearch_replicas: z.string().exactOptional(),
     elasticsearch_search: z.string().exactOptional(),
     elasticsearch_shards: z.string().exactOptional(),
-    elasticsearch_url: z.string().exactOptional(),
+    elasticsearch_url: z.array(z.string()).exactOptional(),
     elasticsearch_username: z.string().exactOptional(),
     elasticsearch_password: z.string().exactOptional(),
     elasticsearch_analyzers_smartcn_enabled: z.string().exactOptional(),
@@ -10846,7 +11018,7 @@ const APIEntitiesApplicationSettingSchema = z
     throttle_incident_management_notification_enabled: z.string().exactOptional(),
     throttle_incident_management_notification_per_period: z.string().exactOptional(),
     throttle_incident_management_notification_period_in_seconds: z.string().exactOptional(),
-    package_metadata_purl_types: z.string().exactOptional(),
+    package_metadata_purl_types: z.array(z.int()).exactOptional(),
     product_analytics_enabled: z.string().exactOptional(),
     product_analytics_data_collector_host: z.string().exactOptional(),
     product_analytics_configurator_connection_string: z.string().exactOptional(),
@@ -10862,13 +11034,15 @@ const APIEntitiesApplicationSettingSchema = z
     ai_audit_events_streaming_enabled: z.boolean().exactOptional(),
     duo_token_usage_tracking_enabled: z.boolean().exactOptional(),
     duo_workflow_file_attachments_enabled: z.boolean().exactOptional(),
-    duo_namespace_access_rules: z.string().exactOptional(),
+    duo_namespace_access_rules: z.array(z.looseObject({})).exactOptional(),
     duo_remote_flows_enabled: z.string().exactOptional(),
     duo_remote_flows_availability: z.string().exactOptional(),
     duo_foundational_flows_enabled: z.string().exactOptional(),
     duo_foundational_flows_availability: z.string().exactOptional(),
     duo_scheduled_automations_enabled: z.string().exactOptional(),
     duo_scheduled_automations_availability: z.string().exactOptional(),
+    duo_code_suggestions_enabled: z.boolean().exactOptional(),
+    duo_code_suggestions_availability: z.string().exactOptional(),
     duo_custom_agents_enabled: z.boolean().exactOptional(),
     duo_custom_agents_availability: z.string().exactOptional(),
     duo_custom_flows_enabled: z.boolean().exactOptional(),
@@ -10881,7 +11055,7 @@ const APIEntitiesApplicationSettingSchema = z
     duo_auto_mode_availability: z.string().exactOptional(),
     enabled_expanded_logging: z.string().exactOptional(),
     foundational_agents_default_enabled: z.string().exactOptional(),
-    foundational_agents_statuses: z.string().exactOptional(),
+    foundational_agents_statuses: z.array(z.looseObject({})).exactOptional(),
     zoekt_indexing_enabled: z.string().exactOptional(),
     zoekt_search_enabled: z.string().exactOptional(),
     zoekt_indexing_paused: z.string().exactOptional(),
@@ -10927,6 +11101,8 @@ const APIEntitiesApplicationSettingSchema = z
     credits_usage_per_minute_limit: z.string().exactOptional(),
     credits_usage_per_hour_limit: z.string().exactOptional(),
     credits_usage_per_day_limit: z.string().exactOptional(),
+    ci_minutes_usage_projects_per_minute_limit: z.string().exactOptional(),
+    ci_minutes_usage_projects_per_hour_limit: z.string().exactOptional(),
     trial_create_limit: z.string().exactOptional(),
     hand_raise_lead_create_limit: z.string().exactOptional(),
     user_add_on_assignment_bulk_create_limit: z.string().exactOptional(),
@@ -10973,10 +11149,22 @@ const APIEntitiesApplicationSettingSchema = z
     password_authentication_enabled: z.string().exactOptional(),
     signin_enabled: z.string().exactOptional(),
     allow_local_requests_from_hooks_and_services: z.string().exactOptional(),
-    asset_proxy_whitelist: z.string().exactOptional(),
-    housekeeping_bitmaps_enabled: z.string().exactOptional(),
-    repository_storages_weighted: z.string().exactOptional(),
-    gitlab_product_usage_data_source: z.string().exactOptional(),
+    asset_proxy_whitelist: z.array(z.string()).exactOptional(),
+    housekeeping_bitmaps_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Deprecated. Git packfile bitmap creation is always enabled. Always returns `true`.',
+      }),
+    repository_storages_weighted: z.looseObject({}).exactOptional(),
+    gitlab_product_usage_data_source: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Source of the `gitlab_product_usage_data_enabled` setting. Returns `environment` if the `GITLAB_PRODUCT_USAGE_DATA_ENABLED` environment variable is set, otherwise `database`.',
+      }),
     container_registry_import_max_tags_count: z.string().exactOptional(),
     container_registry_import_max_retries: z.string().exactOptional(),
     container_registry_import_start_max_retries: z.string().exactOptional(),
@@ -11020,8 +11208,8 @@ const APIEntitiesApplicationSettingSchema = z
     git_two_factor_session_expiry: z.string().exactOptional(),
     max_number_of_repository_downloads: z.string().exactOptional(),
     max_number_of_repository_downloads_within_time_period: z.string().exactOptional(),
-    git_rate_limit_users_allowlist: z.string().exactOptional(),
-    git_rate_limit_users_alertlist: z.string().exactOptional(),
+    git_rate_limit_users_allowlist: z.array(z.string()).exactOptional(),
+    git_rate_limit_users_alertlist: z.array(z.int()).exactOptional(),
     auto_ban_user_on_excessive_projects_download: z.string().exactOptional(),
     delete_unconfirmed_users: z.string().exactOptional(),
     unconfirmed_users_delete_after_days: z.string().exactOptional(),
@@ -11029,6 +11217,7 @@ const APIEntitiesApplicationSettingSchema = z
     lock_duo_custom_agents_enabled: z.boolean().exactOptional(),
     lock_duo_custom_flows_enabled: z.boolean().exactOptional(),
     lock_duo_external_agents_enabled: z.boolean().exactOptional(),
+    lock_duo_code_suggestions_enabled: z.boolean().exactOptional(),
     duo_workflows_default_image_registry: z.string().exactOptional(),
     duo_template_project_id: z.string().exactOptional(),
     ci_telemetry_otel_endpoint: z.string().exactOptional(),
@@ -11216,6 +11405,18 @@ const APIEntitiesProjectsRepositoryStorageMoveSchema = z
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesProjectsRepositoryStorageMove')
+
+const APIEntitiesBurndownEventSchema = z
+  .object({
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2021-03-01T10:00:00.000Z' }),
+    weight: z.int().exactOptional().openapi({ example: 2 }),
+    action: z.string().exactOptional().openapi({ example: 'created' }),
+  })
+  .openapi({ required: [] })
+  .openapi('APIEntitiesBurndownEvent')
 
 const APIEntitiesGlobalNotificationSettingSchema = z
   .object({
@@ -11461,7 +11662,13 @@ const APIEntitiesDiscussionSchema = z
 
 const APIEntitiesSidekiqConcurrencyLimitSchema = z
   .object({
-    worker_class: z.string().exactOptional().openapi({ example: 'AuthorizedProjectsWorker' }),
+    worker_class: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Registered worker class name.',
+        example: 'AuthorizedProjectsWorker',
+      }),
     class_limit: z
       .int()
       .exactOptional()
@@ -11481,9 +11688,29 @@ const APIEntitiesSidekiqConcurrencyLimitSchema = z
       .int()
       .exactOptional()
       .openapi({ description: 'Stored adaptive limit, or null when absent.', example: 5 }),
-    default_limit_requires_shard_context: z.boolean().exactOptional().openapi({ example: false }),
-    middleware_enabled: z.boolean().exactOptional().openapi({ example: true }),
-    disabled_for_worker: z.boolean().exactOptional().openapi({ example: false }),
+    default_limit_requires_shard_context: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, the default limit is derived from shard size and cannot be reported outside a Sidekiq process. `false` when `sidekiq_concurrency_limit_default_calculation` is disabled, because the default is then `0`.',
+        example: false,
+      }),
+    middleware_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, the concurrency limit middleware is enabled.',
+        example: true,
+      }),
+    disabled_for_worker: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, the worker-specific bypass flag disables enforcement in the client and server middleware.',
+        example: false,
+      }),
     override_limit: z
       .int()
       .exactOptional()
@@ -11495,8 +11722,14 @@ const APIEntitiesSidekiqConcurrencyLimitSchema = z
         description: 'Remaining override lifetime in seconds, or null when absent.',
         example: 1800,
       }),
-    running_jobs: z.int().exactOptional().openapi({ example: 8 }),
-    deferred_jobs: z.int().exactOptional().openapi({ example: 1000 }),
+    running_jobs: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Approximate number of running jobs.', example: 8 }),
+    deferred_jobs: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Approximate number of deferred jobs.', example: 1000 }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesSidekiqConcurrencyLimit')
@@ -11712,12 +11945,12 @@ const APIEntitiesTerraformModuleVersionSchema = z
   .object({
     name: z.string().exactOptional(),
     provider: z.string().exactOptional(),
-    providers: z.string().exactOptional(),
-    root: z.string().exactOptional(),
+    providers: z.array(z.string()).exactOptional(),
+    root: z.looseObject({}).exactOptional(),
     source: z.string().exactOptional(),
-    submodules: z.string().exactOptional(),
+    submodules: z.array(z.string()).exactOptional(),
     version: z.string().exactOptional(),
-    versions: z.string().exactOptional(),
+    versions: z.array(z.string()).exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesTerraformModuleVersion')
@@ -13267,17 +13500,54 @@ const APIEntitiesContainerExpirationPolicySchema = z
 
 const APIEntitiesProjectStatisticsSchema = z
   .object({
-    commit_count: z.int().exactOptional().openapi({ example: 37 }),
-    storage_size: z.int().exactOptional().openapi({ example: 1038090 }),
-    repository_size: z.int().exactOptional().openapi({ example: 1038090 }),
-    wiki_size: z.int().exactOptional().openapi({ example: 0 }),
-    lfs_objects_size: z.int().exactOptional().openapi({ example: 0 }),
-    job_artifacts_size: z.int().exactOptional().openapi({ example: 0 }),
-    pipeline_artifacts_size: z.int().exactOptional().openapi({ example: 0 }),
-    packages_size: z.int().exactOptional().openapi({ example: 0 }),
-    snippets_size: z.int().exactOptional().openapi({ example: 0 }),
-    uploads_size: z.int().exactOptional().openapi({ example: 0 }),
-    container_registry_size: z.int().exactOptional().openapi({ example: 0 }),
+    commit_count: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Number of commits in the project.', example: 37 }),
+    storage_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Total storage size in bytes.', example: 1038090 }),
+    repository_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Repository storage size in bytes.', example: 1038090 }),
+    wiki_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Wiki storage size in bytes.', example: 0 }),
+    lfs_objects_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'LFS objects storage size in bytes.', example: 0 }),
+    job_artifacts_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Job artifacts storage size in bytes.', example: 0 }),
+    pipeline_artifacts_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Pipeline artifacts storage size in bytes.', example: 0 }),
+    packages_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Packages storage size in bytes.', example: 0 }),
+    snippets_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Snippets storage size in bytes.', example: 0 }),
+    uploads_size: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'Uploads storage size in bytes.', example: 0 }),
+    container_registry_size: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Total container registry storage size in bytes used by all container repositories in the project. Updates when container images are pushed or deleted. On GitLab Self-Managed, requires the container registry metadata database.',
+        example: 0,
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesProjectStatistics')
@@ -16729,7 +16999,13 @@ const APIEntitiesProjectsWithAccessAndCatalogSettingSchema = z
         description: 'Access levels the current user has for the project.',
         required: [],
       }),
-    cicd_catalog_enabled: z.boolean().exactOptional(),
+    cicd_catalog_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the project is published to the CI/CD Catalog. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesProjectsWithAccessAndCatalogSetting')
@@ -17847,7 +18123,13 @@ const APIEntitiesProjectsWithCatalogSettingSchema = z
           'Description of the merge request title regular expression. Premium and Ultimate only.',
         example: 'This requires the title to include a Jira label',
       }),
-    cicd_catalog_enabled: z.boolean().exactOptional(),
+    cicd_catalog_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Whether the project is published to the CI/CD Catalog. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463043) in GitLab 19.3.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesProjectsWithCatalogSetting')
@@ -17944,11 +18226,20 @@ const APIEntitiesProjectDailyStatisticsSchema = z
   .object({
     fetches: z
       .object({
-        total: z.int().exactOptional().openapi({ example: 3 }),
-        days: z.array(APIEntitiesProjectDailyFetchesSchema).exactOptional(),
+        total: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'Total number of fetches in the last 30 days.', example: 3 }),
+        days: z
+          .array(APIEntitiesProjectDailyFetchesSchema)
+          .exactOptional()
+          .openapi({ description: 'Daily fetch statistics.' }),
       })
       .exactOptional()
-      .openapi({ required: [] }),
+      .openapi({
+        description: 'Fetch statistics of the project for the last 30 days.',
+        required: [],
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesProjectDailyStatistics')
@@ -18194,7 +18485,7 @@ const APIEntitiesPackageVersionSchema = z
     id: z.string().exactOptional(),
     version: z.string().exactOptional(),
     created_at: z.string().exactOptional(),
-    tags: z.string().exactOptional(),
+    tags: z.array(z.looseObject({})).exactOptional(),
     pipeline: APIEntitiesPackagePipelineSchema.exactOptional(),
   })
   .openapi({ required: [] })
@@ -18261,7 +18552,7 @@ const APIEntitiesPackageSchema = z
       .exactOptional()
       .openapi({ type: 'integer', format: 'int64', example: 2 }),
     project_path: z.string().exactOptional().openapi({ example: 'gitlab/foo/bar' }),
-    tags: z.string().exactOptional(),
+    tags: z.array(z.looseObject({})).exactOptional(),
     pipeline: APIEntitiesPackagePipelineSchema.exactOptional(),
     pipelines: z.array(APIEntitiesPackagePipelineSchema).exactOptional(),
     versions: z.array(APIEntitiesPackageVersionSchema).exactOptional(),
@@ -19068,6 +19359,133 @@ const APIEntitiesClusterProjectSchema = z
   .openapi({ required: [] })
   .openapi('APIEntitiesClusterProject')
 
+const APIEntitiesGroupAssociationDetailsSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'ID of the group.' }),
+    web_url: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'URL to access the group in a browser.',
+        example: 'http://gitlab.example.com/groups/diaspora',
+      }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the group.', example: 'Diaspora' }),
+    parent_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', example: 1 }),
+    organization_id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', example: 1 }),
+    access_levels: z.int().exactOptional().openapi({ example: 50 }),
+    visibility: z.string().exactOptional().openapi({ example: 'public' }),
+  })
+  .openapi({ required: [] })
+  .openapi('APIEntitiesGroupAssociationDetails')
+
+const APIEntitiesProjectAssociationDetailsSchema = z
+  .object({
+    id: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({ type: 'integer', format: 'int64', description: 'ID of the project.', example: 1 }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Description of the project.', example: 'desc' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the project.', example: 'project1' }),
+    name_with_namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the project with its namespace.',
+        example: 'John Doe / project1',
+      }),
+    path: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Path of the project.', example: 'project1' }),
+    path_with_namespace: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Path of the project with its namespace.',
+        example: 'namespace1/project1',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'Date and time when the project was created.',
+        example: '2020-05-07T04:27:17.016Z',
+      }),
+    access_levels: z
+      .object({
+        project_access_level: z.int().exactOptional().openapi({ example: 50 }),
+        group_access_level: z.int().exactOptional().openapi({ example: 50 }),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    visibility: z.string().exactOptional().openapi({ example: 'public' }),
+    web_url: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'https://gitlab.example.com/gitlab/gitlab' }),
+    namespace: APIEntitiesNamespaceBasicSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('APIEntitiesProjectAssociationDetails')
+
+const APIEntitiesPersonalAccessTokenAssociationsSchema = z
+  .object({
+    groups: z.array(APIEntitiesGroupAssociationDetailsSchema).exactOptional(),
+    projects: z.array(APIEntitiesProjectAssociationDetailsSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('APIEntitiesPersonalAccessTokenAssociations')
+
 const APIEntitiesPagesDomainCertificateExpirationSchema = z
   .object({
     expired: z
@@ -19252,7 +19670,8 @@ const APIEntitiesPagesProjectSettingsSchema = z
       .string()
       .exactOptional()
       .openapi({
-        description: 'Primary domain that all Pages requests are redirected to.',
+        description:
+          'Primary domain that all Pages requests are redirected to. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481334) in GitLab 17.8.',
         example: 'https://custom.example.com',
       }),
   })
@@ -19910,31 +20329,73 @@ const APIEntitiesMobilePushSubscriptionSchema = z
         description: 'Date and time when the subscription was created.',
         example: '2026-07-30T12:00:00.000Z',
       }),
+    content_key: z
+      .enum(['missing', 'present'])
+      .exactOptional()
+      .openapi({
+        description:
+          '`present` when a content key younger than 90 days is stored for this device, `missing` otherwise.',
+        example: 'missing',
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesMobilePushSubscription')
 
 const APIEntitiesMetadataSchema = z
   .object({
-    version: z.string().exactOptional().openapi({ example: '15.2-pre' }),
-    revision: z.string().exactOptional().openapi({ example: 'c401a659d0c' }),
+    version: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Version of the GitLab instance.', example: '15.2-pre' }),
+    revision: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Revision of the GitLab instance.', example: 'c401a659d0c' }),
     kas: z
       .object({
-        enabled: z.boolean().exactOptional(),
+        enabled: z.boolean().exactOptional().openapi({ description: 'If `true`, KAS is enabled.' }),
         externalUrl: z
           .string()
           .exactOptional()
-          .openapi({ example: 'grpc://gitlab.example.com:8150' }),
+          .openapi({
+            description:
+              'URL the agents use to communicate with KAS. `null` if `kas.enabled` is `false`.',
+            example: 'grpc://gitlab.example.com:8150',
+          }),
         externalK8sProxyUrl: z
           .string()
           .exactOptional()
-          .openapi({ example: 'https://gitlab.example.com:8150/k8s-proxy' }),
-        version: z.string().exactOptional().openapi({ example: '15.0.0' }),
+          .openapi({
+            description:
+              'URL the Kubernetes tooling uses to communicate with the KAS Kubernetes API proxy. `null` if `kas.enabled` is `false`.',
+            example: 'https://gitlab.example.com:8150/k8s-proxy',
+          }),
+        version: z
+          .string()
+          .exactOptional()
+          .openapi({
+            description:
+              'Version of KAS. `null` if `kas.enabled` is `false` or the instance failed to fetch server information from KAS.',
+            example: '15.0.0',
+          }),
       })
       .exactOptional()
-      .openapi({ required: [] }),
-    enterprise: z.boolean().exactOptional(),
-    plan: z.string().exactOptional().openapi({ example: 'ultimate' }),
+      .openapi({
+        description: 'Metadata about the GitLab agent server for Kubernetes (KAS).',
+        required: [],
+      }),
+    enterprise: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'If `true`, the instance runs GitLab Enterprise Edition.' }),
+    plan: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Plan of the license the instance runs under. An active trial license reports its plan the same way as a paid license. `free` on an instance with no license or with an expired trial. An expired paid license still reports its plan, because its licensed features remain available. `null` where subscriptions are scoped for each namespace rather than for an instance, such as GitLab.com.',
+        example: 'ultimate',
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesMetadata')
@@ -24186,35 +24647,141 @@ const APIEntitiesCiJobBasicSchema = z
 
 const APIEntitiesAiSettingsSchema = z
   .object({
-    duo_agent_platform_enabled: z.boolean().exactOptional().openapi({ example: true }),
-    duo_workflow_mcp_enabled: z.boolean().exactOptional().openapi({ example: false }),
-    foundational_agents_default_enabled: z.boolean().exactOptional().openapi({ example: true }),
+    duo_agent_platform_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, GitLab Duo Agent Platform features are enabled for the group.',
+        example: true,
+      }),
+    duo_workflow_mcp_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, MCP support for GitLab Duo Agent Platform is enabled.',
+        example: false,
+      }),
+    foundational_agents_default_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, new foundational agents are enabled by default for the group.',
+        example: true,
+      }),
     ai_catalog_restricted_to_group_hierarchy: z
       .boolean()
       .exactOptional()
-      .openapi({ example: false }),
-    ai_usage_data_collection_enabled: z.boolean().exactOptional().openapi({ example: false }),
-    prompt_injection_protection_level: z.string().exactOptional().openapi({ example: 'no_checks' }),
-    web_search_enabled: z.boolean().exactOptional().openapi({ example: false }),
-    duo_workflow_file_attachments_enabled: z.boolean().exactOptional().openapi({ example: false }),
+      .openapi({
+        description:
+          'If `true`, the AI Catalog is restricted to items in the top-level group hierarchy.',
+        example: false,
+      }),
+    ai_usage_data_collection_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, AI usage data collection is enabled for the group.',
+        example: false,
+      }),
+    prompt_injection_protection_level: z
+      .enum(['log_only', 'no_checks', 'interrupt'])
+      .exactOptional()
+      .openapi({ description: 'Prompt injection protection level.', example: 'no_checks' }),
+    web_search_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, web search is enabled in GitLab Duo Chat for the group.',
+        example: false,
+      }),
+    duo_workflow_file_attachments_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, file attachments are allowed in GitLab Duo Chat for the group. Returned only for top-level groups on GitLab.com.',
+        example: false,
+      }),
     external_agent_audit_event_content_enabled: z
       .boolean()
       .exactOptional()
-      .openapi({ example: true }),
-    include_recommended_allowed: z.boolean().exactOptional().openapi({ example: false }),
-    allow_all_unix_sockets: z.boolean().exactOptional().openapi({ example: false }),
-    allow_project_extension: z.boolean().exactOptional().openapi({ example: true }),
-    require_sandbox: z.boolean().exactOptional().openapi({ example: false }),
-    minimum_access_level_execute: z.string().exactOptional().openapi({ example: 'developer' }),
+      .openapi({
+        description:
+          'If `true`, AI audit events from external agent sessions that `glab` uploads keep content such as prompts and tool arguments. If `false`, they keep metadata only. Returned for top-level groups only, and applies to all their subgroups and projects.',
+        example: true,
+      }),
+    include_recommended_allowed: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, recommended domains are included in the network access allowlist for GitLab Duo Agent Platform.',
+        example: false,
+      }),
+    allow_all_unix_sockets: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'If `true`, all Unix sockets are allowed for GitLab Duo Agent Platform.',
+        example: false,
+      }),
+    allow_project_extension: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, projects can extend the network access domain allowlist for GitLab Duo Agent Platform.',
+        example: true,
+      }),
+    require_sandbox: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, flows that run on GitLab Runner fail when the execution environment sandbox is unavailable, instead of running without it. Applies only to top-level groups on GitLab.com.',
+        example: false,
+      }),
+    minimum_access_level_execute: z
+      .enum([
+        'guest',
+        'planner',
+        'reporter',
+        'security_manager',
+        'developer',
+        'maintainer',
+        'owner',
+        'admin',
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum access level required to use GitLab Duo Agent Platform features. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.',
+        example: 'developer',
+      }),
     minimum_access_level_execute_async: z
-      .string()
+      .enum(['developer', 'maintainer', 'owner', 'admin'])
       .exactOptional()
-      .openapi({ example: 'developer' }),
-    minimum_access_level_manage: z.string().exactOptional().openapi({ example: 'maintainer' }),
+      .openapi({
+        description:
+          'Minimum access level required to run GitLab Duo Agent Platform features in CI/CD. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.',
+        example: 'developer',
+      }),
+    minimum_access_level_manage: z
+      .enum(['developer', 'maintainer', 'owner', 'admin'])
+      .exactOptional()
+      .openapi({
+        description:
+          'Minimum access level required to manage GitLab Duo Agent Platform. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.',
+        example: 'maintainer',
+      }),
     minimum_access_level_enable_on_projects: z
-      .string()
+      .enum(['developer', 'maintainer', 'owner', 'admin'])
       .exactOptional()
-      .openapi({ example: 'maintainer' }),
+      .openapi({
+        description:
+          'Minimum access level required to enable GitLab Duo Agent Platform on projects. Behind a feature flag named `dap_group_customizable_permissions`, disabled by default.',
+        example: 'maintainer',
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesAiSettings')
@@ -24342,6 +24909,20 @@ const APIEntitiesGroupDetailSchema = z
         description:
           'If `true`, the GitLab Duo features enabled setting is enforced for all subgroups. Premium and Ultimate only.',
       }),
+    duo_code_suggestions_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, GitLab Duo Code Suggestions is turned on for the group. Premium and Ultimate only.',
+      }),
+    lock_duo_code_suggestions_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, the Code Suggestions enabled setting is enforced for all subgroups. Premium and Ultimate only.',
+      }),
     auto_duo_code_review_enabled: z.string().exactOptional(),
     duo_code_review_level_allowed: z.boolean().exactOptional(),
     duo_code_review_default_level: z.string().exactOptional().openapi({ example: 'lite' }),
@@ -24404,8 +24985,8 @@ const APIEntitiesGroupDetailSchema = z
     only_allow_merge_if_all_discussions_are_resolved: z.string().exactOptional(),
     unique_project_download_limit: z.string().exactOptional(),
     unique_project_download_limit_interval_in_seconds: z.string().exactOptional(),
-    unique_project_download_limit_allowlist: z.string().exactOptional(),
-    unique_project_download_limit_alertlist: z.string().exactOptional(),
+    unique_project_download_limit_allowlist: z.array(z.string()).exactOptional(),
+    unique_project_download_limit_alertlist: z.array(z.int()).exactOptional(),
     auto_ban_user_on_excessive_projects_download: z.string().exactOptional(),
   })
   .openapi({ required: [] })
@@ -24952,20 +25533,51 @@ const APIEntitiesBatchedBackgroundOperationSchema = z
 
 const APIEntitiesBatchedBackgroundMigrationSchema = z
   .object({
-    id: z.string().exactOptional().openapi({ example: '1234' }),
+    id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'ID of the batched background migration.', example: '1234' }),
     job_class_name: z
       .string()
       .exactOptional()
-      .openapi({ example: 'CopyColumnUsingBackgroundMigrationJob' }),
-    table_name: z.string().exactOptional().openapi({ example: 'events' }),
-    column_name: z.string().exactOptional().openapi({ example: 'id' }),
-    status: z.string().exactOptional().openapi({ example: 'active' }),
-    progress: z.number().exactOptional().openapi({ example: 50 }),
+      .openapi({
+        description: 'Name of the migration job class.',
+        example: 'CopyColumnUsingBackgroundMigrationJob',
+      }),
+    table_name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Name of the table the migration iterates over.',
+        example: 'events',
+      }),
+    column_name: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Name of the column the migration iterates over.', example: 'id' }),
+    status: z
+      .enum(['paused', 'active', 'finished', 'failed', 'finalizing', 'finalized'])
+      .exactOptional()
+      .openapi({ description: 'Status of the migration.', example: 'active' }),
+    progress: z
+      .number()
+      .exactOptional()
+      .openapi({ description: 'Completion percentage of the migration.', example: 50 }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
-      .openapi({ example: '2022-11-28T16:26:39+02:00' }),
-    estimated_time_remaining: z.string().exactOptional().openapi({ example: '1 day' }),
+      .openapi({
+        description: 'Timestamp when the migration was created.',
+        example: '2022-11-28T16:26:39+02:00',
+      }),
+    estimated_time_remaining: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Estimated time until the migration completes. `null` when the migration is finished or no estimate is available.',
+        example: '1 day',
+      }),
   })
   .openapi({ required: [] })
   .openapi('APIEntitiesBatchedBackgroundMigration')
@@ -25425,7 +26037,7 @@ const PostApiV4ChatCompletionsRequestSchema = z
 const PostApiV4TokenExchangeRequestSchema = z
   .object({
     audience: z
-      .enum(['gitlab-artifact-registry', 'gitlab-autoflow'])
+      .enum(['gitlab-artifact-registry', 'gitlab-autoflow', 'gitlab-repositories'])
       .nullable()
       .exactOptional()
       .openapi({
@@ -25441,7 +26053,7 @@ const PostApiV4TokenExchangeRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Requested token lifetime in seconds. The granted lifetime may be shorter than requested depending on the authentication method used to call this endpoint or the audience.',
+          'Requested token lifetime in seconds. The granted lifetime may be shorter than requested depending on the authentication method used to call this endpoint or the audience. For an audience bound to a resource, it never outlasts the token used to request it.',
       }),
     organization_id: z
       .int()
@@ -25450,6 +26062,24 @@ const PostApiV4TokenExchangeRequestSchema = z
       .openapi({
         description:
           'ID of the organization to mint the token for. Required for Artifact Registry when the caller belongs to more than one.',
+      }),
+    resource: z
+      .string()
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Global ID of the resource the token grants access to, such as gid://gitlab/Project/1. Required for gitlab-repositories, ignored for other audiences.',
+      }),
+    scope: z
+      .string()
+      .max(255)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Space-separated actions to grant on the resource. For gitlab-repositories, read, write, or both. Defaults to read. Ignored for other audiences.',
       }),
   })
   .openapi({ required: [] })
@@ -33441,28 +34071,39 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, helps prevent bots from creating issues. Requires `akismet_api_key`.',
+          'If `true`, enables Akismet spam protection, which helps prevent bots from creating issues. Requires `akismet_api_key`.',
       }),
     akismet_api_key: z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Generate API key at http://www.akismet.com' }),
+      .openapi({
+        description:
+          'API key for Akismet spam protection. Generate API key at http://www.akismet.com',
+      }),
     asset_proxy_enabled: z
       .boolean()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Enable proxying of assets' }),
+      .openapi({
+        description:
+          'Enable proxying of assets. Requires `asset_proxy_url` and `asset_proxy_secret_key`. GitLab restart is required to apply changes.',
+      }),
     asset_proxy_url: z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'URL of the asset proxy server' }),
+      .openapi({
+        description: 'URL of the asset proxy server. GitLab restart is required to apply changes.',
+      }),
     asset_proxy_secret_key: z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Shared secret with the asset proxy server' }),
+      .openapi({
+        description:
+          'Shared secret with the asset proxy server. GitLab restart is required to apply changes.',
+      }),
     asset_proxy_whitelist: z
       .array(z.string())
       .nullable()
@@ -33485,7 +34126,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, runs cleanup workers that permanently delete authentication login history older than one year, and previously revoked OAuth access tokens and grants older than one month. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579002) in GitLab 18.7.',
+          'If `true`, runs cleanup workers that permanently delete authentication login history older than one year, and previously revoked OAuth access tokens and grants older than one month. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/579002) in GitLab 18.7.',
       }),
     container_registry_token_expire_delay: z
       .int()
@@ -33537,7 +34178,8 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Enable the delete source branch option by default for new projects',
+        description:
+          'Enable the delete source branch option by default for new projects. Default is `true`.',
       }),
     default_branch_protection: z
       .union([z.literal(0), z.literal(3), z.literal(1), z.literal(2), z.literal(4)])
@@ -33644,12 +34286,20 @@ const PutApiV4ApplicationSettingsRequestSchema = z
             description:
               'Maximum number of dependency management security update scheduler jobs to run concurrently across the Sidekiq fleet.',
           }),
+        security_update_scheduler_project_period_in_seconds: z
+          .int()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Seconds between dependency management security update scheduler runs for each project. Default: `300`. Maximum: `86400`. Set to `0` to remove the limit.',
+          }),
       })
       .nullable()
       .exactOptional()
       .openapi({
         description:
-          'Dependency management settings. Set `security_update_scheduler_max_concurrency` (integer) to cap the number of security update scheduler jobs that run concurrently across the Sidekiq fleet. Default: `30`. Capped at `200`. Set to `0` to remove the concurrency limit. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239173) in GitLab 19.1.',
+          'Dependency management settings. Set `security_update_scheduler_max_concurrency` (integer) to cap the number of security update scheduler jobs that run concurrently across the Sidekiq fleet. Default: `30`. Capped at `200`. Set to `0` to remove the concurrency limit. Set `security_update_scheduler_project_period_in_seconds` (integer) to the seconds between security update scheduler runs for each project. Default: `300`. Maximum: `86400`. Set the period to `0` to remove the rate limit. Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/239173) in GitLab 19.1.',
         required: [],
       }),
     disable_admin_oauth_scopes: z
@@ -33657,7 +34307,8 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Stop administrators from connecting to non-trusted OAuth applications.',
+        description:
+          'Stop administrators from connecting to non-trusted OAuth applications that have the `api`, `read_api`, `read_repository`, `write_repository`, `read_registry`, `write_registry`, `sudo`, `admin_mode`, or `read_service_ping` scopes.',
       }),
     disable_feed_token: z
       .boolean()
@@ -33723,7 +34374,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enables email-based one-time passwords (OTP) as a multi-factor authentication method. Requires `require_email_verification_on_account_locked` to be `true`.',
+          'If `true`, enables email-based one-time passwords (OTP) as a multi-factor authentication method. Requires `require_email_verification_on_account_locked` to be `true`. Default is `false`.',
       }),
     environment_delete_rows_limit_per_user: z
       .int()
@@ -33737,7 +34388,9 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .boolean()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'If `true`, allows rendering of iframes in Markdown.' }),
+      .openapi({
+        description: 'If `true`, allows rendering of iframes in Markdown. Default is `false`.',
+      }),
     iframe_rendering_allowlist: z
       .array(z.string())
       .nullable()
@@ -33803,7 +34456,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enables [Ona integration](https://docs.gitlab.com/integration/gitpod/). Requires `gitpod_url`.',
+          'If `true`, enables [Ona integration](https://docs.gitlab.com/integration/gitpod/). Default is `false`. Requires `gitpod_url`.',
       }),
     gitpod_url: z
       .string()
@@ -33828,13 +34481,24 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Medium Gitaly timeout, in seconds. Set to 0 to disable timeouts.' }),
+      .openapi({
+        description:
+          'Medium Gitaly timeout, in seconds. Must be between `gitaly_timeout_fast` and `gitaly_timeout_default`. Set to 0 to disable timeouts.',
+      }),
     grafana_enabled: z
       .boolean()
       .nullable()
       .exactOptional()
       .openapi({ description: 'If `true`, enables Grafana.' }),
     grafana_url: z.string().nullable().exactOptional().openapi({ description: 'Grafana URL.' }),
+    graphql_participant_fields_request_limit: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of GraphQL requests per minute for each user, or for each IP address for unauthenticated requests, that resolve the `participants` and `subscribed` fields more than 20 times in total. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/271502) in GitLab 19.7.',
+      }),
     gravatar_enabled: z
       .boolean()
       .nullable()
@@ -33869,7 +34533,10 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .boolean()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Enable automatic repository housekeeping (git repack, git gc)' }),
+      .openapi({
+        description:
+          'Enable automatic repository housekeeping (git repack, git gc). When `true`, also set either `housekeeping_optimize_repository_period` or all of `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period`.',
+      }),
     housekeeping_full_repack_period: z
       .int()
       .nullable()
@@ -33934,7 +34601,8 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'If `true`, enables Invisible CAPTCHA spam detection during account creation.',
+        description:
+          'If `true`, enables Invisible CAPTCHA spam detection during account creation. Default is `false`.',
       }),
     max_artifacts_size: z
       .int()
@@ -33950,7 +34618,9 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Maximum export size in MB' }),
+      .openapi({
+        description: 'Maximum export size in MB. Set to `0` for unlimited. Default is `0`.',
+      }),
     max_github_response_size_limit: z
       .int()
       .nullable()
@@ -33970,7 +34640,9 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Maximum import size in MB' }),
+      .openapi({
+        description: 'Maximum import size in MB. Set to `0` for unlimited. Default is `0`.',
+      }),
     max_import_record_size: z
       .int()
       .nullable()
@@ -34076,7 +34748,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of Pages custom domains each user can create per day. Default: `50`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/635642) in GitLab 19.6.',
+          'Maximum number of Pages custom domains each user can create per day. Default: `50`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268633) in GitLab 19.6.',
       }),
     pages_domain_verify_limit: z
       .int()
@@ -34084,7 +34756,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of Pages custom domain verification requests per minute for each user. Default: `5`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/635642) in GitLab 19.6.',
+          'Maximum number of Pages custom domain verification requests per minute for each user. Default: `5`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/268633) in GitLab 19.6.',
       }),
     password_authentication_enabled: z
       .boolean()
@@ -34158,7 +34830,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enables [Kroki integration](https://docs.gitlab.com/administration/integration/kroki/). Requires `kroki_url`.',
+          'If `true`, enables [Kroki integration](https://docs.gitlab.com/administration/integration/kroki/). Default is `false`. Requires `kroki_url`.',
       }),
     kroki_url: z.string().nullable().exactOptional().openapi({ description: 'Kroki server URL.' }),
     plantuml_enabled: z
@@ -34167,7 +34839,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enables [PlantUML integration](https://docs.gitlab.com/administration/integration/plantuml/). Requires `plantuml_url`.',
+          'If `true`, enables [PlantUML integration](https://docs.gitlab.com/administration/integration/plantuml/). Default is `false`. Requires `plantuml_url`.',
       }),
     plantuml_url: z
       .string()
@@ -34233,17 +34905,25 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Generate site key at http://www.google.com/recaptcha' }),
+      .openapi({
+        description: 'Site key for reCAPTCHA. Generate site key at http://www.google.com/recaptcha',
+      }),
     recaptcha_private_key: z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Generate private key at http://www.google.com/recaptcha' }),
+      .openapi({
+        description:
+          'Private key for reCAPTCHA. Generate private key at http://www.google.com/recaptcha',
+      }),
     login_recaptcha_protection_enabled: z
       .boolean()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Helps prevent brute-force attacks' }),
+      .openapi({
+        description:
+          'If `true`, enables reCAPTCHA for login, which helps prevent brute-force attacks.',
+      }),
     repository_checks_enabled: z
       .boolean()
       .nullable()
@@ -34303,7 +34983,9 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .boolean()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Enable shared runners for new projects' }),
+      .openapi({
+        description: 'Enable shared runners for new projects. Requires `shared_runners_text`.',
+      }),
     shared_runners_text: z
       .string()
       .nullable()
@@ -34327,7 +35009,8 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'If `true`, enables Sourcegraph integration. Requires `sourcegraph_url`.',
+        description:
+          'If `true`, enables Sourcegraph integration. Default is `false`. Requires `sourcegraph_url`.',
       }),
     sourcegraph_public_only: z
       .boolean()
@@ -34346,7 +35029,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .boolean()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Enable Spam Check via external API endpoint' }),
+      .openapi({ description: 'Enable Spam Check via external API endpoint. Default is `false`.' }),
     spam_check_endpoint_url: z
       .string()
       .nullable()
@@ -34422,7 +35105,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of issue creation requests allowed per minute per user. Set to 0 for unlimited requests per minute.',
+          'Maximum number of issue creation requests allowed per minute per user. Set to 0 for unlimited requests per minute. Default is `300`.',
       }),
     raw_blob_request_limit: z
       .int()
@@ -34478,7 +35161,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum work item, merge request, and vulnerability description and comment content size in bytes.',
+          'Maximum work item, merge request, and vulnerability description and comment content size in bytes. Default is `1048576`.',
       }),
     wiki_asciidoc_allow_uri_includes: z
       .boolean()
@@ -34531,7 +35214,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of calls to the `/users/:id` API per 10 minutes per user. Set to `0` for unlimited requests.',
+          'Maximum number of calls to the `/users/:id` API per 10 minutes per user. Set to `0` for unlimited requests. Default: `300`.',
       }),
     runner_token_expiration_interval: z
       .int()
@@ -34639,7 +35322,10 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Maximum number of simultaneous batch export jobs to process.' }),
+      .openapi({
+        description:
+          'Maximum number of simultaneous batch export jobs to process. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169122) in GitLab 17.6.',
+      }),
     project_export_limit_per_root_namespace: z
       .int()
       .nullable()
@@ -34654,7 +35340,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of project relations export requests per minute per user for each project during direct transfer migrations. Set to `0` to disable the rate limit.',
+          'Maximum number of project relations export requests per minute per user for each project during direct transfer migrations. Default: `6`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.',
       }),
     project_relations_export_download_limit: z
       .int()
@@ -34662,7 +35348,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of project relations export downloads per minute per user for each project during direct transfer migrations. Set to `0` to disable the rate limit.',
+          'Maximum number of project relations export downloads per minute per user for each project during direct transfer migrations. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.',
       }),
     group_relations_export_limit: z
       .int()
@@ -34670,7 +35356,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of group relations export requests per minute per user for each group during direct transfer migrations. Set to `0` to disable the rate limit.',
+          'Maximum number of group relations export requests per minute per user for each group during direct transfer migrations. Default: `6`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.',
       }),
     group_relations_export_download_limit: z
       .int()
@@ -34678,7 +35364,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of group relations export downloads per minute per user for each group during direct transfer migrations. Set to `0` to disable the rate limit.',
+          'Maximum number of group relations export downloads per minute per user for each group during direct transfer migrations. Default: `100`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/634958) in GitLab 19.6.',
       }),
     bulk_import_enabled: z
       .boolean()
@@ -34820,7 +35506,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, `GET /projects/:id/ci/lint` requires authentication, including for public projects.',
+          'If `true`, `GET /projects/:id/ci/lint` requires authentication, including for public projects. Default is `false`.',
       }),
     release_evidence_max_size_bytes: z
       .int()
@@ -34843,13 +35529,17 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Job log update interval when the job log is not open, in seconds.',
+        description:
+          'Job log update interval when the job log is not open, in seconds. Must be between `3` and `3600`. Default is `60`.',
       }),
     ci_job_trace_update_interval_when_being_watched: z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Job log update interval when the job log is open, in seconds.' }),
+      .openapi({
+        description:
+          'Job log update interval when the job log is open, in seconds. Must be between `3` and `3600` and less than or equal to `ci_job_trace_update_interval`. Default is `3`.',
+      }),
     git_push_pipeline_limit: z
       .int()
       .nullable()
@@ -34915,7 +35605,10 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Maximum authenticated requests to /project/:id/jobs per minute' }),
+      .openapi({
+        description:
+          'Maximum authenticated requests to /project/:id/jobs per minute. Default: `600`.',
+      }),
     security_txt_content: z
       .string()
       .nullable()
@@ -34938,14 +35631,15 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of pipeline cancellations allowed per minute for a given project.',
+          'Maximum number of pipeline cancellations allowed per minute for a given project. Default: `120`.',
       }),
     pipeline_retry_limit_per_user_project: z
       .int()
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Maximum number of pipeline retries allowed per minute for a given project.',
+        description:
+          'Maximum number of pipeline retries allowed per minute for a given project. Default: `200`.',
       }),
     runner_job_list_completed_statuses_limit_per_user: z
       .int()
@@ -34953,7 +35647,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of runner job list requests filtered by a completed status allowed per minute for a given user.',
+          'Maximum number of runner job list requests filtered by a completed status allowed per minute for a given user. Default: `330`.',
       }),
     runner_job_list_project_filtered_limit_per_user: z
       .int()
@@ -34989,35 +35683,40 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Maximum number of job retries allowed per minute for a given project.',
+        description:
+          'Maximum number of job retries allowed per minute for a given project. Default: `320`.',
       }),
     job_play_limit_per_user_project: z
       .int()
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Maximum number of manual job runs allowed per minute for a given project.',
+        description:
+          'Maximum number of manual job runs allowed per minute for a given project. Default: `200`.',
       }),
     pipeline_delete_limit_per_user_project: z
       .int()
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Maximum number of pipeline deletions allowed per minute for a given project.',
+        description:
+          'Maximum number of pipeline deletions allowed per minute for a given project. Default: `400`.',
       }),
     job_erase_limit_per_user_project: z
       .int()
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Maximum number of job erasures allowed per minute for a given project.',
+        description:
+          'Maximum number of job erasures allowed per minute for a given project. Default: `400`.',
       }),
     job_cancel_limit_per_user_project: z
       .int()
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Maximum number of job cancellations allowed per minute for a given project.',
+        description:
+          'Maximum number of job cancellations allowed per minute for a given project. Default: `150`.',
       }),
     ai_action_api_rate_limit: z
       .int()
@@ -35025,7 +35724,8 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Maximum requests a user can make per 8 hours to aiAction endpoint',
+        description:
+          'Maximum requests a user can make per 8 hours to aiAction endpoint. Default: `160`. Must be greater than `0`.',
       }),
     code_suggestions_api_rate_limit: z
       .int()
@@ -35072,7 +35772,8 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({
-        description: 'Custom "Open with" clients shown in the project Code dropdown list',
+        description:
+          'Custom "Open with" clients shown in the project Code dropdown list. Each entry has a `name` and at least one of `ssh_url_template` or `http_url_template`, each containing `{url}` exactly once.',
       }),
     vscode_extension_marketplace: z
       .object({
@@ -35099,7 +35800,11 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       })
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Settings for VS Code Extension Marketplace.', required: [] }),
+      .openapi({
+        description:
+          'Settings for VS Code Extension Marketplace. Used by the Web IDE and workspaces.',
+        required: [],
+      }),
     enable_language_server_restrictions: z
       .boolean()
       .nullable()
@@ -35141,7 +35846,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Restrictions on the complexity of uploaded RSA keys. A value of -1 disables all RSA keys.',
+          'Minimum allowed size of uploaded RSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all RSA keys. Default is `0` (no restriction).',
       }),
     dsa_key_restriction: z
       .union([z.literal(0), z.literal(1024), z.literal(2048), z.literal(3072), z.literal(-1)])
@@ -35149,7 +35854,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Restrictions on the complexity of uploaded DSA keys. A value of -1 disables all DSA keys.',
+          'Minimum allowed size of uploaded DSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all DSA keys. Default is `0` (no restriction).',
       }),
     ecdsa_key_restriction: z
       .union([z.literal(0), z.literal(256), z.literal(384), z.literal(521), z.literal(-1)])
@@ -35157,7 +35862,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Restrictions on the complexity of uploaded ECDSA keys. A value of -1 disables all ECDSA keys.',
+          'Minimum allowed size of uploaded ECDSA keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ECDSA keys. Default is `0` (no restriction).',
       }),
     ed25519_key_restriction: z
       .union([z.literal(0), z.literal(256), z.literal(-1)])
@@ -35165,7 +35870,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Restrictions on the complexity of uploaded ED25519 keys. A value of -1 disables all ED25519 keys.',
+          'Minimum allowed size of uploaded ED25519 keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ED25519 keys. Default is `0` (no restriction).',
       }),
     ecdsa_sk_key_restriction: z
       .union([z.literal(0), z.literal(256), z.literal(-1)])
@@ -35173,7 +35878,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Restrictions on the complexity of uploaded ECDSA_SK keys. A value of -1 disables all ECDSA_SK keys.',
+          'Minimum allowed size of uploaded ECDSA_SK keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ECDSA_SK keys. Default is `0` (no restriction).',
       }),
     ed25519_sk_key_restriction: z
       .union([z.literal(0), z.literal(256), z.literal(-1)])
@@ -35181,7 +35886,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Restrictions on the complexity of uploaded ED25519_SK keys. A value of -1 disables all ED25519_SK keys.',
+          'Minimum allowed size of uploaded ED25519_SK keys, in bits (key length for RSA and DSA, curve size for the others). A value of -1 disables all ED25519_SK keys. Default is `0` (no restriction).',
       }),
     allow_account_deletion: z
       .string()
@@ -35285,6 +35990,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'If `true`, enables Auto DevOps for projects by default. Auto DevOps automatically builds, tests, and deploys applications based on a predefined CI/CD configuration.',
       }),
+    block_jwt_for_reclaimed_paths: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, blocks CI/CD JWT and OIDC token generation for projects that have reclaimed a previously used namespace path. Default is `true`. Disable only if you accept the authentication bypass risk of namespace path reclamation. GitLab Self-Managed and GitLab Dedicated only.',
+      }),
     bulk_import_max_download_file_size: z
       .string()
       .nullable()
@@ -35337,6 +36050,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Custom hostname (for private commit emails).' }),
+    concurrent_relation_export_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of simultaneous project file exports to process. Default: `25`. Behind a feature flag named `limit_concurrent_project_exports`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/599092) in GitLab 19.4.',
+      }),
     container_expiration_policies_enable_historic_entries: z
       .string()
       .nullable()
@@ -35376,6 +36097,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Number of workers for [cleanup policies](https://docs.gitlab.com/user/packages/container_registry/reduce_container_registry_storage/#set-cleanup-limits-to-conserve-resources).',
+      }),
+    create_organization_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user to `POST /organizations`. Default: `10`. Set to `0` to disable the rate limit.',
       }),
     custom_http_clone_url_root: z
       .string()
@@ -35652,6 +36381,30 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Maximum number of Git operations one user or deploy key can perform every minute across all repositories. Default: `6000`. Set to `0` to disable the limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/267274) in GitLab 19.6. This attribute is in beta and might be changed or removed without notice.',
       }),
+    group_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /groups/:id`. Default: `400`. Set to `0` to disable the rate limit.',
+      }),
+    group_archive_unarchive_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `POST /groups/:id/archive` and `POST /groups/:id/unarchive`. Default: `60`. Set to `0` to disable the rate limit.',
+      }),
+    group_create_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every day for each user to `POST /groups`. Default: `200`. Set to `0` to disable the rate limit. Behind a feature flag named `namespace_create_rate_limit`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245318) in GitLab 19.3.',
+      }),
     group_hooks_create_limit: z
       .string()
       .nullable()
@@ -35659,6 +36412,62 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Maximum number of group webhooks a user can create per minute for a given group. Default: `10`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/635281) in GitLab 19.6.',
+      }),
+    group_download_export_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of group export downloads every minute for each user and group. Default: `1`. Set to `0` to disable the rate limit.',
+      }),
+    group_export_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of group exports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.',
+      }),
+    group_import_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of group imports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.',
+      }),
+    group_invited_groups_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /groups/:id/invited_groups`. Default: `60`. Set to `0` to disable the rate limit.',
+      }),
+    group_projects_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /groups/:id/projects`. Default: `600`. Set to `0` to disable the rate limit.',
+      }),
+    group_shared_groups_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /groups/:id/groups/shared`. Default: `60`. Set to `0` to disable the rate limit.',
+      }),
+    groups_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /groups`. Default: `200`. Set to `0` to disable the rate limit.',
       }),
     hashed_storage_enabled: z
       .string()
@@ -35668,11 +36477,27 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (Always enabled in GitLab versions 13.0 and later, configuration is scheduled for removal in 14.0)',
       }),
+    helm_max_packages_count: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of Helm packages that can be listed for each channel. Must be at least `1`. Default is `1000`.',
+      }),
     hide_third_party_offers: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'If `true`, hides offers from third parties in GitLab.' }),
+    import_jobs_concurrency_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of concurrently running jobs for each import worker type: project and group file-based import, direct transfer, and the GitHub, Bitbucket Cloud, Bitbucket Server, and Jira importer stages. Applied independently for each worker type. Default is `100`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/250280) in GitLab 19.1.',
+      }),
     inactive_projects_delete_after_months: z
       .string()
       .nullable()
@@ -35710,6 +36535,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'If `true`, enables optional metrics in Service Ping.' }),
+    issuable_csv_import_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of CSV imports of issues, work items, and requirements every hour for each user. Default: `20`. Set to `0` to disable the rate limit. Behind a feature flag named `issuable_csv_import_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.',
+      }),
     keep_latest_artifact: z
       .string()
       .nullable()
@@ -35730,6 +36563,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Additional formats supported by the Kroki instance. Possible values are `true` or `false` for formats `bpmn`, `blockdiag`, `excalidraw`, and `mermaid` in the format `<format>: true` or `<format>: false`.',
+      }),
+    label_delete_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of project and group label deletions every minute for each user. Default: `500`. Set to `0` to disable the rate limit. Behind a feature flag named `label_delete_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.',
       }),
     lock_require_sha_for_merge: z
       .string()
@@ -35807,6 +36648,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Maximum size in bytes of a single CI/CD configuration file. Default: `2097152`.',
       }),
+    members_delete_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of member deletions every minute for each user in each project or group. Default: `60`. Set to `0` to disable the rate limit.',
+      }),
     minimum_password_length: z
       .string()
       .nullable()
@@ -35831,6 +36680,22 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Number of days to keep model experiment runs that no model version uses, and experiments that have no runs left. Deletion starts no earlier than one period after retention is turned on. `0` keeps all runs and experiments. Maximum: `36500`. Default: `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/270962) in GitLab 19.7.',
       }),
+    notes_create_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of note creation requests every minute for each user. Default: `300`. Set to `0` to disable the rate limit.',
+      }),
+    notes_create_limit_allowlist_raw: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `notes_create_limit` rate limit. Maximum: 100 usernames.',
+      }),
     notify_on_unknown_sign_in: z
       .string()
       .nullable()
@@ -35838,6 +36703,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'If `true`, sends a notification when a sign-in from an unknown IP address occurs.',
+      }),
+    nuget_skip_metadata_url_validation: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, skips metadata URL validation for NuGet packages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145887) in GitLab 17.0.',
       }),
     offline_transfer_exports_enabled: z
       .string()
@@ -35868,6 +36741,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Number of workers assigned to the packages cleanup policies.' }),
+    pages_deployments_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of times every minute the GraphQL `pagesDeployments` field can be resolved for each user. Each project a query resolves the field for counts once. Unauthenticated requests are limited for each IP address. Default: `2000`. Set to `0` to disable the rate limit. Behind a feature flag named `pages_deployments_api_rate_limit`, disabled by default. While the flag is disabled, requests over the limit are logged but not blocked. This parameter is in beta and might be changed or removed without notice.',
+      }),
     pages_domain_verification_enabled: z
       .string()
       .nullable()
@@ -35884,11 +36765,43 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'If `true`, enables unique domains by default for Pages sites to avoid cookie sharing between sites under a given namespace. Defaults to `true`.',
       }),
+    pg_ash_sample_interval_seconds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Seconds between active session history samples. Must be between `1` and `60`. Default is `1`.',
+      }),
+    pg_ash_sampling_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, samples active session history. Has no effect until pg_ash is installed. Default is `false`.',
+      }),
     plantuml_diagram_proxy_enabled: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'Enable PlantUML diagram proxy. Default is `false`.' }),
+    project_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /projects/:id`. Default: `400`. Set to `0` to disable the rate limit.',
+      }),
+    project_create_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every day for each user to `POST /projects`. Default: `200`. Set to `0` to disable the rate limit. Behind a feature flag named `namespace_create_rate_limit`, disabled by default. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/245318) in GitLab 19.3.',
+      }),
     project_hooks_create_limit: z
       .string()
       .nullable()
@@ -35896,6 +36809,78 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Maximum number of project webhooks a user can create per minute for a given project. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/605597) in GitLab 19.6.',
+      }),
+    project_download_export_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of project export downloads every minute for each user and project. Default: `1`. Set to `0` to disable the rate limit.',
+      }),
+    project_export_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of project exports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.',
+      }),
+    project_import_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of project imports every minute for each user. Default: `6`. Set to `0` to disable the rate limit.',
+      }),
+    project_invited_groups_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /projects/:id/invited_groups`. Default: `60`. Set to `0` to disable the rate limit.',
+      }),
+    project_members_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /projects/:id/members/all` and `GET /groups/:id/members/all`. Default: `200`. Set to `0` to disable the rate limit. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/578527) in GitLab 18.6.',
+      }),
+    project_repositories_blame_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of authenticated requests every minute to the file blame API (`GET /projects/:id/repository/files/:file_path/blame`) and the GraphQL `blame` field, for each user and project. Default: `400`. Set to `0` to disable the rate limit.',
+      }),
+    project_repositories_blame_unauthenticated_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of unauthenticated requests every minute to the file blame API (`GET /projects/:id/repository/files/:file_path/blame`) and the GraphQL `blame` field, for each IP address. Default: `400`. Set to `0` to disable the rate limit.',
+      }),
+    project_repositories_blobs_batch_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user and project to `POST /projects/:id/repository/blobs/batch`. Default: `5`. Set to `0` to disable the rate limit. The endpoint is behind a feature flag named `repository_blobs_batch_api`, disabled by default.',
+      }),
+    projects_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of authenticated requests every 10 minutes for each user to `GET /projects`. Default: `2000`. Set to `0` to disable the rate limit.',
       }),
     projects_api_rate_limit_unauthenticated: z
       .string()
@@ -35992,7 +36977,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of runner managers each runner can create every 10 minutes. Applies only when the `log_runner_manager_creation_limit` or `enforce_runner_manager_creation_limit` feature flag is enabled. Default: `1000`. To disable the limit, set to `0`.',
+          'Maximum number of runner managers each runner can create every 10 minutes. Applies only when the `log_runner_manager_creation_limit` or `enforce_runner_manager_creation_limit` feature flag is enabled. Default: `1000`. To disable the limit, set to `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/267108) in GitLab 19.6.',
       }),
     search_rate_limit: z
       .string()
@@ -36001,6 +36986,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Maximum number of requests per minute for performing a search while authenticated. Default: `30`. To disable throttling, set to `0`.',
+      }),
+    search_rate_limit_allowlist_raw: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `search_rate_limit` rate limit. Maximum: 100 usernames.',
       }),
     search_rate_limit_unauthenticated: z
       .string()
@@ -36105,6 +37098,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Maximum number of system hooks a user can create per minute. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/635281) in GitLab 19.6.',
       }),
+    tags_create_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of tag creation requests allowed every 30 minutes for each project. Applies to the REST API endpoint for creating a tag, the GraphQL `tagCreate` mutation, tag creation in the UI, and the `/tag` quick action. Default: `100`. Set to `0` to disable the rate limit.',
+      }),
     terms: z
       .string()
       .nullable()
@@ -36128,6 +37129,54 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Maximum requests per period per user.' }),
+    throttle_authenticated_deprecated_api_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, enforces the authenticated request rate limit for deprecated API endpoints. Default value: `false`.',
+      }),
+    throttle_authenticated_deprecated_api_period_in_seconds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Rate limit period in seconds. `throttle_authenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.',
+      }),
+    throttle_authenticated_deprecated_api_requests_per_period: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum requests in each period for each user. `throttle_authenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.',
+      }),
+    throttle_authenticated_files_api_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, enforces the authenticated request rate limit for the Repository files API. Default value: `false`.',
+      }),
+    throttle_authenticated_files_api_period_in_seconds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Rate limit period in seconds. `throttle_authenticated_files_api_enabled` must be `true`. Default value: `15`.',
+      }),
+    throttle_authenticated_files_api_requests_per_period: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum requests in each period for each user. `throttle_authenticated_files_api_enabled` must be `true`. Default value: `500`.',
+      }),
     throttle_authenticated_git_http_enabled: z
       .string()
       .nullable()
@@ -36151,6 +37200,30 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`.',
+      }),
+    throttle_authenticated_git_lfs_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, enforces the authenticated Git LFS request rate limit. Default value: `false`.',
+      }),
+    throttle_authenticated_git_lfs_period_in_seconds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Rate limit period in seconds. `throttle_authenticated_git_lfs_enabled` must be `true`. Default value: `60`.',
+      }),
+    throttle_authenticated_git_lfs_requests_per_period: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum requests in each period for each user. `throttle_authenticated_git_lfs_enabled` must be `true`. Default value: `1000`.',
       }),
     throttle_authenticated_mcp_enabled: z
       .string()
@@ -36242,6 +37315,30 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Maximum requests per period per user.' }),
+    throttle_protected_paths_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, enforces the rate limit on protected paths. Default value: `false`.',
+      }),
+    throttle_protected_paths_period_in_seconds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Rate limit period in seconds. `throttle_protected_paths_enabled` must be `true`. Default value: `60`.',
+      }),
+    throttle_protected_paths_requests_per_period: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum requests in each period for each IP address. `throttle_protected_paths_enabled` must be `true`. Default value: `10`.',
+      }),
     throttle_unauthenticated_api_enabled: z
       .string()
       .nullable()
@@ -36260,6 +37357,54 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Maximum requests per period per IP.' }),
+    throttle_unauthenticated_deprecated_api_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, enforces the unauthenticated request rate limit for deprecated API endpoints. Default value: `false`.',
+      }),
+    throttle_unauthenticated_deprecated_api_period_in_seconds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Rate limit period in seconds. `throttle_unauthenticated_deprecated_api_enabled` must be `true`. Default value: `3600`.',
+      }),
+    throttle_unauthenticated_deprecated_api_requests_per_period: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum requests in each period for each IP address. `throttle_unauthenticated_deprecated_api_enabled` must be `true`. Default value: `1800`.',
+      }),
+    throttle_unauthenticated_files_api_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, enforces the unauthenticated request rate limit for the Repository files API. Default value: `false`.',
+      }),
+    throttle_unauthenticated_files_api_period_in_seconds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Rate limit period in seconds. `throttle_unauthenticated_files_api_enabled` must be `true`. Default value: `15`.',
+      }),
+    throttle_unauthenticated_files_api_requests_per_period: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum requests in each period for each IP address. `throttle_unauthenticated_files_api_enabled` must be `true`. Default value: `125`.',
+      }),
     throttle_unauthenticated_enabled: z
       .string()
       .nullable()
@@ -36358,6 +37503,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'If `true`, limits display of time tracking units to hours. Default is `false`.',
       }),
+    todos_list_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user to `GET /todos`. Default: `300`. Set to `0` to turn off the rate limit. Behind a feature flag named `todos_list_api_rate_limit`, disabled by default. This parameter is in beta and might be changed or removed without notice.',
+      }),
     top_level_group_creation_enabled: z
       .string()
       .nullable()
@@ -36400,6 +37553,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'If `true`, enables ClickHouse as a data source for analytics reports. ClickHouse must be configured for this setting to take effect. Premium and Ultimate only.',
       }),
+    user_contributed_projects_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/contributed_projects`. Default: `100`. Set to `0` to disable the rate limit.',
+      }),
     user_default_external: z
       .string()
       .nullable()
@@ -36428,6 +37589,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'If `true`, allows users to register any application to use GitLab as an OAuth provider. This setting does not affect group-level OAuth applications.',
       }),
+    user_projects_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/projects`. Default: `300`. Set to `0` to disable the rate limit.',
+      }),
     user_show_add_ssh_key_message: z
       .string()
       .nullable()
@@ -36435,6 +37604,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           "When set to `false` disable the `You won't be able to pull or push repositories via SSH until you add an SSH key to your profile` warning shown to users with no uploaded SSH key.",
+      }),
+    user_starred_projects_api_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute for each user or IP address to `GET /users/:user_id/starred_projects`. Default: `100`. Set to `0` to disable the rate limit.',
       }),
     users_api_limit_followers: z
       .string()
@@ -36468,6 +37645,22 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.',
       }),
+    users_api_limit_ssh_key: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.',
+      }),
+    users_api_limit_ssh_keys: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests per minute, per user or IP address. Default: 120. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.',
+      }),
     users_api_limit_status: z
       .string()
       .nullable()
@@ -36475,6 +37668,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Maximum number of requests per minute, per user or IP address. Default: 240. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) in GitLab 17.10.',
+      }),
+    users_get_by_id_limit_allowlist_raw: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Raw newline-, comma-, or whitespace-separated list of usernames excluded from the `users_get_by_id_limit` rate limit. Maximum: 100 usernames.',
       }),
     version_check_enabled: z
       .string()
@@ -36496,6 +37697,22 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Maximum number of webhook test requests per minute, per user, for a given project, group, or organization. Default: `5`. Set to `0` to disable limits. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/587887) in GitLab 19.3.',
+      }),
+    wiki_read_request_limit_unauthenticated: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of requests every minute from unauthenticated users to read a project or group wiki. Applies to the wiki pages in the UI and to the REST API endpoints that list and retrieve wiki pages. Default: `500`. Set to `0` to turn off the rate limit. Behind a feature flag named `wiki_read_unauthenticated_rate_limit_enforce`, disabled by default. This parameter is in beta and might be changed or removed without notice.',
+      }),
+    work_item_hierarchy_add_children_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of child items each user can add to work items or epics every minute. Applies to the `workItemHierarchyAddChildrenItems` GraphQL mutation, `childrenIds` in the `workItemUpdate` GraphQL mutation, the `/add_child` quick action, and the REST API endpoints for assigning an issue to an epic and assigning a child epic. Default: `300`. Set to `0` to disable the rate limit. Behind a feature flag named `work_item_hierarchy_add_children_limits`, disabled by default. This parameter is in beta and might be changed or removed without notice.',
       }),
     elasticsearch_aws: z
       .boolean()
@@ -36630,7 +37847,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enables default project deletion protection so only administrators can delete projects. GitLab Self-Managed, Premium and Ultimate only.',
+          'If `true`, enables default project deletion protection so only administrators can delete projects. Default is `false`. GitLab Self-Managed, Premium and Ultimate only.',
       }),
     disable_personal_access_tokens: z
       .boolean()
@@ -36728,7 +37945,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of requests per minute per user to the instance audit events API.',
+          'Maximum number of requests per minute per user to the instance audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/248055) in GitLab 19.4.',
       }),
     project_audit_events_api_limit: z
       .int()
@@ -36736,7 +37953,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of requests per minute per user per project to the project audit events API.',
+          'Maximum number of requests per minute per user per project to the project audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253781) in GitLab 19.5.',
       }),
     group_audit_events_api_limit: z
       .int()
@@ -36744,7 +37961,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of requests per minute per user per group to the group audit events API.',
+          'Maximum number of requests per minute per user per group to the group audit events API. Default: `200`. Set to `0` to disable the rate limit. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/255336) in GitLab 19.5.',
       }),
     insights_query_limit: z
       .int()
@@ -36752,7 +37969,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of Insights chart queries per minute for each user or IP address, for each group or project. Default: `0`, which disables the rate limit. GitLab.com uses `60`.',
+          'Maximum number of Insights chart queries per minute for each user or IP address, for each group or project. Default: `0`, which disables the rate limit. GitLab.com uses `60`. Ultimate only.',
       }),
     dast_configuration_show_limit: z
       .int()
@@ -36929,6 +38146,22 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Maximum number of `creditsUsage` GraphQL requests per day per user. Default: `3000`. Set to `0` to disable the rate limit.',
+      }),
+    ci_minutes_usage_projects_per_minute_limit: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of `ciMinutesUsage` GraphQL requests that select `projects`, per minute per user. Default: `60`. Set to `0` to disable the rate limit.',
+      }),
+    ci_minutes_usage_projects_per_hour_limit: z
+      .int()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of `ciMinutesUsage` GraphQL requests that select `projects`, per hour per user. Default: `600`. Set to `0` to disable the rate limit.',
       }),
     trial_create_limit: z
       .int()
@@ -37152,7 +38385,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enforces the custom agents enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.',
+          'If `true`, enforces the custom agents enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.',
       }),
     duo_custom_flows_enabled: z
       .boolean()
@@ -37168,7 +38401,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enforces the custom flows enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.',
+          'If `true`, enforces the custom flows enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.',
       }),
     duo_external_agents_enabled: z
       .boolean()
@@ -37184,7 +38417,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enforces the external agents enabled setting for all groups. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.',
+          'If `true`, enforces the external agents enabled setting for all groups. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/594615) in GitLab 19.0.',
       }),
     duo_remote_flows_enabled: z
       .boolean()
@@ -37205,7 +38438,7 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, allows GitLab Duo flows to run on a schedule for the instance. Defaults to `true`.',
+          'If `true`, allows GitLab Duo flows to run on a schedule for the instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/634139) in GitLab 19.6.',
       }),
     lock_duo_scheduled_automations_enabled: z
       .boolean()
@@ -37213,7 +38446,23 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'If `true`, enforces the scheduled automations enabled setting for all groups.',
+          'If `true`, enforces the scheduled automations enabled setting for all groups. Defaults to `false`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/634139) in GitLab 19.6.',
+      }),
+    duo_code_suggestions_enabled: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, allows GitLab Duo Code Suggestions for the instance. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only.',
+      }),
+    lock_duo_code_suggestions_enabled: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, enforces the Code Suggestions enabled setting for all groups. Always `true` when `duo_code_suggestions_enabled` is `false`. Becomes `false` when `duo_code_suggestions_enabled` changes to `true`, unless the same request sets this attribute. GitLab Self-Managed, Premium and Ultimate only.',
       }),
     duo_workflows_default_image_registry: z
       .string()
@@ -37347,11 +38596,67 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'If `true`, deletes users who have not confirmed their email after `unconfirmed_users_delete_after_days` days. Default is `false`. GitLab Self-Managed, Premium and Ultimate only.',
       }),
+    dependency_firewall_policies_per_configuration_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of dependency firewall policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.',
+      }),
+    dependency_scanning_sbom_scan_api_download_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of scan result downloads every hour for each project through the dependency scanning SBOM scan API. Default: `6000`. Set to `0` to disable the rate limit. Ultimate only.',
+      }),
+    dependency_scanning_sbom_scan_api_upload_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of SBOM uploads every hour for each project through the dependency scanning SBOM scan API. Default: `400`. Set to `0` to disable the rate limit. Ultimate only.',
+      }),
     disable_invite_members: z
       .string()
       .nullable()
       .exactOptional()
       .openapi({ description: 'If `true`, disables the invite members functionality for groups.' }),
+    duo_agent_platform_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, turns on GitLab Duo Agent Platform features for this instance. Default: `true`. GitLab Self-Managed, Premium and Ultimate only.',
+      }),
+    duo_availability: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'GitLab Duo availability setting for this instance. Valid values are `always_on`, `default_on`, `default_off`, and `never_on`. `default_on` and `default_off` turn GitLab Duo on and off by default. `always_on` and `never_on` lock GitLab Duo on and off for a top-level group. `never_on` also turns off experiment and beta GitLab Duo features. Sets `duo_features_enabled` and `lock_duo_features_enabled`. GitLab Self-Managed, Premium and Ultimate only.',
+      }),
+    duo_token_usage_tracking_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, GitLab records the input and output tokens that each GitLab Duo Non-Agentic Chat request uses, by user and model. Defaults to `true`. GitLab Self-Managed, Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/631777) in GitLab 19.6.',
+      }),
+    duo_workflow_file_attachments_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, users can attach files to GitLab Duo Chat messages. Defaults to `false`. GitLab Self-Managed and GitLab Dedicated, Premium and Ultimate only. [Introduced](https://gitlab.com/groups/gitlab-org/-/work_items/20481) in GitLab 19.6.',
+      }),
     elasticsearch_client_adapter: z
       .string()
       .nullable()
@@ -37569,6 +38874,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'If `true`, passwords require at least one uppercase letter. Premium and Ultimate only.',
       }),
+    pipeline_execution_policies_per_configuration_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of pipeline execution policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.',
+      }),
     project_secrets_limit: z
       .string()
       .nullable()
@@ -37584,6 +38897,14 @@ const PutApiV4ApplicationSettingsRequestSchema = z
       .openapi({
         description:
           'Maximum number of `actions` per scan execution policy. Defaults to `0` and cannot be set above `20`.',
+      }),
+    scan_execution_policies_per_configuration_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of scan execution policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.',
       }),
     scan_execution_policies_schedule_limit: z
       .string()
@@ -37625,6 +38946,30 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Set the maximum number of compute minutes that a group can use on instance runners per month. Premium and Ultimate only.',
       }),
+    throttle_incident_management_notification_enabled: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'If `true`, enforces the inbound incident management alert rate limit for each project. Default value: `false`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.',
+      }),
+    throttle_incident_management_notification_per_period: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum inbound alert requests in each period for each project. `throttle_incident_management_notification_enabled` must be `true`. Default value: `3600`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.',
+      }),
+    throttle_incident_management_notification_period_in_seconds: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Rate limit period in seconds. `throttle_incident_management_notification_enabled` must be `true`. Default value: `3600`. GitLab Self-Managed and GitLab Dedicated, Ultimate only.',
+      }),
     unconfirmed_users_delete_after_days: z
       .string()
       .nullable()
@@ -37633,10 +38978,16 @@ const PutApiV4ApplicationSettingsRequestSchema = z
         description:
           'Specifies how many days after account creation to delete users who have not confirmed their email. Only applicable if `delete_unconfirmed_users` is set to `true`. Must be `1` or greater. Default is `7`. GitLab Self-Managed, Premium and Ultimate only.',
       }),
+    vulnerability_management_policies_per_configuration_limit: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Maximum number of vulnerability management policies allowed for each security policy configuration. Default: `5`. Maximum: `20`. Ultimate only.',
+      }),
     allow_possible_spam: z.string().nullable().exactOptional(),
-    import_jobs_concurrency_limit: z.string().nullable().exactOptional(),
     deny_all_requests_except_allowed: z.string().nullable().exactOptional(),
-    block_jwt_for_reclaimed_paths: z.string().nullable().exactOptional(),
     root_moved_permanently_redirection: z.string().nullable().exactOptional(),
     domain_denylist_raw: z.string().nullable().exactOptional(),
     domain_allowlist_raw: z.string().nullable().exactOptional(),
@@ -37652,51 +39003,13 @@ const PutApiV4ApplicationSettingsRequestSchema = z
     organization_cluster_agent_authorization_enabled: z.string().nullable().exactOptional(),
     instance_token_prefix: z.string().nullable().exactOptional(),
     pages_extra_deployments_default_expiry_seconds: z.string().nullable().exactOptional(),
-    throttle_authenticated_git_lfs_enabled: z.string().nullable().exactOptional(),
-    throttle_authenticated_git_lfs_period_in_seconds: z.string().nullable().exactOptional(),
-    throttle_authenticated_git_lfs_requests_per_period: z.string().nullable().exactOptional(),
-    throttle_authenticated_files_api_enabled: z.string().nullable().exactOptional(),
-    throttle_authenticated_files_api_period_in_seconds: z.string().nullable().exactOptional(),
-    throttle_authenticated_files_api_requests_per_period: z.string().nullable().exactOptional(),
-    throttle_authenticated_deprecated_api_enabled: z.string().nullable().exactOptional(),
-    throttle_authenticated_deprecated_api_period_in_seconds: z.string().nullable().exactOptional(),
-    throttle_authenticated_deprecated_api_requests_per_period: z
-      .string()
-      .nullable()
-      .exactOptional(),
-    throttle_unauthenticated_files_api_enabled: z.string().nullable().exactOptional(),
-    throttle_unauthenticated_files_api_period_in_seconds: z.string().nullable().exactOptional(),
-    throttle_unauthenticated_files_api_requests_per_period: z.string().nullable().exactOptional(),
-    throttle_unauthenticated_deprecated_api_enabled: z.string().nullable().exactOptional(),
-    throttle_unauthenticated_deprecated_api_period_in_seconds: z
-      .string()
-      .nullable()
-      .exactOptional(),
-    throttle_unauthenticated_deprecated_api_requests_per_period: z
-      .string()
-      .nullable()
-      .exactOptional(),
-    throttle_protected_paths_enabled: z.string().nullable().exactOptional(),
-    throttle_protected_paths_period_in_seconds: z.string().nullable().exactOptional(),
-    throttle_protected_paths_requests_per_period: z.string().nullable().exactOptional(),
     protected_paths_raw: z.string().nullable().exactOptional(),
     protected_paths_for_get_request_raw: z.string().nullable().exactOptional(),
     usage_ping_generation_enabled: z.string().nullable().exactOptional(),
     usage_ping_features_enabled: z.string().nullable().exactOptional(),
-    project_create_limit: z.string().nullable().exactOptional(),
-    group_create_limit: z.string().nullable().exactOptional(),
-    notes_create_limit: z.string().nullable().exactOptional(),
-    notes_create_limit_allowlist_raw: z.string().nullable().exactOptional(),
     merge_request_diff_download_request_limit: z.string().nullable().exactOptional(),
     markdown_upload_limit_megabytes_per_day: z.string().nullable().exactOptional(),
-    members_delete_limit: z.string().nullable().exactOptional(),
     milestone_destroy_limit: z.string().nullable().exactOptional(),
-    project_import_limit: z.string().nullable().exactOptional(),
-    project_export_limit: z.string().nullable().exactOptional(),
-    project_download_export_limit: z.string().nullable().exactOptional(),
-    group_import_limit: z.string().nullable().exactOptional(),
-    group_export_limit: z.string().nullable().exactOptional(),
-    group_download_export_limit: z.string().nullable().exactOptional(),
     resource_access_token_notify_inherited: z.string().nullable().exactOptional(),
     lock_resource_access_token_notify_inherited: z.string().nullable().exactOptional(),
     sentry_enabled: z.string().nullable().exactOptional(),
@@ -37704,53 +39017,25 @@ const PutApiV4ApplicationSettingsRequestSchema = z
     sentry_clientside_dsn: z.string().nullable().exactOptional(),
     sentry_environment: z.string().nullable().exactOptional(),
     sentry_clientside_traces_sample_rate: z.string().nullable().exactOptional(),
-    search_rate_limit_allowlist_raw: z.string().nullable().exactOptional(),
-    users_get_by_id_limit_allowlist_raw: z.string().nullable().exactOptional(),
     invitation_flow_enforcement: z.string().nullable().exactOptional(),
     can_create_organization: z.string().nullable().exactOptional(),
-    concurrent_relation_export_limit: z.string().nullable().exactOptional(),
     allow_contribution_mapping_to_admins: z.string().nullable().exactOptional(),
     deactivation_email_additional_text: z.string().nullable().exactOptional(),
     glql_db_seconds_per_ip_limit: z.string().nullable().exactOptional(),
     glql_db_seconds_per_query_limit: z.string().nullable().exactOptional(),
     glql_db_seconds_per_user_limit: z.string().nullable().exactOptional(),
     glql_duo_db_seconds_per_user_limit: z.string().nullable().exactOptional(),
-    group_api_limit: z.string().nullable().exactOptional(),
-    group_archive_unarchive_api_limit: z.string().nullable().exactOptional(),
-    group_invited_groups_api_limit: z.string().nullable().exactOptional(),
-    group_shared_groups_api_limit: z.string().nullable().exactOptional(),
-    group_projects_api_limit: z.string().nullable().exactOptional(),
-    groups_api_limit: z.string().nullable().exactOptional(),
-    issuable_csv_import_limit: z.string().nullable().exactOptional(),
-    label_delete_limit: z.string().nullable().exactOptional(),
     merge_requests_update_limit: z.string().nullable().exactOptional(),
-    pages_deployments_api_limit: z.string().nullable().exactOptional(),
-    project_api_limit: z.string().nullable().exactOptional(),
-    project_invited_groups_api_limit: z.string().nullable().exactOptional(),
     project_repositories_archive_limit: z.string().nullable().exactOptional(),
     project_repositories_archive_unauthenticated_limit: z.string().nullable().exactOptional(),
-    project_repositories_blame_limit: z.string().nullable().exactOptional(),
-    project_repositories_blame_unauthenticated_limit: z.string().nullable().exactOptional(),
-    project_repositories_blobs_batch_limit: z.string().nullable().exactOptional(),
     project_repository_commits_api_limit: z.string().nullable().exactOptional(),
     project_repositories_compare_limit: z.string().nullable().exactOptional(),
     project_repositories_compare_unauthenticated_limit: z.string().nullable().exactOptional(),
-    projects_api_limit: z.string().nullable().exactOptional(),
-    project_members_api_limit: z.string().nullable().exactOptional(),
     protected_branch_write_limit: z.string().nullable().exactOptional(),
-    create_organization_api_limit: z.string().nullable().exactOptional(),
+    delete_merged_branches_limit: z.string().nullable().exactOptional(),
     cross_reference_checks_limit: z.string().nullable().exactOptional(),
-    user_contributed_projects_api_limit: z.string().nullable().exactOptional(),
-    user_projects_api_limit: z.string().nullable().exactOptional(),
-    user_starred_projects_api_limit: z.string().nullable().exactOptional(),
-    users_api_limit_ssh_keys: z.string().nullable().exactOptional(),
-    users_api_limit_ssh_key: z.string().nullable().exactOptional(),
-    tags_create_limit: z.string().nullable().exactOptional(),
-    todos_list_api_limit: z.string().nullable().exactOptional(),
-    wiki_read_request_limit_unauthenticated: z.string().nullable().exactOptional(),
     merge_request_diffs_page_request_limit: z.string().nullable().exactOptional(),
     merge_request_diff_resources_request_limit: z.string().nullable().exactOptional(),
-    work_item_hierarchy_add_children_limit: z.string().nullable().exactOptional(),
     work_item_move_limit: z.string().nullable().exactOptional(),
     work_item_update_limit: z.string().nullable().exactOptional(),
     track_namespace_visits_limit: z.string().nullable().exactOptional(),
@@ -37774,14 +39059,10 @@ const PutApiV4ApplicationSettingsRequestSchema = z
     default_search_scope: z.string().nullable().exactOptional(),
     delay_user_account_self_deletion: z.string().nullable().exactOptional(),
     background_operations_max_jobs: z.string().nullable().exactOptional(),
-    pg_ash_sampling_enabled: z.string().nullable().exactOptional(),
-    pg_ash_sample_interval_seconds: z.string().nullable().exactOptional(),
     enforce_granular_tokens: z.string().nullable().exactOptional(),
     granular_tokens_enforced_after: z.string().nullable().exactOptional(),
     deactivate_dormant_users: z.string().nullable().exactOptional(),
     deactivate_dormant_users_period: z.string().nullable().exactOptional(),
-    nuget_skip_metadata_url_validation: z.string().nullable().exactOptional(),
-    helm_max_packages_count: z.string().nullable().exactOptional(),
     mcp_server_enabled: z.string().nullable().exactOptional(),
     dynamic_client_registration_enabled: z.string().nullable().exactOptional(),
     ci_cd_catalog_projects_allowlist: z.string().nullable().exactOptional(),
@@ -37801,27 +39082,18 @@ const PutApiV4ApplicationSettingsRequestSchema = z
     lock_model_prompt_cache_enabled: z.string().nullable().exactOptional(),
     model_prompt_cache_enabled: z.string().nullable().exactOptional(),
     secret_detection_token_revocation_token: z.string().nullable().exactOptional(),
-    throttle_incident_management_notification_enabled: z.string().nullable().exactOptional(),
-    throttle_incident_management_notification_per_period: z.string().nullable().exactOptional(),
-    throttle_incident_management_notification_period_in_seconds: z
-      .string()
-      .nullable()
-      .exactOptional(),
     product_analytics_enabled: z.string().nullable().exactOptional(),
     product_analytics_data_collector_host: z.string().nullable().exactOptional(),
     product_analytics_configurator_connection_string: z.string().nullable().exactOptional(),
     cube_api_base_url: z.string().nullable().exactOptional(),
     cube_api_key: z.string().nullable().exactOptional(),
-    duo_availability: z.string().nullable().exactOptional(),
-    duo_agent_platform_enabled: z.string().nullable().exactOptional(),
     duo_cli_enabled: z.string().nullable().exactOptional(),
     ai_audit_events_streaming_enabled: z.string().nullable().exactOptional(),
-    duo_token_usage_tracking_enabled: z.string().nullable().exactOptional(),
-    duo_workflow_file_attachments_enabled: z.string().nullable().exactOptional(),
     duo_remote_flows_availability: z.string().nullable().exactOptional(),
     duo_foundational_flows_enabled: z.string().nullable().exactOptional(),
     duo_foundational_flows_availability: z.string().nullable().exactOptional(),
     duo_scheduled_automations_availability: z.string().nullable().exactOptional(),
+    duo_code_suggestions_availability: z.string().nullable().exactOptional(),
     duo_custom_agents_availability: z.string().nullable().exactOptional(),
     duo_custom_flows_availability: z.string().nullable().exactOptional(),
     duo_external_agents_availability: z.string().nullable().exactOptional(),
@@ -37855,13 +39127,6 @@ const PutApiV4ApplicationSettingsRequestSchema = z
     orbit_dap_enabled_by_default: z.string().nullable().exactOptional(),
     epic_move_list_limit: z.string().nullable().exactOptional(),
     duo_workflow_oauth_application_id: z.string().nullable().exactOptional(),
-    pipeline_execution_policies_per_configuration_limit: z.string().nullable().exactOptional(),
-    scan_execution_policies_per_configuration_limit: z.string().nullable().exactOptional(),
-    vulnerability_management_policies_per_configuration_limit: z
-      .string()
-      .nullable()
-      .exactOptional(),
-    dependency_firewall_policies_per_configuration_limit: z.string().nullable().exactOptional(),
     policy_store_experiment_enabled: z.string().nullable().exactOptional(),
     secret_detection_service_auth_token: z.string().nullable().exactOptional(),
     secret_detection_service_url: z.string().nullable().exactOptional(),
@@ -37876,8 +39141,6 @@ const PutApiV4ApplicationSettingsRequestSchema = z
     enable_member_promotion_management: z.string().nullable().exactOptional(),
     allow_deploy_tokens_and_keys_with_external_authn: z.string().nullable().exactOptional(),
     allow_top_level_group_owners_to_create_service_accounts: z.string().nullable().exactOptional(),
-    dependency_scanning_sbom_scan_api_upload_limit: z.string().nullable().exactOptional(),
-    dependency_scanning_sbom_scan_api_download_limit: z.string().nullable().exactOptional(),
     auto_duo_code_review_on_push_enabled: z.string().nullable().exactOptional(),
   })
   .openapi({ required: [] })
@@ -48377,6 +49640,14 @@ const PostApiV4UserPushSubscriptionsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Whether notifications carry the full content or only identifiers' }),
+    content_key: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "A base64-encoded 32-byte key the device minted; with it, notification content is sent AES-256-GCM encrypted for the app's notification extension and the alert is generic",
+      }),
   })
   .openapi({ required: ['device_token'] })
   .openapi('PostApiV4UserPushSubscriptionsRequest')
@@ -49099,6 +50370,7 @@ const PostApiV4ProjectsIdCiLintRequestSchema = z
     include_jobs: z
       .boolean()
       .nullable()
+      .default(false)
       .exactOptional()
       .openapi({
         description:
@@ -62952,6 +64224,11 @@ const PostApiV4GroupsRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Allow GitLab Duo flows in this group to run on a schedule' }),
+    duo_code_suggestions_availability: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Enable GitLab Duo Code Suggestions for this group' }),
     duo_custom_agents_availability: z
       .boolean()
       .nullable()
@@ -63105,6 +64382,14 @@ const PostApiV4GroupsRequestSchema = z
           .openapi({
             description:
               'Whether flows that run on GitLab Runner fail when the execution environment sandbox is unavailable. Applies only to top-level groups on GitLab.com.',
+          }),
+        auto_model_routing_enabled: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether Auto model routing is turned on for Duo Developer. Can only be set on top-level groups. GitLab.com only.',
           }),
         minimum_access_level_execute: z
           .union([
@@ -63411,6 +64696,11 @@ const PutApiV4GroupsIdRequestSchema = z
       .nullable()
       .exactOptional()
       .openapi({ description: 'Allow GitLab Duo flows in this group to run on a schedule' }),
+    duo_code_suggestions_availability: z
+      .boolean()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Enable GitLab Duo Code Suggestions for this group' }),
     duo_custom_agents_availability: z
       .boolean()
       .nullable()
@@ -63564,6 +64854,14 @@ const PutApiV4GroupsIdRequestSchema = z
           .openapi({
             description:
               'Whether flows that run on GitLab Runner fail when the execution environment sandbox is unavailable. Applies only to top-level groups on GitLab.com.',
+          }),
+        auto_model_routing_enabled: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether Auto model routing is turned on for Duo Developer. Can only be set on top-level groups. GitLab.com only.',
           }),
         minimum_access_level_execute: z
           .union([
@@ -64302,7 +65600,10 @@ const PutApiV4ApplicationAppearanceRequestSchema = z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Name of the Progressive Web App' }),
+      .openapi({
+        description:
+          'Name of the Progressive Web App. Used for the `name` attribute in `manifest.json`.',
+      }),
     pwa_short_name: z
       .string()
       .nullable()
@@ -64312,7 +65613,10 @@ const PutApiV4ApplicationAppearanceRequestSchema = z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'An explanation of what the Progressive Web App does' }),
+      .openapi({
+        description:
+          'An explanation of what the Progressive Web App does. Used for the `description` attribute in `manifest.json`.',
+      }),
     logo: z
       .file()
       .nullable()
@@ -64353,7 +65657,10 @@ const PutApiV4ApplicationAppearanceRequestSchema = z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Markdown text shown on the members page of a group or project' }),
+      .openapi({
+        description:
+          'Markdown text shown on the members page of a group or project. Shown only to users with permission to change members.',
+      }),
     new_project_guidelines: z
       .string()
       .nullable()
@@ -64495,17 +65802,26 @@ const PutApiV4ApplicationPlanLimitsRequestSchema = z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Maximum number of pipeline variables in a single pipeline.' }),
+      .openapi({
+        description:
+          'Maximum number of pipeline variables in a single pipeline. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.',
+      }),
     ci_variable_value_size: z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Maximum size of a CI/CD variable value in bytes.' }),
+      .openapi({
+        description:
+          'Maximum size of a CI/CD variable value in bytes. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.',
+      }),
     ci_variable_file_value_size: z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Maximum size of a file type CI/CD variable value in bytes.' }),
+      .openapi({
+        description:
+          'Maximum size of a file type CI/CD variable value in bytes. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/253433) in GitLab 19.6.',
+      }),
     ci_active_jobs: z
       .int()
       .nullable()
@@ -64530,7 +65846,10 @@ const PutApiV4ApplicationPlanLimitsRequestSchema = z
       .int()
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Maximum number of job variables in a single job.' }),
+      .openapi({
+        description:
+          'Maximum number of job variables in a single job. Default is `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/254701) in GitLab 19.6.',
+      }),
     ci_registered_group_runners: z
       .int()
       .nullable()
@@ -64700,7 +66019,7 @@ const PutApiV4ApplicationPlanLimitsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of integration executions that can be enqueued per minute, per top-level namespace, excluding Datadog. Set to `0` for unlimited.',
+          'Maximum number of integration executions that can be enqueued per minute, per top-level namespace, excluding Datadog. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/636614) in GitLab 19.6. This parameter is in beta and might be changed or removed without notice.',
       }),
     integration_executions_datadog: z
       .int()
@@ -64708,7 +66027,7 @@ const PutApiV4ApplicationPlanLimitsRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Maximum number of Datadog integration executions that can be enqueued per minute, per top-level namespace. Set to `0` for unlimited.',
+          'Maximum number of Datadog integration executions that can be enqueued per minute, per top-level namespace. Set to `0` for unlimited. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/636614) in GitLab 19.6. This parameter is in beta and might be changed or removed without notice.',
       }),
     max_pipelines_per_merge_train: z
       .int()
@@ -65038,7 +66357,10 @@ const PostApiV4BroadcastMessagesRequestSchema = z
       )
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Target access levels (roles) of the broadcast message.' }),
+      .openapi({
+        description:
+          'Target access levels (roles) of the broadcast message. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner).',
+      }),
     target_path: z
       .string()
       .nullable()
@@ -65069,8 +66391,12 @@ const PostApiV4BroadcastMessagesRequestSchema = z
         'light',
       ])
       .nullable()
+      .default('indigo')
       .exactOptional()
-      .openapi({ description: 'Color theme for the broadcast message. Applies only to banners.' }),
+      .openapi({
+        description:
+          'Color theme for the broadcast message. Applies only to banners. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498900) in GitLab 17.6.',
+      }),
   })
   .openapi({ required: ['message'] })
   .openapi('PostApiV4BroadcastMessagesRequest')
@@ -65117,7 +66443,10 @@ const PutApiV4BroadcastMessagesIdRequestSchema = z
       )
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Target access levels (roles) of the broadcast message.' }),
+      .openapi({
+        description:
+          'Target access levels (roles) of the broadcast message. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), `50` (Owner).',
+      }),
     target_path: z
       .string()
       .nullable()
@@ -65148,7 +66477,10 @@ const PutApiV4BroadcastMessagesIdRequestSchema = z
       ])
       .nullable()
       .exactOptional()
-      .openapi({ description: 'Color theme for the broadcast message. Applies only to banners.' }),
+      .openapi({
+        description:
+          'Color theme for the broadcast message. Applies only to banners. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498900) in GitLab 17.6.',
+      }),
   })
   .openapi({ required: [] })
   .openapi('PutApiV4BroadcastMessagesIdRequest')
@@ -65921,7 +67253,7 @@ export const postApiV4TokenExchangeRoute = createRoute({
   tags: ['Token exchange'],
   summary: 'Issue a short-lived JWT for a single modular-service audience',
   description:
-    'Issues a short-lived RS256 JWT scoped to one modular-service audience (such as the Artifact Registry). Claims include the requesting user id (sub), organization id, and deployment realm (saas / self-managed). When called with a CI/CD ID token, the claims also carry its build metadata, a target_audience claim in the ID token names the audience, and an ID token older than 15 minutes is refused. Presented to the corresponding backend and verified against the instance JWKS. The response uses the RFC 8693 names. token and access_token have the same value, with access_token preferred where possible.',
+    'Issues a short-lived RS256 JWT scoped to one modular-service audience (such as the Artifact Registry). Claims include the requesting user id (sub), organization id, and deployment realm (saas / self-managed). When called with a CI/CD ID token, the claims also carry its build metadata, a target_audience claim in the ID token names the audience, and an ID token older than 15 minutes is refused. Presented to the corresponding backend and verified against the instance JWKS. The response uses the RFC 8693 names. token and access_token have the same value, with access_token preferred where possible. For an audience bound to a resource, such as gitlab-repositories, pass the resource and optionally a scope. The token then stores the grant in authorization_details (RFC 9396). The request is refused unless the caller and the credential allow every requested action. A resource that is missing, not visible to the caller or of the wrong type returns 400 with error set to invalid_target and an error_description (RFC 8693).',
   operationId: 'postApiV4TokenExchange',
   request: {
     body: { content: { 'application/json': { schema: PostApiV4TokenExchangeRequestSchema } } },
@@ -65936,6 +67268,7 @@ export const postApiV4TokenExchangeRoute = createRoute({
     403: { description: 'Forbidden' },
     404: { description: 'Not found' },
     409: { description: 'Conflict' },
+    429: { description: 'Too many requests' },
   },
 })
 
@@ -65984,6 +67317,7 @@ export const postApiV4CodeSuggestionsDirectAccessRoute = createRoute({
     201: { description: 'Created' },
     400: { description: 'Bad Request' },
     401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
     404: { description: 'Not found' },
     429: { description: 'Too many requests' },
   },
@@ -66024,6 +67358,7 @@ export const postApiV4CodeSuggestionsConnectionDetailsRoute = createRoute({
     201: { description: 'Created' },
     400: { description: 'Bad Request' },
     401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
     404: { description: 'Not found' },
     429: { description: 'Too many requests' },
   },
@@ -69926,7 +71261,15 @@ export const getApiV4OccurrencesVulnerabilitiesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK' }, 400: { description: 'Bad Request' } },
+  responses: {
+    200: {
+      description: 'OK',
+      content: {
+        'application/json': { schema: z.array(APIEntitiesDependenciesVulnerabilitiesSchema) },
+      },
+    },
+    400: { description: 'Bad Request' },
+  },
 })
 
 export const getApiV4GroupsIdSamlGroupLinksRoute = createRoute({
@@ -78082,7 +79425,7 @@ export const getApiV4LicenseUsageExportRoute = createRoute({
   path: '/api/v4/license/usage_export',
   tags: ['Licenses'],
   summary: 'Download license usage data',
-  description: 'Downloads usage data for the currently active license.',
+  description: 'Downloads usage data for the currently active license in CSV format.',
   operationId: 'getApiV4LicenseUsageExport',
   responses: {
     200: { description: 'OK' },
@@ -78218,7 +79561,8 @@ export const getApiV4LicensesRoute = createRoute({
   path: '/api/v4/licenses',
   tags: ['Licenses'],
   summary: 'List all licenses',
-  description: 'Lists all information about all licenses.',
+  description:
+    'Lists all information about all licenses. `overage` is the difference between the number of billable users and the licensed number of users. For an expired license, it uses the historical maximum billable user count (`historical_max`). Otherwise, it uses the current billable user count.',
   operationId: 'getApiV4Licenses',
   responses: {
     200: {
@@ -82552,7 +83896,28 @@ export const getApiV4ProjectsIdDoraMetricsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'successful operation' },
+    200: {
+      description: 'successful operation',
+      content: {
+        'application/json': {
+          schema: z.array(APIEntitiesDoraMetricSchema),
+          examples: {
+            successfull_response: {
+              value: [
+                { date: '2021-03-01', value: 3 },
+                { date: '2021-03-02', value: 6 },
+                { date: '2021-03-03', value: 0 },
+                { date: '2021-03-04', value: 0 },
+                { date: '2021-03-05', value: 0 },
+                { date: '2021-03-06', value: 0 },
+                { date: '2021-03-07', value: 0 },
+                { date: '2021-03-08', value: 4 },
+              ],
+            },
+          },
+        },
+      },
+    },
     400: { description: 'Bad request' },
     401: { description: 'Unauthorized' },
     404: { description: 'Not Found' },
@@ -82682,7 +84047,28 @@ export const getApiV4GroupsIdDoraMetricsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'successful operation' },
+    200: {
+      description: 'successful operation',
+      content: {
+        'application/json': {
+          schema: z.array(APIEntitiesDoraMetricSchema),
+          examples: {
+            successfull_response: {
+              value: [
+                { date: '2021-03-01', value: 3 },
+                { date: '2021-03-02', value: 6 },
+                { date: '2021-03-03', value: 0 },
+                { date: '2021-03-04', value: 0 },
+                { date: '2021-03-05', value: 0 },
+                { date: '2021-03-06', value: 0 },
+                { date: '2021-03-07', value: 0 },
+                { date: '2021-03-08', value: 4 },
+              ],
+            },
+          },
+        },
+      },
+    },
     400: { description: 'Bad request' },
     401: { description: 'Unauthorized' },
     404: { description: 'Not Found' },
@@ -85505,7 +86891,7 @@ export const getApiV4AdminDataManagementModelNameRoute = createRoute({
   tags: ['Data management'],
   summary: 'Retrieve model information',
   description:
-    'Retrieves information about a data model in an instance. Only available to administrators.',
+    'Retrieves information about a data model in an instance. Only available to administrators. Supports keyset pagination on the primary key of the model. To use keyset pagination, set `pagination=keyset`. By default, keyset pagination returns 20 records per page in ascending order. Use `sort` to set the order and `per_page` to set the number of records per page.',
   operationId: 'getApiV4AdminDataManagementModelName',
   request: {
     params: z.object({
@@ -85681,7 +87067,7 @@ export const putApiV4AdminDataManagementModelNameChecksumRoute = createRoute({
   tags: ['Data management'],
   summary: 'Recalculate checksums for model records',
   description:
-    'Recalculates checksums for selected records of a specified model, filtered by `checksum_state` and `identifiers` parameters if provided. The request enqueues a background job to perform the recalculation. Only available to administrators on primary Geo sites.',
+    'Recalculates checksums for selected records of a specified model, filtered by `checksum_state` and `identifiers` parameters if provided. The request enqueues a background job to perform the recalculation. Only available to administrators on primary Geo sites. If no records match `identifiers`, returns `status` `success` with the message `No records matched the given identifiers.`',
   operationId: 'putApiV4AdminDataManagementModelNameChecksum',
   request: {
     params: z.object({
@@ -85883,7 +87269,10 @@ export const getApiV4AdminSearchMigrationsRoute = createRoute({
   description: 'Lists all advanced search migrations for the GitLab instance.',
   operationId: 'getApiV4AdminSearchMigrations',
   responses: {
-    200: { description: 'OK' },
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: z.array(APIEntitiesSearchMigrationSchema) } },
+    },
     401: { description: '401 Unauthorized' },
     403: { description: '403 Forbidden' },
     404: { description: '404 Not found' },
@@ -98984,7 +100373,10 @@ export const getApiV4ProjectsIdMilestonesMilestoneIdBurndownEventsRoute = create
     }),
   },
   responses: {
-    200: { description: 'OK' },
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: z.array(APIEntitiesBurndownEventSchema) } },
+    },
     400: { description: 'Bad Request' },
     404: { description: 'Not Found' },
   },
@@ -103901,7 +105293,10 @@ export const getApiV4GroupsIdMilestonesMilestoneIdBurndownEventsRoute = createRo
     }),
   },
   responses: {
-    200: { description: 'OK' },
+    200: {
+      description: 'OK',
+      content: { 'application/json': { schema: z.array(APIEntitiesBurndownEventSchema) } },
+    },
     400: { description: 'Bad Request' },
     404: { description: 'Not Found' },
   },
@@ -103974,7 +105369,8 @@ export const getApiV4ProjectsIdLabelsRoute = createRoute({
           param: {
             name: 'search',
             required: false,
-            description: 'Keyword to filter labels by.',
+            description:
+              'Keyword to filter labels by. Returns labels with an exact, case-insensitive name match first.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -104605,7 +106001,8 @@ export const getApiV4GroupsIdLabelsRoute = createRoute({
           param: {
             name: 'search',
             required: false,
-            description: 'Keyword to filter labels by.',
+            description:
+              'Keyword to filter labels by. Returns labels with an exact, case-insensitive name match first.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109326,7 +110723,8 @@ export const getApiV4AdminSidekiqConcurrencyLimitsWorkerClassRoute = createRoute
   path: '/api/v4/admin/sidekiq/concurrency_limits/{worker_class}',
   tags: ['Sidekiq'],
   summary: 'Get a Sidekiq worker concurrency limit',
-  description: 'Returns concurrency limits, override expiry and job counts.',
+  description:
+    'Returns concurrency limits, override expiry and job counts. Namespaced worker class names keep the `::` separator in the path. This feature was introduced in GitLab 19.6.',
   operationId: 'getApiV4AdminSidekiqConcurrencyLimitsWorkerClass',
   request: {
     params: z.object({
@@ -109360,7 +110758,8 @@ export const putApiV4AdminSidekiqConcurrencyLimitsWorkerClassRoute = createRoute
   path: '/api/v4/admin/sidekiq/concurrency_limits/{worker_class}',
   tags: ['Sidekiq'],
   summary: 'Update a Sidekiq worker concurrency limit override',
-  description: 'Overrides adaptive throttling until the TTL expires or the override is deleted.',
+  description:
+    "Sets or replaces a temporary concurrency override. Overrides adaptive throttling until the TTL expires or the override is deleted. Replacing an override restarts its TTL. Workers without a limit can receive a temporary cap. A positive override takes precedence over adaptive throttling and the class default. Pausing takes precedence over an override. Disabled concurrency middleware ignores overrides. When an override expires or is cleared, the stored adaptive limit resumes if it remains valid. Otherwise, the worker's runtime default applies. Lowering a limit does not terminate running jobs. The override is rejected if the worker is paused, the `sidekiq_concurrency_limit_middleware` feature flag is disabled, the worker's `disable_sidekiq_concurrency_limit_middleware_<WorkerClass>` bypass flag is enabled, or the worker is `ConcurrencyLimit::ResumeWorker`, which resumes deferred jobs and cannot be limited. This feature was introduced in GitLab 19.6.",
   operationId: 'putApiV4AdminSidekiqConcurrencyLimitsWorkerClass',
   request: {
     params: z.object({
@@ -109402,7 +110801,8 @@ export const deleteApiV4AdminSidekiqConcurrencyLimitsWorkerClassRoute = createRo
   path: '/api/v4/admin/sidekiq/concurrency_limits/{worker_class}',
   tags: ['Sidekiq'],
   summary: 'Delete a Sidekiq worker concurrency limit override',
-  description: 'Restores the adaptive limit if present, otherwise the worker default.',
+  description:
+    'Clears the temporary override and returns the updated concurrency-limit status. Restores the adaptive limit if present, otherwise the worker default. This feature was introduced in GitLab 19.6.',
   operationId: 'deleteApiV4AdminSidekiqConcurrencyLimitsWorkerClass',
   request: {
     params: z.object({
@@ -109437,7 +110837,7 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
   tags: ['Sidekiq'],
   summary: 'Delete jobs from a Sidekiq queue',
   description:
-    'Deletes jobs from a Sidekiq queue that match the specified metadata. At least one of 32 related parameters must be provided.',
+    'Deletes jobs from a Sidekiq queue that match the specified metadata. The response has three fields: `deleted_jobs` is the number of jobs deleted by the request, `queue_size` is the remaining size of the queue after the request, and `completed` is whether the request processed the entire queue in time. If `completed` is `false`, retrying with the same parameters can delete more jobs, including jobs added after the first request. Only available to administrators. At least one of 32 related parameters must be provided.',
   operationId: 'deleteApiV4AdminSidekiqQueuesQueueName',
   request: {
     params: z.object({
@@ -109475,7 +110875,7 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'user',
             required: false,
-            description: 'Metadata key to match',
+            description: 'Username of the user who scheduled the jobs.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109540,7 +110940,7 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'project',
             required: false,
-            description: 'Metadata key to match',
+            description: 'Full path of the project where the jobs were scheduled from.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109553,7 +110953,7 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'root_namespace',
             required: false,
-            description: 'Metadata key to match',
+            description: 'Root namespace of the project.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109592,7 +110992,8 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'caller_id',
             required: false,
-            description: 'Metadata key to match',
+            description:
+              'Endpoint or background job that scheduled the job, for example `ProjectsController#create`, `/api/:version/projects/:id`, or `PostReceive`.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109657,7 +111058,8 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'feature_category',
             required: false,
-            description: 'Metadata key to match',
+            description:
+              'Feature category of the background job, for example `team_planning` or `code_review`.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109800,7 +111202,8 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'client_type',
             required: false,
-            description: 'Metadata key to match',
+            description:
+              'Kind of client whose request scheduled the jobs, for example `browser`, `ide`, or `mobile`.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109813,7 +111216,8 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'client_name',
             required: false,
-            description: 'Metadata key to match',
+            description:
+              'Client whose request scheduled the jobs, for example `vscode` or `gitlab-mobile-ios`.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109826,7 +111230,8 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'client_version',
             required: false,
-            description: 'Metadata key to match',
+            description:
+              'Release of the client whose request scheduled the jobs, for example `6.21.0` or `1.2.0`.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109839,7 +111244,7 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'subscription_plan',
             required: false,
-            description: 'Metadata key to match',
+            description: 'Subscription plan of the root namespace. GitLab.com only.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -109865,7 +111270,8 @@ export const deleteApiV4AdminSidekiqQueuesQueueNameRoute = createRoute({
           param: {
             name: 'worker_class',
             required: false,
-            description: 'Metadata key to match',
+            description:
+              'Class of the background job worker, for example `PostReceive` or `MergeWorker`.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -110725,7 +112131,8 @@ export const getApiV4UsageDataMetricDefinitionsRoute = createRoute({
   path: '/api/v4/usage_data/metric_definitions',
   tags: ['Metrics'],
   summary: 'Download metric definitions',
-  description: 'Downloads all metric definitions as a single YAML file.',
+  description:
+    'Downloads all metric definitions as a single YAML file, similar to the [Metrics Dictionary](https://metrics.gitlab.com/), for easier importing.',
   operationId: 'getApiV4UsageDataMetricDefinitions',
   request: {
     query: z.object({
@@ -113975,7 +115382,8 @@ export const getApiV4ApplicationStatisticsRoute = createRoute({
   path: '/api/v4/application/statistics',
   tags: ['Instance'],
   summary: 'Retrieve application statistics',
-  description: 'Retrieves the current application statistics for this GitLab instance.',
+  description:
+    'Retrieves the current application statistics for this GitLab instance. For values less than 10,000, an exact count is returned. For values of 10,000 and greater, the count might be approximate.',
   operationId: 'getApiV4ApplicationStatistics',
   responses: {
     200: {
@@ -114592,7 +116000,7 @@ export const getApiV4SearchRoute = createRoute({
   tags: ['Search'],
   summary: 'Search an instance',
   description:
-    'Searches for a term across the entire GitLab instance. The response depends on the requested scope.',
+    'Searches for a term across the entire GitLab instance. The response depends on the requested scope.\n\nThe `blobs` scope searches code. It is available only when advanced search or exact code search is enabled.\nThe `wiki_blobs` scope searches wikis. The `commits`, `notes`, and `wiki_blobs` scopes are available only\nwhen advanced search is enabled.\n\nThe `blobs` and `wiki_blobs` scopes support the `filename`, `path`, and `extension` filters. To use a filter,\ninclude it in the search query, for example `a query filename:some_name*`. Filters support wildcards (`*`)\nfor glob matching. Elasticsearch syntax might not work with exact code search. For exact code search, use\nregular expressions instead of Elasticsearch wildcard queries.\n\nIn `blobs` and `wiki_blobs` results, `filename` is deprecated in favor of `path`. Both return the full path\nof the file in the repository. In a future release, `filename` is planned to return only the file name.\n\nIn `issues` results, `assignee` is deprecated in favor of `assignees`.\n\nTo filter `work_items` results by more than one type, pass `type` as an array, for example\n`type[]=task&type[]=issue`.\n',
   operationId: 'getApiV4Search',
   request: {
     query: z.object({
@@ -114627,7 +116035,8 @@ export const getApiV4SearchRoute = createRoute({
           param: {
             name: 'scope',
             required: true,
-            description: 'Scope of the search.',
+            description:
+              'Scope of the search. The `blobs` scope requires advanced search or exact code search. The `commits`, `notes`, and `wiki_blobs` scopes require advanced search.',
             schema: {
               type: 'string',
               enum: [
@@ -114800,7 +116209,7 @@ export const getApiV4SearchRoute = createRoute({
             name: 'source_branch',
             required: false,
             description:
-              'Filter merge requests by source branch. Available with advanced search and the merge_requests scope.',
+              'Filter merge requests by source branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -114814,7 +116223,7 @@ export const getApiV4SearchRoute = createRoute({
             name: 'target_branch',
             required: false,
             description:
-              'Filter merge requests by target branch. Available with advanced search and the merge_requests scope.',
+              'Filter merge requests by target branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -114828,7 +116237,7 @@ export const getApiV4SearchRoute = createRoute({
             name: 'author_username',
             required: false,
             description:
-              'Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes.',
+              'Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -114850,7 +116259,7 @@ export const getApiV4SearchRoute = createRoute({
             name: 'label_name',
             required: false,
             description:
-              'Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes.',
+              'Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'array', items: { type: 'string' }, nullable: true },
             in: 'query',
             style: 'form',
@@ -114879,7 +116288,8 @@ export const getApiV4SearchRoute = createRoute({
           param: {
             name: 'not[source_branch]',
             required: false,
-            description: 'Exclude merge requests with this source branch',
+            description:
+              'Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -114892,7 +116302,8 @@ export const getApiV4SearchRoute = createRoute({
           param: {
             name: 'not[target_branch]',
             required: false,
-            description: 'Exclude merge requests with this target branch',
+            description:
+              'Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -114905,7 +116316,8 @@ export const getApiV4SearchRoute = createRoute({
           param: {
             name: 'not[author_username]',
             required: false,
-            description: 'Exclude results authored by this username',
+            description:
+              'Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -114974,7 +116386,8 @@ export const getApiV4GroupsIdU28DashSearchRoute = createRoute({
   path: '/api/v4/groups/{id}/(-/)search',
   tags: ['Search'],
   summary: 'Search on GitLab within a group',
-  description: 'This feature was introduced in GitLab 10.5.',
+  description:
+    'The `groups` scope returns the subgroups of the specified group, not the group itself.\n\nThe `blobs` scope searches code. It is available only when advanced search or exact code search is enabled.\nThe `wiki_blobs` scope searches wikis. The `commits`, `notes`, and `wiki_blobs` scopes are available only\nwhen advanced search is enabled.\n\nThe `blobs` and `wiki_blobs` scopes support the `filename`, `path`, and `extension` filters. To use a filter,\ninclude it in the search query, for example `a query filename:some_name*`. Filters support wildcards (`*`)\nfor glob matching. Elasticsearch syntax might not work with exact code search. For exact code search, use\nregular expressions instead of Elasticsearch wildcard queries.\n\nIn `blobs` and `wiki_blobs` results, `filename` is deprecated in favor of `path`. Both return the full path\nof the file in the repository. In a future release, `filename` is planned to return only the file name.\n\nIn `issues` results, `assignee` is deprecated in favor of `assignees`.\n\nTo filter `work_items` results by more than one type, pass `type` as an array, for example\n`type[]=task&type[]=issue`.\n',
   operationId: 'getApiV4GroupsIdDashSearch',
   request: {
     params: z.object({
@@ -115203,7 +116616,7 @@ export const getApiV4GroupsIdU28DashSearchRoute = createRoute({
             name: 'source_branch',
             required: false,
             description:
-              'Filter merge requests by source branch. Available with advanced search and the merge_requests scope.',
+              'Filter merge requests by source branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115217,7 +116630,7 @@ export const getApiV4GroupsIdU28DashSearchRoute = createRoute({
             name: 'target_branch',
             required: false,
             description:
-              'Filter merge requests by target branch. Available with advanced search and the merge_requests scope.',
+              'Filter merge requests by target branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115231,7 +116644,7 @@ export const getApiV4GroupsIdU28DashSearchRoute = createRoute({
             name: 'author_username',
             required: false,
             description:
-              'Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes.',
+              'Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115253,7 +116666,7 @@ export const getApiV4GroupsIdU28DashSearchRoute = createRoute({
             name: 'label_name',
             required: false,
             description:
-              'Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes.',
+              'Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'array', items: { type: 'string' }, nullable: true },
             in: 'query',
             style: 'form',
@@ -115282,7 +116695,8 @@ export const getApiV4GroupsIdU28DashSearchRoute = createRoute({
           param: {
             name: 'not[source_branch]',
             required: false,
-            description: 'Exclude merge requests with this source branch',
+            description:
+              'Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115295,7 +116709,8 @@ export const getApiV4GroupsIdU28DashSearchRoute = createRoute({
           param: {
             name: 'not[target_branch]',
             required: false,
-            description: 'Exclude merge requests with this target branch',
+            description:
+              'Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115308,7 +116723,8 @@ export const getApiV4GroupsIdU28DashSearchRoute = createRoute({
           param: {
             name: 'not[author_username]',
             required: false,
-            description: 'Exclude results authored by this username',
+            description:
+              'Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115381,7 +116797,8 @@ export const getApiV4ProjectsIdU28DashSearchRoute = createRoute({
   path: '/api/v4/projects/{id}/(-/)search',
   tags: ['Search', 'Projects'],
   summary: 'Search a project',
-  description: 'Searches for content in a specified project.',
+  description:
+    'Searches for content in a specified project.\n\nThe `blobs` scope searches code and the `wiki_blobs` scope searches wikis. Both search filenames and\ncontents. Results found in filenames are listed before results found in contents. A blob can appear in\nmore than one result, because the search string can match both its filename and its content, or appear\nseveral times in its content.\n\nThe `blobs` and `wiki_blobs` scopes support the `filename`, `path`, and `extension` filters. To use a filter,\ninclude it in the search query, for example `a query filename:some_name*`. Filters support wildcards (`*`)\nfor glob matching. Elasticsearch syntax might not work with exact code search. For exact code search, use\nregular expressions instead of Elasticsearch wildcard queries.\n\nIn `blobs` and `wiki_blobs` results, `filename` is deprecated in favor of `path`. Both return the full path\nof the file in the repository. In a future release, `filename` is planned to return only the file name.\n\nIn `issues` results, `assignee` is deprecated in favor of `assignees`.\n\nTo filter `work_items` results by more than one type, pass `type` as an array, for example\n`type[]=task&type[]=issue`.\n',
   operationId: 'getApiV4ProjectsIdDashSearch',
   request: {
     params: z.object({
@@ -115593,7 +117010,7 @@ export const getApiV4ProjectsIdU28DashSearchRoute = createRoute({
             name: 'source_branch',
             required: false,
             description:
-              'Filter merge requests by source branch. Available with advanced search and the merge_requests scope.',
+              'Filter merge requests by source branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115607,7 +117024,7 @@ export const getApiV4ProjectsIdU28DashSearchRoute = createRoute({
             name: 'target_branch',
             required: false,
             description:
-              'Filter merge requests by target branch. Available with advanced search and the merge_requests scope.',
+              'Filter merge requests by target branch. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115621,7 +117038,7 @@ export const getApiV4ProjectsIdU28DashSearchRoute = createRoute({
             name: 'author_username',
             required: false,
             description:
-              'Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes.',
+              'Filter by author username. A username that matches no user is ignored. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115643,7 +117060,7 @@ export const getApiV4ProjectsIdU28DashSearchRoute = createRoute({
             name: 'label_name',
             required: false,
             description:
-              'Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes.',
+              'Filter by label name. A result must carry every name that resolves to an existing label; names that match no label are ignored. Maximum 30 names. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'array', items: { type: 'string' }, nullable: true },
             in: 'query',
             style: 'form',
@@ -115672,7 +117089,8 @@ export const getApiV4ProjectsIdU28DashSearchRoute = createRoute({
           param: {
             name: 'not[source_branch]',
             required: false,
-            description: 'Exclude merge requests with this source branch',
+            description:
+              'Exclude merge requests with this source branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115685,7 +117103,8 @@ export const getApiV4ProjectsIdU28DashSearchRoute = createRoute({
           param: {
             name: 'not[target_branch]',
             required: false,
-            description: 'Exclude merge requests with this target branch',
+            description:
+              'Exclude merge requests with this target branch. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the merge_requests scope. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -115698,7 +117117,8 @@ export const getApiV4ProjectsIdU28DashSearchRoute = createRoute({
           param: {
             name: 'not[author_username]',
             required: false,
-            description: 'Exclude results authored by this username',
+            description:
+              'Exclude results authored by this username. Combining a filter with its own negation matches either condition, which widens the result set. Available with advanced search and the issues, merge_requests and work_items scopes. Premium and Ultimate only. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/493214) in GitLab 19.5.',
             schema: { type: 'string', nullable: true },
             in: 'query',
           },
@@ -131188,7 +132608,7 @@ export const getApiV4ProjectsIdStatisticsRoute = createRoute({
   tags: ['Projects'],
   summary: 'Retrieve the statistics of the last 30 days',
   description:
-    'Retrieves the clone and pull statistics for the last 30 days from a specified project.',
+    'Retrieves the clone and pull statistics for the last 30 days from a specified project. Requires at least the Reporter role for the project. Requires a token with the `read_api` or `api` scope.',
   operationId: 'getApiV4ProjectsIdStatistics',
   request: {
     params: z.object({
@@ -141508,7 +142928,7 @@ export const getApiV4PersonalAccessTokensSelfAssociationsRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: { 'application/json': { schema: APIEntitiesPersonalAccessTokenSchema } },
+      content: { 'application/json': { schema: APIEntitiesPersonalAccessTokenAssociationsSchema } },
     },
     400: { description: 'Bad Request' },
     401: { description: 'Unauthorized' },
@@ -147071,7 +148491,7 @@ export const getApiV4VersionRoute = createRoute({
   tags: ['Metadata'],
   summary: 'Retrieves version information for the GitLab instance',
   description:
-    'This feature was introduced in GitLab 8.13 and deprecated in 15.5. We recommend you instead use the Metadata API.',
+    'Retrieves metadata information for the GitLab instance. Deprecated. Use `GET /metadata` instead.',
   operationId: 'getApiV4Version',
   responses: {
     200: {
@@ -155935,7 +157355,8 @@ export const getApiV4ProjectsIdCiLintRoute = createRoute({
   path: '/api/v4/projects/{id}/ci/lint',
   tags: ['CI lint'],
   summary: 'Validate existing CI/CD configuration',
-  description: 'Validates the `.gitlab-ci.yml` configuration for a specified project.',
+  description:
+    'Validates the existing `.gitlab-ci.yml` configuration for a specified project. The validation runs in the context of the project, using the CI/CD variables of the project and searching the files of the project for `include:local` entries. If the `ci_lint_api_require_authentication` setting is enabled, this endpoint requires authentication, including for public projects. This endpoint does not accept CI/CD job tokens. Use a personal, project, or group access token instead.',
   operationId: 'getApiV4ProjectsIdCiLint',
   request: {
     params: z.object({
@@ -156006,6 +157427,7 @@ export const getApiV4ProjectsIdCiLintRoute = createRoute({
         }),
       include_jobs: z
         .preprocess((val) => (val === 'null' ? null : val), z.stringbool().nullable())
+        .default(false)
         .exactOptional()
         .openapi({
           param: {
@@ -156013,7 +157435,7 @@ export const getApiV4ProjectsIdCiLintRoute = createRoute({
             required: false,
             description:
               'If `true`, includes the list of jobs that would exist in a static check or pipeline simulation.',
-            schema: { type: 'boolean', nullable: true },
+            schema: { type: 'boolean', nullable: true, default: false },
             in: 'query',
           },
         }),
@@ -156063,7 +157485,8 @@ export const postApiV4ProjectsIdCiLintRoute = createRoute({
   path: '/api/v4/projects/{id}/ci/lint',
   tags: ['CI lint'],
   summary: 'Validate a CI/CD configuration',
-  description: 'Validates a provided CI/CD configuration in the context of a specified project.',
+  description:
+    'Validates a provided CI/CD configuration in the context of a specified project. The validation uses the CI/CD variables of the project and searches the files of the project for `include:local` entries.',
   operationId: 'postApiV4ProjectsIdCiLint',
   request: {
     params: z.object({
@@ -177416,7 +178839,7 @@ export const getApiV4FeaturesRoute = createRoute({
   path: '/api/v4/features',
   tags: ['Features'],
   summary: 'List all feature flags',
-  description: 'Lists all feature flags for the instance.',
+  description: 'Lists all persisted feature flags for the instance, with their gate values.',
   operationId: 'getApiV4Features',
   responses: {
     200: {
@@ -177451,7 +178874,7 @@ export const postApiV4FeaturesNameRoute = createRoute({
   tags: ['Features'],
   summary: 'Create or update a feature flag',
   description:
-    "Creates or updates a feature flag value. If a feature with the given name doesn't exist yet, the operation creates one. The value can be a boolean or an integer to indicate percentage of time.",
+    "Creates or updates a feature flag value. If a feature with the given name doesn't exist yet, the operation creates one. The value can be a boolean or an integer to indicate percentage of time. A single call can enable or disable a feature for a `feature_group`, a `user`, a `group`, a `namespace`, a `project`, an `organization`, a `repository`, and a `runner`. Enabling a feature that is still in development has security and stability risks.",
   operationId: 'postApiV4FeaturesName',
   request: {
     params: z.object({
@@ -178722,7 +180145,7 @@ export const putApiV4ProjectsIdErrorTrackingSettingsRoute = createRoute({
   tags: ['Error tracking'],
   summary: 'Create Error Tracking settings for a project',
   description:
-    'Creates Error Tracking settings for a specified project. You must have the Maintainer or Owner role for the project.',
+    'Creates Error Tracking settings for a specified project. Available only with integrated error tracking. You must have the Maintainer or Owner role for the project.',
   operationId: 'putApiV4ProjectsIdErrorTrackingSettings',
   request: {
     params: z.object({
@@ -201598,6 +203021,21 @@ export const postApiV4GroupsRoute = createRoute({
                 .openapi({
                   description: 'Allow GitLab Duo flows in this group to run on a schedule',
                 }),
+              duo_code_suggestions_availability: z
+                .preprocess(
+                  (val) => (val === 'null' ? null : val),
+                  z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      z.boolean(),
+                    )
+                    .nullable(),
+                )
+                .exactOptional()
+                .openapi({ description: 'Enable GitLab Duo Code Suggestions for this group' }),
               duo_custom_agents_availability: z
                 .preprocess(
                   (val) => (val === 'null' ? null : val),
@@ -201960,6 +203398,24 @@ export const postApiV4GroupsRoute = createRoute({
                     .openapi({
                       description:
                         'Whether flows that run on GitLab Runner fail when the execution environment sandbox is unavailable. Applies only to top-level groups on GitLab.com.',
+                    }),
+                  auto_model_routing_enabled: z
+                    .preprocess(
+                      (val) => (val === 'null' ? null : val),
+                      z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          z.boolean(),
+                        )
+                        .nullable(),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether Auto model routing is turned on for Duo Developer. Can only be set on top-level groups. GitLab.com only.',
                     }),
                   minimum_access_level_execute: z
                     .preprocess(
@@ -202746,6 +204202,21 @@ export const putApiV4GroupsIdRoute = createRoute({
                 .openapi({
                   description: 'Allow GitLab Duo flows in this group to run on a schedule',
                 }),
+              duo_code_suggestions_availability: z
+                .preprocess(
+                  (val) => (val === 'null' ? null : val),
+                  z
+                    .preprocess(
+                      ((read) => (val: unknown) => {
+                        const result = read.safeParse(val)
+                        return result.success ? result.data : val
+                      })(z.stringbool()),
+                      z.boolean(),
+                    )
+                    .nullable(),
+                )
+                .exactOptional()
+                .openapi({ description: 'Enable GitLab Duo Code Suggestions for this group' }),
               duo_custom_agents_availability: z
                 .preprocess(
                   (val) => (val === 'null' ? null : val),
@@ -203108,6 +204579,24 @@ export const putApiV4GroupsIdRoute = createRoute({
                     .openapi({
                       description:
                         'Whether flows that run on GitLab Runner fail when the execution environment sandbox is unavailable. Applies only to top-level groups on GitLab.com.',
+                    }),
+                  auto_model_routing_enabled: z
+                    .preprocess(
+                      (val) => (val === 'null' ? null : val),
+                      z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          z.boolean(),
+                        )
+                        .nullable(),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether Auto model routing is turned on for Duo Developer. Can only be set on top-level groups. GitLab.com only.',
                     }),
                   minimum_access_level_execute: z
                     .preprocess(
@@ -212954,7 +214443,7 @@ export const getApiV4ApplicationsRoute = createRoute({
   path: '/api/v4/applications',
   tags: ['Applications'],
   summary: 'Get applications',
-  description: 'List all registered applications',
+  description: 'List all registered applications. The `secret` value is not returned.',
   operationId: 'getApiV4Applications',
   responses: {
     200: {
@@ -212972,7 +214461,7 @@ export const postApiV4ApplicationsRoute = createRoute({
   tags: ['Applications'],
   summary: 'Create a new application',
   description:
-    'This feature was introduced in GitLab 10.5. The granular_scopes parameter requires the granular_oauth_tokens feature flag.',
+    'Creates an application. Declaring granular scopes records the fine-grained permissions of the application, as a set of access levels and permissions. GitLab creates the application and stores this set in one step. If GitLab rejects the set, it does not create the application. While an application has granular scopes, GitLab adds the `granular` scope to its `scopes`. The granular_scopes parameter requires the granular_oauth_tokens feature flag.',
   operationId: 'postApiV4Applications',
   request: {
     body: {
@@ -213121,7 +214610,10 @@ export const putApiV4ApplicationAppearanceRoute = createRoute({
                 .string()
                 .nullable()
                 .exactOptional()
-                .openapi({ description: 'Name of the Progressive Web App' }),
+                .openapi({
+                  description:
+                    'Name of the Progressive Web App. Used for the `name` attribute in `manifest.json`.',
+                }),
               pwa_short_name: z
                 .string()
                 .nullable()
@@ -213131,7 +214623,10 @@ export const putApiV4ApplicationAppearanceRoute = createRoute({
                 .string()
                 .nullable()
                 .exactOptional()
-                .openapi({ description: 'An explanation of what the Progressive Web App does' }),
+                .openapi({
+                  description:
+                    'An explanation of what the Progressive Web App does. Used for the `description` attribute in `manifest.json`.',
+                }),
               logo: ((schema) =>
                 z.union([schema, z.preprocess((val) => (val === 'null' ? null : val), schema)]))(
                 z.file().nullable(),
@@ -213177,7 +214672,8 @@ export const putApiV4ApplicationAppearanceRoute = createRoute({
                 .nullable()
                 .exactOptional()
                 .openapi({
-                  description: 'Markdown text shown on the members page of a group or project',
+                  description:
+                    'Markdown text shown on the members page of a group or project. Shown only to users with permission to change members.',
                 }),
               new_project_guidelines: z
                 .string()
@@ -213924,7 +215420,8 @@ export const putApiV4AdminClustersClusterIdRoute = createRoute({
   path: '/api/v4/admin/clusters/{cluster_id}',
   tags: ['Clusters'],
   summary: 'Update an instance cluster',
-  description: 'Updates an existing instance cluster.',
+  description:
+    'Updates an existing instance cluster. The `name`, `api_url`, `ca_cert`, and `token` attributes can be updated only if the cluster was added as an existing Kubernetes cluster.',
   operationId: 'putApiV4AdminClustersClusterId',
   request: {
     params: z.object({
@@ -214351,7 +215848,8 @@ export const postApiV4BroadcastMessagesRoute = createRoute({
   path: '/api/v4/broadcast_messages',
   tags: ['Broadcast messages'],
   summary: 'Create a broadcast message',
-  description: 'Creates a broadcast message.',
+  description:
+    'Creates a broadcast message. Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information.',
   operationId: 'postApiV4BroadcastMessages',
   request: {
     body: {
@@ -214413,7 +215911,8 @@ export const putApiV4BroadcastMessagesIdRoute = createRoute({
   path: '/api/v4/broadcast_messages/{id}',
   tags: ['Broadcast messages'],
   summary: 'Update a broadcast message',
-  description: 'Updates a specified broadcast message.',
+  description:
+    'Updates a specified broadcast message. Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information.',
   operationId: 'putApiV4BroadcastMessagesId',
   request: {
     params: z.object({
@@ -214780,7 +216279,7 @@ export const getApiV4AdminBatchedBackgroundMigrationsRoute = createRoute({
   tags: ['Batched background migrations'],
   summary: 'Get the list of batched background migrations',
   description:
-    'Lists all batched background migrations with optional filters for database and job class name.',
+    'Lists all batched background migrations with optional filters for database and job class name. Returns the 20 most recently created migrations.',
   operationId: 'getApiV4AdminBatchedBackgroundMigrations',
   request: {
     query: z.object({
@@ -215435,7 +216934,7 @@ export const postApiV4UsageDataTrackEventRoute = createRoute({
   tags: ['Usage data'],
   summary: 'Track an internal GitLab event',
   description:
-    'Tracks a GitLab internal event. This action increments Service Ping counters in Redis and is optionally sent to Snowplow. Introduced in GitLab 16.2.',
+    'Tracks a GitLab internal event. This action increments Service Ping counters in Redis and is optionally sent to Snowplow. To track multiple events in one request, send an array of events to the `/track_events` endpoint. The `/track_event` and `/track_events` endpoints share a rate limit of 200 events per minute for each user. Each event counts toward the limit, so a `/track_events` request counts one unit for each event in the array. The rate limit is behind a feature flag named `rate_limit_track_internal_events`. Disabled by default. Requires a personal access token with the `api` or `ai_workflows` scope.',
   operationId: 'postApiV4UsageDataTrackEvent',
   request: {
     body: {
@@ -215458,7 +216957,7 @@ export const getApiV4UsageDataServicePingRoute = createRoute({
   tags: ['Usage data'],
   summary: 'Retrieve Service Ping payload',
   description:
-    'Retrieves the Service Ping payload from the application cache as JSON. If no cached payload is available, returns an empty response. Requires a personal access token with the `read_service_ping` scope. Introduced in GitLab 16.9.',
+    'Retrieves the Service Ping payload from the application cache as JSON. If no cached payload is available, returns an empty response. If the payload is empty, check that Service Ping is enabled and wait for the cron job to run, or generate the payload manually. Requires a personal access token with the `read_service_ping` scope.',
   operationId: 'getApiV4UsageDataServicePing',
   responses: {
     200: { description: 'OK' },
