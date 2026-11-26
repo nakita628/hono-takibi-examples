@@ -1,12 +1,12 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  getApiKeysRoute,
+  postApiKeysRoute,
+  getApiKeysMeRoute,
   deleteApiKeysIdRoute,
   getApiKeysIdRoute,
-  getApiKeysMeRoute,
-  getApiKeysRoute,
-  postApiKeysIdRotateRoute,
-  postApiKeysRoute,
   putApiKeysIdRoute,
+  postApiKeysIdRotateRoute,
 } from '../routes'
 
 export const getApiKeysRouteHandler: RouteHandler<typeof getApiKeysRoute> = async (c) => {

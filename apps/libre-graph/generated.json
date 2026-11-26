@@ -9,6 +9,11 @@
         "etag": "W/\"6c70e95bb79b4a65d6fa3ea487b7d2797a278a16ecf4a9ef7a7a18d28da5d920\"",
         "sha256": "1f551b08c3212d0c59d00cd4a39ecb28bd3331b2a8a60950eadf932e1acbfb28"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.13",
+      "date": "2026-11-26",
+      "error": "Error parsing https://raw.githubusercontent.com/owncloud/libre-graph-api/main/api/openapi-spec/v1.0.yaml: deficient indentation (978:17)"
     }
   }
 }

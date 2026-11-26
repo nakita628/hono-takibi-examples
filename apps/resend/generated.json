@@ -1,13 +1,13 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
     "generated": true,
     "config": "834a3426def1d478beba2d3ae06c6798ee1a11c83cd82eb2c853600232f79cc9",
     "sources": {
       "https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml": {
-        "etag": "W/\"5adb36520d207594fadf45b7395fac44acfc4da7145a12f9883f50c283032289\"",
-        "sha256": "64cd70d2826a0d20ee6c5c2b37dcae3dbc39c994f5d5ef4af8274c0928d702b4"
+        "etag": "W/\"6fcfdc420c47a26499c32ae061bacc3fdc163f042ba38fd5a519e948f0da8eca\"",
+        "sha256": "cfb2dd00cd1dfae68bf1ea7bff595e13fa2755a3dcd05c8ae92d60cccb8b2ffd"
       }
     },
     "typecheck": {

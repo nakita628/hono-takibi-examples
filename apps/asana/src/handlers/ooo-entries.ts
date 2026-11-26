@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteOooEntriesOooEntryGidRoute,
   getOooEntriesOooEntryGidRoute,
+  putOooEntriesOooEntryGidRoute,
+  deleteOooEntriesOooEntryGidRoute,
   getOooEntriesRoute,
   postOooEntriesRoute,
-  putOooEntriesOooEntryGidRoute,
 } from '../routes'
 
 export const getOooEntriesOooEntryGidRouteHandler: RouteHandler<

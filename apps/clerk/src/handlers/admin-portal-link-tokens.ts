@@ -1,7 +1,7 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  postAdminPortalLinkTokensAdminPortalLinkTokenIDRevokeRoute,
   postAdminPortalLinkTokensRoute,
+  postAdminPortalLinkTokensAdminPortalLinkTokenIDRevokeRoute,
 } from '../routes'
 
 export const postAdminPortalLinkTokensRouteHandler: RouteHandler<

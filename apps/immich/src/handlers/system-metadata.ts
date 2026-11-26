@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   getSystemMetadataAdminOnboardingRoute,
+  postSystemMetadataAdminOnboardingRoute,
   getSystemMetadataReverseGeocodingStateRoute,
   getSystemMetadataVersionCheckStateRoute,
-  postSystemMetadataAdminOnboardingRoute,
 } from '../routes'
 
 export const getSystemMetadataAdminOnboardingRouteHandler: RouteHandler<

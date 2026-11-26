@@ -1267,7 +1267,6 @@ Put a domain's sending on Resend Forge. The domain must be a sending domain: rec
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|Idempotency-Key|header|string|false|A unique key for the request, so Forge is enabled only once. A retry with the same key within 24 hours returns the first successful (2xx) response, with the `idempotent-replayed: true` header. A failed request is not stored, so it can be retried with the same key. Reusing the key with a different body, or while the first request is still running, returns a 409. An empty key, or one longer than 256 characters, returns a 400 `invalid_idempotency_key`. [Learn more](https://resend.com/docs/dashboard/emails/idempotency-keys)|
 |domain_id|path|string|true|The ID of the domain.|
 |body|body|[EnableForgeRequest](#schemaenableforgerequest)|false|none|
 |» custom_return_path|body|string|false|The subdomain for the Forge Return-Path address, for example `forge` on `example.com` produces a `CNAME` record for `forge.example.com`. It must start with a letter, end with a letter or digit, and contain only letters, digits, and hyphens, and is stored lowercased. When omitted, Resend picks a subdomain that is free in your DNS. It is set once, when Forge is enabled, and cannot be changed afterwards. It cannot equal the domain's return path on the legacy engine, and the chosen host must not already have DNS records.|
@@ -2827,6 +2826,9 @@ curl https://api.resend.com/emails/receiving \
 |limit|query|integer|false|Maximum number of received emails to return.|
 |after|query|string(uuid)|false|Pagination cursor to fetch results after this email ID. Cannot be used with 'before'.|
 |before|query|string(uuid)|false|Pagination cursor to fetch results before this email ID. Cannot be used with 'after'.|
+|to|query|[string]|false|Comma-separated recipient addresses. Each value must exactly match the envelope recipient, with case. Returns emails that match any of them. Up to 20 values. Repeating the parameter returns a 422 validation_error.|
+|start_date|query|string|false|Matches emails received on or after this date. Accepts a date like `2026-09-01` or an ISO 8601 timestamp, in UTC unless the timestamp has an offset.|
+|end_date|query|string|false|Matches emails received on or before this date. Same formats as `start_date`. A date covers that whole day, so `start_date=2026-09-01&end_date=2026-09-30` covers all of September. A timestamp is used as given. An `end_date` before `start_date` returns a 422 validation_error. A range entirely outside your data retention also returns a 422.|
 
 > Example responses
 
@@ -2924,7 +2926,7 @@ curl https://api.resend.com/emails/receiving/497f6eca-6276-4993-bfeb-53cbbbba6f0
   "html": "<p>Email content</p>",
   "text": "Email content",
   "headers": {
-    "X-Custom-Header": "value"
+    "x-custom-header": "value"
   },
   "created_at": "2023-10-06T23:47:56.678Z",
   "attachments": [
@@ -13868,7 +13870,7 @@ The TXT record to add to your DNS to prove ownership of the claimed domain.
   "html": "<p>Email content</p>",
   "text": "Email content",
   "headers": {
-    "X-Custom-Header": "value"
+    "x-custom-header": "value"
   },
   "created_at": "2023-10-06T23:47:56.678Z",
   "attachments": [
@@ -13900,7 +13902,7 @@ The TXT record to add to your DNS to prove ownership of the claimed domain.
 |received_for|[string]|false|none|The recipient addresses the email was forwarded for, taken from the `for` clause of the message's `Received` headers.|
 |html|string \| null|false|none|The HTML content of the email.|
 |text|string \| null|false|none|The plain text content of the email.|
-|headers|object \| null|false|none|The email headers.|
+|headers|object \| null|false|none|The email headers, keyed by lowercase header name.|
 |created_at|string(date-time)|false|none|Timestamp when the email was received.|
 |attachments|[object]|false|none|Array of attachments.|
 

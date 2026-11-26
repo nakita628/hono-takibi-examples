@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute,
+  postCustomObjectInstancesCustomObjectTypeIdentifierRoute,
+  getCustomObjectInstancesCustomObjectTypeIdentifierRoute,
   deleteCustomObjectInstancesCustomObjectTypeIdentifierRoute,
   getCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute,
-  getCustomObjectInstancesCustomObjectTypeIdentifierRoute,
-  postCustomObjectInstancesCustomObjectTypeIdentifierRoute,
+  deleteCustomObjectInstancesCustomObjectTypeIdentifierCustomObjectInstanceIdRoute,
 } from '../routes'
 
 export const postCustomObjectInstancesCustomObjectTypeIdentifierRouteHandler: RouteHandler<

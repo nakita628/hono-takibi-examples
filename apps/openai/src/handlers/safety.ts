@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getSafetyAlertsIdRoute, getSafetyCasesIdRoute } from '../routes'
+import type { getSafetyCasesIdRoute, getSafetyAlertsIdRoute } from '../routes'
 
 export const getSafetyCasesIdRouteHandler: RouteHandler<typeof getSafetyCasesIdRoute> = async (
   c,

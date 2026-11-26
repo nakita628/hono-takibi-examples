@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  getQueuesRoute,
+  getQueuesNameRoute,
+  putQueuesNameRoute,
   deleteQueuesNameJobsRoute,
   getQueuesNameJobsRoute,
-  getQueuesNameRoute,
-  getQueuesRoute,
-  putQueuesNameRoute,
 } from '../routes'
 
 export const getQueuesRouteHandler: RouteHandler<typeof getQueuesRoute> = async (c) => {

@@ -1,0 +1,20 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
+    "generated": true,
+    "config": "4c4c91c941deb7207b82e774f93a5096e3278d5c4034e7c71e6a67b0b2696f2a",
+    "sources": {
+      "https://raw.githubusercontent.com/binance/binance-api-swagger/master/spot_api.yaml": {
+        "etag": "W/\"aa08e573604b635f35e8770139c5e3dd4459de1723dffb768fdccbb92d3bdde6\"",
+        "sha256": "0dd2f133e12dac2510cf5db1a4eb5de6e3c30c86b24c08867322030939df5e1c"
+      }
+    },
+    "typecheck": {
+      "errors": 4,
+      "where": "`hooks/*`",
+      "codes": "TS2769 ×4",
+      "issue": "[#511](https://github.com/nakita628/hono-takibi/issues/511)"
+    }
+  }
+}

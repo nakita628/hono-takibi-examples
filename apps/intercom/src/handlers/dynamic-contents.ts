@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteDynamicContentsIdRoute,
-  getDynamicContentsIdRoute,
   getDynamicContentsRoute,
   postDynamicContentsRoute,
+  getDynamicContentsIdRoute,
   putDynamicContentsIdRoute,
+  deleteDynamicContentsIdRoute,
 } from '../routes'
 
 export const getDynamicContentsRouteHandler: RouteHandler<typeof getDynamicContentsRoute> = async (

@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   getAccessRequestsRoute,
+  postAccessRequestsRoute,
   postAccessRequestsAccessRequestGidApproveRoute,
   postAccessRequestsAccessRequestGidRejectRoute,
-  postAccessRequestsRoute,
 } from '../routes'
 
 export const getAccessRequestsRouteHandler: RouteHandler<typeof getAccessRequestsRoute> = async (

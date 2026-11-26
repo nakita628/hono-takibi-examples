@@ -1,16 +1,16 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   getTeamsTeamGidCustomFieldSettingsRoute,
-  getTeamsTeamGidProjectsRoute,
   getTeamsTeamGidProjectTemplatesRoute,
-  getTeamsTeamGidRoute,
-  getTeamsTeamGidTeamMembershipsRoute,
-  getTeamsTeamGidUsersRoute,
-  postTeamsRoute,
-  postTeamsTeamGidAddUserRoute,
+  getTeamsTeamGidProjectsRoute,
   postTeamsTeamGidProjectsRoute,
-  postTeamsTeamGidRemoveUserRoute,
+  getTeamsTeamGidTeamMembershipsRoute,
+  postTeamsRoute,
+  getTeamsTeamGidRoute,
   putTeamsTeamGidRoute,
+  postTeamsTeamGidAddUserRoute,
+  postTeamsTeamGidRemoveUserRoute,
+  getTeamsTeamGidUsersRoute,
 } from '../routes'
 
 export const getTeamsTeamGidCustomFieldSettingsRouteHandler: RouteHandler<

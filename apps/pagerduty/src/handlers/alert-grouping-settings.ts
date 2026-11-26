@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAlertGroupingSettingsIdRoute,
-  getAlertGroupingSettingsIdRoute,
   getAlertGroupingSettingsRoute,
   postAlertGroupingSettingsRoute,
+  getAlertGroupingSettingsIdRoute,
+  deleteAlertGroupingSettingsIdRoute,
   putAlertGroupingSettingsIdRoute,
 } from '../routes'
 

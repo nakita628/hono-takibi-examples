@@ -1,9 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteRadarListsTypeActionRoute,
   postRadarAttemptsRoute,
-  postRadarListsTypeActionRoute,
   putRadarAttemptsIdRoute,
+  getRadarDetectionsIdRoute,
+  postRadarListsTypeActionRoute,
+  deleteRadarListsTypeActionRoute,
 } from '../routes'
 
 export const postRadarAttemptsRouteHandler: RouteHandler<typeof postRadarAttemptsRoute> = async (
@@ -15,6 +16,12 @@ export const postRadarAttemptsRouteHandler: RouteHandler<typeof postRadarAttempt
 export const putRadarAttemptsIdRouteHandler: RouteHandler<typeof putRadarAttemptsIdRoute> = async (
   c,
 ) => {
+  throw new Error('Not implemented')
+}
+
+export const getRadarDetectionsIdRouteHandler: RouteHandler<
+  typeof getRadarDetectionsIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
 }
 

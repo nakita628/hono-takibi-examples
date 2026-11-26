@@ -549,6 +549,63 @@ const GroupSchema = z
   })
   .openapi('Group')
 
+const IssuerTrustSchema = z
+  .object({
+    object: z
+      .literal('issuer_trust')
+      .openapi({ description: 'The Issuer Trust object.', example: 'issuer_trust' }),
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique ID of the Issuer Trust.',
+        example: 'issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A',
+      }),
+    organization_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the Organization that trusts the issuer.',
+        example: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
+      }),
+    type: z
+      .literal('claude')
+      .openapi({
+        description: 'The type of issuer, which identifies who operates it.',
+        example: 'claude',
+      }),
+    issuer: z
+      .string()
+      .openapi({
+        description:
+          'The issuer URL. ID-JAGs whose `iss` claim equals this URL are exchanged for access tokens scoped to the Organization.',
+        example: 'https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A',
+      }),
+    enabled: z
+      .boolean()
+      .openapi({
+        description: 'Whether ID-JAGs from the issuer are accepted. A trust is created disabled.',
+        example: true,
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'organization_id',
+      'type',
+      'issuer',
+      'enabled',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('IssuerTrust')
+
 const PipesConnectedAccountSchema = z
   .object({
     object: z
@@ -2740,8 +2797,25 @@ const EventSchemaSchema = z
                 .nullable()
                 .openapi({
                   description:
-                    'The issuer the presented token claims. It is not verified, and is `null` when the token could not be read.',
+                    'The issuer the presented token claims. It is verified only when `signature_verified` is `true`, and is `null` when the token could not be read.',
                   example: 'https://example.okta.com',
+                }),
+              unverified_email_domain: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The domain of the email address the presented token names. WorkOS has not verified the domain, and it is `null` when the token could not be read or names no email address.',
+                  example: 'example.com',
+                }),
+              signature_verified: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'Whether the signature of the presented token was verified before the exchange failed.',
+                  example: false,
                 }),
               error: z
                 .object({
@@ -2918,7 +2992,7 @@ const EventSchemaSchema = z
                     .exactOptional()
                     .openapi({
                       description:
-                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                        'The ID of the Radar detection that blocked the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted. Only set on `policy_denied` errors that a Radar detection caused.',
                       example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
@@ -3046,7 +3120,7 @@ const EventSchemaSchema = z
                     .exactOptional()
                     .openapi({
                       description:
-                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                        'The ID of the Radar detection that blocked the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted. Only set on `policy_denied` errors that a Radar detection caused.',
                       example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
@@ -3174,7 +3248,7 @@ const EventSchemaSchema = z
                     .exactOptional()
                     .openapi({
                       description:
-                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                        'The ID of the Radar detection that blocked the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted. Only set on `policy_denied` errors that a Radar detection caused.',
                       example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
@@ -3302,7 +3376,7 @@ const EventSchemaSchema = z
                     .exactOptional()
                     .openapi({
                       description:
-                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                        'The ID of the Radar detection that blocked the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted. Only set on `policy_denied` errors that a Radar detection caused.',
                       example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
@@ -3445,7 +3519,7 @@ const EventSchemaSchema = z
                     .exactOptional()
                     .openapi({
                       description:
-                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                        'The ID of the Radar detection that blocked the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted. Only set on `policy_denied` errors that a Radar detection caused.',
                       example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
@@ -3573,7 +3647,7 @@ const EventSchemaSchema = z
                     .exactOptional()
                     .openapi({
                       description:
-                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                        'The ID of the Radar detection that blocked the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted. Only set on `policy_denied` errors that a Radar detection caused.',
                       example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
@@ -3666,15 +3740,15 @@ const EventSchemaSchema = z
                 .string()
                 .nullable()
                 .openapi({
-                  description: 'The control action taken for the detected risk.',
-                  example: 'block',
+                  description: 'The Radar control that detected the risk.',
+                  example: 'bot_detection',
                 }),
               blocklist_type: z
                 .string()
                 .nullable()
                 .openapi({
                   description: 'The type of blocklist that triggered the risk detection.',
-                  example: 'ip',
+                  example: 'ip_address',
                 }),
               ip_address: z
                 .string()
@@ -3703,7 +3777,8 @@ const EventSchemaSchema = z
                 .string()
                 .exactOptional()
                 .openapi({
-                  description: 'The ID of the Radar detection that challenged the authentication.',
+                  description:
+                    'The ID of the Radar detection that challenged the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted.',
                   example: 'detection_01HZBC6N1EB1ZY7KG32X',
                 }),
             })
@@ -3863,7 +3938,7 @@ const EventSchemaSchema = z
                     .exactOptional()
                     .openapi({
                       description:
-                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                        'The ID of the Radar detection that blocked the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted. Only set on `policy_denied` errors that a Radar detection caused.',
                       example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
@@ -4138,7 +4213,7 @@ const EventSchemaSchema = z
                     .exactOptional()
                     .openapi({
                       description:
-                        'The ID of the Radar detection that blocked the authentication. Only set on `policy_denied` errors.',
+                        'The ID of the Radar detection that blocked the authentication. Retrieve the detection with `GET /radar/detections/:id` to see why Radar acted. Only set on `policy_denied` errors that a Radar detection caused.',
                       example: 'detection_01HZBC6N1EB1ZY7KG32X',
                     }),
                 })
@@ -4742,6 +4817,85 @@ const EventSchemaSchema = z
             })
             .openapi({
               required: ['connection', 'certificate', 'renewed_at'],
+              description: 'The event payload.',
+            }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: EventContextDtoSchema.exactOptional(),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('connection.saml_certificate_replaced'),
+          data: z
+            .object({
+              connection: z
+                .object({
+                  id: z
+                    .string()
+                    .openapi({
+                      description: 'Unique identifier of the connection.',
+                      example: 'conn_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                  organization_id: z
+                    .string()
+                    .exactOptional()
+                    .openapi({
+                      description: 'The ID of the organization the connection belongs to.',
+                      example: 'org_01EHWNCE74X7JSDV0X3SZ3KJNY',
+                    }),
+                })
+                .openapi({
+                  required: ['id'],
+                  description: 'The connection with the replaced certificate.',
+                }),
+              certificate: z
+                .object({
+                  certificate_type: z
+                    .enum(['ResponseSigning', 'RequestSigning', 'ResponseEncryption'])
+                    .openapi({
+                      description: 'The type of the SAML certificate.',
+                      example: 'RequestSigning',
+                    }),
+                  expiry_date: z.iso
+                    .datetime({ offset: true })
+                    .openapi({
+                      description: 'An ISO 8601 timestamp.',
+                      example: '2026-01-15T12:00:00.000Z',
+                    }),
+                  previous_expiry_date: z.iso
+                    .datetime({ offset: true })
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'The expiry date of the certificate that was replaced. Absent when the connection had no certificate of this type.',
+                      example: '2026-01-15T12:00:00.000Z',
+                    }),
+                })
+                .openapi({
+                  required: ['certificate_type', 'expiry_date'],
+                  description: 'The new SAML certificate details.',
+                }),
+              replaced_at: z.iso
+                .datetime({ offset: true })
+                .openapi({
+                  description: 'An ISO 8601 timestamp.',
+                  example: '2026-01-15T12:00:00.000Z',
+                }),
+            })
+            .openapi({
+              required: ['connection', 'certificate', 'replaced_at'],
               description: 'The event payload.',
             }),
           created_at: z.iso
@@ -7944,6 +8098,66 @@ const EventSchemaSchema = z
               ],
               description: 'The event payload.',
             }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: EventContextDtoSchema.exactOptional(),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('issuer_trust.created'),
+          data: IssuerTrustSchema.openapi({ description: 'The event payload.' }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: EventContextDtoSchema.exactOptional(),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('issuer_trust.deleted'),
+          data: IssuerTrustSchema.openapi({ description: 'The event payload.' }),
+          created_at: z.iso
+            .datetime({ offset: true })
+            .openapi({
+              description: 'An ISO 8601 timestamp.',
+              example: '2026-01-15T12:00:00.000Z',
+            }),
+          context: EventContextDtoSchema.exactOptional(),
+          object: z.literal('event').openapi({ description: 'Distinguishes the Event object.' }),
+        })
+        .openapi({ required: ['id', 'event', 'data', 'created_at', 'object'] }),
+      z
+        .object({
+          id: z
+            .string()
+            .openapi({
+              description: 'Unique identifier for the event.',
+              example: 'event_01EHZNVPK3SFK441A1RGBFSHRT',
+            }),
+          event: z.literal('issuer_trust.updated'),
+          data: IssuerTrustSchema.openapi({ description: 'The event payload.' }),
           created_at: z.iso
             .datetime({ offset: true })
             .openapi({
@@ -16912,6 +17126,7 @@ const CreateWebhookEndpointDtoSchema = z
           'connection.deactivated',
           'connection.saml_certificate_renewal_required',
           'connection.saml_certificate_renewed',
+          'connection.saml_certificate_replaced',
           'connection.deleted',
           'dsync.activated',
           'dsync.deleted',
@@ -16945,6 +17160,9 @@ const CreateWebhookEndpointDtoSchema = z
           'invitation.created',
           'invitation.resent',
           'invitation.revoked',
+          'issuer_trust.created',
+          'issuer_trust.deleted',
+          'issuer_trust.updated',
           'magic_auth.created',
           'organization.created',
           'organization.deleted',
@@ -17056,6 +17274,7 @@ const UpdateWebhookEndpointDtoSchema = z
           'connection.deactivated',
           'connection.saml_certificate_renewal_required',
           'connection.saml_certificate_renewed',
+          'connection.saml_certificate_replaced',
           'connection.deleted',
           'dsync.activated',
           'dsync.deleted',
@@ -17089,6 +17308,9 @@ const UpdateWebhookEndpointDtoSchema = z
           'invitation.created',
           'invitation.resent',
           'invitation.revoked',
+          'issuer_trust.created',
+          'issuer_trust.deleted',
+          'issuer_trust.updated',
           'magic_auth.created',
           'organization.created',
           'organization.deleted',
@@ -17328,6 +17550,7 @@ const ErrorBodyCodeSchema = z
     'email_verification_code_incorrect',
     'email_verification_code_previously_used',
     'email_verification_required',
+    'entities_not_found',
     'entity_not_found',
     'expires_in_days_too_long',
     'expires_in_days_too_short',
@@ -17347,6 +17570,8 @@ const ErrorBodyCodeSchema = z
     'invalid_email',
     'invalid_idp_sso_url',
     'invalid_invite',
+    'invalid_issuer_metadata',
+    'invalid_issuer_url',
     'invalid_locale',
     'invalid_metadata',
     'invalid_one_time_code',
@@ -17368,6 +17593,7 @@ const ErrorBodyCodeSchema = z
     'invite_not_pending',
     'invite_revoked',
     'ip_address_required',
+    'issuer_already_trusted',
     'it_contact_already_exists',
     'it_contact_invitation_already_active',
     'key_pair_not_accepted',
@@ -17380,16 +17606,20 @@ const ErrorBodyCodeSchema = z
     'multiple_roles_not_enabled',
     'name_already_in_use',
     'no_pending_email_change',
+    'not_claude_issuer',
     'oidc_options_required',
     'one_time_code_expired',
     'one_time_code_previously_used',
     'one_time_code_too_many_attempts',
+    'organization_already_has_trust',
     'organization_blocked_from_sending_invites',
+    'organization_has_idp_managed_ema',
     'organization_membership_directory_managed',
     'organization_not_found',
     'organization_not_invocable',
     'organization_role_slug_conflict',
     'organization_selection_required',
+    'organization_without_verified_domain',
     'passkey_progressive_enrollment',
     'password_and_password_hash_provided',
     'password_and_password_hash_type_provided',
@@ -17402,7 +17632,9 @@ const ErrorBodyCodeSchema = z
     'phone_number_required',
     'production_feature_requires_billing',
     'radar_challenge',
+    'radar_email_challenge',
     'radar_sign_up_challenge',
+    'radar_sms_challenge',
     'radar_sms_sign_in_challenge',
     'rate_limit_exceeded',
     'resource_has_dependents',
@@ -17685,6 +17917,22 @@ const ErrorBodyWithCodeStatusCodeSchema = z
   .openapi({ required: [] })
   .openapi('ErrorBodyWithCodeStatusCode')
 
+const ErrorBodyWithCodeErrorsSchema = z
+  .object({
+    code: ErrorBodyCodeSchema,
+    message: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the error.',
+        example: 'Validation failed.',
+      }),
+    errors: z
+      .array(ErrorBodyWithCodeSchema)
+      .openapi({ description: 'The list of validation errors.' }),
+  })
+  .openapi({ required: ['code', 'message', 'errors'] })
+  .openapi('ErrorBodyWithCodeErrors')
+
 const ConnectionFinishErrorBodySchema = z
   .object({
     code: z
@@ -17839,22 +18087,6 @@ const ConnectionCreationConflictErrorBodySchema = z
   .openapi({ required: ['code', 'message'] })
   .openapi('ConnectionCreationConflictErrorBody')
 
-const ErrorBodyWithCodeErrorsSchema = z
-  .object({
-    code: ErrorBodyCodeSchema,
-    message: z
-      .string()
-      .openapi({
-        description: 'A human-readable description of the error.',
-        example: 'Validation failed.',
-      }),
-    errors: z
-      .array(ErrorBodyWithCodeSchema)
-      .openapi({ description: 'The list of validation errors.' }),
-  })
-  .openapi({ required: ['code', 'message', 'errors'] })
-  .openapi('ErrorBodyWithCodeErrors')
-
 const OrganizationConnectedAccountImportErrorBodySchema = z
   .object({
     code: z
@@ -17959,6 +18191,54 @@ const SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlugSchema = z
   })
   .openapi({ required: ['message', 'code', 'role_slug'] })
   .openapi('SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug')
+
+const EntitiesNotFoundErrorBodyWithIdsListSchema = z
+  .object({
+    code: z
+      .literal('entities_not_found')
+      .openapi({
+        description: 'The error code identifying the type of error.',
+        example: 'entities_not_found',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the error.',
+        example: 'Request could not be processed.',
+      }),
+    ids: z
+      .array(z.string())
+      .openapi({
+        description: 'The requested user and organization IDs, in that order.',
+        example: ['user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E', 'org_01E4ZCR3C56J083X43JQXF3JK5'],
+      }),
+  })
+  .openapi({ required: ['code', 'message', 'ids'] })
+  .openapi('EntitiesNotFoundErrorBodyWithIdsList')
+
+const EntityNotFoundErrorBodyWithEntityIdSchema = z
+  .object({
+    code: z
+      .literal('entity_not_found')
+      .openapi({
+        description: 'The error code identifying the type of error.',
+        example: 'entity_not_found',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the error.',
+        example: 'Request could not be processed.',
+      }),
+    entity_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the organization that was not found.',
+        example: 'org_01E4ZCR3C56J083X43JQXF3JK5',
+      }),
+  })
+  .openapi({ required: ['code', 'message', 'entity_id'] })
+  .openapi('EntityNotFoundErrorBodyWithEntityId')
 
 const EmailCompletionRequiredErrorBodyWithEmailCompletionTokenSchema = z
   .object({
@@ -19267,6 +19547,24 @@ const RadarChallengeErrorBodySchema = z
   .openapi({ required: ['code', 'message'] })
   .openapi('RadarChallengeErrorBody')
 
+const RadarEmailChallengeErrorBodySchema = z
+  .object({
+    code: z
+      .literal('radar_email_challenge')
+      .openapi({
+        description: 'The error code identifying the type of error.',
+        example: 'radar_email_challenge',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the error.',
+        example: 'Request could not be processed.',
+      }),
+  })
+  .openapi({ required: ['code', 'message'] })
+  .openapi('RadarEmailChallengeErrorBody')
+
 const RadarSignUpChallengeErrorBodySchema = z
   .object({
     code: z
@@ -19284,6 +19582,24 @@ const RadarSignUpChallengeErrorBodySchema = z
   })
   .openapi({ required: ['code', 'message'] })
   .openapi('RadarSignUpChallengeErrorBody')
+
+const RadarSmsChallengeErrorBodySchema = z
+  .object({
+    code: z
+      .literal('radar_sms_challenge')
+      .openapi({
+        description: 'The error code identifying the type of error.',
+        example: 'radar_sms_challenge',
+      }),
+    message: z
+      .string()
+      .openapi({
+        description: 'A human-readable description of the error.',
+        example: 'Request could not be processed.',
+      }),
+  })
+  .openapi({ required: ['code', 'message'] })
+  .openapi('RadarSmsChallengeErrorBody')
 
 const RadarSmsSignInChallengeErrorBodySchema = z
   .object({
@@ -23058,6 +23374,39 @@ const OrganizationApiKeyWithValueSchema = z
   })
   .openapi('OrganizationApiKeyWithValue')
 
+const IssuerTrustListSchema = z
+  .object({
+    object: z.literal('list').openapi({ description: 'Indicates this is a list response.' }),
+    data: z
+      .array(IssuerTrustSchema)
+      .openapi({ description: 'The list of records for the current page.' }),
+    list_metadata: z
+      .object({
+        before: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              'An object ID that defines your place in the list. When the ID is not present, you are at the start of the list.',
+            example: 'issuer_trust_01HXYZ123456789ABCDEFGHIJ',
+          }),
+        after: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              'An object ID that defines your place in the list. When the ID is not present, you are at the end of the list.',
+            example: 'issuer_trust_01HXYZ987654321KJIHGFEDCBA',
+          }),
+      })
+      .openapi({
+        required: ['before', 'after'],
+        description: 'Pagination cursors for navigating between pages of results.',
+      }),
+  })
+  .openapi({ required: ['object', 'data', 'list_metadata'] })
+  .openapi('IssuerTrustList')
+
 const ItContactSchema = z
   .object({
     object: z
@@ -25069,6 +25418,675 @@ const SendRadarSmsChallengeResponseSchema = z
   })
   .openapi({ required: ['verification_id', 'phone_number'] })
   .openapi('SendRadarSmsChallengeResponse')
+
+const RadarDetectionListSchema = z
+  .object({
+    type: z
+      .enum([
+        'ip_address',
+        'domain',
+        'email',
+        'device',
+        'user_agent',
+        'device_fingerprint',
+        'country',
+      ])
+      .openapi({ description: 'The type of values the list holds.', example: 'domain' }),
+    action: z
+      .xor([z.enum(['allow', 'block', 'challenge', 'log']), z.null().nullable()])
+      .openapi({
+        description:
+          'The action the list applies to matching values. `null` for WorkOS-managed lists.',
+        example: 'block',
+      }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({ description: 'The name of the list.', example: 'Disposable email domains' }),
+    workos_managed: z
+      .boolean()
+      .openapi({ description: 'Whether WorkOS maintains the list.', example: true }),
+  })
+  .openapi({ required: ['type', 'action', 'name', 'workos_managed'] })
+  .openapi('RadarDetectionList')
+
+const RadarDetectionAllowedBySchema = z
+  .object({
+    list_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the matched list.',
+        example: 'radar_list_01HZBC6N1EB1ZY7KG32X',
+      }),
+    list: z
+      .xor([RadarDetectionListSchema, z.null().nullable()])
+      .openapi({
+        description: 'The list as it is now. `null` if the list has since been deleted.',
+      }),
+    entry: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The list entry that matched.', example: 'example.com' }),
+  })
+  .openapi({ required: ['list_id', 'list'] })
+  .openapi('RadarDetectionAllowedBy')
+
+const RadarDetectionBotDetectionSignalSchema = z
+  .object({
+    signal: z.enum([
+      'risky_ip',
+      'anomalous_ip',
+      'excessive_domain_sign_ups',
+      'suspicious_browser_signals',
+      'missing_device_fingerprint',
+      'suspicious_email_pattern',
+      'automated_client',
+      'workos_risk_model',
+    ]),
+    action: z
+      .enum(['block', 'challenge'])
+      .exactOptional()
+      .openapi({ description: 'The action this signal would take on its own.' }),
+  })
+  .openapi({ required: ['signal'] })
+  .openapi('RadarDetectionBotDetectionSignal')
+
+const RadarDetectionIpSignUpsSchema = z
+  .object({
+    count: z.int().openapi({ description: 'The number of sign-ups.', example: 6 }),
+    window_minutes: z
+      .int()
+      .openapi({ description: 'The window the sign-ups were counted in.', example: 5 }),
+  })
+  .openapi({ required: ['count', 'window_minutes'] })
+  .openapi('RadarDetectionIpSignUps')
+
+const RadarDetectionDomainSignUpsSchema = z
+  .object({
+    root_domain: z
+      .string()
+      .openapi({ description: 'The root domain of the email address.', example: 'example.com' }),
+    count: z.int().exactOptional().openapi({ description: 'The number of sign-ups.', example: 44 }),
+  })
+  .openapi({ required: ['root_domain'] })
+  .openapi('RadarDetectionDomainSignUps')
+
+const RadarDetectionBotDetectionDetailsSchema = z
+  .object({
+    signals: z
+      .array(RadarDetectionBotDetectionSignalSchema)
+      .openapi({ description: 'Every bot detection signal that fired.' }),
+    decided_by: z
+      .enum([
+        'risky_ip',
+        'anomalous_ip',
+        'excessive_domain_sign_ups',
+        'suspicious_browser_signals',
+        'missing_device_fingerprint',
+        'suspicious_email_pattern',
+        'automated_client',
+        'workos_risk_model',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The signal that determined the verdict.' }),
+    ip_risk: z
+      .array(z.enum(['abuser', 'anonymous', 'vpn', 'tor', 'proxy']))
+      .exactOptional()
+      .openapi({ description: 'Why the IP address is risky.' }),
+    email_pattern: z
+      .array(z.enum(['generated_looking', 'repeated_format', 'suspicious_domain']))
+      .exactOptional()
+      .openapi({ description: 'Why the email address looks suspicious.' }),
+    browser_signals: z
+      .array(
+        z.enum([
+          'automation_framework',
+          'headless_browser',
+          'tampered_signals',
+          'inconsistent_hardware',
+          'missing_signals',
+          'missing_expected_signals',
+        ]),
+      )
+      .exactOptional()
+      .openapi({ description: 'Why the browser looks automated.' }),
+    ip_sign_ups: RadarDetectionIpSignUpsSchema.exactOptional().openapi({
+      description: 'Recent sign-ups from this IP address.',
+    }),
+    domain_sign_ups: RadarDetectionDomainSignUpsSchema.exactOptional().openapi({
+      description: 'Recent sign-ups from this email domain.',
+    }),
+  })
+  .openapi({ required: ['signals'] })
+  .openapi('RadarDetectionBotDetectionDetails')
+
+const RadarDetectionBruteForceAttackDetailsSchema = z
+  .object({
+    attempts: z.int().openapi({ description: 'The number of sign-in attempts.', example: 11 }),
+    window_minutes: z
+      .int()
+      .openapi({ description: 'The window the attempts were counted in.', example: 1 }),
+    matched_on: z.enum(['device_fingerprint_and_email', 'ip_and_email']),
+  })
+  .openapi({ required: ['attempts', 'window_minutes', 'matched_on'] })
+  .openapi('RadarDetectionBruteForceAttackDetails')
+
+const RadarDetectionDomainProtectionsDetailsSchema = z
+  .object({
+    list_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the matched list.',
+        example: 'radar_list_01HZBC6N1EB1ZY7KG32X',
+      }),
+    list: z
+      .xor([RadarDetectionListSchema, z.null().nullable()])
+      .openapi({
+        description: 'The list as it is now. `null` if the list has since been deleted.',
+      }),
+    also_matched_list_ids: z
+      .array(
+        z
+          .string()
+          .openapi({
+            description: 'The ID of another matched list.',
+            example: 'radar_list_01HZBC6N1EB1ZY7KG32Y',
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'The IDs of other lists the domain is on.' }),
+    also_matched_lists: z
+      .array(
+        z
+          .xor([RadarDetectionListSchema, z.null().nullable()])
+          .openapi({
+            description: 'The list as it is now. `null` if the list has since been deleted.',
+          }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Other lists the domain is on.' }),
+    matched_domain: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The domain that matched the list.', example: 'example.com' }),
+  })
+  .openapi({ required: ['list_id', 'list'] })
+  .openapi('RadarDetectionDomainProtectionsDetails')
+
+const RadarDetectionPreviousAttemptSchema = z
+  .object({
+    attempt_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the authentication attempt.',
+        example: 'radar_att_01HZBC6N1EB1ZY7KG32X',
+      }),
+    ip_address: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The IP address of the earlier attempt.', example: '198.51.100.7' }),
+    user_agent: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The user agent of the earlier attempt.', example: 'Mozilla/5.0' }),
+    location: z
+      .object({
+        city: z
+          .string()
+          .nullable()
+          .openapi({
+            description: 'The city the IP address is located in.',
+            example: 'San Francisco',
+          }),
+        country: z
+          .string()
+          .nullable()
+          .openapi({ description: 'ISO 3166-1 alpha-2 country code.', example: 'US' }),
+      })
+      .openapi({
+        required: ['city', 'country'],
+        description: 'Where the IP address of the earlier attempt is located.',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({
+        description: 'When that earlier sign-in happened.',
+        example: '2026-01-15T12:00:00.000Z',
+      }),
+  })
+  .openapi({ required: ['attempt_id', 'location', 'created_at'] })
+  .openapi('RadarDetectionPreviousAttempt')
+
+const RadarDetectionImpossibleTravelDetailsSchema = z
+  .object({
+    previous: RadarDetectionPreviousAttemptSchema.openapi({
+      description: 'The previous successful sign-in.',
+    }),
+    distance_km: z
+      .number()
+      .openapi({
+        description: 'The distance from the previous sign-in, in kilometers.',
+        example: 8543,
+      }),
+    speed_km_per_s: z
+      .number()
+      .openapi({
+        description: 'The speed needed to travel that distance, in km per second.',
+        example: 4.07,
+      }),
+  })
+  .openapi({ required: ['previous', 'distance_km', 'speed_km_per_s'] })
+  .openapi('RadarDetectionImpossibleTravelDetails')
+
+const RadarDetectionRepeatSignUpDetailsSchema = z
+  .looseObject({})
+  .and(
+    z
+      .discriminatedUnion('matched_on', [
+        z
+          .object({
+            matched_on: z.literal('email'),
+            prior_sign_ups: z
+              .int()
+              .openapi({ description: 'The number of earlier sign-ups.', example: 8 }),
+            window_days: z
+              .int()
+              .openapi({ description: 'The window the sign-ups were counted in.', example: 60 }),
+          })
+          .openapi({ required: ['matched_on', 'prior_sign_ups', 'window_days'] }),
+        z
+          .object({
+            matched_on: z.literal('normalized_email'),
+            matched_user_id: z
+              .string()
+              .openapi({
+                description: 'The existing user whose email this sign-up is an alias of.',
+                example: 'user_01E4ZCR3C56J083X43JQXF3JK5',
+              }),
+          })
+          .openapi({ required: ['matched_on', 'matched_user_id'] }),
+      ])
+      .openapi({ discriminator: { propertyName: 'matched_on' } }),
+  )
+  .openapi('RadarDetectionRepeatSignUpDetails')
+
+const RadarDetectionStaleAccountDetailsSchema = z
+  .object({
+    last_activity_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({
+        description: 'When the user was last active. `null` if unknown.',
+        example: '2026-01-15T12:00:00.000Z',
+      }),
+  })
+  .openapi({ required: ['last_activity_at'] })
+  .openapi('RadarDetectionStaleAccountDetails')
+
+const RadarDetectionUnrecognizedDeviceDetailsSchema = z
+  .object({
+    previous_device: z
+      .xor([RadarDetectionPreviousAttemptSchema, z.null().nullable()])
+      .openapi({ description: 'The device the user last signed in from.' }),
+  })
+  .openapi({ required: ['previous_device'] })
+  .openapi('RadarDetectionUnrecognizedDeviceDetails')
+
+const RadarDetectionRestrictionDetailsSchema = z
+  .looseObject({})
+  .and(
+    z
+      .discriminatedUnion('type', [
+        z
+          .object({
+            type: z.literal('list'),
+            list_id: z
+              .string()
+              .openapi({
+                description: 'The ID of the matched list.',
+                example: 'radar_list_01HZBC6N1EB1ZY7KG32X',
+              }),
+            list: z
+              .xor([RadarDetectionListSchema, z.null().nullable()])
+              .openapi({
+                description: 'The list as it is now. `null` if the list has since been deleted.',
+              }),
+            entry: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The list entry that matched.', example: 'example.com' }),
+          })
+          .openapi({ required: ['type', 'list_id', 'list'] }),
+        z.object({ type: z.literal('blocked_tld') }).openapi({ required: ['type'] }),
+        z.object({ type: z.literal('sign_up') }).openapi({ required: ['type'] }),
+        z
+          .object({
+            type: z.literal('sms_sign_in'),
+            trigger: z
+              .enum([
+                'country_mismatch',
+                'non_mobile_line',
+                'previously_selected',
+                'unknown_line_type',
+                'missing_signals',
+              ])
+              .openapi({ description: 'Why SMS sign-in was restricted.' }),
+            phone_country: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The country of the phone number. Only when `trigger` is `country_mismatch`.',
+                example: 'US',
+              }),
+            line_type: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'The line type of the phone number. Only when `trigger` is `non_mobile_line`.',
+                example: 'voip',
+              }),
+            masked_phone_number: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'The phone number, masked to its last four digits.',
+                example: '••••0123',
+              }),
+          })
+          .openapi({ required: ['type', 'trigger'] }),
+      ])
+      .openapi({ discriminator: { propertyName: 'type' } }),
+  )
+  .openapi('RadarDetectionRestrictionDetails')
+
+const RadarDetectionEvidenceSchema = z
+  .object({
+    summary: z
+      .string()
+      .openapi({
+        description: 'A human-readable explanation of why Radar fired.',
+        example:
+          'Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.',
+      }),
+    allowed_by: RadarDetectionAllowedBySchema.exactOptional().openapi({
+      description:
+        'The allowlist that overrode the verdict. Only present when an allowlist allowed the attempt.',
+    }),
+  })
+  .openapi({ required: ['summary'] })
+  .and(
+    z
+      .discriminatedUnion('control', [
+        z
+          .object({
+            control: z
+              .literal('bot_detection')
+              .openapi({
+                description:
+                  "The control the evidence is for. Always the same as the detection's `control`.",
+              }),
+            details: RadarDetectionBotDetectionDetailsSchema.openapi({
+              description:
+                'Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.',
+            }),
+          })
+          .openapi({ required: ['control', 'details'] }),
+        z
+          .object({
+            control: z
+              .literal('brute_force_attack')
+              .openapi({
+                description:
+                  "The control the evidence is for. Always the same as the detection's `control`.",
+              }),
+            details: RadarDetectionBruteForceAttackDetailsSchema.openapi({
+              description:
+                'Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.',
+            }),
+          })
+          .openapi({ required: ['control', 'details'] }),
+        z
+          .object({
+            control: z
+              .literal('domain_protections')
+              .openapi({
+                description:
+                  "The control the evidence is for. Always the same as the detection's `control`.",
+              }),
+            details: RadarDetectionDomainProtectionsDetailsSchema.openapi({
+              description:
+                'Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.',
+            }),
+          })
+          .openapi({ required: ['control', 'details'] }),
+        z
+          .object({
+            control: z
+              .literal('impossible_travel')
+              .openapi({
+                description:
+                  "The control the evidence is for. Always the same as the detection's `control`.",
+              }),
+            details: RadarDetectionImpossibleTravelDetailsSchema.openapi({
+              description:
+                'Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.',
+            }),
+          })
+          .openapi({ required: ['control', 'details'] }),
+        z
+          .object({
+            control: z
+              .literal('repeat_sign_up')
+              .openapi({
+                description:
+                  "The control the evidence is for. Always the same as the detection's `control`.",
+              }),
+            details: RadarDetectionRepeatSignUpDetailsSchema.openapi({
+              description:
+                'Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.',
+            }),
+          })
+          .openapi({ required: ['control', 'details'] }),
+        z
+          .object({
+            control: z
+              .literal('stale_account')
+              .openapi({
+                description:
+                  "The control the evidence is for. Always the same as the detection's `control`.",
+              }),
+            details: RadarDetectionStaleAccountDetailsSchema.openapi({
+              description:
+                'Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.',
+            }),
+          })
+          .openapi({ required: ['control', 'details'] }),
+        z
+          .object({
+            control: z
+              .literal('unrecognized_device')
+              .openapi({
+                description:
+                  "The control the evidence is for. Always the same as the detection's `control`.",
+              }),
+            details: RadarDetectionUnrecognizedDeviceDetailsSchema.openapi({
+              description:
+                'Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.',
+            }),
+          })
+          .openapi({ required: ['control', 'details'] }),
+        z
+          .object({
+            control: z
+              .literal('restriction')
+              .openapi({
+                description:
+                  "The control the evidence is for. Always the same as the detection's `control`.",
+              }),
+            details: RadarDetectionRestrictionDetailsSchema.openapi({
+              description:
+                'Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.',
+            }),
+          })
+          .openapi({ required: ['control', 'details'] }),
+      ])
+      .openapi({ discriminator: { propertyName: 'control' } }),
+  )
+  .openapi({
+    example: {
+      control: 'bot_detection',
+      summary:
+        'Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.',
+      details: {
+        signals: [
+          { signal: 'risky_ip', action: 'challenge' },
+          { signal: 'suspicious_email_pattern', action: 'challenge' },
+        ],
+        decided_by: 'risky_ip',
+        ip_risk: ['tor'],
+        email_pattern: ['repeated_format'],
+      },
+    },
+  })
+  .openapi('RadarDetectionEvidence')
+
+const RadarDetectionSchema = z
+  .object({
+    object: z
+      .literal('radar_detection')
+      .openapi({ description: 'Distinguishes the Radar detection object.' }),
+    id: z
+      .string()
+      .openapi({
+        description: 'The unique ID of the detection.',
+        example: 'detection_01HZBC6N1EB1ZY7KG32X',
+      }),
+    attempt_id: z
+      .string()
+      .openapi({
+        description: 'The ID of the authentication attempt.',
+        example: 'radar_att_01HZBC6N1EB1ZY7KG32X',
+      }),
+    control: z
+      .enum([
+        'bot_detection',
+        'brute_force_attack',
+        'domain_protections',
+        'impossible_travel',
+        'repeat_sign_up',
+        'stale_account',
+        'unrecognized_device',
+        'restriction',
+      ])
+      .openapi({
+        description: 'The Radar control that determined the verdict.',
+        example: 'bot_detection',
+      }),
+    verdict: z
+      .enum(['allow', 'block', 'challenge', 'log'])
+      .openapi({ description: 'The verdict Radar reached for the attempt.', example: 'challenge' }),
+    challenge_type: z
+      .xor([z.enum(['email', 'sms']), z.null().nullable()])
+      .openapi({
+        description: 'The challenge Radar issued, if the verdict is `challenge`.',
+        example: 'email',
+      }),
+    evidence: z
+      .xor([RadarDetectionEvidenceSchema, z.null().nullable()])
+      .openapi({
+        description:
+          'Why Radar fired. `null` for detections recorded before evidence was captured.',
+      }),
+    ip_address: z
+      .string()
+      .openapi({ description: 'The IP address of the attempt.', example: '203.0.113.42' }),
+    location: z
+      .object({
+        city: z
+          .string()
+          .nullable()
+          .openapi({
+            description: 'The city the IP address is located in.',
+            example: 'San Francisco',
+          }),
+        country: z
+          .string()
+          .nullable()
+          .openapi({ description: 'ISO 3166-1 alpha-2 country code.', example: 'US' }),
+      })
+      .openapi({ required: ['city', 'country'], description: 'Where the IP address is located.' }),
+    user_agent: z
+      .string()
+      .openapi({ description: 'The user agent of the attempt.', example: 'Mozilla/5.0' }),
+    email: z
+      .string()
+      .openapi({
+        description: 'The email address used in the attempt.',
+        example: 'user@example.com',
+      }),
+    user_id: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'The ID of the user, if one exists.',
+        example: 'user_01E4ZCR3C56J083X43JQXF3JK5',
+      }),
+    action: z
+      .xor([z.enum(['signup', 'login']), z.null().nullable()])
+      .openapi({
+        description:
+          'Whether the attempt was a sign-up or a sign-in, as on the `authentication.radar_risk_detected` event. `null` if unknown.',
+        example: 'signup',
+      }),
+    auth_method: z
+      .xor([
+        z.enum([
+          'password',
+          'passkey',
+          'magic_auth',
+          'oauth',
+          'sso',
+          'authenticator',
+          'sms_otp',
+          'other',
+        ]),
+        z.null().nullable(),
+      ])
+      .openapi({
+        description: 'The authentication method used for the attempt.',
+        example: 'password',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'An ISO 8601 timestamp.', example: '2026-01-15T12:00:00.000Z' }),
+  })
+  .openapi({
+    required: [
+      'object',
+      'id',
+      'attempt_id',
+      'control',
+      'verdict',
+      'challenge_type',
+      'evidence',
+      'ip_address',
+      'location',
+      'user_agent',
+      'email',
+      'user_id',
+      'action',
+      'auth_method',
+      'created_at',
+      'updated_at',
+    ],
+  })
+  .openapi('RadarDetection')
 
 const RadarStandaloneResponseSchema = z
   .object({
@@ -40117,6 +41135,272 @@ export const getOrganizationsOrganizationIdDataProvidersRoute = createRoute({
   },
 })
 
+export const getOrganizationsOrganizationIdIssuerTrustsRoute = createRoute({
+  method: 'get',
+  path: '/organizations/{organization_id}/issuer_trusts',
+  tags: ['organizations.issuer-trusts'],
+  summary: 'List issuer trusts',
+  description: 'Get the issuers an organization trusts.',
+  operationId: 'IssuerTrustsController_list',
+  request: {
+    params: z.object({
+      organization_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'organization_id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the organization.',
+            schema: { type: 'string', example: 'org_01EHZNVPK3SFK441A1RGBFSHRT' },
+          },
+          example: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: IssuerTrustListSchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+  },
+})
+
+export const postOrganizationsOrganizationIdIssuerTrustsRoute = createRoute({
+  method: 'post',
+  path: '/organizations/{organization_id}/issuer_trusts',
+  tags: ['organizations.issuer-trusts'],
+  summary: 'Create an issuer trust',
+  description:
+    "Trust an issuer for an organization. WorkOS checks the issuer's OpenID configuration and that the organization has a verified domain. The trust is created disabled; enable it to start accepting ID-JAGs from the issuer.",
+  operationId: 'IssuerTrustsController_create',
+  request: {
+    params: z.object({
+      organization_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'organization_id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the organization.',
+            schema: { type: 'string', example: 'org_01EHZNVPK3SFK441A1RGBFSHRT' },
+          },
+          example: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              type: z
+                .literal('claude')
+                .openapi({
+                  description: 'The type of issuer, which identifies who operates it.',
+                  example: 'claude',
+                }),
+              issuer: z
+                .string()
+                .min(1)
+                .openapi({
+                  description:
+                    "The issuer URL. WorkOS fetches the issuer's OpenID configuration to confirm it before creating the trust.",
+                  example: 'https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A',
+                }),
+            })
+            .openapi({ required: ['type', 'issuer'] }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    201: {
+      description: 'Created',
+      content: {
+        'application/json': {
+          schema: IssuerTrustSchema,
+          example: {
+            object: 'issuer_trust',
+            id: 'issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A',
+            organization_id: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
+            type: 'claude',
+            issuer: 'https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A',
+            enabled: false,
+            created_at: '2026-01-15T12:00:00.000Z',
+            updated_at: '2026-01-15T12:00:00.000Z',
+          },
+        },
+      },
+    },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: ErrorBodyWithCodeSchema } },
+    },
+    403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+    422: {
+      description: 'Unprocessable Entity',
+      content: { 'application/json': { schema: ErrorBodyWithCodeErrorsSchema } },
+    },
+  },
+})
+
+export const getOrganizationsOrganizationIdIssuerTrustsIdRoute = createRoute({
+  method: 'get',
+  path: '/organizations/{organization_id}/issuer_trusts/{id}',
+  tags: ['organizations.issuer-trusts'],
+  summary: 'Get an issuer trust',
+  description: 'Get an issuer trust by its ID.',
+  operationId: 'IssuerTrustsController_get',
+  request: {
+    params: z.object({
+      organization_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'organization_id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the organization.',
+            schema: { type: 'string', example: 'org_01EHZNVPK3SFK441A1RGBFSHRT' },
+          },
+          example: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
+        }),
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the issuer trust.',
+            schema: { type: 'string', example: 'issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A' },
+          },
+          example: 'issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A',
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: IssuerTrustSchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+  },
+})
+
+export const deleteOrganizationsOrganizationIdIssuerTrustsIdRoute = createRoute({
+  method: 'delete',
+  path: '/organizations/{organization_id}/issuer_trusts/{id}',
+  tags: ['organizations.issuer-trusts'],
+  summary: 'Delete an issuer trust',
+  description: 'Stop trusting an issuer. ID-JAGs from the issuer are rejected from then on.',
+  operationId: 'IssuerTrustsController_delete',
+  request: {
+    params: z.object({
+      organization_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'organization_id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the organization.',
+            schema: { type: 'string', example: 'org_01EHZNVPK3SFK441A1RGBFSHRT' },
+          },
+          example: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
+        }),
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the issuer trust.',
+            schema: { type: 'string', example: 'issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A' },
+          },
+          example: 'issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'No Content' },
+    403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+  },
+})
+
+export const patchOrganizationsOrganizationIdIssuerTrustsIdRoute = createRoute({
+  method: 'patch',
+  path: '/organizations/{organization_id}/issuer_trusts/{id}',
+  tags: ['organizations.issuer-trusts'],
+  summary: 'Update an issuer trust',
+  description:
+    'Enable or disable an issuer trust. ID-JAGs from a disabled issuer are rejected. `enabled` is the only field that can be changed, and an omitted field is left unchanged.',
+  operationId: 'IssuerTrustsController_update',
+  request: {
+    params: z.object({
+      organization_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'organization_id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the organization.',
+            schema: { type: 'string', example: 'org_01EHZNVPK3SFK441A1RGBFSHRT' },
+          },
+          example: 'org_01EHZNVPK3SFK441A1RGBFSHRT',
+        }),
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the issuer trust.',
+            schema: { type: 'string', example: 'issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A' },
+          },
+          example: 'issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A',
+        }),
+    }),
+    body: {
+      content: {
+        'application/json': {
+          schema: z
+            .strictObject({
+              enabled: z
+                .boolean()
+                .exactOptional()
+                .openapi({
+                  description: 'Whether ID-JAGs from the issuer are accepted.',
+                  example: true,
+                }),
+            })
+            .openapi({
+              description:
+                'Fields to update on the issuer trust. Omitted fields are left unchanged.',
+              required: [],
+            }),
+        },
+      },
+      required: true,
+    },
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: IssuerTrustSchema } } },
+    400: {
+      description: 'Bad Request',
+      content: { 'application/json': { schema: ErrorBodyWithCodeSchema } },
+    },
+    403: { description: 'Forbidden', content: { 'application/json': { schema: ErrorBodySchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+    422: {
+      description: 'Unprocessable Entity',
+      content: { 'application/json': { schema: ErrorBodyWithCodeErrorsSchema } },
+    },
+  },
+})
+
 export const getOrganizationsOrganizationIdItContactsRoute = createRoute({
   method: 'get',
   path: '/organizations/{organization_id}/it_contacts',
@@ -40566,6 +41850,37 @@ export const putRadarAttemptsIdRoute = createRoute({
       description: 'Bad Request',
       content: { 'application/json': { schema: ErrorBodySchema } },
     },
+    402: { description: '', content: { 'application/json': { schema: ErrorBodyWithCodeSchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+  },
+})
+
+export const getRadarDetectionsIdRoute = createRoute({
+  method: 'get',
+  path: '/radar/detections/{id}',
+  tags: ['radar'],
+  summary: 'Get a Radar detection',
+  description:
+    'Get a Radar detection from the last 30 days, including the evidence for why Radar fired.',
+  operationId: 'RadarDetectionsController_find',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            description: 'The unique ID of the Radar detection.',
+            schema: { example: 'detection_01HZBC6N1EB1ZY7KG32X', type: 'string' },
+          },
+          example: 'detection_01HZBC6N1EB1ZY7KG32X',
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: RadarDetectionSchema } } },
     402: { description: '', content: { 'application/json': { schema: ErrorBodyWithCodeSchema } } },
     404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
   },
@@ -42090,7 +43405,9 @@ export const postUserManagementAuthenticateRoute = createRoute({
             OrganizationSelectionRequiredErrorBodySchema,
             PasskeyProgressiveEnrollmentErrorBodySchema,
             RadarChallengeErrorBodySchema,
+            RadarEmailChallengeErrorBodySchema,
             RadarSignUpChallengeErrorBodySchema,
+            RadarSmsChallengeErrorBodySchema,
             RadarSmsSignInChallengeErrorBodySchema,
             ApplicationConsentRequiredErrorBodySchema,
             PolicyDeniedErrorBodySchema,
@@ -42917,6 +44234,49 @@ export const postUserManagementCorsOriginsRoute = createRoute({
     422: {
       description: 'Validation error.',
       content: { 'application/json': { schema: ErrorBodyWithConstraintsPropertyErrorsSchema } },
+    },
+  },
+})
+
+export const deleteUserManagementCorsOriginsIdRoute = createRoute({
+  method: 'delete',
+  path: '/user_management/cors_origins/{id}',
+  tags: ['user-management.cors-origins'],
+  summary: 'Delete a CORS origin',
+  description: "Deletes a CORS origin from the API key's application.",
+  operationId: 'CorsOriginsController_delete',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            description: 'The ID of the CORS origin to delete.',
+            schema: { type: 'string', example: 'cors_origin_01HXYZ123456789ABCDEFGHIJ' },
+          },
+          example: 'cors_origin_01HXYZ123456789ABCDEFGHIJ',
+        }),
+    }),
+  },
+  responses: {
+    204: { description: 'CORS origin deleted successfully.' },
+    401: {
+      description: 'Unauthorized',
+      content: {
+        'application/json': { schema: ErrorBodySchema, example: { message: 'Unauthorized' } },
+      },
+    },
+    404: {
+      description: 'CORS origin not found.',
+      content: {
+        'application/json': {
+          schema: ErrorBodySchema,
+          example: { message: "CORS origin not found: 'cors_origin_01HXYZ123456789ABCDEFGHIJ'." },
+        },
+      },
     },
   },
 })
@@ -43909,7 +45269,17 @@ export const postUserManagementOrganizationMembershipsRoute = createRoute({
       description: 'Bad Request',
       content: { 'application/json': { schema: ErrorBodyWithCodeSchema } },
     },
-    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+    404: {
+      description: 'Not Found',
+      content: {
+        'application/json': {
+          schema: z.union([
+            EntitiesNotFoundErrorBodyWithIdsListSchema,
+            EntityNotFoundErrorBodyWithEntityIdSchema,
+          ]),
+        },
+      },
+    },
     422: {
       description: 'Unprocessable Entity',
       content: {
@@ -44951,6 +46321,7 @@ export const postUserManagementUsersRoute = createRoute({
             PasswordAndPasswordHashTypeProvidedErrorBodySchema,
             PasswordSaltPositionRequiresPasswordHashErrorBodySchema,
             InvalidMetadataErrorBodySchema,
+            EmailDomainNotDeliverableErrorBodySchema,
           ]),
         },
       },
@@ -44994,6 +46365,53 @@ export const getUserManagementUsersExternalIdExternalIdRoute = createRoute({
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: UserlandUserSchema } } },
     404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+  },
+})
+
+export const getUserManagementUsersIdentitiesProviderIdpIdRoute = createRoute({
+  method: 'get',
+  path: '/user_management/users/identities/{provider}/{idp_id}',
+  tags: ['user-management.users'],
+  summary: 'Get a user by identity',
+  description:
+    "Get the user that holds an identity, by the identity's provider and its ID in that provider, as returned by [Get user identities](/reference/authkit/identity/list).",
+  operationId: 'UserlandUserIdentitiesController_getByIdentity',
+  request: {
+    params: z.object({
+      provider: z
+        .string()
+        .openapi({
+          param: {
+            name: 'provider',
+            required: true,
+            in: 'path',
+            description:
+              'The OAuth provider of the identity, the same value you pass as `provider` to [Get authorization URL](/reference/authkit/authentication/get-authorization-url) (case-insensitive).',
+            schema: { example: 'GitHubOAuth', type: 'string' },
+          },
+          example: 'GitHubOAuth',
+        }),
+      idp_id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'idp_id',
+            required: true,
+            in: 'path',
+            description: 'The unique ID of the user in the external identity provider.',
+            schema: { example: '4F42ABDE-1E44-4B66-824A-5F733C037A6D', type: 'string' },
+          },
+          example: '4F42ABDE-1E44-4B66-824A-5F733C037A6D',
+        }),
+    }),
+  },
+  responses: {
+    200: { description: 'OK', content: { 'application/json': { schema: UserlandUserSchema } } },
+    404: { description: 'Not Found', content: { 'application/json': { schema: ErrorBodySchema } } },
+    422: {
+      description: 'Unprocessable Entity',
+      content: { 'application/json': { schema: ErrorBodyWithCodeFieldErrorsSchema } },
+    },
   },
 })
 
@@ -47888,6 +49306,41 @@ export const postWebhookEndpointsRoute = createRoute({
           ]),
         },
       },
+    },
+  },
+})
+
+export const getWebhookEndpointsIdRoute = createRoute({
+  method: 'get',
+  path: '/webhook_endpoints/{id}',
+  tags: ['webhooks'],
+  summary: 'Get a Webhook Endpoint',
+  description: 'Get the details of an existing webhook endpoint.',
+  operationId: 'WebhookEndpointsController_get',
+  request: {
+    params: z.object({
+      id: z
+        .string()
+        .openapi({
+          param: {
+            name: 'id',
+            required: true,
+            in: 'path',
+            description: 'Unique identifier of the Webhook Endpoint.',
+            schema: { type: 'string', example: 'we_0123456789' },
+          },
+          example: 'we_0123456789',
+        }),
+    }),
+  },
+  responses: {
+    200: {
+      description: 'Webhook endpoint retrieved successfully.',
+      content: { 'application/json': { schema: WebhookEndpointJsonSchema } },
+    },
+    404: {
+      description: 'Webhook endpoint not found.',
+      content: { 'application/json': { schema: ErrorBodyWithCodeSchema } },
     },
   },
 })

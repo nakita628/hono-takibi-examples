@@ -623,6 +623,20 @@ export async function postAuthChangePassword(
   return await parseResponse(client.auth['change-password'].$post(args, options))
 }
 
+export async function postAuthCode(
+  args: InferRequestType<typeof client.auth.code.$post>,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(client.auth.code.$post(args, options))
+}
+
+export async function postAuthExchange(
+  args: InferRequestType<typeof client.auth.exchange.$post>,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(client.auth.exchange.$post(args, options))
+}
+
 export async function postAuthLogin(
   args: InferRequestType<typeof client.auth.login.$post>,
   options?: ClientRequestOptions,
@@ -1042,13 +1056,6 @@ export async function putPartnersId(
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(client.partners[':id'].$put(args, options))
-}
-
-export async function postPartnersId(
-  args: InferRequestType<(typeof client.partners)[':id']['$post']>,
-  options?: ClientRequestOptions,
-) {
-  return await parseResponse(client.partners[':id'].$post(args, options))
 }
 
 export async function deletePartnersId(

@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteStoriesStoryGidRoute,
   getStoriesStoryGidRoute,
   putStoriesStoryGidRoute,
+  deleteStoriesStoryGidRoute,
 } from '../routes'
 
 export const getStoriesStoryGidRouteHandler: RouteHandler<typeof getStoriesStoryGidRoute> = async (

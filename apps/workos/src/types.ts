@@ -16,7 +16,7 @@ type AgentBlueprint = {
   updated_at: string
 }
 type ErrorBodyWithCode = { code: string; message: string }
-type PaginationOrder = 'normal' | 'desc' | 'asc'
+type PaginationOrderInput = 'normal' | 'desc' | 'asc'
 type ErrorBody = { message: string }
 type AgentToken = {
   access_token: string
@@ -79,23 +79,19 @@ type AgentRegistration = {
   status: 'unverified' | 'verified' | 'expired' | 'revoked'
   revoked_at: string | null
   kind: 'anonymous' | 'service_auth' | 'identity_assertion'
-  claim:
-    | {
-        id: string
-        claim_completion:
-          | {
-              id: string
-              created_at: string
-              updated_at: string
-              expires_at: string
-              claimed_at: string
-            }
-          | ({ [x: string]: unknown } | null)
-        created_at: string
-        updated_at: string
-        expires_at: string
-      }
-    | ({ [x: string]: unknown } | null)
+  claim: {
+    id: string
+    claim_completion: {
+      id: string
+      created_at: string
+      updated_at: string
+      expires_at: string
+      claimed_at: string
+    } | null
+    created_at: string
+    updated_at: string
+    expires_at: string
+  } | null
   created_at: string
   updated_at: string
 }
@@ -111,7 +107,7 @@ type AgentInstanceSession = {
 }
 type ErrorBodyWithCodeFieldError = { code: string; field: string }
 type ErrorBodyWithCodeFieldErrors = { message: string; errors: ErrorBodyWithCodeFieldError[] }
-type ValidateApiKeyDto = { value: string }
+type ValidateApiKeyDtoInput = { value: string }
 type ApiKey = {
   object: 'api_key'
   id: string
@@ -127,16 +123,16 @@ type ApiKey = {
   updated_at: string
 }
 type ApiKeyValidationResponse = {
-  api_key: ApiKey | ({ [x: string]: unknown } | null)
+  api_key: ApiKey | null
   agent_registration_id?: string | undefined
 }
-type ExpireApiKeyDto = { expires_at?: (string | null) | undefined }
+type ExpireApiKeyDtoInput = { expires_at?: string | null }
 type AuditLogSchemaJson = {
   object: 'audit_log_schema'
   version: number
-  actor?: { metadata: { [x: string]: { [x: string]: unknown } } } | undefined
-  targets: { type: string; metadata?: { [x: string]: { [x: string]: unknown } } | undefined }[]
-  metadata?: { [x: string]: { [x: string]: unknown } } | undefined
+  actor?: { metadata: { [key: string]: any } } | undefined
+  targets: { type: string; metadata?: { [key: string]: any } | undefined }[]
+  metadata?: { [key: string]: any } | undefined
   created_at: string
 }
 type AuditLogActionJson = {
@@ -146,36 +142,36 @@ type AuditLogActionJson = {
   created_at: string
   updated_at: string
 }
-type AuditLogSchemaActorDto = { metadata: { [x: string]: unknown } }
-type AuditLogSchemaTargetDto = { type: string; metadata?: { [x: string]: unknown } | undefined }
-type AuditLogSchemaDto = {
-  actor?: AuditLogSchemaActorDto | undefined
-  targets: AuditLogSchemaTargetDto[]
-  metadata?: { [x: string]: unknown } | undefined
+type AuditLogSchemaActorDtoInput = { metadata: { [key: string]: unknown } }
+type AuditLogSchemaTargetDtoInput = { type: string; metadata?: { [key: string]: unknown } }
+type AuditLogSchemaDtoInput = {
+  actor?: AuditLogSchemaActorDtoInput
+  targets: AuditLogSchemaTargetDtoInput[]
+  metadata?: { [key: string]: unknown }
 }
-type AuditLogEventActorDto = {
+type AuditLogEventActorDtoInput = {
   id: string
   type: string
-  name?: string | undefined
-  metadata?: {} | undefined
+  name?: string
+  metadata?: { [key: string]: unknown }
 }
-type AuditLogEventTargetDto = {
+type AuditLogEventTargetDtoInput = {
   id: string
   type: string
-  name?: string | undefined
-  metadata?: {} | undefined
+  name?: string
+  metadata?: { [key: string]: unknown }
 }
-type AuditLogEventContextDto = { location: string; user_agent?: string | undefined }
-type AuditLogEventDto = {
+type AuditLogEventContextDtoInput = { location: string; user_agent?: string }
+type AuditLogEventDtoInput = {
   action: string
-  occurred_at?: string | undefined
-  actor: AuditLogEventActorDto
-  targets: AuditLogEventTargetDto[]
-  context: AuditLogEventContextDto
-  metadata?: {} | undefined
-  version?: number | undefined
+  occurred_at?: string
+  actor: AuditLogEventActorDtoInput
+  targets: AuditLogEventTargetDtoInput[]
+  context: AuditLogEventContextDtoInput
+  metadata?: { [key: string]: unknown }
+  version?: number
 }
-type AuditLogEventIngestionDto = { organization_id: string; event: AuditLogEventDto }
+type AuditLogEventIngestionDtoInput = { organization_id: string; event: AuditLogEventDtoInput }
 type AuditLogEventCreateResponse = { success: boolean }
 type ErrorBodyWithCodeInstancePathError = { instancePath: string }
 type ErrorBodyWithCodeInstancePathErrors = {
@@ -183,15 +179,15 @@ type ErrorBodyWithCodeInstancePathErrors = {
   message: string
   code: string
 }
-type AuditLogExportCreationDto = {
+type AuditLogExportCreationDtoInput = {
   organization_id: string
   range_start: string
   range_end: string
-  actions?: string[] | undefined
-  actors?: string[] | undefined
-  actor_names?: string[] | undefined
-  actor_ids?: string[] | undefined
-  targets?: string[] | undefined
+  actions?: string[]
+  actors?: string[]
+  actor_names?: string[]
+  actor_ids?: string[]
+  targets?: string[]
 }
 type AuditLogExportJson = {
   object: 'audit_log_export'
@@ -237,7 +233,7 @@ type AuthenticationFactor = {
   created_at: string
   updated_at: string
 }
-type ChallengeAuthenticationFactorDto = { sms_template?: string | undefined }
+type ChallengeAuthenticationFactorDtoInput = { sms_template?: string }
 type RateLimitExceededErrorBodyWithRetryAfter = {
   code: 'rate_limit_exceeded'
   message: string
@@ -245,24 +241,24 @@ type RateLimitExceededErrorBodyWithRetryAfter = {
 }
 type SmsChallengeRateLimitedErrorBody = { code: 'sms_challenge_rate_limited'; message: string }
 type SmsChallengeQuotaReachedErrorBody = { code: 'sms_challenge_quota_reached'; message: string }
-type UserObject = {
+type UserObjectInput = {
   id: string
   email: string
-  first_name?: string | undefined
-  last_name?: string | undefined
-  name?: string | undefined
-  metadata?: { [x: string]: string } | undefined
+  first_name?: string
+  last_name?: string
+  name?: string
+  metadata?: { [key: string]: string }
 }
-type UserConsentOption = {
+type UserConsentOptionInput = {
   claim: string
   type: 'enum'
   label: string
-  choices: { value?: string | undefined; label?: string | undefined }[]
+  choices: { value?: string; label?: string }[]
 }
-type UserManagementLoginRequest = {
+type UserManagementLoginRequestInput = {
   external_auth_id: string
-  user: UserObject
-  user_consent_options?: UserConsentOption[] | undefined
+  user: UserObjectInput
+  user_consent_options?: UserConsentOptionInput[]
 }
 type ExternalAuthCompleteResponse = { redirect_uri: string }
 type ExternalAuthSessionAlreadyCompletedErrorBody = {
@@ -292,30 +288,35 @@ type GroupRoleAssignmentList = {
   data: GroupRoleAssignment[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateGroupRoleAssignmentDto = {
+type CreateGroupRoleAssignmentDtoInput = {
   role_slug: string
-  resource_id?: string | undefined
-  resource_external_id?: string | undefined
-  resource_type_slug?: string | undefined
+  resource_id?: string
+  resource_external_id?: string
+  resource_type_slug?: string
 }
-type ReplaceGroupRoleAssignmentEntryDto = {
+type ReplaceGroupRoleAssignmentEntryDtoInput = {
   role_slug: string
-  resource_id?: string | undefined
-  resource_external_id?: string | undefined
-  resource_type_slug?: string | undefined
+  resource_id?: string
+  resource_external_id?: string
+  resource_type_slug?: string
 }
-type PatchGroupRoleAssignmentsDto = {
-  add?: ReplaceGroupRoleAssignmentEntryDto[] | undefined
-  remove?: ReplaceGroupRoleAssignmentEntryDto[] | undefined
+type PatchGroupRoleAssignmentsDtoInput = {
+  add?: ReplaceGroupRoleAssignmentEntryDtoInput[]
+  remove?: ReplaceGroupRoleAssignmentEntryDtoInput[]
 }
-type ReplaceGroupRoleAssignmentsDto = { role_assignments: ReplaceGroupRoleAssignmentEntryDto[] }
-type DeleteGroupRoleAssignmentsByCriteriaDto = {
+type ReplaceGroupRoleAssignmentsDtoInput = {
+  role_assignments: ReplaceGroupRoleAssignmentEntryDtoInput[]
+}
+type DeleteGroupRoleAssignmentsByCriteriaDtoInput = {
   role_slug: string
-  resource_id?: string | undefined
-  resource_external_id?: string | undefined
-  resource_type_slug?: string | undefined
+  resource_id?: string
+  resource_external_id?: string
+  resource_type_slug?: string
 }
-type CheckAuthorizationDto = { permission_slug: string }
+type CheckAuthorizationDtoInput = { permission_slug: string } & (
+  | { resource_id: string }
+  | { resource_external_id: string; resource_type_slug: string }
+)
 type AuthorizationCheck = { authorized: boolean }
 type AuthorizationResource = {
   object: 'authorization_resource'
@@ -359,7 +360,7 @@ type UserRoleAssignment = {
   source: {
     type: 'direct' | 'group'
     group_role_assignment_id: string | null
-    group: { id: string; name: string } | ({ [x: string]: unknown } | null)
+    group: { id: string; name: string } | null
   }
   created_at: string
   updated_at: string
@@ -369,22 +370,31 @@ type UserRoleAssignmentList = {
   data: UserRoleAssignment[]
   list_metadata: { before: string | null; after: string | null }
 }
-type AssignRoleDto = { role_slug: string }
-type PatchRoleAssignmentEntryDto = { role_slug: string }
-type PatchRoleAssignmentsDto = {
-  add?: PatchRoleAssignmentEntryDto[] | undefined
-  remove?: PatchRoleAssignmentEntryDto[] | undefined
+type AssignRoleDtoInput = { role_slug: string } & (
+  | { resource_id: string }
+  | { resource_external_id: string; resource_type_slug: string }
+)
+type PatchRoleAssignmentEntryDtoInput = { role_slug: string } & (
+  | { resource_id: string }
+  | { resource_external_id: string; resource_type_slug: string }
+)
+type PatchRoleAssignmentsDtoInput = {
+  add?: PatchRoleAssignmentEntryDtoInput[]
+  remove?: PatchRoleAssignmentEntryDtoInput[]
 }
 type RoleAssignmentUpdateOverlapErrorBody = {
   code: 'role_assignment_update_overlap'
   message: string
 }
-type RemoveRoleDto = { role_slug: string }
-type CreateOrganizationRoleDto = {
-  slug?: string | undefined
+type RemoveRoleDtoInput = { role_slug: string } & (
+  | { resource_id: string }
+  | { resource_external_id: string; resource_type_slug: string }
+)
+type CreateOrganizationRoleDtoInput = {
+  slug?: string
   name: string
-  description?: (string | null) | undefined
-  resource_type_slug?: string | undefined
+  description?: string | null
+  resource_type_slug?: string
 }
 type Role = {
   slug: string
@@ -399,16 +409,14 @@ type Role = {
   updated_at: string
 }
 type RoleList = { object: 'list'; data: Role[] }
-type UpdateOrganizationRoleDto = {
-  name?: string | undefined
-  description?: (string | null) | undefined
-}
-type SetRolePermissionsDto = { permissions: string[] }
-type AddRolePermissionDto = { slug: string }
-type UpdateAuthorizationResourceDto = {
-  name?: string | undefined
-  description?: (string | null) | undefined
-}
+type UpdateOrganizationRoleDtoInput = { name?: string; description?: string | null }
+type SetRolePermissionsDtoInput = { permissions: string[] }
+type AddRolePermissionDtoInput = { slug: string }
+type UpdateAuthorizationResourceDtoInput = { name?: string; description?: string | null } & (
+  | { [key: string]: unknown }
+  | { parent_resource_id: string }
+  | { parent_resource_external_id: string; parent_resource_type_slug: string }
+)
 type UserlandUser = {
   object: 'user'
   id: string
@@ -419,7 +427,7 @@ type UserlandUser = {
   email: string
   email_verified: boolean
   external_id: string | null
-  metadata?: { [x: string]: string } | undefined
+  metadata?: { [key: string]: string } | undefined
   last_sign_in_at: string | null
   locale?: (string | null) | undefined
   created_at: string
@@ -433,7 +441,7 @@ type UserlandUserOrganizationMembershipBaseWithUser = {
   status: 'active' | 'inactive' | 'pending'
   directory_managed: boolean
   organization_name?: string | undefined
-  custom_attributes?: { [x: string]: { [x: string]: unknown } } | undefined
+  custom_attributes?: { [key: string]: any } | undefined
   created_at: string
   updated_at: string
   user: UserlandUser
@@ -443,31 +451,32 @@ type UserlandUserOrganizationMembershipBaseWithUserList = {
   data: UserlandUserOrganizationMembershipBaseWithUser[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateAuthorizationPermissionDto = {
+type CreateAuthorizationPermissionDtoInput = {
   slug: string
   name: string
-  description?: (string | null) | undefined
-  resource_type_slug?: string | undefined
+  description?: string | null
+  resource_type_slug?: string
 }
-type UpdateAuthorizationPermissionDto = {
-  name?: string | undefined
-  description?: (string | null) | undefined
-}
-type CreateAuthorizationResourceDto = {
+type UpdateAuthorizationPermissionDtoInput = { name?: string; description?: string | null }
+type CreateAuthorizationResourceDtoInput = {
   external_id: string
   name: string
-  description?: (string | null) | undefined
+  description?: string | null
   resource_type_slug: string
   organization_id: string
-}
-type CreateRoleDto = {
+} & (
+  | { [key: string]: unknown }
+  | { parent_resource_id: string | null }
+  | { parent_resource_external_id: string; parent_resource_type_slug: string }
+)
+type CreateRoleDtoInput = {
   slug: string
   name: string
-  description?: (string | null) | undefined
-  resource_type_slug?: string | undefined
+  description?: string | null
+  resource_type_slug?: string
 }
-type UpdateRoleDto = { name?: string | undefined; description?: (string | null) | undefined }
-type ClientApiTokenDto = { organization_id: string; user_id: string }
+type UpdateRoleDtoInput = { name?: string; description?: string | null }
+type ClientApiTokenDtoInput = { organization_id: string; user_id: string }
 type ClientApiTokenResponse = { token: string }
 type ConnectApplication = {
   object: 'connect_application'
@@ -478,39 +487,51 @@ type ConnectApplication = {
   scopes: string[]
   created_at: string
   updated_at: string
-}
+} & (
+  | ({
+      application_type: 'oauth'
+      redirect_uris: { uri: string; default: boolean }[]
+      cors_origins: string[]
+      uses_pkce: boolean
+    } & (
+      | { is_first_party: true }
+      | { is_first_party: false; was_dynamically_registered: false; organization_id: string }
+      | { is_first_party: false; was_dynamically_registered: true }
+    ))
+  | { application_type: 'm2m'; organization_id: string }
+)
 type ConnectApplicationList = {
   object: 'list'
   data: ConnectApplication[]
   list_metadata: { before: string | null; after: string | null }
 }
-type RedirectUriDto = { uri: string; default?: (boolean | null) | undefined }
-type CreateOAuthApplicationDto = {
+type RedirectUriDtoInput = { uri: string; default?: boolean | null }
+type CreateOAuthApplicationDtoInput = {
   name: string
   application_type: 'oauth'
-  description?: (string | null) | undefined
-  scopes?: (string[] | null) | undefined
-  redirect_uris?: (RedirectUriDto[] | null) | undefined
-  cors_origins?: (string[] | null) | undefined
-  uses_pkce?: (boolean | null) | undefined
+  description?: string | null
+  scopes?: string[] | null
+  redirect_uris?: RedirectUriDtoInput[] | null
+  cors_origins?: string[] | null
+  uses_pkce?: boolean | null
   is_first_party: boolean
-  organization_id?: (string | null) | undefined
+  organization_id?: string | null
 }
-type CreateM2MApplicationDto = {
+type CreateM2MApplicationDtoInput = {
   name: string
   application_type: 'm2m'
-  description?: (string | null) | undefined
-  scopes?: (string[] | null) | undefined
+  description?: string | null
+  scopes?: string[] | null
   organization_id: string
 }
-type UpdateOAuthApplicationDto = {
-  name?: string | undefined
-  description?: (string | null) | undefined
-  scopes?: (string[] | null) | undefined
-  redirect_uris?: (RedirectUriDto[] | null) | undefined
-  cors_origins?: (string[] | null) | undefined
+type UpdateOAuthApplicationDtoInput = {
+  name?: string
+  description?: string | null
+  scopes?: string[] | null
+  redirect_uris?: RedirectUriDtoInput[] | null
+  cors_origins?: string[] | null
 }
-type CreateApplicationSecretDto = { [x: string]: unknown }
+type CreateApplicationSecretDtoInput = { [key: string]: unknown }
 type NewConnectApplicationSecret = {
   object: 'connect_application_secret'
   id: string
@@ -520,25 +541,63 @@ type NewConnectApplicationSecret = {
   updated_at: string
   secret: string
 }
-type CreateConnectionStandardAttributesDto = {
-  idp_id?: string | undefined
-  email?: string | undefined
-  first_name?: string | undefined
-  last_name?: string | undefined
-  groups?: (string | null) | undefined
-  name?: (string | null) | undefined
+type CreateConnectionStandardAttributesDtoInput = {
+  idp_id?: string
+  email?: string
+  first_name?: string
+  last_name?: string
+  groups?: string | null
+  name?: string | null
 }
-type CreateConnectionAttributeMapsDto = {
-  standard_attributes?: CreateConnectionStandardAttributesDto | undefined
-  custom_attributes?: { [x: string]: string } | undefined
+type CreateConnectionAttributeMapsDtoInput = {
+  standard_attributes?: CreateConnectionStandardAttributesDtoInput
+  custom_attributes?: { [key: string]: string }
 }
-type CreateConnectionDto = {
+type CreateConnectionKeyPairDtoInput = { key: string; cert: string }
+type CreateConnectionSamlOptionsDtoInput = {
+  idp_metadata_url?: string
+  acs_url?: string
+  sp_entity_id?: string
+  idp_entity_id?: string
+  idp_sso_url?: string
+  idp_signing_certs?: string[]
+  sp_signing_key_pair?: CreateConnectionKeyPairDtoInput
+  sp_encryption_key_pairs?: CreateConnectionKeyPairDtoInput[]
+}
+type CreateConnectionOidcOptionsDtoInput = {
+  discovery_endpoint: string
+  client_id: string
+  client_secret?: string
+  redirect_uri?: string
+  pkce?: boolean
+  token_authentication_method?: 'client_secret_post' | 'client_secret_basic' | 'private_key_jwt'
+  jwt_signing_key_pair?: CreateConnectionKeyPairDtoInput
+  id_token_signature_algorithm?:
+    | 'ES256'
+    | 'ES384'
+    | 'ES512'
+    | 'EdDSA'
+    | 'HS256'
+    | 'HS384'
+    | 'HS512'
+    | 'PS256'
+    | 'PS384'
+    | 'PS512'
+    | 'RS256'
+    | 'RS384'
+    | 'RS512'
+  fetch_user_info?: boolean
+}
+type CreateConnectionDtoInput = {
   organization_id: string
-  name?: string | undefined
-  external_id?: string | undefined
-  connection_type?: string | undefined
-  attribute_maps?: CreateConnectionAttributeMapsDto | undefined
-}
+  name?: string
+  external_id?: string
+  connection_type?: string
+  attribute_maps?: CreateConnectionAttributeMapsDtoInput
+} & (
+  | { saml_options: CreateConnectionSamlOptionsDtoInput }
+  | { oidc_options: CreateConnectionOidcOptionsDtoInput }
+)
 type Connection = {
   object: 'connection'
   id: string
@@ -621,7 +680,7 @@ type SamlIdpSigningCertificate = {
   created_at: string
 }
 type SamlIdpSigningCertificateList = { object: 'list'; data: SamlIdpSigningCertificate[] }
-type CreateSamlIdpSigningCertificateDto = { value: string }
+type CreateSamlIdpSigningCertificateDtoInput = { value: string }
 type SamlSpEncryptionCertificate = {
   object: 'saml_sp_encryption_certificate'
   id: string
@@ -639,62 +698,92 @@ type SamlSpSigningCertificate = {
   not_after: string | null
   created_at: string
 }
-type PatchConnectionStandardAttributesDto = {
-  idp_id?: string | undefined
-  email?: string | undefined
-  first_name?: string | undefined
-  last_name?: string | undefined
-  groups?: (string | null) | undefined
-  name?: (string | null) | undefined
+type PatchConnectionStandardAttributesDtoInput = {
+  idp_id?: string
+  email?: string
+  first_name?: string
+  last_name?: string
+  groups?: string | null
+  name?: string | null
 }
-type PatchConnectionAttributeMapsDto = {
-  standard_attributes?: PatchConnectionStandardAttributesDto | undefined
-  custom_attributes?: { [x: string]: string | ({ [x: string]: unknown } | null) } | undefined
+type PatchConnectionAttributeMapsDtoInput = {
+  standard_attributes?: PatchConnectionStandardAttributesDtoInput
+  custom_attributes?: { [key: string]: string | null }
 }
-type PatchConnectionDto = {
-  name?: string | undefined
-  external_id?: (string | null) | undefined
-  connection_type?: string | undefined
-  attribute_maps?: PatchConnectionAttributeMapsDto | undefined
+type PatchConnectionSamlOptionsDtoInput = {
+  idp_metadata_url?: string | null
+  acs_url?: string | null
+  sp_entity_id?: string | null
+  idp_entity_id?: string
+  idp_sso_url?: string
 }
+type PatchConnectionOidcOptionsDtoInput = {
+  discovery_endpoint?: string
+  client_id?: string
+  client_secret?: string
+  redirect_uri?: string | null
+  pkce?: boolean
+  token_authentication_method?: 'client_secret_post' | 'client_secret_basic' | 'private_key_jwt'
+  id_token_signature_algorithm?:
+    | 'ES256'
+    | 'ES384'
+    | 'ES512'
+    | 'EdDSA'
+    | 'HS256'
+    | 'HS384'
+    | 'HS512'
+    | 'PS256'
+    | 'PS384'
+    | 'PS512'
+    | 'RS256'
+    | 'RS384'
+    | 'RS512'
+  fetch_user_info?: boolean
+}
+type PatchConnectionDtoInput = {
+  name?: string
+  external_id?: string | null
+  connection_type?: string
+  attribute_maps?: PatchConnectionAttributeMapsDtoInput
+} & (
+  | { [key: string]: unknown }
+  | { saml_options: PatchConnectionSamlOptionsDtoInput }
+  | { oidc_options: PatchConnectionOidcOptionsDtoInput }
+)
 type ConnectionTypeNotUpdatableErrorBody = {
   code: 'connection_type_not_updatable'
   message: string
 }
-type DataIntegrationCredentialsDto = {
+type DataIntegrationCredentialsDtoInput = {
   type: 'custom' | 'organization'
-  client_id?: string | undefined
-  client_secret?: string | undefined
+  client_id?: string
+  client_secret?: string
 }
-type ApiKeyInstallationDto = {
-  secret: string
-  user_id: string
-  organization_id?: string | undefined
-}
-type CustomProviderDefinitionDto = {
+type ApiKeyInstallationDtoInput = { secret: string; user_id: string; organization_id?: string }
+type CustomProviderDefinitionDtoInput = {
   name: string
-  authorization_url?: string | undefined
-  token_url?: string | undefined
-  refresh_token_url?: (string | null) | undefined
-  pkce_enabled?: boolean | undefined
-  request_scope_separator?: string | undefined
-  scopes_required?: boolean | undefined
-  client_secret_required?: boolean | undefined
-  additional_authorization_parameters?: { [x: string]: string } | undefined
-  token_body_content_type?: string | undefined
-  authenticate_via?: 'request_body' | 'basic_auth_header' | undefined
+  authorization_url?: string
+  token_url?: string
+  refresh_token_url?: string | null
+  pkce_enabled?: boolean
+  request_scope_separator?: string
+  scopes_required?: boolean
+  client_secret_required?: boolean
+  additional_authorization_parameters?: { [key: string]: string }
+  token_body_content_type?: string
+  authenticate_via?: 'request_body' | 'basic_auth_header'
 }
-type CreateDataIntegrationDto = {
+type CreateDataIntegrationDtoInput = {
   provider: string
-  ownership?: 'user' | 'organization' | undefined
-  description?: (string | null) | undefined
-  enabled?: boolean | undefined
-  scopes?: (string[] | null) | undefined
-  auth_methods?: ('oauth' | 'api_key' | 'client_credentials')[] | undefined
-  config?: { [x: string]: string } | undefined
-  credentials?: DataIntegrationCredentialsDto | undefined
-  api_key?: ApiKeyInstallationDto | undefined
-  custom_provider?: CustomProviderDefinitionDto | undefined
+  ownership?: 'user' | 'organization'
+  description?: string | null
+  enabled?: boolean
+  scopes?: string[] | null
+  auth_methods?: ('oauth' | 'api_key' | 'client_credentials')[]
+  config?: { [key: string]: string }
+  credentials?: DataIntegrationCredentialsDtoInput
+  api_key?: ApiKeyInstallationDtoInput
+  custom_provider?: CustomProviderDefinitionDtoInput
 }
 type DataIntegration = {
   object: 'data_integration'
@@ -705,43 +794,37 @@ type DataIntegration = {
   description: string | null
   enabled: boolean
   state: 'valid' | 'invalid' | 'requested'
-  scopes: string[] | ({ [x: string]: unknown } | null)
+  scopes: string[] | null
   redirect_uri: string
   auth_methods: ('oauth' | 'api_key' | 'client_credentials')[]
-  credentials:
-    | {
-        type: 'custom' | 'organization'
-        client_id: string | null
-        redacted_client_secret: string | null
-      }
-    | ({ [x: string]: unknown } | null)
-  installation:
-    | {
-        id: string
-        connection_role: 'compatibility' | 'standard'
-        account_identifier: string | null
-        account_display_name: string | null
-        user_id: string | null
-        organization_id: string | null
-        api_key_last_4: string | null
-      }
-    | ({ [x: string]: unknown } | null)
-  config: { [x: string]: string }
-  custom_provider:
-    | {
-        name: string
-        authorization_url: string | null
-        token_url: string | null
-        refresh_token_url: string | null
-        pkce_enabled: boolean
-        request_scope_separator: string
-        scopes_required: boolean
-        client_secret_required: boolean
-        additional_authorization_parameters: { [x: string]: string }
-        token_body_content_type: string
-        authenticate_via: 'request_body' | 'basic_auth_header'
-      }
-    | ({ [x: string]: unknown } | null)
+  credentials: {
+    type: 'custom' | 'organization'
+    client_id: string | null
+    redacted_client_secret: string | null
+  } | null
+  installation: {
+    id: string
+    connection_role: 'compatibility' | 'standard'
+    account_identifier: string | null
+    account_display_name: string | null
+    user_id: string | null
+    organization_id: string | null
+    api_key_last_4: string | null
+  } | null
+  config: { [key: string]: string }
+  custom_provider: {
+    name: string
+    authorization_url: string | null
+    token_url: string | null
+    refresh_token_url: string | null
+    pkce_enabled: boolean
+    request_scope_separator: string
+    scopes_required: boolean
+    client_secret_required: boolean
+    additional_authorization_parameters: { [key: string]: string }
+    token_body_content_type: string
+    authenticate_via: 'request_body' | 'basic_auth_header'
+  } | null
   created_at: string
   updated_at: string
 }
@@ -763,13 +846,10 @@ type ConnectedAccount = {
   api_key_last_4?: (string | null) | undefined
   client_id?: (string | null) | undefined
   client_secret_last_4?: (string | null) | undefined
-  config?: { [x: string]: string } | undefined
+  config?: { [key: string]: string } | undefined
   state: 'connected' | 'needs_reauthorization' | 'disconnected'
   established_by_user_id?: (string | null) | undefined
-  state_reason?:
-    | 'establishing_member_membership_ended'
-    | ({ [x: string]: unknown } | null)
-    | undefined
+  state_reason?: ('establishing_member_membership_ended' | null) | undefined
   created_at: string
   updated_at: string
   warnings?: { code: 'duplicate_account_display_name'; message: string }[] | undefined
@@ -798,26 +878,26 @@ type ConnectionFinishErrorBody = {
   message: string
 }
 type ErrorBodyWithMessageOrMessageList = { message: string | string[] }
-type UpdateCustomProviderDefinitionDto = {
-  name?: string | undefined
-  authorization_url?: string | undefined
-  token_url?: string | undefined
-  refresh_token_url?: (string | null) | undefined
-  pkce_enabled?: boolean | undefined
-  request_scope_separator?: string | undefined
-  scopes_required?: boolean | undefined
-  client_secret_required?: boolean | undefined
-  additional_authorization_parameters?: { [x: string]: string } | undefined
-  token_body_content_type?: string | undefined
-  authenticate_via?: 'request_body' | 'basic_auth_header' | undefined
+type UpdateCustomProviderDefinitionDtoInput = {
+  name?: string
+  authorization_url?: string
+  token_url?: string
+  refresh_token_url?: string | null
+  pkce_enabled?: boolean
+  request_scope_separator?: string
+  scopes_required?: boolean
+  client_secret_required?: boolean
+  additional_authorization_parameters?: { [key: string]: string }
+  token_body_content_type?: string
+  authenticate_via?: 'request_body' | 'basic_auth_header'
 }
-type UpdateDataIntegrationDto = {
-  description?: (string | null) | undefined
-  enabled?: boolean | undefined
-  scopes?: (string[] | null) | undefined
-  credentials?: DataIntegrationCredentialsDto | undefined
-  api_key?: ApiKeyInstallationDto | undefined
-  custom_provider?: UpdateCustomProviderDefinitionDto | undefined
+type UpdateDataIntegrationDtoInput = {
+  description?: string | null
+  enabled?: boolean
+  scopes?: string[] | null
+  credentials?: DataIntegrationCredentialsDtoInput
+  api_key?: ApiKeyInstallationDtoInput
+  custom_provider?: UpdateCustomProviderDefinitionDtoInput
 }
 type ConnectionCreationNotFoundErrorBody = {
   code: 'multiple_connections_unavailable' | 'entity_not_found'
@@ -856,10 +936,15 @@ type DataIntegrationVendedCredential =
       expires_at: string | null
       scopes: string[]
       missing_scopes: string[]
-      metadata: { [x: string]: { [x: string]: unknown } }
-      config: { [x: string]: string }
+      metadata: { [key: string]: any }
+      config: { [key: string]: string }
     }
-  | { object: 'credential'; auth_method: 'api_key'; value: string; config: { [x: string]: string } }
+  | {
+      object: 'credential'
+      auth_method: 'api_key'
+      value: string
+      config: { [key: string]: string }
+    }
   | {
       object: 'credential'
       auth_method: 'client_credentials'
@@ -867,8 +952,8 @@ type DataIntegrationVendedCredential =
       expires_at: string | null
       scopes: string[]
       missing_scopes: string[]
-      metadata: { [x: string]: { [x: string]: unknown } }
-      config: { [x: string]: string }
+      metadata: { [key: string]: any }
+      config: { [key: string]: string }
     }
 type DataIntegrationCredentialsResponse =
   | { active: true; credential: DataIntegrationVendedCredential }
@@ -932,7 +1017,7 @@ type DirectoryGroup = {
   directory_id: string
   organization_id: string
   name: string
-  raw_attributes?: { [x: string]: { [x: string]: unknown } } | undefined
+  raw_attributes?: { [key: string]: any } | undefined
   created_at: string
   updated_at: string
 }
@@ -956,8 +1041,8 @@ type DirectoryUser = {
   job_title?: (string | null) | undefined
   username?: (string | null) | undefined
   state: 'active' | 'suspended' | 'inactive'
-  raw_attributes: { [x: string]: { [x: string]: unknown } }
-  custom_attributes: { [x: string]: { [x: string]: unknown } }
+  raw_attributes: { [key: string]: any }
+  custom_attributes: { [key: string]: any }
   role?: SlimRole | undefined
   roles?: SlimRole[] | undefined
   created_at: string
@@ -994,8 +1079,8 @@ type DirectoryUserWithGroups = {
   job_title?: (string | null) | undefined
   username?: (string | null) | undefined
   state: 'active' | 'suspended' | 'inactive'
-  raw_attributes: { [x: string]: { [x: string]: unknown } }
-  custom_attributes: { [x: string]: { [x: string]: unknown } }
+  raw_attributes: { [key: string]: any }
+  custom_attributes: { [key: string]: any }
   role?: SlimRole | undefined
   roles?: SlimRole[] | undefined
   created_at: string
@@ -1007,14 +1092,2695 @@ type DirectoryUserList = {
   data: DirectoryUserWithGroups[]
   list_metadata: { before: string | null; after: string | null }
 }
+type EventContextActorDto = {
+  id: string
+  source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+  name: string | null
+}
+type EventContextDto = {
+  google_analytics_client_id?: string | undefined
+  google_analytics_sessions?:
+    | { containerId: string; sessionId?: string | undefined; sessionNumber?: string | undefined }[]
+    | undefined
+  ajs_anonymous_id?: string | undefined
+  client_id?: string | undefined
+  actor?: EventContextActorDto | undefined
+  previous_attributes?: { [key: string]: any } | undefined
+}
+type FlagRule = {
+  object: 'flag_rule'
+  id: string
+  flag_id: string
+  flag_slug: string
+  environment_id: string
+  target_type: string | null
+  position: number
+  value_type: 'boolean'
+  value: boolean
+  created_at: string
+  updated_at: string
+}
+type FlagTarget =
+  | {
+      object: 'flag_target'
+      id: string
+      flag_id: string
+      flag_slug: string
+      environment_id: string
+      target_type: string
+      target_id: string
+      created_at: string
+      updated_at: string
+      rule_id: string
+    }
+  | {
+      object: 'flag_target'
+      id: string
+      flag_id: string
+      flag_slug: string
+      environment_id: string
+      target_type: string
+      target_id: string
+      value_type: 'boolean'
+      value: boolean
+      created_at: string
+      updated_at: string
+    }
+type Group = {
+  object: 'group'
+  id: string
+  organization_id: string
+  name: string
+  description: string | null
+  created_at: string
+  updated_at: string
+}
+type IssuerTrust = {
+  object: 'issuer_trust'
+  id: string
+  organization_id: string
+  type: 'claude'
+  issuer: string
+  enabled: boolean
+  created_at: string
+  updated_at: string
+}
+type PipesConnectedAccount = {
+  object: 'connected_account'
+  id: string
+  connection_role?: 'compatibility' | 'standard' | undefined
+  account_identifier?: (string | null) | undefined
+  account_display_name?: (string | null) | undefined
+  data_integration_id: string
+  provider_slug: string
+  user_id: string | null
+  organization_id: string | null
+  scopes: string[]
+  auth_method?: 'oauth' | 'api_key' | 'client_credentials' | undefined
+  api_key_last_4?: (string | null) | undefined
+  state: 'connected' | 'needs_reauthorization'
+  established_by_user_id?: (string | null) | undefined
+  state_reason?: ('establishing_member_membership_ended' | null) | undefined
+  created_at: string
+  updated_at: string
+}
+type VaultByokKeyProvider = 'AWS_KMS' | 'GCP_KMS' | 'AZURE_KEY_VAULT'
+type WaitlistUser = {
+  id: string
+  email: string
+  state: 'pending' | 'approved' | 'denied'
+  approved_at: string | null
+  additional_fields?: { [key: string]: string } | undefined
+  waitlist_id?: (string | null) | undefined
+  created_at: string
+  updated_at: string
+  object: 'waitlist_user'
+}
 type EventSchema = {
   object: 'event'
   id: string
   event: string
-  data: { [x: string]: { [x: string]: unknown } }
+  data: { [key: string]: any }
   created_at: string
-  context?: { [x: string]: { [x: string]: unknown } } | undefined
-}
+  context?: { [key: string]: any } | undefined
+} & (
+  | {
+      id: string
+      event: 'action.authentication.denied'
+      data: {
+        action_endpoint_id: string
+        action_execution_id: string
+        type: 'authentication'
+        verdict: 'Deny'
+        user_id: string
+        organization_id: string | null
+        email: string
+        ip_address: string | null
+        user_agent: string | null
+      }
+      context?: EventContextDto | undefined
+      created_at: string
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'action.user_registration.denied'
+      data: {
+        action_endpoint_id: string
+        action_execution_id: string
+        type: 'user_registration'
+        verdict: 'Deny'
+        organization_id: string | null
+        email: string
+        ip_address: string | null
+        user_agent: string | null
+      }
+      context?: EventContextDto | undefined
+      created_at: string
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.blueprint.created'
+      data: {
+        object: 'agent_blueprint'
+        id: string
+        name: string
+        description: string | null
+        permissions: string[]
+        scoped_permissions?:
+          | { slug: string; instance_types: ('delegated' | 'autonomous')[] }[]
+          | undefined
+        invocable_by: { role_slugs: string[]; organization_ids: string[] }
+        invocable_as: { instance_types: ('delegated' | 'autonomous')[] }
+        session_settings: {
+          max_age_seconds: number
+          access_token_ttl_seconds: number
+          refresh_token_ttl_seconds: number
+        }
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.blueprint.deleted'
+      data: {
+        object: 'agent_blueprint'
+        id: string
+        name: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.blueprint.updated'
+      data: {
+        object: 'agent_blueprint'
+        id: string
+        name: string
+        description: string | null
+        permissions: string[]
+        scoped_permissions?:
+          | { slug: string; instance_types: ('delegated' | 'autonomous')[] }[]
+          | undefined
+        invocable_by: { role_slugs: string[]; organization_ids: string[] }
+        invocable_as: { instance_types: ('delegated' | 'autonomous')[] }
+        session_settings: {
+          max_age_seconds: number
+          access_token_ttl_seconds: number
+          refresh_token_ttl_seconds: number
+        }
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.instance.created'
+      data: {
+        object: 'agent_instance'
+        id: string
+        agent_blueprint_id: string
+        organization_id: string
+        organization_membership_id: string | null
+        type: 'delegated' | 'autonomous'
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.instance.deleted'
+      data: {
+        object: 'agent_instance'
+        id: string
+        agent_blueprint_id: string
+        organization_id: string
+        organization_membership_id: string | null
+        type: 'delegated' | 'autonomous'
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.instance.session.created'
+      data: {
+        object: 'agent_instance_session'
+        id: string
+        agent_instance_id: string
+        organization_id: string
+        expires_at: string
+        revoked_at: string | null
+        created_at: string
+        updated_at: string
+        permission_slugs: string[]
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.instance.session.revoked'
+      data: {
+        object: 'agent_instance_session'
+        id: string
+        agent_instance_id: string
+        organization_id: string
+        expires_at: string
+        revoked_at: string | null
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.claim.attempt.created'
+      data: {
+        object: 'agent_registration_claim_attempt'
+        id: string
+        agent_registration_id: string
+        agent_registration_claim_id: string
+        login_hint: string
+        expires_at: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.claim.completed'
+      data: {
+        object: 'agent_registration_claim'
+        id: string
+        agent_registration_id: string
+        organization_id?: string | undefined
+        completed_by_attempt_id: string
+        claimed_by: { user_id: string; organization_id: string | ('null' | null) }
+        completed_at: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.created'
+      data: {
+        object: 'agent_registration'
+        id: string
+        agent_identity: {
+          object: 'agent_identity'
+          id: string
+          userland_user_id: string | ('null' | null)
+        }
+        organization_id: string
+        status: 'unverified' | 'verified' | 'expired' | 'revoked'
+        kind: 'anonymous' | 'service_auth' | 'identity_assertion'
+        method: 'anonymous' | 'service_auth' | 'id_jag'
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.credential.issued'
+      data: {
+        object: 'agent_registration_credential'
+        id: string
+        agent_registration_id: string
+        detail:
+          | { kind: 'api_key'; api_key_id: string }
+          | { kind: 'access_token'; jti: string; expires_at: string | ('null' | null) }
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.deleted'
+      data: { agent_registration_id: string }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.expired'
+      data: { agent_registration_id: string }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.organization.switched'
+      data: {
+        agent_registration_id: string
+        from_organization_id: string
+        to_organization_id: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.refreshed'
+      data: { agent_registration_id: string }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'agent.registration.revoked'
+      data: { agent_registration_id: string }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'api_key.created'
+      data: {
+        object: 'api_key'
+        id: string
+        owner:
+          | { type: 'organization'; id: string }
+          | { type: 'user'; id: string; organization_id: string }
+        name: string
+        obfuscated_value: string
+        last_used_at: string | null
+        expires_at: string | null
+        permissions: string[]
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'api_key.revoked'
+      data: {
+        object: 'api_key'
+        id: string
+        owner:
+          | { type: 'organization'; id: string }
+          | { type: 'user'; id: string; organization_id: string }
+        name: string
+        obfuscated_value: string
+        last_used_at: string | null
+        expires_at: string | null
+        permissions: string[]
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'api_key.updated'
+      data: {
+        object: 'api_key'
+        id: string
+        owner:
+          | { type: 'organization'; id: string }
+          | { type: 'user'; id: string; organization_id: string }
+        name: string
+        obfuscated_value: string
+        last_used_at: string | null
+        expires_at: string | null
+        permissions: string[]
+        created_at: string
+        updated_at: string
+        previous_attributes: { expires_at: string | null }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'application.token_exchange_failed'
+      data: {
+        grant_type: string
+        client_id: string
+        issuer: string | null
+        unverified_email_domain?: (string | null) | undefined
+        signature_verified?: boolean | undefined
+        error: { code: string; message: string }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'application.token_exchange_succeeded'
+      data: {
+        grant_type: string
+        client_id: string
+        user_id: string
+        email: string
+        organization_id: string | null
+        issuer: string
+        connection_id: string | null
+        jti: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.email_verification_failed'
+      data: {
+        type: 'email_verification'
+        status: 'failed'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        error: { code: string; message: string; radar_detection_id?: string | undefined }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.email_verification_succeeded'
+      data: {
+        type: 'email_verification'
+        status: 'succeeded'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string
+        email: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.magic_auth_failed'
+      data: {
+        type: 'magic_auth'
+        status: 'failed'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        error: { code: string; message: string; radar_detection_id?: string | undefined }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.magic_auth_succeeded'
+      data: {
+        type: 'magic_auth'
+        status: 'succeeded'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string
+        email: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.mfa_failed'
+      data: {
+        type: 'mfa'
+        status: 'failed'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        error: { code: string; message: string; radar_detection_id?: string | undefined }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.mfa_succeeded'
+      data: {
+        type: 'mfa'
+        status: 'succeeded'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string
+        email: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.oauth_failed'
+      data: {
+        type: 'oauth'
+        status: 'failed'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        error: { code: string; message: string; radar_detection_id?: string | undefined }
+        provider?: string | undefined
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.oauth_succeeded'
+      data: {
+        type: 'oauth'
+        status: 'succeeded'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string
+        provider?: string | undefined
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.passkey_failed'
+      data: {
+        type: 'passkey'
+        status: 'failed'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        error: { code: string; message: string; radar_detection_id?: string | undefined }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.passkey_succeeded'
+      data: {
+        type: 'passkey'
+        status: 'succeeded'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string
+        email: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.password_failed'
+      data: {
+        type: 'password'
+        status: 'failed'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        error: { code: string; message: string; radar_detection_id?: string | undefined }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.password_succeeded'
+      data: {
+        type: 'password'
+        status: 'succeeded'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string
+        email: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.radar_risk_detected'
+      data: {
+        auth_method: string
+        action: 'signup' | 'login'
+        control: string | null
+        blocklist_type: string | null
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string
+        email: string
+        radar_detection_id?: string | undefined
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.reauthentication_succeeded'
+      data: {
+        type: 'reauthentication'
+        status: 'succeeded'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string
+        email: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.sso_failed'
+      data: {
+        type: 'sso'
+        status: 'failed'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        sso: {
+          organization_id: string | null
+          connection_id: string | null
+          session_id: string | null
+        }
+        error: { code: string; message: string; radar_detection_id?: string | undefined }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.sso_started'
+      data: {
+        type: 'sso'
+        status: 'started'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        sso: {
+          organization_id: string | null
+          connection_id: string | null
+          session_id: string | null
+        }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.sso_succeeded'
+      data: {
+        type: 'sso'
+        status: 'succeeded'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string
+        sso: {
+          organization_id: string | null
+          connection_id: string | null
+          session_id: string | null
+        }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'authentication.sso_timed_out'
+      data: {
+        type: 'sso'
+        status: 'timed_out'
+        ip_address: string | null
+        user_agent: string | null
+        user_id: string | null
+        email: string | null
+        sso: {
+          organization_id: string | null
+          connection_id: string | null
+          session_id: string | null
+        }
+        error: { code: string; message: string; radar_detection_id?: string | undefined }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'connection.activated'
+      data: {
+        object: 'connection'
+        id: string
+        state: 'draft' | 'active' | 'validating' | 'inactive' | 'deleting'
+        name: string
+        connection_type:
+          | 'ADFSSAML'
+          | 'AdpOidc'
+          | 'AppleOAuth'
+          | 'Auth0Migration'
+          | 'Auth0SAML'
+          | 'AzureSAML'
+          | 'BitbucketOAuth'
+          | 'CasSAML'
+          | 'ClassLinkSAML'
+          | 'CleverOIDC'
+          | 'CloudflareSAML'
+          | 'CyberArkSAML'
+          | 'DuoSAML'
+          | 'EntraIdOIDC'
+          | 'GenericOIDC'
+          | 'GenericSAML'
+          | 'GitHubOAuth'
+          | 'GitLabOAuth'
+          | 'GoogleOAuth'
+          | 'GoogleOIDC'
+          | 'GoogleSAML'
+          | 'IntuitOAuth'
+          | 'JumpCloudSAML'
+          | 'KeycloakSAML'
+          | 'LastPassSAML'
+          | 'LinkedInOAuth'
+          | 'LoginGovOidc'
+          | 'MagicLink'
+          | 'MicrosoftOAuth'
+          | 'MiniOrangeSAML'
+          | 'NetIqSAML'
+          | 'OktaOIDC'
+          | 'OktaSAML'
+          | 'OneLoginSAML'
+          | 'OracleSAML'
+          | 'PingFederateSAML'
+          | 'PingOneSAML'
+          | 'RipplingSAML'
+          | 'SalesforceSAML'
+          | 'ShibbolethGenericSAML'
+          | 'ShibbolethSAML'
+          | 'SimpleSamlPhpSAML'
+          | 'SalesforceOAuth'
+          | 'SlackOAuth'
+          | 'TestIdp'
+          | 'VercelMarketplaceOAuth'
+          | 'VercelOAuth'
+          | 'VMwareSAML'
+          | 'XeroOAuth'
+        organization_id?: string | undefined
+        created_at: string
+        updated_at: string
+        external_key: string
+        status: 'linked' | 'unlinked'
+        domains: { object: 'connection_domain'; id: string; domain: string }[]
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'connection.deactivated'
+      data: {
+        object: 'connection'
+        id: string
+        state: 'draft' | 'active' | 'validating' | 'inactive' | 'deleting'
+        name: string
+        connection_type:
+          | 'ADFSSAML'
+          | 'AdpOidc'
+          | 'AppleOAuth'
+          | 'Auth0Migration'
+          | 'Auth0SAML'
+          | 'AzureSAML'
+          | 'BitbucketOAuth'
+          | 'CasSAML'
+          | 'ClassLinkSAML'
+          | 'CleverOIDC'
+          | 'CloudflareSAML'
+          | 'CyberArkSAML'
+          | 'DuoSAML'
+          | 'EntraIdOIDC'
+          | 'GenericOIDC'
+          | 'GenericSAML'
+          | 'GitHubOAuth'
+          | 'GitLabOAuth'
+          | 'GoogleOAuth'
+          | 'GoogleOIDC'
+          | 'GoogleSAML'
+          | 'IntuitOAuth'
+          | 'JumpCloudSAML'
+          | 'KeycloakSAML'
+          | 'LastPassSAML'
+          | 'LinkedInOAuth'
+          | 'LoginGovOidc'
+          | 'MagicLink'
+          | 'MicrosoftOAuth'
+          | 'MiniOrangeSAML'
+          | 'NetIqSAML'
+          | 'OktaOIDC'
+          | 'OktaSAML'
+          | 'OneLoginSAML'
+          | 'OracleSAML'
+          | 'PingFederateSAML'
+          | 'PingOneSAML'
+          | 'RipplingSAML'
+          | 'SalesforceSAML'
+          | 'ShibbolethGenericSAML'
+          | 'ShibbolethSAML'
+          | 'SimpleSamlPhpSAML'
+          | 'SalesforceOAuth'
+          | 'SlackOAuth'
+          | 'TestIdp'
+          | 'VercelMarketplaceOAuth'
+          | 'VercelOAuth'
+          | 'VMwareSAML'
+          | 'XeroOAuth'
+        organization_id?: string | undefined
+        created_at: string
+        updated_at: string
+        external_key: string
+        status: 'linked' | 'unlinked'
+        domains: { object: 'connection_domain'; id: string; domain: string }[]
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'connection.deleted'
+      data: {
+        object: 'connection'
+        id: string
+        state: 'draft' | 'active' | 'validating' | 'inactive' | 'deleting'
+        name: string
+        connection_type:
+          | 'ADFSSAML'
+          | 'AdpOidc'
+          | 'AppleOAuth'
+          | 'Auth0Migration'
+          | 'Auth0SAML'
+          | 'AzureSAML'
+          | 'BitbucketOAuth'
+          | 'CasSAML'
+          | 'ClassLinkSAML'
+          | 'CleverOIDC'
+          | 'CloudflareSAML'
+          | 'CyberArkSAML'
+          | 'DuoSAML'
+          | 'EntraIdOIDC'
+          | 'GenericOIDC'
+          | 'GenericSAML'
+          | 'GitHubOAuth'
+          | 'GitLabOAuth'
+          | 'GoogleOAuth'
+          | 'GoogleOIDC'
+          | 'GoogleSAML'
+          | 'IntuitOAuth'
+          | 'JumpCloudSAML'
+          | 'KeycloakSAML'
+          | 'LastPassSAML'
+          | 'LinkedInOAuth'
+          | 'LoginGovOidc'
+          | 'MagicLink'
+          | 'MicrosoftOAuth'
+          | 'MiniOrangeSAML'
+          | 'NetIqSAML'
+          | 'OktaOIDC'
+          | 'OktaSAML'
+          | 'OneLoginSAML'
+          | 'OracleSAML'
+          | 'PingFederateSAML'
+          | 'PingOneSAML'
+          | 'RipplingSAML'
+          | 'SalesforceSAML'
+          | 'ShibbolethGenericSAML'
+          | 'ShibbolethSAML'
+          | 'SimpleSamlPhpSAML'
+          | 'SalesforceOAuth'
+          | 'SlackOAuth'
+          | 'TestIdp'
+          | 'VercelMarketplaceOAuth'
+          | 'VercelOAuth'
+          | 'VMwareSAML'
+          | 'XeroOAuth'
+        organization_id?: string | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'connection.saml_certificate_renewal_required'
+      data: {
+        connection: { id: string; organization_id?: string | undefined }
+        certificate: {
+          certificate_type: 'ResponseSigning' | 'RequestSigning' | 'ResponseEncryption'
+          expiry_date: string
+          is_expired: boolean
+        }
+        days_until_expiry: number
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'connection.saml_certificate_renewed'
+      data: {
+        connection: { id: string; organization_id?: string | undefined }
+        certificate: {
+          certificate_type: 'ResponseSigning' | 'RequestSigning' | 'ResponseEncryption'
+          expiry_date: string
+        }
+        renewed_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'connection.saml_certificate_replaced'
+      data: {
+        connection: { id: string; organization_id?: string | undefined }
+        certificate: {
+          certificate_type: 'ResponseSigning' | 'RequestSigning' | 'ResponseEncryption'
+          expiry_date: string
+          previous_expiry_date?: string | undefined
+        }
+        replaced_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.activated'
+      data: {
+        object: 'directory'
+        id: string
+        organization_id?: string | undefined
+        type:
+          | 'azure scim v2.0'
+          | 'bamboohr'
+          | 'breathe hr'
+          | 'cezanne hr'
+          | 'cyberark scim v2.0'
+          | 'fourth hr'
+          | 'generic scim v2.0'
+          | 'gsuite directory'
+          | 'gusto'
+          | 'hibob'
+          | 'jump cloud scim v2.0'
+          | 'okta scim v2.0'
+          | 'onelogin scim v2.0'
+          | 'people hr'
+          | 'personio'
+          | 'pingfederate scim v2.0'
+          | 'rippling scim v2.0'
+          | 'rippling'
+          | 'sailpoint scim v2.0'
+          | 's3'
+          | 'sftp'
+          | 'sftp workday'
+          | 'workday'
+        state: 'active' | 'validating' | 'invalid_credentials' | 'inactive' | 'deleting'
+        name: string
+        created_at: string
+        updated_at: string
+        external_key: string
+        domains: { object: 'organization_domain'; id: string; domain: string }[]
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.deleted'
+      data: {
+        object: 'directory'
+        id: string
+        organization_id?: string | undefined
+        type:
+          | 'azure scim v2.0'
+          | 'bamboohr'
+          | 'breathe hr'
+          | 'cezanne hr'
+          | 'cyberark scim v2.0'
+          | 'fourth hr'
+          | 'generic scim v2.0'
+          | 'gsuite directory'
+          | 'gusto'
+          | 'hibob'
+          | 'jump cloud scim v2.0'
+          | 'okta scim v2.0'
+          | 'onelogin scim v2.0'
+          | 'people hr'
+          | 'personio'
+          | 'pingfederate scim v2.0'
+          | 'rippling scim v2.0'
+          | 'rippling'
+          | 'sailpoint scim v2.0'
+          | 's3'
+          | 'sftp'
+          | 'sftp workday'
+          | 'workday'
+        state: 'active' | 'validating' | 'invalid_credentials' | 'inactive' | 'deleting'
+        name: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.group.created'
+      data: DirectoryGroup
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.group.deleted'
+      data: DirectoryGroup
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.group.updated'
+      data: {
+        object: 'directory_group'
+        id: string
+        idp_id: string
+        directory_id: string
+        organization_id: string
+        name: string
+        raw_attributes?: { [key: string]: any } | undefined
+        created_at: string
+        updated_at: string
+        previous_attributes?: { [key: string]: any } | undefined
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.token.created'
+      data: {
+        object: 'directory_token'
+        id: string
+        directory_id: string
+        organization_id?: string | undefined
+        token_suffix: string
+        created_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.token.revoked'
+      data: {
+        object: 'directory_token'
+        id: string
+        directory_id: string
+        organization_id?: string | undefined
+        token_suffix: string
+        created_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.group.user_added'
+      data: { directory_id: string; user: DirectoryUser; group: DirectoryGroup }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.user.created'
+      data: DirectoryUser
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.user.deleted'
+      data: DirectoryUser
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.group.user_removed'
+      data: { directory_id: string; user: DirectoryUser; group: DirectoryGroup }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'dsync.user.updated'
+      data: {
+        object: 'directory_user'
+        id: string
+        directory_id: string
+        organization_id: string
+        idp_id: string
+        email: string | null
+        first_name?: (string | null) | undefined
+        last_name?: (string | null) | undefined
+        name?: (string | null) | undefined
+        emails?:
+          | {
+              primary?: boolean | undefined
+              type?: string | undefined
+              value?: (string | null) | undefined
+            }[]
+          | undefined
+        job_title?: (string | null) | undefined
+        username?: (string | null) | undefined
+        state: 'active' | 'suspended' | 'inactive'
+        raw_attributes: { [key: string]: any }
+        custom_attributes: { [key: string]: any }
+        role?: SlimRole | undefined
+        roles?: SlimRole[] | undefined
+        created_at: string
+        updated_at: string
+        previous_attributes?: { [key: string]: any } | undefined
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'email_verification.created'
+      data: {
+        object: 'email_verification'
+        id: string
+        user_id: string
+        email: string
+        expires_at: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'feature_flags.flag.created'
+      data: {
+        object: 'feature_flag'
+        id: string
+        environment_id: string
+        slug: string
+        name: string
+        description: string | null
+        owner: { email: string; first_name: string | null; last_name: string | null } | null
+        tags: string[]
+        enabled: boolean
+        default_value: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'feature_flags.flag.deleted'
+      data: {
+        object: 'feature_flag'
+        id: string
+        environment_id: string
+        slug: string
+        name: string
+        description: string | null
+        owner: { email: string; first_name: string | null; last_name: string | null } | null
+        tags: string[]
+        enabled: boolean
+        default_value: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'feature_flags.flag_rule.created'
+      data: FlagRule
+      created_at: string
+      context: {
+        client_id: string
+        actor?:
+          | {
+              id: string
+              source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+              name: string | null
+            }
+          | undefined
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'feature_flags.flag_rule.deleted'
+      data: FlagRule
+      created_at: string
+      context: {
+        client_id: string
+        actor?:
+          | {
+              id: string
+              source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+              name: string | null
+            }
+          | undefined
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'feature_flags.flag_rule.updated'
+      data: FlagRule
+      created_at: string
+      context: {
+        client_id: string
+        actor?:
+          | {
+              id: string
+              source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+              name: string | null
+            }
+          | undefined
+        previous_attributes?: { data?: { value?: boolean | undefined } | undefined } | undefined
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'feature_flags.flag.updated'
+      data: {
+        object: 'feature_flag'
+        id: string
+        environment_id: string
+        slug: string
+        name: string
+        description: string | null
+        owner: { email: string; first_name: string | null; last_name: string | null } | null
+        tags: string[]
+        enabled: boolean
+        default_value: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+        previous_attributes?:
+          | {
+              data?:
+                | {
+                    name?: string | undefined
+                    description?: (string | null) | undefined
+                    tags?: string[] | undefined
+                    owner?:
+                      | ({
+                          email: string
+                          first_name: string | null
+                          last_name: string | null
+                        } | null)
+                      | undefined
+                    enabled?: boolean | undefined
+                    default_value?: boolean | undefined
+                  }
+                | undefined
+            }
+          | undefined
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'flag.created'
+      data: {
+        object: 'feature_flag'
+        id: string
+        environment_id: string
+        slug: string
+        name: string
+        description: string | null
+        owner: { email: string; first_name: string | null; last_name: string | null } | null
+        tags: string[]
+        enabled: boolean
+        default_value: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'flag.deleted'
+      data: {
+        object: 'feature_flag'
+        id: string
+        environment_id: string
+        slug: string
+        name: string
+        description: string | null
+        owner: { email: string; first_name: string | null; last_name: string | null } | null
+        tags: string[]
+        enabled: boolean
+        default_value: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'flag.rule_updated'
+      data: {
+        object: 'feature_flag'
+        id: string
+        environment_id: string
+        slug: string
+        name: string
+        description: string | null
+        owner: { email: string; first_name: string | null; last_name: string | null } | null
+        tags: string[]
+        enabled: boolean
+        default_value: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+        access_type: 'none' | 'some' | 'all'
+        configured_targets: {
+          organizations: { id: string; name: string }[]
+          users: { id: string; email: string }[]
+        }
+        previous_attributes: {
+          data?: { enabled?: boolean | undefined; default_value?: boolean | undefined } | undefined
+          context?:
+            | {
+                access_type?: 'none' | 'some' | 'all' | undefined
+                configured_targets?:
+                  | {
+                      organizations: { id: string; name: string }[]
+                      users: { id: string; email: string }[]
+                    }
+                  | undefined
+              }
+            | undefined
+        }
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'feature_flags.flag_target.created'
+      data: FlagTarget
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'feature_flags.flag_target.deleted'
+      data: FlagTarget
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'flag.updated'
+      data: {
+        object: 'feature_flag'
+        id: string
+        environment_id: string
+        slug: string
+        name: string
+        description: string | null
+        owner: { email: string; first_name: string | null; last_name: string | null } | null
+        tags: string[]
+        enabled: boolean
+        default_value: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context: {
+        client_id: string
+        actor: {
+          id: string
+          source: 'api' | 'dashboard' | 'admin_portal' | 'system'
+          name: string | null
+        }
+        previous_attributes?:
+          | {
+              data?:
+                | {
+                    name?: string | undefined
+                    description?: (string | null) | undefined
+                    tags?: string[] | undefined
+                    owner?:
+                      | ({
+                          email: string
+                          first_name: string | null
+                          last_name: string | null
+                        } | null)
+                      | undefined
+                    enabled?: boolean | undefined
+                    default_value?: boolean | undefined
+                  }
+                | undefined
+            }
+          | undefined
+      }
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'group.created'
+      data: Group
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'group.deleted'
+      data: Group
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'group.member_added'
+      data: { group_id: string; organization_membership_id: string }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'group.member_removed'
+      data: { group_id: string; organization_membership_id: string }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'group.updated'
+      data: Group
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'invitation.accepted'
+      data: {
+        object: 'invitation'
+        id: string
+        email: string
+        state: 'pending' | 'accepted' | 'expired' | 'revoked'
+        accepted_at: string | null
+        revoked_at: string | null
+        expires_at: string
+        organization_id: string | null
+        inviter_user_id: string | null
+        accepted_user_id: string | null
+        role_slug: string | null
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'invitation.created'
+      data: {
+        object: 'invitation'
+        id: string
+        email: string
+        state: 'pending' | 'accepted' | 'expired' | 'revoked'
+        accepted_at: string | null
+        revoked_at: string | null
+        expires_at: string
+        organization_id: string | null
+        inviter_user_id: string | null
+        accepted_user_id: string | null
+        role_slug: string | null
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'invitation.resent'
+      data: {
+        object: 'invitation'
+        id: string
+        email: string
+        state: 'pending' | 'accepted' | 'expired' | 'revoked'
+        accepted_at: string | null
+        revoked_at: string | null
+        expires_at: string
+        organization_id: string | null
+        inviter_user_id: string | null
+        accepted_user_id: string | null
+        role_slug: string | null
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'invitation.revoked'
+      data: {
+        object: 'invitation'
+        id: string
+        email: string
+        state: 'pending' | 'accepted' | 'expired' | 'revoked'
+        accepted_at: string | null
+        revoked_at: string | null
+        expires_at: string
+        organization_id: string | null
+        inviter_user_id: string | null
+        accepted_user_id: string | null
+        role_slug: string | null
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'issuer_trust.created'
+      data: IssuerTrust
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'issuer_trust.deleted'
+      data: IssuerTrust
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'issuer_trust.updated'
+      data: IssuerTrust
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'magic_auth.created'
+      data: {
+        object: 'magic_auth'
+        id: string
+        user_id: string
+        email: string
+        expires_at: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization.created'
+      data: {
+        object: 'organization'
+        id: string
+        name: string
+        domains: {
+          object: 'organization_domain'
+          id: string
+          organization_id: string
+          domain: string
+          state?: 'failed' | 'legacy_verified' | 'pending' | 'unverified' | 'verified' | undefined
+          verification_prefix?: string | undefined
+          verification_token?: string | undefined
+          verification_strategy?: 'dns' | 'manual' | undefined
+          created_at: string
+          updated_at: string
+        }[]
+        metadata: { [key: string]: string }
+        external_id: string | null
+        stripe_customer_id?: string | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization.deleted'
+      data: {
+        object: 'organization'
+        id: string
+        name: string
+        domains: {
+          object: 'organization_domain'
+          id: string
+          organization_id: string
+          domain: string
+          state?: 'failed' | 'legacy_verified' | 'pending' | 'unverified' | 'verified' | undefined
+          verification_prefix?: string | undefined
+          verification_token?: string | undefined
+          verification_strategy?: 'dns' | 'manual' | undefined
+          created_at: string
+          updated_at: string
+        }[]
+        metadata: { [key: string]: string }
+        external_id: string | null
+        stripe_customer_id?: string | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_domain.created'
+      data: {
+        object: 'organization_domain'
+        id: string
+        organization_id: string
+        domain: string
+        state?: 'failed' | 'legacy_verified' | 'pending' | 'unverified' | 'verified' | undefined
+        verification_prefix?: string | undefined
+        verification_token?: string | undefined
+        verification_strategy?: 'dns' | 'manual' | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_domain.deleted'
+      data: {
+        object: 'organization_domain'
+        id: string
+        organization_id: string
+        domain: string
+        state?: 'failed' | 'legacy_verified' | 'pending' | 'unverified' | 'verified' | undefined
+        verification_prefix?: string | undefined
+        verification_token?: string | undefined
+        verification_strategy?: 'dns' | 'manual' | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_domain.updated'
+      data: {
+        object: 'organization_domain'
+        id: string
+        organization_id: string
+        domain: string
+        state?: 'failed' | 'legacy_verified' | 'pending' | 'unverified' | 'verified' | undefined
+        verification_prefix?: string | undefined
+        verification_token?: string | undefined
+        verification_strategy?: 'dns' | 'manual' | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_domain.verification_failed'
+      data: {
+        reason: 'domain_verification_period_expired' | 'domain_verified_by_other_organization'
+        organization_domain: {
+          object: 'organization_domain'
+          id: string
+          organization_id: string
+          domain: string
+          state?: 'failed' | 'legacy_verified' | 'pending' | 'unverified' | 'verified' | undefined
+          verification_prefix?: string | undefined
+          verification_token?: string | undefined
+          verification_strategy?: 'dns' | 'manual' | undefined
+          created_at: string
+          updated_at: string
+        }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_domain.verified'
+      data: {
+        object: 'organization_domain'
+        id: string
+        organization_id: string
+        domain: string
+        state?: 'failed' | 'legacy_verified' | 'pending' | 'unverified' | 'verified' | undefined
+        verification_prefix?: string | undefined
+        verification_token?: string | undefined
+        verification_strategy?: 'dns' | 'manual' | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_membership.created'
+      data: {
+        object: 'organization_membership'
+        id: string
+        user_id: string
+        organization_id: string
+        status: 'active' | 'inactive' | 'pending'
+        role: SlimRole
+        roles?: SlimRole[] | undefined
+        custom_attributes: { [key: string]: any }
+        directory_managed: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_membership.deleted'
+      data: {
+        object: 'organization_membership'
+        id: string
+        user_id: string
+        organization_id: string
+        status: 'active' | 'inactive' | 'pending'
+        role: SlimRole
+        roles?: SlimRole[] | undefined
+        custom_attributes: { [key: string]: any }
+        directory_managed: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_membership.updated'
+      data: {
+        object: 'organization_membership'
+        id: string
+        user_id: string
+        organization_id: string
+        status: 'active' | 'inactive' | 'pending'
+        role: SlimRole
+        roles?: SlimRole[] | undefined
+        custom_attributes: { [key: string]: any }
+        directory_managed: boolean
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_role.created'
+      data: {
+        object: 'organization_role'
+        organization_id: string
+        slug: string
+        name: string
+        description: string | null
+        resource_type_slug: string
+        permissions: string[]
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_role.deleted'
+      data: {
+        object: 'organization_role'
+        organization_id: string
+        slug: string
+        name: string
+        description: string | null
+        resource_type_slug: string
+        permissions: string[]
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization_role.updated'
+      data: {
+        object: 'organization_role'
+        organization_id: string
+        slug: string
+        name: string
+        description: string | null
+        resource_type_slug: string
+        permissions: string[]
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'organization.updated'
+      data: {
+        object: 'organization'
+        id: string
+        name: string
+        domains: {
+          object: 'organization_domain'
+          id: string
+          organization_id: string
+          domain: string
+          state?: 'failed' | 'legacy_verified' | 'pending' | 'unverified' | 'verified' | undefined
+          verification_prefix?: string | undefined
+          verification_token?: string | undefined
+          verification_strategy?: 'dns' | 'manual' | undefined
+          created_at: string
+          updated_at: string
+        }[]
+        metadata: { [key: string]: string }
+        external_id: string | null
+        stripe_customer_id?: string | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'password_reset.created'
+      data: {
+        object: 'password_reset'
+        id: string
+        user_id: string
+        email: string
+        expires_at: string
+        created_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'password_reset.succeeded'
+      data: {
+        object: 'password_reset'
+        id: string
+        user_id: string
+        email: string
+        expires_at: string
+        created_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'permission.created'
+      data: {
+        object: 'permission'
+        id: string
+        slug: string
+        name: string
+        description: string | null
+        system: boolean
+        resource_type_slug: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'permission.deleted'
+      data: {
+        object: 'permission'
+        id: string
+        slug: string
+        name: string
+        description: string | null
+        system: boolean
+        resource_type_slug: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'permission.updated'
+      data: {
+        object: 'permission'
+        id: string
+        slug: string
+        name: string
+        description: string | null
+        system: boolean
+        resource_type_slug: string
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.account_connection.add_failed'
+      data: {
+        object: 'connection_failed'
+        data_integration_id: string
+        provider_slug: string
+        user_id: string | null
+        organization_id: string | null
+        account_identifier?: (string | null) | undefined
+        error_code: string
+        error_reason: string | null
+        provider_error: string | null
+        provider_error_description: string | null
+        created_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.account_connection.connected'
+      data: PipesConnectedAccount
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.account_connection.connection_failed'
+      data: {
+        object: 'connection_failed'
+        data_integration_id: string
+        provider_slug: string
+        user_id: string | null
+        organization_id: string | null
+        account_identifier?: (string | null) | undefined
+        error_code: string
+        error_reason: string | null
+        provider_error: string | null
+        provider_error_description: string | null
+        created_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.account_connection.disconnected'
+      data: PipesConnectedAccount
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.account_connection.reauthorization_needed'
+      data: PipesConnectedAccount
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.connected_account.connected'
+      data: PipesConnectedAccount
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.connected_account.connection_failed'
+      data: {
+        object: 'connection_failed'
+        data_integration_id: string
+        provider_slug: string
+        user_id: string | null
+        organization_id: string | null
+        account_identifier?: (string | null) | undefined
+        error_code: string
+        error_reason: string | null
+        provider_error: string | null
+        provider_error_description: string | null
+        created_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.connected_account.disconnected'
+      data: PipesConnectedAccount
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'pipes.connected_account.reauthorization_needed'
+      data: PipesConnectedAccount
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'radar.challenge_created'
+      data: { type: 'email'; radar_challenge_id: string; user_id: string; email: string }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'resource_export.completed'
+      data: {
+        id: string
+        resource_type:
+          | 'users'
+          | 'organizations'
+          | 'events'
+          | 'sessions'
+          | 'auditLogEvents'
+          | 'connections'
+          | 'directoryUsers'
+          | 'scimLogs'
+          | 'radarDetections'
+          | 'teamActivityLogEvents'
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'resource_export.created'
+      data: {
+        id: string
+        resource_type:
+          | 'users'
+          | 'organizations'
+          | 'events'
+          | 'sessions'
+          | 'auditLogEvents'
+          | 'connections'
+          | 'directoryUsers'
+          | 'scimLogs'
+          | 'radarDetections'
+          | 'teamActivityLogEvents'
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'resource_export.downloaded'
+      data: {
+        id: string
+        resource_type:
+          | 'users'
+          | 'organizations'
+          | 'events'
+          | 'sessions'
+          | 'auditLogEvents'
+          | 'connections'
+          | 'directoryUsers'
+          | 'scimLogs'
+          | 'radarDetections'
+          | 'teamActivityLogEvents'
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'resource_export.failed'
+      data: {
+        id: string
+        resource_type:
+          | 'users'
+          | 'organizations'
+          | 'events'
+          | 'sessions'
+          | 'auditLogEvents'
+          | 'connections'
+          | 'directoryUsers'
+          | 'scimLogs'
+          | 'radarDetections'
+          | 'teamActivityLogEvents'
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'role.created'
+      data: {
+        object: 'role'
+        slug: string
+        resource_type_slug: string
+        permissions?: string[] | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'role.deleted'
+      data: {
+        object: 'role'
+        slug: string
+        resource_type_slug: string
+        permissions?: string[] | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'role.updated'
+      data: {
+        object: 'role'
+        slug: string
+        resource_type_slug: string
+        permissions?: string[] | undefined
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'session.created'
+      data: {
+        object: 'session'
+        id: string
+        impersonator?: { email: string; reason: string | null } | undefined
+        ip_address: string | null
+        organization_id?: string | undefined
+        user_agent: string | null
+        user_id: string
+        auth_method:
+          | 'cross_app_auth'
+          | 'external_auth'
+          | 'impersonation'
+          | 'magic_code'
+          | 'migrated_session'
+          | 'oauth'
+          | 'passkey'
+          | 'password'
+          | 'sso'
+          | 'unknown'
+        status: 'active' | 'expired' | 'revoked'
+        expires_at: string
+        ended_at: string | null
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'session.revoked'
+      data: {
+        object: 'session'
+        id: string
+        impersonator?: { email: string; reason: string | null } | undefined
+        ip_address: string | null
+        organization_id?: string | undefined
+        user_agent: string | null
+        user_id: string
+        auth_method:
+          | 'cross_app_auth'
+          | 'external_auth'
+          | 'impersonation'
+          | 'magic_code'
+          | 'migrated_session'
+          | 'oauth'
+          | 'passkey'
+          | 'password'
+          | 'sso'
+          | 'unknown'
+        status: 'active' | 'expired' | 'revoked'
+        expires_at: string
+        ended_at: string | null
+        created_at: string
+        updated_at: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'user.created'
+      data: UserlandUser
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'user.deleted'
+      data: UserlandUser
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'user.updated'
+      data: UserlandUser
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.byok_key.deleted'
+      data: { organization_id: string; key_provider: VaultByokKeyProvider }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.byok_key.verification_completed'
+      data: { organization_id: string; key_provider: VaultByokKeyProvider; verified: boolean }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.data.created'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        kv_name: string
+        key_id: string
+        key_context: { [key: string]: string }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.data.deleted'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        kv_name: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.data.read'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        kv_name: string
+        key_id: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.data.updated'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        kv_name: string
+        key_id: string
+        key_context: { [key: string]: string }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.dek.decrypted'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        key_id: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.dek.read'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        key_ids: string[]
+        key_context: { [key: string]: string }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.dek.rekeyed'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        key_ids: string[]
+        key_context: { [key: string]: string }
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.kek.created'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        key_name: string
+        key_id: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.kek.deleted'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        key_name: string
+        key_id: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.metadata.read'
+      data: {
+        actor_id: string
+        actor_source: 'api' | 'dashboard'
+        actor_name: string
+        kv_name: string
+      }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'vault.names.listed'
+      data: { actor_id: string; actor_source: 'api' | 'dashboard'; actor_name: string }
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'waitlist_user.approved'
+      data: WaitlistUser
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'waitlist_user.created'
+      data: WaitlistUser
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+  | {
+      id: string
+      event: 'waitlist_user.denied'
+      data: WaitlistUser
+      created_at: string
+      context?: EventContextDto | undefined
+      object: 'event'
+    }
+)
 type EventList = { object: 'list'; data: EventSchema[]; list_metadata: { after: string | null } }
 type Flag = {
   object: 'feature_flag'
@@ -1022,9 +3788,7 @@ type Flag = {
   slug: string
   name: string
   description: string | null
-  owner:
-    | { email: string; first_name: string | null; last_name: string | null }
-    | ({ [x: string]: unknown } | null)
+  owner: { email: string; first_name: string | null; last_name: string | null } | null
   tags: string[]
   enabled: boolean
   default_value: boolean
@@ -1041,7 +3805,7 @@ type ErrorBodyWithCodeStatusCode = {
   code?: string | undefined
   statusCode?: number | undefined
 }
-type CreateOrganizationDomainDto = { domain: string; organization_id: string }
+type CreateOrganizationDomainDtoInput = { domain: string; organization_id: string }
 type OrganizationDomainStandAlone = {
   object: 'organization_domain'
   id: string
@@ -1070,7 +3834,7 @@ type Organization = {
     created_at: string
     updated_at: string
   }[]
-  metadata: { [x: string]: string }
+  metadata: { [key: string]: string }
   external_id: string | null
   stripe_customer_id?: string | undefined
   created_at: string
@@ -1082,23 +3846,23 @@ type OrganizationList = {
   data: Organization[]
   list_metadata: { before: string | null; after: string | null }
 }
-type OrganizationDomainDataDto = { domain: string; state: 'pending' | 'verified' }
-type OrganizationDto = {
+type OrganizationDomainDataDtoInput = { domain: string; state: 'pending' | 'verified' }
+type OrganizationDtoInput = {
   name: string
-  allow_profiles_outside_organization?: boolean | undefined
-  domains?: string[] | undefined
-  domain_data?: OrganizationDomainDataDto[] | undefined
-  metadata?: ({ [x: string]: string } | null) | undefined
-  external_id?: (string | null) | undefined
+  allow_profiles_outside_organization?: boolean
+  domains?: string[]
+  domain_data?: OrganizationDomainDataDtoInput[]
+  metadata?: { [key: string]: string } | null
+  external_id?: string | null
 }
-type UpdateOrganizationDto = {
-  name?: string | undefined
-  allow_profiles_outside_organization?: boolean | undefined
-  domains?: string[] | undefined
-  domain_data?: OrganizationDomainDataDto[] | undefined
-  stripe_customer_id?: string | undefined
-  metadata?: ({ [x: string]: string } | null) | undefined
-  external_id?: (string | null) | undefined
+type UpdateOrganizationDtoInput = {
+  name?: string
+  allow_profiles_outside_organization?: boolean
+  domains?: string[]
+  domain_data?: OrganizationDomainDataDtoInput[]
+  stripe_customer_id?: string
+  metadata?: { [key: string]: string } | null
+  external_id?: string | null
 }
 type AuditLogConfiguration = {
   organization_id: string
@@ -1122,7 +3886,7 @@ type AuditLogConfiguration = {
     | undefined
 }
 type AuditLogsRetentionJson = { retention_period_in_days: number | null }
-type UpdateAuditLogsRetentionDto =
+type UpdateAuditLogsRetentionDtoInput =
   | {
       retention_period:
         | '1_MONTH'
@@ -1165,10 +3929,10 @@ type OrganizationApiKeyList = {
   data: OrganizationApiKey[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateOrganizationApiKeyDto = {
+type CreateOrganizationApiKeyDtoInput = {
   name: string
-  permissions?: string[] | undefined
-  expires_at?: string | undefined
+  permissions?: string[]
+  expires_at?: string
 }
 type OrganizationApiKeyWithValue = {
   object: 'api_key'
@@ -1197,8 +3961,8 @@ type DataIntegrationConfigurationResponse = {
   slug: string
   name: string
   enabled: boolean
-  scopes: string[] | ({ [x: string]: unknown } | null)
-  config: { [x: string]: string }
+  scopes: string[] | null
+  config: { [key: string]: string }
   created_at: string
   updated_at: string
   credentials?: DataIntegrationCredentials | undefined
@@ -1207,30 +3971,21 @@ type DataIntegrationConfigurationListResponse = {
   object: 'list'
   data: DataIntegrationConfigurationResponse[]
 }
-type ConfigureDataIntegrationBody = {
-  enabled?: boolean | undefined
-  scopes?: string[] | ({ [x: string]: unknown } | null) | undefined
-  client_id?: string | undefined
-  client_secret?: string | undefined
-  config?: { [x: string]: string } | undefined
+type ConfigureDataIntegrationBodyInput = {
+  enabled?: boolean
+  scopes?: string[] | null
+  client_id?: string
+  client_secret?: string
+  config?: { [key: string]: string }
 }
-type CreateGroupDto = { name: string; description?: (string | null) | undefined }
-type Group = {
-  object: 'group'
-  id: string
-  organization_id: string
-  name: string
-  description: string | null
-  created_at: string
-  updated_at: string
-}
+type CreateGroupDtoInput = { name: string; description?: string | null }
 type GroupList = {
   object: 'list'
   data: Group[]
   list_metadata: { before: string | null; after: string | null }
 }
-type UpdateGroupDto = { name?: string | undefined; description?: (string | null) | undefined }
-type CreateGroupMembershipDto = { organization_membership_id: string }
+type UpdateGroupDtoInput = { name?: string; description?: string | null }
+type CreateGroupMembershipDtoInput = { organization_membership_id: string }
 type UserlandUserOrganizationMembershipBaseList = {
   object: 'list'
   data: {
@@ -1241,13 +3996,13 @@ type UserlandUserOrganizationMembershipBaseList = {
     status: 'active' | 'inactive' | 'pending'
     directory_managed: boolean
     organization_name?: string | undefined
-    custom_attributes?: { [x: string]: { [x: string]: unknown } } | undefined
+    custom_attributes?: { [key: string]: any } | undefined
     created_at: string
     updated_at: string
   }[]
   list_metadata: { before: string | null; after: string | null }
 }
-type PatchGroupMembershipsDto = { add?: string[] | undefined; remove?: string[] | undefined }
+type PatchGroupMembershipsDtoInput = { add?: string[]; remove?: string[] }
 type OrganizationAuthorizedConnectApplicationList = {
   object: 'list'
   data: {
@@ -1260,18 +4015,18 @@ type OrganizationAuthorizedConnectApplicationList = {
   }[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateOrganizationConnectedAccountDto = {
-  account_display_name?: (string | null) | undefined
-  account_identifier?: (string | null) | undefined
-  config?: { [x: string]: string } | undefined
-  access_token?: string | undefined
-  refresh_token?: string | undefined
-  expires_at?: string | undefined
-  scopes?: string[] | undefined
-  state?: 'connected' | 'needs_reauthorization' | undefined
+type CreateOrganizationConnectedAccountDtoInput = {
+  account_display_name?: string | null
+  account_identifier?: string | null
+  config?: { [key: string]: string }
+  access_token?: string
+  refresh_token?: string
+  expires_at?: string
+  scopes?: string[]
+  state?: 'connected' | 'needs_reauthorization'
   user_id: string
-  metadata?: { [x: string]: unknown } | undefined
-  connection_intent?: 'add' | undefined
+  metadata?: { [key: string]: unknown }
+  connection_intent?: 'add'
 }
 type OrganizationConnectedAccountImportErrorBody = {
   code:
@@ -1285,15 +4040,15 @@ type InvalidRequestParametersErrorBodyWithErrors = {
   message: string
   errors: ErrorBodyWithCode[]
 }
-type OrganizationConnectedAccountDto = {
-  account_display_name?: (string | null) | undefined
-  account_identifier?: (string | null) | undefined
-  config?: { [x: string]: string } | undefined
-  access_token?: string | undefined
-  refresh_token?: string | undefined
-  expires_at?: string | undefined
-  scopes?: string[] | undefined
-  state?: 'connected' | 'needs_reauthorization' | undefined
+type OrganizationConnectedAccountDtoInput = {
+  account_display_name?: string | null
+  account_identifier?: string | null
+  config?: { [key: string]: string }
+  access_token?: string
+  refresh_token?: string
+  expires_at?: string
+  scopes?: string[]
+  state?: 'connected' | 'needs_reauthorization'
   user_id: string
 }
 type ErrorBodyCode =
@@ -1361,6 +4116,7 @@ type ErrorBodyCode =
   | 'email_verification_code_incorrect'
   | 'email_verification_code_previously_used'
   | 'email_verification_required'
+  | 'entities_not_found'
   | 'entity_not_found'
   | 'expires_in_days_too_long'
   | 'expires_in_days_too_short'
@@ -1380,6 +4136,8 @@ type ErrorBodyCode =
   | 'invalid_email'
   | 'invalid_idp_sso_url'
   | 'invalid_invite'
+  | 'invalid_issuer_metadata'
+  | 'invalid_issuer_url'
   | 'invalid_locale'
   | 'invalid_metadata'
   | 'invalid_one_time_code'
@@ -1401,6 +4159,7 @@ type ErrorBodyCode =
   | 'invite_not_pending'
   | 'invite_revoked'
   | 'ip_address_required'
+  | 'issuer_already_trusted'
   | 'it_contact_already_exists'
   | 'it_contact_invitation_already_active'
   | 'key_pair_not_accepted'
@@ -1413,16 +4172,20 @@ type ErrorBodyCode =
   | 'multiple_roles_not_enabled'
   | 'name_already_in_use'
   | 'no_pending_email_change'
+  | 'not_claude_issuer'
   | 'oidc_options_required'
   | 'one_time_code_expired'
   | 'one_time_code_previously_used'
   | 'one_time_code_too_many_attempts'
+  | 'organization_already_has_trust'
   | 'organization_blocked_from_sending_invites'
+  | 'organization_has_idp_managed_ema'
   | 'organization_membership_directory_managed'
   | 'organization_not_found'
   | 'organization_not_invocable'
   | 'organization_role_slug_conflict'
   | 'organization_selection_required'
+  | 'organization_without_verified_domain'
   | 'passkey_progressive_enrollment'
   | 'password_and_password_hash_provided'
   | 'password_and_password_hash_type_provided'
@@ -1435,7 +4198,9 @@ type ErrorBodyCode =
   | 'phone_number_required'
   | 'production_feature_requires_billing'
   | 'radar_challenge'
+  | 'radar_email_challenge'
   | 'radar_sign_up_challenge'
+  | 'radar_sms_challenge'
   | 'radar_sms_sign_in_challenge'
   | 'rate_limit_exceeded'
   | 'resource_has_dependents'
@@ -1482,7 +4247,7 @@ type DataIntegrationsListResponse = {
     slug: string
     integration_type: string
     credentials_type: string
-    scopes: string[] | ({ [x: string]: unknown } | null)
+    scopes: string[] | null
     auth_methods?: ('oauth' | 'api_key' | 'client_credentials')[] | undefined
     connection_owner: 'user' | 'organization'
     ownership: 'userland_user' | 'organization'
@@ -1492,36 +4257,31 @@ type DataIntegrationsListResponse = {
     credentialsType: string
     createdAt: string
     updatedAt: string
-    connected_account:
-      | {
-          object: 'connected_account'
-          id: string
-          connection_role: 'compatibility' | 'standard'
-          account_identifier: string | null
-          account_display_name: string | null
-          user_id: string | null
-          organization_id: string | null
-          scopes: string[]
-          auth_method?: 'oauth' | 'api_key' | 'client_credentials' | undefined
-          api_key_last_4?: (string | null) | undefined
-          client_id?: (string | null) | undefined
-          client_secret_last_4?: (string | null) | undefined
-          config?: { [x: string]: string } | undefined
-          state: 'connected' | 'needs_reauthorization' | 'disconnected'
-          established_by_user_id?: (string | null) | undefined
-          state_reason?:
-            | 'establishing_member_membership_ended'
-            | ({ [x: string]: unknown } | null)
-            | undefined
-          created_at: string
-          updated_at: string
-          warnings?: { code: 'duplicate_account_display_name'; message: string }[] | undefined
-          userlandUserId: string | null
-          organizationId: string | null
-          createdAt: string
-          updatedAt: string
-        }
-      | ({ [x: string]: unknown } | null)
+    connected_account: {
+      object: 'connected_account'
+      id: string
+      connection_role: 'compatibility' | 'standard'
+      account_identifier: string | null
+      account_display_name: string | null
+      user_id: string | null
+      organization_id: string | null
+      scopes: string[]
+      auth_method?: 'oauth' | 'api_key' | 'client_credentials' | undefined
+      api_key_last_4?: (string | null) | undefined
+      client_id?: (string | null) | undefined
+      client_secret_last_4?: (string | null) | undefined
+      config?: { [key: string]: string } | undefined
+      state: 'connected' | 'needs_reauthorization' | 'disconnected'
+      established_by_user_id?: (string | null) | undefined
+      state_reason?: ('establishing_member_membership_ended' | null) | undefined
+      created_at: string
+      updated_at: string
+      warnings?: { code: 'duplicate_account_display_name'; message: string }[] | undefined
+      userlandUserId: string | null
+      organizationId: string | null
+      createdAt: string
+      updatedAt: string
+    } | null
     connected_accounts: {
       object: 'connected_account'
       id: string
@@ -1535,13 +4295,10 @@ type DataIntegrationsListResponse = {
       api_key_last_4?: (string | null) | undefined
       client_id?: (string | null) | undefined
       client_secret_last_4?: (string | null) | undefined
-      config?: { [x: string]: string } | undefined
+      config?: { [key: string]: string } | undefined
       state: 'connected' | 'needs_reauthorization' | 'disconnected'
       established_by_user_id?: (string | null) | undefined
-      state_reason?:
-        | 'establishing_member_membership_ended'
-        | ({ [x: string]: unknown } | null)
-        | undefined
+      state_reason?: ('establishing_member_membership_ended' | null) | undefined
       created_at: string
       updated_at: string
       warnings?: { code: 'duplicate_account_display_name'; message: string }[] | undefined
@@ -1551,6 +4308,11 @@ type DataIntegrationsListResponse = {
       updatedAt: string
     }[]
   }[]
+}
+type IssuerTrustList = {
+  object: 'list'
+  data: IssuerTrust[]
+  list_metadata: { before: string | null; after: string | null }
 }
 type ItContact = {
   object: 'it_contact'
@@ -1564,8 +4326,8 @@ type ItContactList = {
   data: ItContact[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateItContactDto = { email: string }
-type InviteItContactDto = {
+type CreateItContactDtoInput = { email: string }
+type InviteItContactDtoInput = {
   intents: (
     | 'sso'
     | 'directory_sync'
@@ -1574,7 +4336,7 @@ type InviteItContactDto = {
     | 'bring_your_own_key'
   )[]
 }
-type CreateTeamDto = { admin_email: string; name: string }
+type CreateTeamDtoInput = { admin_email: string; name: string }
 type Team = {
   object: 'team'
   id: string
@@ -1584,11 +4346,11 @@ type Team = {
   created_at: string
   updated_at: string
 }
-type GenerateLinkDto = {
-  return_url?: string | undefined
-  success_url?: string | undefined
+type GenerateLinkDtoInput = {
+  return_url?: string
+  success_url?: string
   organization: string
-  external_user_id?: string | undefined
+  external_user_id?: string
   intent?:
     | 'sso'
     | 'dsync'
@@ -1597,11 +4359,10 @@ type GenerateLinkDto = {
     | 'domain_verification'
     | 'certificate_renewal'
     | 'bring_your_own_key'
-    | undefined
-  it_contact_emails?: string[] | undefined
+  it_contact_emails?: string[]
 }
 type PortalLinkResponse = { link: string }
-type RevokeLinkDto = { organization: string; external_user_id: string }
+type RevokeLinkDtoInput = { organization: string; external_user_id: string }
 type RadarStandaloneResponse = {
   verdict: 'allow' | 'block' | 'challenge'
   reason: string
@@ -1624,6 +4385,162 @@ type RadarStandaloneResponse = {
     | 'device_fingerprint'
     | 'country'
     | undefined
+}
+type RadarDetectionList = {
+  type:
+    | 'ip_address'
+    | 'domain'
+    | 'email'
+    | 'device'
+    | 'user_agent'
+    | 'device_fingerprint'
+    | 'country'
+  action: 'allow' | 'block' | 'challenge' | 'log' | null
+  name: string | null
+  workos_managed: boolean
+}
+type RadarDetectionAllowedBy = {
+  list_id: string
+  list: RadarDetectionList | null
+  entry?: string | undefined
+}
+type RadarDetectionBotDetectionSignal = {
+  signal:
+    | 'risky_ip'
+    | 'anomalous_ip'
+    | 'excessive_domain_sign_ups'
+    | 'suspicious_browser_signals'
+    | 'missing_device_fingerprint'
+    | 'suspicious_email_pattern'
+    | 'automated_client'
+    | 'workos_risk_model'
+  action?: 'block' | 'challenge' | undefined
+}
+type RadarDetectionIpSignUps = { count: number; window_minutes: number }
+type RadarDetectionDomainSignUps = { root_domain: string; count?: number | undefined }
+type RadarDetectionBotDetectionDetails = {
+  signals: RadarDetectionBotDetectionSignal[]
+  decided_by?:
+    | 'risky_ip'
+    | 'anomalous_ip'
+    | 'excessive_domain_sign_ups'
+    | 'suspicious_browser_signals'
+    | 'missing_device_fingerprint'
+    | 'suspicious_email_pattern'
+    | 'automated_client'
+    | 'workos_risk_model'
+    | undefined
+  ip_risk?: ('abuser' | 'anonymous' | 'vpn' | 'tor' | 'proxy')[] | undefined
+  email_pattern?: ('generated_looking' | 'repeated_format' | 'suspicious_domain')[] | undefined
+  browser_signals?:
+    | (
+        | 'automation_framework'
+        | 'headless_browser'
+        | 'tampered_signals'
+        | 'inconsistent_hardware'
+        | 'missing_signals'
+        | 'missing_expected_signals'
+      )[]
+    | undefined
+  ip_sign_ups?: RadarDetectionIpSignUps | undefined
+  domain_sign_ups?: RadarDetectionDomainSignUps | undefined
+}
+type RadarDetectionBruteForceAttackDetails = {
+  attempts: number
+  window_minutes: number
+  matched_on: 'device_fingerprint_and_email' | 'ip_and_email'
+}
+type RadarDetectionDomainProtectionsDetails = {
+  list_id: string
+  list: RadarDetectionList | null
+  also_matched_list_ids?: string[] | undefined
+  also_matched_lists?: (RadarDetectionList | null)[] | undefined
+  matched_domain?: string | undefined
+}
+type RadarDetectionPreviousAttempt = {
+  attempt_id: string
+  ip_address?: string | undefined
+  user_agent?: (string | null) | undefined
+  location: { city: string | null; country: string | null }
+  created_at: string
+}
+type RadarDetectionImpossibleTravelDetails = {
+  previous: RadarDetectionPreviousAttempt
+  distance_km: number
+  speed_km_per_s: number
+}
+type RadarDetectionRepeatSignUpDetails = { [key: string]: unknown } & (
+  | { matched_on: 'email'; prior_sign_ups: number; window_days: number }
+  | { matched_on: 'normalized_email'; matched_user_id: string }
+)
+type RadarDetectionStaleAccountDetails = { last_activity_at: string | null }
+type RadarDetectionUnrecognizedDeviceDetails = {
+  previous_device: RadarDetectionPreviousAttempt | null
+}
+type RadarDetectionRestrictionDetails = { [key: string]: unknown } & (
+  | { type: 'list'; list_id: string; list: RadarDetectionList | null; entry?: string | undefined }
+  | { type: 'blocked_tld' }
+  | { type: 'sign_up' }
+  | {
+      type: 'sms_sign_in'
+      trigger:
+        | 'country_mismatch'
+        | 'non_mobile_line'
+        | 'previously_selected'
+        | 'unknown_line_type'
+        | 'missing_signals'
+      phone_country?: string | undefined
+      line_type?: string | undefined
+      masked_phone_number?: string | undefined
+    }
+)
+type RadarDetectionEvidence = {
+  summary: string
+  allowed_by?: RadarDetectionAllowedBy | undefined
+} & (
+  | { control: 'bot_detection'; details: RadarDetectionBotDetectionDetails }
+  | { control: 'brute_force_attack'; details: RadarDetectionBruteForceAttackDetails }
+  | { control: 'domain_protections'; details: RadarDetectionDomainProtectionsDetails }
+  | { control: 'impossible_travel'; details: RadarDetectionImpossibleTravelDetails }
+  | { control: 'repeat_sign_up'; details: RadarDetectionRepeatSignUpDetails }
+  | { control: 'stale_account'; details: RadarDetectionStaleAccountDetails }
+  | { control: 'unrecognized_device'; details: RadarDetectionUnrecognizedDeviceDetails }
+  | { control: 'restriction'; details: RadarDetectionRestrictionDetails }
+)
+type RadarDetection = {
+  object: 'radar_detection'
+  id: string
+  attempt_id: string
+  control:
+    | 'bot_detection'
+    | 'brute_force_attack'
+    | 'domain_protections'
+    | 'impossible_travel'
+    | 'repeat_sign_up'
+    | 'stale_account'
+    | 'unrecognized_device'
+    | 'restriction'
+  verdict: 'allow' | 'block' | 'challenge' | 'log'
+  challenge_type: 'email' | 'sms' | null
+  evidence: RadarDetectionEvidence | null
+  ip_address: string
+  location: { city: string | null; country: string | null }
+  user_agent: string
+  email: string
+  user_id: string | null
+  action: 'signup' | 'login' | null
+  auth_method:
+    | 'password'
+    | 'passkey'
+    | 'magic_auth'
+    | 'oauth'
+    | 'sso'
+    | 'authenticator'
+    | 'sms_otp'
+    | 'other'
+    | null
+  created_at: string
+  updated_at: string
 }
 type RadarListEntryAlreadyPresentResponse = { message: string }
 type SsoAuthorizeUrlResponse = { url: string }
@@ -1702,22 +4619,22 @@ type Profile = {
   first_name: string | null
   last_name: string | null
   name: string | null
-  role?: SlimRole | ({ [x: string]: unknown } | null) | undefined
-  roles?: SlimRole[] | ({ [x: string]: unknown } | null) | undefined
+  role?: (SlimRole | null) | undefined
+  roles?: (SlimRole[] | null) | undefined
   groups?: string[] | undefined
-  custom_attributes?: { [x: string]: { [x: string]: unknown } } | undefined
-  raw_attributes: { [x: string]: { [x: string]: unknown } }
+  custom_attributes?: { [key: string]: any } | undefined
+  raw_attributes: { [key: string]: any }
 }
 type UnauthorizedErrorBody = { error: 'Unauthorized' }
-type TokenQueryDto = {
+type TokenQueryDtoInput = {
   client_id: string
   client_secret: string
-  code?: string | undefined
+  code?: string
   grant_type: 'authorization_code' | 'urn:ietf:params:oauth:grant-type:token-exchange'
-  code_verifier?: string | undefined
-  subject_token?: string | undefined
-  subject_token_type?: 'urn:ietf:params:oauth:token-type:id_token' | undefined
-  organization_id?: string | undefined
+  code_verifier?: string
+  subject_token?: string
+  subject_token_type?: 'urn:ietf:params:oauth:token-type:id_token'
+  organization_id?: string
 }
 type SsoTokenResponse = {
   token_type: 'Bearer'
@@ -1862,7 +4779,9 @@ type PasskeyProgressiveEnrollmentErrorBody = {
   message: string
 }
 type RadarChallengeErrorBody = { code: 'radar_challenge'; message: string }
+type RadarEmailChallengeErrorBody = { code: 'radar_email_challenge'; message: string }
 type RadarSignUpChallengeErrorBody = { code: 'radar_sign_up_challenge'; message: string }
+type RadarSmsChallengeErrorBody = { code: 'radar_sms_challenge'; message: string }
 type RadarSmsSignInChallengeErrorBody = { code: 'radar_sms_sign_in_challenge'; message: string }
 type ApplicationConsentRequiredErrorBody = { code: 'application_consent_required'; message: string }
 type PolicyDeniedErrorBody = {
@@ -1873,7 +4792,7 @@ type PolicyDeniedErrorBody = {
 type ActionDeniedErrorBody = { code: 'action_denied'; message: string }
 type DailyQuotaExceededErrorBody = { code: 'daily_quota_exceeded'; message: string }
 type TooManyRequestsOAuthErrorBody = { error: 'too_many_requests'; error_description: string }
-type CreateAuthkitOauthResourceDto = { uri: string; default?: boolean | undefined }
+type CreateAuthkitOauthResourceDtoInput = { uri: string; default?: boolean }
 type AuthkitOauthResource = {
   object: 'authkit_oauth_resource'
   id: string
@@ -1890,7 +4809,7 @@ type DeviceAuthorizationResponse = {
   expires_in: number
   interval?: number | undefined
 }
-type CreateCorsOriginDto = { origin: string }
+type CreateCorsOriginDtoInput = { origin: string }
 type CorsOriginResponse = {
   object: 'cors_origin'
   id: string
@@ -1900,7 +4819,7 @@ type CorsOriginResponse = {
 }
 type ErrorBodyWithConstraintsPropertyError = {
   property?: string | undefined
-  constraints?: { [x: string]: unknown } | undefined
+  constraints?: { [key: string]: unknown } | undefined
 }
 type ErrorBodyWithConstraintsPropertyErrors = {
   message?: string | undefined
@@ -1938,12 +4857,12 @@ type UserlandUserInviteList = {
   data: UserlandUserInvite[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateUserlandUserInviteOptionsDto = {
+type CreateUserlandUserInviteOptionsDtoInput = {
   email: string
-  organization_id?: string | undefined
-  role_slug?: string | undefined
-  expires_in_days?: number | undefined
-  inviter_user_id?: string | undefined
+  organization_id?: string
+  role_slug?: string
+  expires_in_days?: number
+  inviter_user_id?: string
   locale?:
     | 'af'
     | 'am'
@@ -2035,9 +4954,8 @@ type CreateUserlandUserInviteOptionsDto = {
     | 'zh-HK'
     | 'zh-TW'
     | 'zu'
-    | undefined
 }
-type ResendUserlandUserInviteOptionsDto = {
+type ResendUserlandUserInviteOptionsDtoInput = {
   locale?:
     | 'af'
     | 'am'
@@ -2129,7 +5047,6 @@ type ResendUserlandUserInviteOptionsDto = {
     | 'zh-HK'
     | 'zh-TW'
     | 'zu'
-    | undefined
 }
 type JwtTemplate = {
   object: 'jwt_template'
@@ -2137,14 +5054,14 @@ type JwtTemplate = {
   created_at: string
   updated_at: string
 }
-type UpdateJwtTemplateDto = { content: string }
-type CreateUserlandMagicCodeAndReturnDto = {
+type UpdateJwtTemplateDtoInput = { content: string }
+type CreateUserlandMagicCodeAndReturnDtoInput = {
   email: string
-  invitation_token?: string | undefined
-  ip_address?: string | undefined
-  user_agent?: string | undefined
-  radar_auth_attempt_id?: string | undefined
-  signals_id?: string | undefined
+  invitation_token?: string
+  ip_address?: string
+  user_agent?: string
+  radar_auth_attempt_id?: string
+  signals_id?: string
   locale?:
     | 'af'
     | 'am'
@@ -2236,9 +5153,7 @@ type CreateUserlandMagicCodeAndReturnDto = {
     | 'zh-HK'
     | 'zh-TW'
     | 'zu'
-    | undefined
 }
-type EmailDomainNotDeliverableErrorBody = { code: 'email_domain_not_deliverable'; message: string }
 type MagicAuth = {
   object: 'magic_auth'
   id: string
@@ -2249,6 +5164,7 @@ type MagicAuth = {
   updated_at: string
   code: string
 }
+type EmailDomainNotDeliverableErrorBody = { code: 'email_domain_not_deliverable'; message: string }
 type UserlandUserOrganizationMembership = {
   object: 'organization_membership'
   id: string
@@ -2257,7 +5173,7 @@ type UserlandUserOrganizationMembership = {
   status: 'active' | 'inactive' | 'pending'
   directory_managed: boolean
   organization_name?: string | undefined
-  custom_attributes?: { [x: string]: { [x: string]: unknown } } | undefined
+  custom_attributes?: { [key: string]: any } | undefined
   created_at: string
   updated_at: string
   role: SlimRole
@@ -2269,7 +5185,20 @@ type UserlandUserOrganizationMembershipList = {
   data: UserlandUserOrganizationMembership[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateUserlandUserOrganizationMembershipDto = { user_id: string; organization_id: string }
+type CreateUserlandUserOrganizationMembershipDtoInput = {
+  user_id: string
+  organization_id: string
+} & ({ [key: string]: unknown } | { role_slug: string } | { role_slugs: string[] })
+type EntitiesNotFoundErrorBodyWithIdsList = {
+  code: 'entities_not_found'
+  message: string
+  ids: string[]
+}
+type EntityNotFoundErrorBodyWithEntityId = {
+  code: 'entity_not_found'
+  message: string
+  entity_id: string
+}
 type InvalidRequestParametersErrorBody = { code: 'invalid_request_parameters'; message: string }
 type InvalidRoleErrorBody = { code: 'invalid_role'; message: string }
 type MultipleRolesNotEnabledErrorBody = { code: 'multiple_roles_not_enabled'; message: string }
@@ -2278,11 +5207,11 @@ type SubResourceScopedRoleNotAllowedErrorBodyWithRoleSlug = {
   code: 'sub_resource_scoped_role_not_allowed'
   role_slug: string
 }
-type UpdateUserlandUserOrganizationMembershipDto =
-  | { [x: string]: unknown }
+type UpdateUserlandUserOrganizationMembershipDtoInput =
+  | { [key: string]: unknown }
   | { role_slug: string }
   | { role_slugs: string[] }
-type CreatePasswordResetTokenDto = {
+type CreatePasswordResetTokenDtoInput = {
   email: string
   locale?:
     | 'af'
@@ -2375,7 +5304,6 @@ type CreatePasswordResetTokenDto = {
     | 'zh-HK'
     | 'zh-TW'
     | 'zu'
-    | undefined
 }
 type PasswordReset = {
   object: 'password_reset'
@@ -2387,14 +5315,14 @@ type PasswordReset = {
   password_reset_token: string
   password_reset_url: string
 }
-type CreatePasswordResetDto = { token: string; new_password: string }
+type CreatePasswordResetDtoInput = { token: string; new_password: string }
 type ResetPasswordResponse = { user: UserlandUser }
-type SendRadarSmsChallengeDto = {
+type SendRadarSmsChallengeDtoInput = {
   user_id: string
   pending_authentication_token: string
   phone_number: string
-  ip_address?: string | undefined
-  user_agent?: string | undefined
+  ip_address?: string
+  user_agent?: string
 }
 type SendRadarSmsChallengeResponse = { verification_id: string; phone_number: string }
 type RadarChallenge = {
@@ -2408,7 +5336,7 @@ type RadarChallenge = {
   updated_at: string
   code: string
 }
-type CreateRedirectUriDto = { uri: string }
+type CreateRedirectUriDtoInput = { uri: string }
 type RedirectUri = {
   object: 'redirect_uri'
   id: string
@@ -2417,24 +5345,39 @@ type RedirectUri = {
   created_at: string
   updated_at: string
 }
-type UserlandRevokeSessionDto = { session_id: string }
+type UserlandRevokeSessionDtoInput = { session_id: string }
 type UserlandUserList = {
   object: 'list'
   data: UserlandUser[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateUserlandUserDto = {
+type CreateUserlandUserDtoInput = {
   email: string
-  first_name?: (string | null) | undefined
-  last_name?: (string | null) | undefined
-  name?: (string | null) | undefined
-  email_verified?: (boolean | null) | undefined
-  metadata?: ({ [x: string]: string } | null) | undefined
-  external_id?: (string | null) | undefined
-  ip_address?: (string | null) | undefined
-  user_agent?: (string | null) | undefined
-  signals_id?: string | undefined
-}
+  first_name?: string | null
+  last_name?: string | null
+  name?: string | null
+  email_verified?: boolean | null
+  metadata?: { [key: string]: string } | null
+  external_id?: string | null
+  ip_address?: string | null
+  user_agent?: string | null
+  signals_id?: string
+} & (
+  | { [key: string]: unknown }
+  | { password: string | null }
+  | {
+      password_hash: string
+      password_hash_type:
+        | 'bcrypt'
+        | 'firebase-scrypt'
+        | 'ssha'
+        | 'ssha256'
+        | 'scrypt'
+        | 'pbkdf2'
+        | 'argon2'
+      password_salt_position?: 'prefix' | 'suffix'
+    }
+)
 type PasswordStrengthErrorErrorBodyWithErrors = {
   code: 'password_strength_error'
   message: string
@@ -2459,21 +5402,36 @@ type PasswordSaltPositionRequiresPasswordHashErrorBody = {
   message: string
 }
 type InvalidMetadataErrorBody = { code: 'invalid_metadata'; message: string }
-type UpdateUserlandUserDto = {
-  email?: string | undefined
-  first_name?: string | undefined
-  last_name?: string | undefined
-  name?: string | undefined
-  email_verified?: boolean | undefined
-  metadata?: ({ [x: string]: string } | null) | undefined
-  external_id?: (string | null) | undefined
-  locale?: (string | null) | undefined
-}
+type UpdateUserlandUserDtoInput = {
+  email?: string
+  first_name?: string
+  last_name?: string
+  name?: string
+  email_verified?: boolean
+  metadata?: { [key: string]: string } | null
+  external_id?: string | null
+  locale?: string | null
+} & (
+  | { [key: string]: unknown }
+  | { password: string }
+  | {
+      password_hash: string
+      password_hash_type:
+        | 'bcrypt'
+        | 'firebase-scrypt'
+        | 'ssha'
+        | 'ssha256'
+        | 'scrypt'
+        | 'pbkdf2'
+        | 'argon2'
+      password_salt_position?: 'prefix' | 'suffix'
+    }
+)
 type EmailAlreadyVerifiedErrorBody = { code: 'email_already_verified'; message: string }
 type ExternalIdAlreadyUsedErrorBody = { code: 'external_id_already_used'; message: string }
 type InvalidLocaleErrorBody = { code: 'invalid_locale'; message: string }
-type ConfirmEmailChangeDto = { code: string }
-type SendEmailChangeDto = {
+type ConfirmEmailChangeDtoInput = { code: string }
+type SendEmailChangeDtoInput = {
   new_email: string
   locale?:
     | 'af'
@@ -2566,7 +5524,6 @@ type SendEmailChangeDto = {
     | 'zh-HK'
     | 'zh-TW'
     | 'zu'
-    | undefined
 }
 type EmailChange = {
   object: 'email_change'
@@ -2575,9 +5532,9 @@ type EmailChange = {
   expires_at: string
   created_at: string
 }
-type VerifyEmailAddressDto = { code: string }
+type VerifyEmailAddressDtoInput = { code: string }
 type VerifyEmailResponse = { user: UserlandUser }
-type SendVerificationEmailDto = {
+type SendVerificationEmailDtoInput = {
   locale?:
     | 'af'
     | 'am'
@@ -2669,7 +5626,6 @@ type SendVerificationEmailDto = {
     | 'zh-HK'
     | 'zh-TW'
     | 'zu'
-    | undefined
 }
 type SendVerificationEmailResponse = { user: UserlandUser }
 type UserApiKey = {
@@ -2689,11 +5645,11 @@ type UserApiKeyList = {
   data: UserApiKey[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateUserApiKeyDto = {
+type CreateUserApiKeyDtoInput = {
   name: string
   organization_id: string
-  permissions?: string[] | undefined
-  expires_at?: string | undefined
+  permissions?: string[]
+  expires_at?: string
 }
 type UserApiKeyWithValue = {
   object: 'api_key'
@@ -2719,17 +5675,17 @@ type AuthorizedConnectApplicationList = {
   }[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateConnectedAccountDto = {
-  account_display_name?: (string | null) | undefined
-  account_identifier?: (string | null) | undefined
-  config?: { [x: string]: string } | undefined
-  access_token?: string | undefined
-  refresh_token?: string | undefined
-  expires_at?: string | undefined
-  scopes?: string[] | undefined
-  state?: 'connected' | 'needs_reauthorization' | undefined
-  metadata?: { [x: string]: unknown } | undefined
-  connection_intent?: 'add' | undefined
+type CreateConnectedAccountDtoInput = {
+  account_display_name?: string | null
+  account_identifier?: string | null
+  config?: { [key: string]: string }
+  access_token?: string
+  refresh_token?: string
+  expires_at?: string
+  scopes?: string[]
+  state?: 'connected' | 'needs_reauthorization'
+  metadata?: { [key: string]: unknown }
+  connection_intent?: 'add'
 }
 type UserConnectedAccountImportErrorBody = {
   code:
@@ -2739,22 +5695,22 @@ type UserConnectedAccountImportErrorBody = {
     | 'client_credentials_not_configured'
   message: string
 }
-type ConnectedAccountDto = {
-  account_display_name?: (string | null) | undefined
-  account_identifier?: (string | null) | undefined
-  config?: { [x: string]: string } | undefined
-  access_token?: string | undefined
-  refresh_token?: string | undefined
-  expires_at?: string | undefined
-  scopes?: string[] | undefined
-  state?: 'connected' | 'needs_reauthorization' | undefined
+type ConnectedAccountDtoInput = {
+  account_display_name?: string | null
+  account_identifier?: string | null
+  config?: { [key: string]: string }
+  access_token?: string
+  refresh_token?: string
+  expires_at?: string
+  scopes?: string[]
+  state?: 'connected' | 'needs_reauthorization'
 }
 type InvalidRefreshTokenErrorBody = { code: 'invalid_refresh_token'; message: string }
-type EnrollUserlandUserAuthenticationFactorDto = {
+type EnrollUserlandUserAuthenticationFactorDtoInput = {
   type: 'totp'
-  totp_issuer?: string | undefined
-  totp_user?: string | undefined
-  totp_secret?: string | undefined
+  totp_issuer?: string
+  totp_user?: string
+  totp_secret?: string
 }
 type UserlandUserAuthenticationFactorEnrollResponse = {
   authentication_factor: AuthenticationFactorEnrolled
@@ -2771,35 +5727,39 @@ type WaitlistEntry = {
   email: string
   state: 'pending' | 'approved' | 'denied'
   approved_at: string | null
-  additional_fields?: { [x: string]: string } | undefined
+  additional_fields?: { [key: string]: string } | undefined
   waitlist_id?: (string | null) | undefined
   created_at: string
   updated_at: string
   object: 'waitlist_entry'
 }
-type CreateWaitlistEntryDto = {
+type CreateWaitlistEntryDtoInput = {
   email: string
-  additional_fields?: { [x: string]: string } | undefined
-  send_confirmation_email?: boolean | undefined
+  additional_fields?: { [key: string]: string }
+  send_confirmation_email?: boolean
 }
-type CreateDataKeyRequest = { context: { [x: string]: string } }
+type CreateDataKeyRequestInput = { context: { [key: string]: string } }
 type CreateDataKeyResponse = {
-  context: { [x: string]: string }
+  context: { [key: string]: string }
   data_key: string
   encrypted_keys: string
   id: string
 }
 type Error = { error: string }
-type DecryptRequest = { keys: string }
+type DecryptRequestInput = { keys: string }
 type DecryptResponse = { data_key: string; id: string }
-type RekeyRequest = { context: { [x: string]: string }; encrypted_keys: string }
+type RekeyRequestInput = { context: { [key: string]: string }; encrypted_keys: string }
 type ObjectSummary = { id: string; name: string; updated_at?: (string | null) | undefined }
 type ListMetadata = { after?: (string | null) | undefined; before?: (string | null) | undefined }
 type ObjectListResponse = { data: ObjectSummary[]; list_metadata: ListMetadata }
-type CreateObjectRequest = { key_context: { [x: string]: string }; name: string; value: string }
+type CreateObjectRequestInput = {
+  key_context: { [key: string]: string }
+  name: string
+  value: string
+}
 type Actor = { id: string; name: string }
 type ObjectMetadata = {
-  context: { [x: string]: string }
+  context: { [key: string]: string }
   environment_id: string
   id: string
   key_id: string
@@ -2809,7 +5769,7 @@ type ObjectMetadata = {
 }
 type Object = { id: string; metadata: ObjectMetadata; name: string; value: string }
 type DeleteObjectResponse = { name: string; success: boolean }
-type UpdateObjectRequest = { value: string; version_check?: (string | null) | undefined }
+type UpdateObjectRequestInput = { value: string; version_check?: string | null }
 type ObjectWithoutValue = { id: string; metadata: ObjectMetadata; name: string }
 type ObjectVersion = {
   created_at: string
@@ -2834,7 +5794,7 @@ type WebhookEndpointList = {
   data: WebhookEndpointJson[]
   list_metadata: { before: string | null; after: string | null }
 }
-type CreateWebhookEndpointDto = {
+type CreateWebhookEndpointDtoInput = {
   endpoint_url: string
   events: (
     | 'agent.blueprint.created'
@@ -2879,6 +5839,7 @@ type CreateWebhookEndpointDto = {
     | 'connection.deactivated'
     | 'connection.saml_certificate_renewal_required'
     | 'connection.saml_certificate_renewed'
+    | 'connection.saml_certificate_replaced'
     | 'connection.deleted'
     | 'dsync.activated'
     | 'dsync.deleted'
@@ -2912,6 +5873,9 @@ type CreateWebhookEndpointDto = {
     | 'invitation.created'
     | 'invitation.resent'
     | 'invitation.revoked'
+    | 'issuer_trust.created'
+    | 'issuer_trust.deleted'
+    | 'issuer_trust.updated'
     | 'magic_auth.created'
     | 'organization.created'
     | 'organization.deleted'
@@ -2955,145 +5919,145 @@ type CreateWebhookEndpointDto = {
   )[]
 }
 type InvalidUrlErrorBody = { code: 'invalid_url'; message: string }
-type UpdateWebhookEndpointDto = {
-  endpoint_url?: string | undefined
-  status?: 'enabled' | 'disabled' | undefined
-  events?:
-    | (
-        | 'agent.blueprint.created'
-        | 'agent.blueprint.deleted'
-        | 'agent.blueprint.updated'
-        | 'agent.instance.created'
-        | 'agent.instance.deleted'
-        | 'agent.instance.session.created'
-        | 'agent.instance.session.revoked'
-        | 'agent.registration.created'
-        | 'agent.registration.claim.attempt.created'
-        | 'agent.registration.claim.completed'
-        | 'agent.registration.credential.issued'
-        | 'agent.registration.deleted'
-        | 'agent.registration.refreshed'
-        | 'agent.registration.expired'
-        | 'agent.registration.organization.switched'
-        | 'agent.registration.revoked'
-        | 'authentication.email_verification_succeeded'
-        | 'authentication.magic_auth_failed'
-        | 'authentication.magic_auth_succeeded'
-        | 'authentication.mfa_succeeded'
-        | 'authentication.oauth_failed'
-        | 'authentication.oauth_succeeded'
-        | 'authentication.password_failed'
-        | 'authentication.password_succeeded'
-        | 'authentication.passkey_failed'
-        | 'authentication.passkey_succeeded'
-        | 'authentication.sso_failed'
-        | 'authentication.sso_started'
-        | 'authentication.sso_succeeded'
-        | 'authentication.sso_timed_out'
-        | 'radar.challenge_created'
-        | 'authentication.radar_risk_detected'
-        | 'authentication.reauthentication_succeeded'
-        | 'api_key.created'
-        | 'api_key.revoked'
-        | 'api_key.updated'
-        | 'application.token_exchange_failed'
-        | 'application.token_exchange_succeeded'
-        | 'connection.activated'
-        | 'connection.deactivated'
-        | 'connection.saml_certificate_renewal_required'
-        | 'connection.saml_certificate_renewed'
-        | 'connection.deleted'
-        | 'dsync.activated'
-        | 'dsync.deleted'
-        | 'dsync.group.created'
-        | 'dsync.group.deleted'
-        | 'dsync.group.updated'
-        | 'dsync.group.user_added'
-        | 'dsync.group.user_removed'
-        | 'dsync.user.created'
-        | 'dsync.user.deleted'
-        | 'dsync.user.updated'
-        | 'email_verification.created'
-        | 'group.created'
-        | 'group.deleted'
-        | 'group.member_added'
-        | 'group.member_removed'
-        | 'group.updated'
-        | 'flag.created'
-        | 'flag.deleted'
-        | 'flag.updated'
-        | 'flag.rule_updated'
-        | 'feature_flags.flag.created'
-        | 'feature_flags.flag.updated'
-        | 'feature_flags.flag.deleted'
-        | 'feature_flags.flag_rule.created'
-        | 'feature_flags.flag_rule.updated'
-        | 'feature_flags.flag_target.created'
-        | 'feature_flags.flag_rule.deleted'
-        | 'feature_flags.flag_target.deleted'
-        | 'invitation.accepted'
-        | 'invitation.created'
-        | 'invitation.resent'
-        | 'invitation.revoked'
-        | 'magic_auth.created'
-        | 'organization.created'
-        | 'organization.deleted'
-        | 'organization.updated'
-        | 'organization_domain.created'
-        | 'organization_domain.deleted'
-        | 'organization_domain.updated'
-        | 'organization_domain.verified'
-        | 'organization_domain.verification_failed'
-        | 'password_reset.created'
-        | 'password_reset.succeeded'
-        | 'user.created'
-        | 'user.updated'
-        | 'user.deleted'
-        | 'organization_membership.created'
-        | 'organization_membership.deleted'
-        | 'organization_membership.updated'
-        | 'role.created'
-        | 'role.deleted'
-        | 'role.updated'
-        | 'organization_role.created'
-        | 'organization_role.deleted'
-        | 'organization_role.updated'
-        | 'permission.created'
-        | 'permission.deleted'
-        | 'permission.updated'
-        | 'pipes.account_connection.add_failed'
-        | 'pipes.account_connection.connected'
-        | 'pipes.account_connection.connection_failed'
-        | 'pipes.account_connection.disconnected'
-        | 'pipes.account_connection.reauthorization_needed'
-        | 'pipes.connected_account.connected'
-        | 'pipes.connected_account.connection_failed'
-        | 'pipes.connected_account.disconnected'
-        | 'pipes.connected_account.reauthorization_needed'
-        | 'session.created'
-        | 'session.revoked'
-        | 'waitlist_user.approved'
-        | 'waitlist_user.created'
-        | 'waitlist_user.denied'
-      )[]
-    | undefined
+type UpdateWebhookEndpointDtoInput = {
+  endpoint_url?: string
+  status?: 'enabled' | 'disabled'
+  events?: (
+    | 'agent.blueprint.created'
+    | 'agent.blueprint.deleted'
+    | 'agent.blueprint.updated'
+    | 'agent.instance.created'
+    | 'agent.instance.deleted'
+    | 'agent.instance.session.created'
+    | 'agent.instance.session.revoked'
+    | 'agent.registration.created'
+    | 'agent.registration.claim.attempt.created'
+    | 'agent.registration.claim.completed'
+    | 'agent.registration.credential.issued'
+    | 'agent.registration.deleted'
+    | 'agent.registration.refreshed'
+    | 'agent.registration.expired'
+    | 'agent.registration.organization.switched'
+    | 'agent.registration.revoked'
+    | 'authentication.email_verification_succeeded'
+    | 'authentication.magic_auth_failed'
+    | 'authentication.magic_auth_succeeded'
+    | 'authentication.mfa_succeeded'
+    | 'authentication.oauth_failed'
+    | 'authentication.oauth_succeeded'
+    | 'authentication.password_failed'
+    | 'authentication.password_succeeded'
+    | 'authentication.passkey_failed'
+    | 'authentication.passkey_succeeded'
+    | 'authentication.sso_failed'
+    | 'authentication.sso_started'
+    | 'authentication.sso_succeeded'
+    | 'authentication.sso_timed_out'
+    | 'radar.challenge_created'
+    | 'authentication.radar_risk_detected'
+    | 'authentication.reauthentication_succeeded'
+    | 'api_key.created'
+    | 'api_key.revoked'
+    | 'api_key.updated'
+    | 'application.token_exchange_failed'
+    | 'application.token_exchange_succeeded'
+    | 'connection.activated'
+    | 'connection.deactivated'
+    | 'connection.saml_certificate_renewal_required'
+    | 'connection.saml_certificate_renewed'
+    | 'connection.saml_certificate_replaced'
+    | 'connection.deleted'
+    | 'dsync.activated'
+    | 'dsync.deleted'
+    | 'dsync.group.created'
+    | 'dsync.group.deleted'
+    | 'dsync.group.updated'
+    | 'dsync.group.user_added'
+    | 'dsync.group.user_removed'
+    | 'dsync.user.created'
+    | 'dsync.user.deleted'
+    | 'dsync.user.updated'
+    | 'email_verification.created'
+    | 'group.created'
+    | 'group.deleted'
+    | 'group.member_added'
+    | 'group.member_removed'
+    | 'group.updated'
+    | 'flag.created'
+    | 'flag.deleted'
+    | 'flag.updated'
+    | 'flag.rule_updated'
+    | 'feature_flags.flag.created'
+    | 'feature_flags.flag.updated'
+    | 'feature_flags.flag.deleted'
+    | 'feature_flags.flag_rule.created'
+    | 'feature_flags.flag_rule.updated'
+    | 'feature_flags.flag_target.created'
+    | 'feature_flags.flag_rule.deleted'
+    | 'feature_flags.flag_target.deleted'
+    | 'invitation.accepted'
+    | 'invitation.created'
+    | 'invitation.resent'
+    | 'invitation.revoked'
+    | 'issuer_trust.created'
+    | 'issuer_trust.deleted'
+    | 'issuer_trust.updated'
+    | 'magic_auth.created'
+    | 'organization.created'
+    | 'organization.deleted'
+    | 'organization.updated'
+    | 'organization_domain.created'
+    | 'organization_domain.deleted'
+    | 'organization_domain.updated'
+    | 'organization_domain.verified'
+    | 'organization_domain.verification_failed'
+    | 'password_reset.created'
+    | 'password_reset.succeeded'
+    | 'user.created'
+    | 'user.updated'
+    | 'user.deleted'
+    | 'organization_membership.created'
+    | 'organization_membership.deleted'
+    | 'organization_membership.updated'
+    | 'role.created'
+    | 'role.deleted'
+    | 'role.updated'
+    | 'organization_role.created'
+    | 'organization_role.deleted'
+    | 'organization_role.updated'
+    | 'permission.created'
+    | 'permission.deleted'
+    | 'permission.updated'
+    | 'pipes.account_connection.add_failed'
+    | 'pipes.account_connection.connected'
+    | 'pipes.account_connection.connection_failed'
+    | 'pipes.account_connection.disconnected'
+    | 'pipes.account_connection.reauthorization_needed'
+    | 'pipes.connected_account.connected'
+    | 'pipes.connected_account.connection_failed'
+    | 'pipes.connected_account.disconnected'
+    | 'pipes.connected_account.reauthorization_needed'
+    | 'session.created'
+    | 'session.revoked'
+    | 'waitlist_user.approved'
+    | 'waitlist_user.created'
+    | 'waitlist_user.denied'
+  )[]
 }
-type WidgetSessionTokenDto = {
-  organization_id?: string | undefined
-  user_id?: string | undefined
-  scopes?:
-    | (
-        | 'widgets:users-table:manage'
-        | 'widgets:user-api-keys:manage-self'
-        | 'widgets:user-api-keys:manage-all'
-        | 'widgets:domain-verification:manage'
-        | 'widgets:sso:manage'
-        | 'widgets:api-keys:manage'
-        | 'widgets:dsync:manage'
-        | 'widgets:audit-log-streaming:manage'
-        | 'widgets:pipes:manage'
-      )[]
-    | undefined
+type WidgetSessionTokenDtoInput = {
+  organization_id?: string
+  user_id?: string
+  scopes?: (
+    | 'widgets:users-table:manage'
+    | 'widgets:user-api-keys:manage-self'
+    | 'widgets:user-api-keys:manage-all'
+    | 'widgets:domain-verification:manage'
+    | 'widgets:sso:manage'
+    | 'widgets:api-keys:manage'
+    | 'widgets:dsync:manage'
+    | 'widgets:audit-log-streaming:manage'
+    | 'widgets:pipes:manage'
+  )[]
 }
 type WidgetSessionTokenResponse = { token: string }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
@@ -3105,23 +6069,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                description?: string | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds: number
-                      access_token_ttl_seconds: number
-                      refresh_token_ttl_seconds: number
-                    }
-                  | undefined
+                description?: string
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds: number
+                  access_token_ttl_seconds: number
+                  refresh_token_ttl_seconds: number
+                }
               }
             }
             output: AgentBlueprint
@@ -3132,23 +6091,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                description?: string | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds: number
-                      access_token_ttl_seconds: number
-                      refresh_token_ttl_seconds: number
-                    }
-                  | undefined
+                description?: string
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds: number
+                  access_token_ttl_seconds: number
+                  refresh_token_ttl_seconds: number
+                }
               }
             }
             output: ErrorBodyWithCode
@@ -3159,23 +6113,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                description?: string | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds: number
-                      access_token_ttl_seconds: number
-                      refresh_token_ttl_seconds: number
-                    }
-                  | undefined
+                description?: string
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds: number
+                  access_token_ttl_seconds: number
+                  refresh_token_ttl_seconds: number
+                }
               }
             }
             output: ErrorBodyWithCode
@@ -3186,23 +6135,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                description?: string | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds: number
-                      access_token_ttl_seconds: number
-                      refresh_token_ttl_seconds: number
-                    }
-                  | undefined
+                description?: string
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds: number
+                  access_token_ttl_seconds: number
+                  refresh_token_ttl_seconds: number
+                }
               }
             }
             output: ErrorBodyWithCode
@@ -3213,27 +6157,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: AgentBlueprint[] | undefined
-            }
+            } & { data?: AgentBlueprint[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -3260,24 +6203,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json: {
-                name?: string | undefined
-                description?: (string | null) | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds?: number | undefined
-                      access_token_ttl_seconds?: number | undefined
-                      refresh_token_ttl_seconds?: number | undefined
-                    }
-                  | undefined
+                name?: string
+                description?: string | null
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds?: number
+                  access_token_ttl_seconds?: number
+                  refresh_token_ttl_seconds?: number
+                }
               }
             }
             output: AgentBlueprint
@@ -3287,24 +6225,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json: {
-                name?: string | undefined
-                description?: (string | null) | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds?: number | undefined
-                      access_token_ttl_seconds?: number | undefined
-                      refresh_token_ttl_seconds?: number | undefined
-                    }
-                  | undefined
+                name?: string
+                description?: string | null
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds?: number
+                  access_token_ttl_seconds?: number
+                  refresh_token_ttl_seconds?: number
+                }
               }
             }
             output: ErrorBodyWithCode
@@ -3314,24 +6247,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json: {
-                name?: string | undefined
-                description?: (string | null) | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds?: number | undefined
-                      access_token_ttl_seconds?: number | undefined
-                      refresh_token_ttl_seconds?: number | undefined
-                    }
-                  | undefined
+                name?: string
+                description?: string | null
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds?: number
+                  access_token_ttl_seconds?: number
+                  refresh_token_ttl_seconds?: number
+                }
               }
             }
             output: ErrorBody
@@ -3341,24 +6269,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json: {
-                name?: string | undefined
-                description?: (string | null) | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds?: number | undefined
-                      access_token_ttl_seconds?: number | undefined
-                      refresh_token_ttl_seconds?: number | undefined
-                    }
-                  | undefined
+                name?: string
+                description?: string | null
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds?: number
+                  access_token_ttl_seconds?: number
+                  refresh_token_ttl_seconds?: number
+                }
               }
             }
             output: ErrorBodyWithCode
@@ -3368,24 +6291,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json: {
-                name?: string | undefined
-                description?: (string | null) | undefined
-                permissions?:
-                  | ({ slug: string; instance_types: ('delegated' | 'autonomous')[] } | string)[]
-                  | undefined
-                invocable_by?:
-                  | { role_slugs?: string[] | undefined; organization_ids?: string[] | undefined }
-                  | undefined
-                invocable_as?:
-                  | { instance_types?: ('delegated' | 'autonomous')[] | undefined }
-                  | undefined
-                session_settings?:
-                  | {
-                      max_age_seconds?: number | undefined
-                      access_token_ttl_seconds?: number | undefined
-                      refresh_token_ttl_seconds?: number | undefined
-                    }
-                  | undefined
+                name?: string
+                description?: string | null
+                permissions?: (
+                  | { slug: string; instance_types: ('delegated' | 'autonomous')[] }
+                  | string
+                )[]
+                invocable_by?: { role_slugs?: string[]; organization_ids?: string[] }
+                invocable_as?: { instance_types?: ('delegated' | 'autonomous')[] }
+                session_settings?: {
+                  max_age_seconds?: number
+                  access_token_ttl_seconds?: number
+                  refresh_token_ttl_seconds?: number
+                }
               }
             }
             output: ErrorBodyWithCode
@@ -3412,14 +6330,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json:
-                | { type: 'user_delegated'; user_access_token: string; intent?: string | undefined }
-                | { type: 'autonomous'; organization_id: string; intent?: string | undefined }
-                | {
-                    type: 'agent_delegated'
-                    agent_access_token: string
-                    intent?: string | undefined
-                  }
-                | { type: 'refresh'; refresh_token: string; intent?: string | undefined }
+                | { type: 'user_delegated'; user_access_token: string; intent?: string }
+                | { type: 'autonomous'; organization_id: string; intent?: string }
+                | { type: 'agent_delegated'; agent_access_token: string; intent?: string }
+                | { type: 'refresh'; refresh_token: string; intent?: string }
             }
             output: AgentToken
             outputFormat: 'json'
@@ -3428,14 +6342,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json:
-                | { type: 'user_delegated'; user_access_token: string; intent?: string | undefined }
-                | { type: 'autonomous'; organization_id: string; intent?: string | undefined }
-                | {
-                    type: 'agent_delegated'
-                    agent_access_token: string
-                    intent?: string | undefined
-                  }
-                | { type: 'refresh'; refresh_token: string; intent?: string | undefined }
+                | { type: 'user_delegated'; user_access_token: string; intent?: string }
+                | { type: 'autonomous'; organization_id: string; intent?: string }
+                | { type: 'agent_delegated'; agent_access_token: string; intent?: string }
+                | { type: 'refresh'; refresh_token: string; intent?: string }
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -3444,14 +6354,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json:
-                | { type: 'user_delegated'; user_access_token: string; intent?: string | undefined }
-                | { type: 'autonomous'; organization_id: string; intent?: string | undefined }
-                | {
-                    type: 'agent_delegated'
-                    agent_access_token: string
-                    intent?: string | undefined
-                  }
-                | { type: 'refresh'; refresh_token: string; intent?: string | undefined }
+                | { type: 'user_delegated'; user_access_token: string; intent?: string }
+                | { type: 'autonomous'; organization_id: string; intent?: string }
+                | { type: 'agent_delegated'; agent_access_token: string; intent?: string }
+                | { type: 'refresh'; refresh_token: string; intent?: string }
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -3460,14 +6366,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { agent_blueprint_id: string } } & {
               json:
-                | { type: 'user_delegated'; user_access_token: string; intent?: string | undefined }
-                | { type: 'autonomous'; organization_id: string; intent?: string | undefined }
-                | {
-                    type: 'agent_delegated'
-                    agent_access_token: string
-                    intent?: string | undefined
-                  }
-                | { type: 'refresh'; refresh_token: string; intent?: string | undefined }
+                | { type: 'user_delegated'; user_access_token: string; intent?: string }
+                | { type: 'autonomous'; organization_id: string; intent?: string }
+                | { type: 'agent_delegated'; agent_access_token: string; intent?: string }
+                | { type: 'refresh'; refresh_token: string; intent?: string }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -3511,7 +6413,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 type: 'link_external_user'
                 claim_attempt_token: string
                 user: { email: string; external_id: string }
-                organization_id?: string | undefined
+                organization_id?: string
               }
             }
             output: ClaimViewResponse
@@ -3524,7 +6426,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 type: 'link_external_user'
                 claim_attempt_token: string
                 user: { email: string; external_id: string }
-                organization_id?: string | undefined
+                organization_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -3537,7 +6439,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 type: 'link_external_user'
                 claim_attempt_token: string
                 user: { email: string; external_id: string }
-                organization_id?: string | undefined
+                organization_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -3550,7 +6452,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 type: 'link_external_user'
                 claim_attempt_token: string
                 user: { email: string; external_id: string }
-                organization_id?: string | undefined
+                organization_id?: string
               }
             }
             output:
@@ -3566,7 +6468,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 type: 'link_external_user'
                 claim_attempt_token: string
                 user: { email: string; external_id: string }
-                organization_id?: string | undefined
+                organization_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -3581,7 +6483,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json:
                 | { type: 'api_key'; credential: string }
-                | { type: 'access_token'; credential: string; audience?: string | undefined }
+                | { type: 'access_token'; credential: string; audience?: string }
             }
             output: AgentCredentialValidation
             outputFormat: 'json'
@@ -3591,7 +6493,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json:
                 | { type: 'api_key'; credential: string }
-                | { type: 'access_token'; credential: string; audience?: string | undefined }
+                | { type: 'access_token'; credential: string; audience?: string }
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -3604,31 +6506,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                agent_blueprint_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                agent_blueprint_id?: string
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: AgentInstance[] | undefined
-            }
+            } & { data?: AgentInstance[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                agent_blueprint_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                agent_blueprint_id?: string
               }
             }
             output: ErrorBody
@@ -3693,33 +6594,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                agent_blueprint_id?: string | undefined
-                agent_instance_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                agent_blueprint_id?: string
+                agent_instance_id?: string
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: AgentInstanceSession[] | undefined
-            }
+            } & { data?: AgentInstanceSession[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                agent_blueprint_id?: string | undefined
-                agent_instance_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                agent_blueprint_id?: string
+                agent_instance_id?: string
               }
             }
             output: ErrorBody
@@ -3729,13 +6629,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                agent_blueprint_id?: string | undefined
-                agent_instance_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                agent_blueprint_id?: string
+                agent_instance_id?: string
               }
             }
             output: ErrorBodyWithCodeFieldErrors
@@ -3779,14 +6679,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api_keys/validations': {
       $post:
         | {
-            input: { json: ValidateApiKeyDto }
+            input: { json: ValidateApiKeyDtoInput }
             output: ApiKeyValidationResponse
             outputFormat: 'json'
             status: 200
           }
-        | { input: { json: ValidateApiKeyDto }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: ValidateApiKeyDtoInput }; output: {}; outputFormat: string; status: 401 }
         | {
-            input: { json: ValidateApiKeyDto }
+            input: { json: ValidateApiKeyDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -3802,25 +6702,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api_keys/:id/expire': {
       $post:
         | {
-            input: { param: { id: string } } & { json: ExpireApiKeyDto }
+            input: { param: { id: string } } & { json: ExpireApiKeyDtoInput }
             output: ApiKey
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: ExpireApiKeyDto }
+            input: { param: { id: string } } & { json: ExpireApiKeyDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: ExpireApiKeyDto }
+            input: { param: { id: string } } & { json: ExpireApiKeyDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { id: string } } & { json: ExpireApiKeyDto }
+            input: { param: { id: string } } & { json: ExpireApiKeyDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -3832,27 +6732,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: AuditLogActionJson[] | undefined
-            }
+            } & { data?: AuditLogActionJson[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBodyWithCode
@@ -3862,10 +6761,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -3875,10 +6774,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -3890,19 +6789,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/audit_logs/actions/:actionName/schemas': {
       $post:
         | {
-            input: { param: { actionName: string } } & { json: AuditLogSchemaDto }
+            input: { param: { actionName: string } } & { json: AuditLogSchemaDtoInput }
             output: AuditLogSchemaJson
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { actionName: string } } & { json: AuditLogSchemaDto }
+            input: { param: { actionName: string } } & { json: AuditLogSchemaDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { param: { actionName: string } } & { json: AuditLogSchemaDto }
+            input: { param: { actionName: string } } & { json: AuditLogSchemaDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -3911,27 +6810,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { actionName: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: AuditLogSchemaJson[] | undefined
-            }
+            } & { data?: AuditLogSchemaJson[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { actionName: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBodyWithCode
@@ -3941,10 +6839,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { actionName: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -3954,10 +6852,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { actionName: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -3969,48 +6867,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/audit_logs/events': {
       $post:
         | {
-            input: { header: { 'idempotency-key'?: string | undefined } } & {
-              json: AuditLogEventIngestionDto
+            input: { header: { 'idempotency-key'?: string } } & {
+              json: AuditLogEventIngestionDtoInput
             }
             output: AuditLogEventCreateResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'idempotency-key'?: string | undefined } } & {
-              json: AuditLogEventIngestionDto
+            input: { header: { 'idempotency-key'?: string } } & {
+              json: AuditLogEventIngestionDtoInput
             }
             output: ErrorBodyWithCodeInstancePathErrors | ErrorBody
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'idempotency-key'?: string | undefined } } & {
-              json: AuditLogEventIngestionDto
+            input: { header: { 'idempotency-key'?: string } } & {
+              json: AuditLogEventIngestionDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { header: { 'idempotency-key'?: string | undefined } } & {
-              json: AuditLogEventIngestionDto
+            input: { header: { 'idempotency-key'?: string } } & {
+              json: AuditLogEventIngestionDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'idempotency-key'?: string | undefined } } & {
-              json: AuditLogEventIngestionDto
+            input: { header: { 'idempotency-key'?: string } } & {
+              json: AuditLogEventIngestionDtoInput
             }
             output: ErrorBodyWithCodeFieldErrors
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { header: { 'idempotency-key'?: string | undefined } } & {
-              json: AuditLogEventIngestionDto
+            input: { header: { 'idempotency-key'?: string } } & {
+              json: AuditLogEventIngestionDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -4021,19 +6919,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/audit_logs/exports': {
       $post:
         | {
-            input: { json: AuditLogExportCreationDto }
+            input: { json: AuditLogExportCreationDtoInput }
             output: AuditLogExportJson
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: AuditLogExportCreationDto }
+            input: { json: AuditLogExportCreationDtoInput }
             output: ErrorBody | ErrorBodyWithErrorMessageList
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: AuditLogExportCreationDto }
+            input: { json: AuditLogExportCreationDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
@@ -4102,10 +7000,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 type: 'generic_otp' | 'sms' | 'totp'
-                phone_number?: string | undefined
-                totp_issuer?: string | undefined
-                totp_user?: string | undefined
-                user_id?: string | undefined
+                phone_number?: string
+                totp_issuer?: string
+                totp_user?: string
+                user_id?: string
               }
             }
             output: AuthenticationFactorEnrolled
@@ -4116,10 +7014,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 type: 'generic_otp' | 'sms' | 'totp'
-                phone_number?: string | undefined
-                totp_issuer?: string | undefined
-                totp_user?: string | undefined
-                user_id?: string | undefined
+                phone_number?: string
+                totp_issuer?: string
+                totp_user?: string
+                user_id?: string
               }
             }
             output: ErrorBody
@@ -4146,25 +7044,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/auth/factors/:id/challenge': {
       $post:
         | {
-            input: { param: { id: string } } & { json: ChallengeAuthenticationFactorDto }
+            input: { param: { id: string } } & { json: ChallengeAuthenticationFactorDtoInput }
             output: AuthenticationChallenge
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { id: string } } & { json: ChallengeAuthenticationFactorDto }
+            input: { param: { id: string } } & { json: ChallengeAuthenticationFactorDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: ChallengeAuthenticationFactorDto }
+            input: { param: { id: string } } & { json: ChallengeAuthenticationFactorDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { id: string } } & { json: ChallengeAuthenticationFactorDto }
+            input: { param: { id: string } } & { json: ChallengeAuthenticationFactorDtoInput }
             output:
               | RateLimitExceededErrorBodyWithRetryAfter
               | SmsChallengeRateLimitedErrorBody
@@ -4177,13 +7075,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/authkit/oauth2/complete': {
       $post:
         | {
-            input: { json: UserManagementLoginRequest }
+            input: { json: UserManagementLoginRequestInput }
             output: ExternalAuthCompleteResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: UserManagementLoginRequest }
+            input: { json: UserManagementLoginRequestInput }
             output:
               | ExternalAuthSessionAlreadyCompletedErrorBody
               | UserConsentOptionsNotSupportedErrorBody
@@ -4195,13 +7093,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { json: UserManagementLoginRequest }
+            input: { json: UserManagementLoginRequestInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: UserManagementLoginRequest }
+            input: { json: UserManagementLoginRequestInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -4213,10 +7111,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { group_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: GroupRoleAssignmentList
@@ -4226,10 +7124,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { group_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBodyWithCode
@@ -4239,10 +7137,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { group_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -4252,10 +7150,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { group_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -4264,105 +7162,105 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDto }
+            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDtoInput }
             output: GroupRoleAssignment
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDto }
+            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDto }
+            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDto }
+            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDto }
+            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDto }
+            input: { param: { group_id: string } } & { json: CreateGroupRoleAssignmentDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
           }
       $patch:
         | {
-            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDtoInput }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: PatchGroupRoleAssignmentsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
           }
       $put:
         | {
-            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDtoInput }
             output: GroupRoleAssignmentList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDto }
+            input: { param: { group_id: string } } & { json: ReplaceGroupRoleAssignmentsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -4370,7 +7268,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { group_id: string } } & {
-              json: DeleteGroupRoleAssignmentsByCriteriaDto
+              json: DeleteGroupRoleAssignmentsByCriteriaDtoInput
             }
             output: {}
             outputFormat: string
@@ -4378,7 +7276,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              json: DeleteGroupRoleAssignmentsByCriteriaDto
+              json: DeleteGroupRoleAssignmentsByCriteriaDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4386,7 +7284,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              json: DeleteGroupRoleAssignmentsByCriteriaDto
+              json: DeleteGroupRoleAssignmentsByCriteriaDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4394,7 +7292,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              json: DeleteGroupRoleAssignmentsByCriteriaDto
+              json: DeleteGroupRoleAssignmentsByCriteriaDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4453,7 +7351,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: CheckAuthorizationDto
+              json: CheckAuthorizationDtoInput
             }
             output: AuthorizationCheck
             outputFormat: 'json'
@@ -4461,7 +7359,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: CheckAuthorizationDto
+              json: CheckAuthorizationDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -4469,7 +7367,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: CheckAuthorizationDto
+              json: CheckAuthorizationDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4477,7 +7375,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: CheckAuthorizationDto
+              json: CheckAuthorizationDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4485,7 +7383,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: CheckAuthorizationDto
+              json: CheckAuthorizationDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4498,14 +7396,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_resource_external_id?: string | undefined
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_resource_external_id?: string
               }
             }
             output: AuthorizationResourceList
@@ -4515,14 +7413,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_resource_external_id?: string | undefined
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_resource_external_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -4532,14 +7430,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_resource_external_id?: string | undefined
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_resource_external_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -4549,14 +7447,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_resource_external_id?: string | undefined
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_resource_external_id?: string
               }
             }
             output: ErrorBody
@@ -4566,14 +7464,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_resource_external_id?: string | undefined
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_resource_external_id?: string
               }
             }
             output: ErrorBody
@@ -4583,14 +7481,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_resource_external_id?: string | undefined
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_resource_external_id?: string
               }
             }
             output: ErrorBody
@@ -4604,10 +7502,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string; resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: AuthorizationPermissionList
@@ -4617,10 +7515,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string; resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBodyWithCode
@@ -4630,10 +7528,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string; resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -4643,10 +7541,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string; resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -4656,10 +7554,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string; resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -4679,10 +7577,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: AuthorizationPermissionList
@@ -4698,10 +7596,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBodyWithCode
@@ -4717,10 +7615,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -4736,10 +7634,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -4755,10 +7653,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -4772,13 +7670,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                resource_id?: string | undefined
-                resource_external_id?: string | undefined
-                resource_type_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                resource_id?: string
+                resource_external_id?: string
+                resource_type_slug?: string
               }
             }
             output: UserRoleAssignmentList
@@ -4788,13 +7686,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                resource_id?: string | undefined
-                resource_external_id?: string | undefined
-                resource_type_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                resource_id?: string
+                resource_external_id?: string
+                resource_type_slug?: string
               }
             }
             output: ErrorBodyWithCode
@@ -4804,13 +7702,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                resource_id?: string | undefined
-                resource_external_id?: string | undefined
-                resource_type_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                resource_id?: string
+                resource_external_id?: string
+                resource_type_slug?: string
               }
             }
             output: ErrorBody
@@ -4820,13 +7718,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_membership_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                resource_id?: string | undefined
-                resource_external_id?: string | undefined
-                resource_type_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                resource_id?: string
+                resource_external_id?: string
+                resource_type_slug?: string
               }
             }
             output: ErrorBody
@@ -4835,31 +7733,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { organization_membership_id: string } } & { json: AssignRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: AssignRoleDtoInput }
             output: UserRoleAssignment
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { organization_membership_id: string } } & { json: AssignRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: AssignRoleDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { param: { organization_membership_id: string } } & { json: AssignRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: AssignRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { organization_membership_id: string } } & { json: AssignRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: AssignRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { organization_membership_id: string } } & { json: AssignRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: AssignRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -4867,7 +7765,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: PatchRoleAssignmentsDto
+              json: PatchRoleAssignmentsDtoInput
             }
             output: {}
             outputFormat: string
@@ -4875,7 +7773,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: PatchRoleAssignmentsDto
+              json: PatchRoleAssignmentsDtoInput
             }
             output: RoleAssignmentUpdateOverlapErrorBody | ErrorBodyWithError
             outputFormat: 'json'
@@ -4883,7 +7781,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: PatchRoleAssignmentsDto
+              json: PatchRoleAssignmentsDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -4891,7 +7789,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: PatchRoleAssignmentsDto
+              json: PatchRoleAssignmentsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4899,7 +7797,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: PatchRoleAssignmentsDto
+              json: PatchRoleAssignmentsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4907,7 +7805,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: PatchRoleAssignmentsDto
+              json: PatchRoleAssignmentsDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -4915,7 +7813,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_membership_id: string } } & {
-              json: PatchRoleAssignmentsDto
+              json: PatchRoleAssignmentsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -4923,25 +7821,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { organization_membership_id: string } } & { json: RemoveRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: RemoveRoleDtoInput }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { organization_membership_id: string } } & { json: RemoveRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: RemoveRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { organization_membership_id: string } } & { json: RemoveRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: RemoveRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { organization_membership_id: string } } & { json: RemoveRoleDto }
+            input: { param: { organization_membership_id: string } } & { json: RemoveRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -4973,7 +7871,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/authorization/organizations/:organizationId/roles': {
       $post:
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDto }
+            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDtoInput }
             output: {
               slug: string
               object: 'role'
@@ -4990,31 +7888,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDto }
+            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDto }
+            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDto }
+            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDto }
+            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDto }
+            input: { param: { organizationId: string } } & { json: CreateOrganizationRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -5074,7 +7972,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: UpdateOrganizationRoleDto
+              json: UpdateOrganizationRoleDtoInput
             }
             output: {
               slug: string
@@ -5093,7 +7991,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: UpdateOrganizationRoleDto
+              json: UpdateOrganizationRoleDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -5101,7 +7999,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: UpdateOrganizationRoleDto
+              json: UpdateOrganizationRoleDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5109,7 +8007,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: UpdateOrganizationRoleDto
+              json: UpdateOrganizationRoleDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5117,7 +8015,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: UpdateOrganizationRoleDto
+              json: UpdateOrganizationRoleDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5160,7 +8058,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: SetRolePermissionsDto
+              json: SetRolePermissionsDtoInput
             }
             output: {
               slug: string
@@ -5179,7 +8077,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: SetRolePermissionsDto
+              json: SetRolePermissionsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5187,7 +8085,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: SetRolePermissionsDto
+              json: SetRolePermissionsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5195,7 +8093,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: SetRolePermissionsDto
+              json: SetRolePermissionsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5204,7 +8102,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: AddRolePermissionDto
+              json: AddRolePermissionDtoInput
             }
             output: {
               slug: string
@@ -5223,7 +8121,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: AddRolePermissionDto
+              json: AddRolePermissionDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -5231,7 +8129,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: AddRolePermissionDto
+              json: AddRolePermissionDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5239,7 +8137,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: AddRolePermissionDto
+              json: AddRolePermissionDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5247,7 +8145,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              json: AddRolePermissionDto
+              json: AddRolePermissionDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -5315,7 +8213,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { json: UpdateAuthorizationResourceDto }
+            } & { json: UpdateAuthorizationResourceDtoInput }
             output: {
               object: 'authorization_resource'
               name: string
@@ -5334,7 +8232,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { json: UpdateAuthorizationResourceDto }
+            } & { json: UpdateAuthorizationResourceDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
@@ -5342,7 +8240,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { json: UpdateAuthorizationResourceDto }
+            } & { json: UpdateAuthorizationResourceDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
@@ -5350,7 +8248,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { json: UpdateAuthorizationResourceDto }
+            } & { json: UpdateAuthorizationResourceDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
@@ -5358,7 +8256,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { json: UpdateAuthorizationResourceDto }
+            } & { json: UpdateAuthorizationResourceDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
@@ -5366,7 +8264,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { json: UpdateAuthorizationResourceDto }
+            } & { json: UpdateAuthorizationResourceDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
@@ -5374,7 +8272,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { json: UpdateAuthorizationResourceDto }
+            } & { json: UpdateAuthorizationResourceDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -5383,7 +8281,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { query: { cascade_delete?: boolean | undefined } }
+            } & { query: { cascade_delete?: string } }
             output: {}
             outputFormat: string
             status: 204
@@ -5391,7 +8289,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { query: { cascade_delete?: boolean | undefined } }
+            } & { query: { cascade_delete?: string } }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
@@ -5399,7 +8297,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { query: { cascade_delete?: boolean | undefined } }
+            } & { query: { cascade_delete?: string } }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
@@ -5407,7 +8305,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { query: { cascade_delete?: boolean | undefined } }
+            } & { query: { cascade_delete?: string } }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
@@ -5415,7 +8313,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { organization_id: string; resource_type_slug: string; external_id: string }
-            } & { query: { cascade_delete?: boolean | undefined } }
+            } & { query: { cascade_delete?: string } }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
@@ -5429,12 +8327,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: UserlandUserOrganizationMembershipBaseWithUserList
@@ -5446,12 +8344,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBodyWithCode
@@ -5463,12 +8361,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBodyWithCode
@@ -5480,12 +8378,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBody
@@ -5497,12 +8395,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBody
@@ -5514,12 +8412,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBody
@@ -5535,11 +8433,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                role_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                role_slug?: string
               }
             }
             output: UserRoleAssignmentList
@@ -5551,11 +8449,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                role_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                role_slug?: string
               }
             }
             output: ErrorBodyWithCode
@@ -5567,11 +8465,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                role_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                role_slug?: string
               }
             }
             output: ErrorBody
@@ -5583,11 +8481,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               param: { organization_id: string; resource_type_slug: string; external_id: string }
             } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                role_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                role_slug?: string
               }
             }
             output: ErrorBody
@@ -5601,10 +8499,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: AuthorizationPermissionList
@@ -5614,10 +8512,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -5626,7 +8524,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: CreateAuthorizationPermissionDto }
+            input: { json: CreateAuthorizationPermissionDtoInput }
             output: {
               object: 'permission'
               id: string
@@ -5642,25 +8540,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { json: CreateAuthorizationPermissionDto }
+            input: { json: CreateAuthorizationPermissionDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateAuthorizationPermissionDto }
+            input: { json: CreateAuthorizationPermissionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateAuthorizationPermissionDto }
+            input: { json: CreateAuthorizationPermissionDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { json: CreateAuthorizationPermissionDto }
+            input: { json: CreateAuthorizationPermissionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -5683,25 +8581,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { slug: string } } & { json: UpdateAuthorizationPermissionDto }
+            input: { param: { slug: string } } & { json: UpdateAuthorizationPermissionDtoInput }
             output: AuthorizationPermission
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateAuthorizationPermissionDto }
+            input: { param: { slug: string } } & { json: UpdateAuthorizationPermissionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateAuthorizationPermissionDto }
+            input: { param: { slug: string } } & { json: UpdateAuthorizationPermissionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateAuthorizationPermissionDto }
+            input: { param: { slug: string } } & { json: UpdateAuthorizationPermissionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -5727,16 +8625,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                resource_type_slug?: string | undefined
-                resource_external_id?: string | undefined
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_external_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                resource_type_slug?: string
+                resource_external_id?: string
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_external_id?: string
               }
             }
             output: AuthorizationResourceList
@@ -5746,16 +8644,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                resource_type_slug?: string | undefined
-                resource_external_id?: string | undefined
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_external_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                resource_type_slug?: string
+                resource_external_id?: string
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_external_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -5765,16 +8663,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                resource_type_slug?: string | undefined
-                resource_external_id?: string | undefined
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_external_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                resource_type_slug?: string
+                resource_external_id?: string
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_external_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -5784,16 +8682,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                resource_type_slug?: string | undefined
-                resource_external_id?: string | undefined
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_external_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                resource_type_slug?: string
+                resource_external_id?: string
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_external_id?: string
               }
             }
             output: ErrorBody
@@ -5803,16 +8701,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                resource_type_slug?: string | undefined
-                resource_external_id?: string | undefined
-                parent_resource_id?: string | undefined
-                parent_resource_type_slug?: string | undefined
-                parent_external_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                resource_type_slug?: string
+                resource_external_id?: string
+                parent_resource_id?: string
+                parent_resource_type_slug?: string
+                parent_external_id?: string
               }
             }
             output: ErrorBody
@@ -5821,7 +8719,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: CreateAuthorizationResourceDto }
+            input: { json: CreateAuthorizationResourceDtoInput }
             output: {
               object: 'authorization_resource'
               name: string
@@ -5838,37 +8736,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { json: CreateAuthorizationResourceDto }
+            input: { json: CreateAuthorizationResourceDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateAuthorizationResourceDto }
+            input: { json: CreateAuthorizationResourceDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { json: CreateAuthorizationResourceDto }
+            input: { json: CreateAuthorizationResourceDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateAuthorizationResourceDto }
+            input: { json: CreateAuthorizationResourceDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateAuthorizationResourceDto }
+            input: { json: CreateAuthorizationResourceDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { json: CreateAuthorizationResourceDto }
+            input: { json: CreateAuthorizationResourceDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -5909,7 +8807,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { resource_id: string } } & { json: UpdateAuthorizationResourceDto }
+            input: { param: { resource_id: string } } & {
+              json: UpdateAuthorizationResourceDtoInput
+            }
             output: {
               object: 'authorization_resource'
               name: string
@@ -5926,78 +8826,80 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { resource_id: string } } & { json: UpdateAuthorizationResourceDto }
+            input: { param: { resource_id: string } } & {
+              json: UpdateAuthorizationResourceDtoInput
+            }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { resource_id: string } } & { json: UpdateAuthorizationResourceDto }
+            input: { param: { resource_id: string } } & {
+              json: UpdateAuthorizationResourceDtoInput
+            }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { param: { resource_id: string } } & { json: UpdateAuthorizationResourceDto }
+            input: { param: { resource_id: string } } & {
+              json: UpdateAuthorizationResourceDtoInput
+            }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { resource_id: string } } & { json: UpdateAuthorizationResourceDto }
+            input: { param: { resource_id: string } } & {
+              json: UpdateAuthorizationResourceDtoInput
+            }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { resource_id: string } } & { json: UpdateAuthorizationResourceDto }
+            input: { param: { resource_id: string } } & {
+              json: UpdateAuthorizationResourceDtoInput
+            }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { resource_id: string } } & { json: UpdateAuthorizationResourceDto }
+            input: { param: { resource_id: string } } & {
+              json: UpdateAuthorizationResourceDtoInput
+            }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
           }
       $delete:
         | {
-            input: { param: { resource_id: string } } & {
-              query: { cascade_delete?: boolean | undefined }
-            }
+            input: { param: { resource_id: string } } & { query: { cascade_delete?: string } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { resource_id: string } } & {
-              query: { cascade_delete?: boolean | undefined }
-            }
+            input: { param: { resource_id: string } } & { query: { cascade_delete?: string } }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { resource_id: string } } & {
-              query: { cascade_delete?: boolean | undefined }
-            }
+            input: { param: { resource_id: string } } & { query: { cascade_delete?: string } }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { resource_id: string } } & {
-              query: { cascade_delete?: boolean | undefined }
-            }
+            input: { param: { resource_id: string } } & { query: { cascade_delete?: string } }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { resource_id: string } } & {
-              query: { cascade_delete?: boolean | undefined }
-            }
+            input: { param: { resource_id: string } } & { query: { cascade_delete?: string } }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
@@ -6009,12 +8911,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: UserlandUserOrganizationMembershipBaseWithUserList
@@ -6024,12 +8926,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBodyWithCode
@@ -6039,12 +8941,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBodyWithCode
@@ -6054,12 +8956,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBody
@@ -6069,12 +8971,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBody
@@ -6084,12 +8986,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 permission_slug: string
-                assignment?: 'direct' | 'indirect' | undefined
+                assignment?: 'direct' | 'indirect'
               }
             }
             output: ErrorBody
@@ -6103,11 +9005,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                role_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                role_slug?: string
               }
             }
             output: UserRoleAssignmentList
@@ -6117,11 +9019,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                role_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                role_slug?: string
               }
             }
             output: ErrorBodyWithCode
@@ -6131,11 +9033,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                role_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                role_slug?: string
               }
             }
             output: ErrorBody
@@ -6145,11 +9047,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { resource_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                role_slug?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                role_slug?: string
               }
             }
             output: ErrorBody
@@ -6161,7 +9063,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/authorization/roles': {
       $post:
         | {
-            input: { json: CreateRoleDto }
+            input: { json: CreateRoleDtoInput }
             output: {
               slug: string
               object: 'role'
@@ -6178,20 +9080,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { json: CreateRoleDto }
+            input: { json: CreateRoleDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
-        | { input: { json: CreateRoleDto }; output: ErrorBody; outputFormat: 'json'; status: 403 }
-        | { input: { json: CreateRoleDto }; output: ErrorBody; outputFormat: 'json'; status: 404 }
         | {
-            input: { json: CreateRoleDto }
+            input: { json: CreateRoleDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 403
+          }
+        | {
+            input: { json: CreateRoleDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+        | {
+            input: { json: CreateRoleDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
-        | { input: { json: CreateRoleDto }; output: ErrorBody; outputFormat: 'json'; status: 422 }
+        | {
+            input: { json: CreateRoleDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 422
+          }
       $get:
         | { input: {}; output: RoleList; outputFormat: 'json'; status: 200 }
         | { input: {}; output: ErrorBody; outputFormat: 'json'; status: 403 }
@@ -6214,7 +9131,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { slug: string } } & { json: UpdateRoleDto }
+            input: { param: { slug: string } } & { json: UpdateRoleDtoInput }
             output: {
               slug: string
               object: 'role'
@@ -6231,25 +9148,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateRoleDto }
+            input: { param: { slug: string } } & { json: UpdateRoleDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateRoleDto }
+            input: { param: { slug: string } } & { json: UpdateRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateRoleDto }
+            input: { param: { slug: string } } & { json: UpdateRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateRoleDto }
+            input: { param: { slug: string } } & { json: UpdateRoleDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -6259,7 +9176,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/authorization/roles/:slug/permissions': {
       $put:
         | {
-            input: { param: { slug: string } } & { json: SetRolePermissionsDto }
+            input: { param: { slug: string } } & { json: SetRolePermissionsDtoInput }
             output: {
               slug: string
               object: 'role'
@@ -6276,32 +9193,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { slug: string } } & { json: SetRolePermissionsDto }
+            input: { param: { slug: string } } & { json: SetRolePermissionsDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { slug: string } } & { json: SetRolePermissionsDto }
+            input: { param: { slug: string } } & { json: SetRolePermissionsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { slug: string } } & { json: SetRolePermissionsDto }
+            input: { param: { slug: string } } & { json: SetRolePermissionsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { slug: string } } & { json: SetRolePermissionsDto }
+            input: { param: { slug: string } } & { json: SetRolePermissionsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
           }
       $post:
         | {
-            input: { param: { slug: string } } & { json: AddRolePermissionDto }
+            input: { param: { slug: string } } & { json: AddRolePermissionDtoInput }
             output: {
               slug: string
               object: 'role'
@@ -6318,25 +9235,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { slug: string } } & { json: AddRolePermissionDto }
+            input: { param: { slug: string } } & { json: AddRolePermissionDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { slug: string } } & { json: AddRolePermissionDto }
+            input: { param: { slug: string } } & { json: AddRolePermissionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { slug: string } } & { json: AddRolePermissionDto }
+            input: { param: { slug: string } } & { json: AddRolePermissionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { slug: string } } & { json: AddRolePermissionDto }
+            input: { param: { slug: string } } & { json: AddRolePermissionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -6346,25 +9263,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/client/token': {
       $post:
         | {
-            input: { json: ClientApiTokenDto }
+            input: { json: ClientApiTokenDtoInput }
             output: ClientApiTokenResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: ClientApiTokenDto }
+            input: { json: ClientApiTokenDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: ClientApiTokenDto }
+            input: { json: ClientApiTokenDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: ClientApiTokenDto }
+            input: { json: ClientApiTokenDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -6376,12 +9293,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                registration_types?: ('dynamic' | 'authenticated')[] | undefined
-                organization_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                registration_types?: unknown
+                organization_id?: string
               }
             }
             output: ConnectApplicationList
@@ -6391,12 +9308,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                registration_types?: ('dynamic' | 'authenticated')[] | undefined
-                organization_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                registration_types?: unknown
+                organization_id?: string
               }
             }
             output: ErrorBody
@@ -6405,19 +9322,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: CreateOAuthApplicationDto | CreateM2MApplicationDto }
+            input: { json: CreateOAuthApplicationDtoInput | CreateM2MApplicationDtoInput }
             output: ConnectApplication
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateOAuthApplicationDto | CreateM2MApplicationDto }
+            input: { json: CreateOAuthApplicationDtoInput | CreateM2MApplicationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateOAuthApplicationDto | CreateM2MApplicationDto }
+            input: { json: CreateOAuthApplicationDtoInput | CreateM2MApplicationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -6435,19 +9352,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 404 }
       $put:
         | {
-            input: { param: { id: string } } & { json: UpdateOAuthApplicationDto }
+            input: { param: { id: string } } & { json: UpdateOAuthApplicationDtoInput }
             output: ConnectApplication
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: UpdateOAuthApplicationDto }
+            input: { param: { id: string } } & { json: UpdateOAuthApplicationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: UpdateOAuthApplicationDto }
+            input: { param: { id: string } } & { json: UpdateOAuthApplicationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -6475,19 +9392,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 404 }
       $post:
         | {
-            input: { param: { id: string } } & { json: CreateApplicationSecretDto }
+            input: { param: { id: string } } & { json: CreateApplicationSecretDtoInput }
             output: NewConnectApplicationSecret
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { id: string } } & { json: CreateApplicationSecretDto }
+            input: { param: { id: string } } & { json: CreateApplicationSecretDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: CreateApplicationSecretDto }
+            input: { param: { id: string } } & { json: CreateApplicationSecretDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -6503,37 +9420,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/connections': {
       $post:
         | {
-            input: { json: CreateConnectionDto }
+            input: { json: CreateConnectionDtoInput }
             output: Connection
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateConnectionDto }
+            input: { json: CreateConnectionDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateConnectionDto }
+            input: { json: CreateConnectionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateConnectionDto }
+            input: { json: CreateConnectionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateConnectionDto }
+            input: { json: CreateConnectionDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { json: CreateConnectionDto }
+            input: { json: CreateConnectionDtoInput }
             output:
               | ErrorBody
               | IdpMetadataFetchFailedErrorBody
@@ -6546,10 +9463,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 connection_type?:
                   | 'ADFSSAML'
                   | 'AdpOidc'
@@ -6598,11 +9515,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'VercelOAuth'
                   | 'VMwareSAML'
                   | 'XeroOAuth'
-                  | undefined
-                domain?: string | undefined
-                organization_id?: string | undefined
-                search?: string | undefined
-                state?: 'active' | 'inactive' | 'validating' | undefined
+                domain?: string
+                organization_id?: string
+                search?: string
+                state?: 'active' | 'inactive' | 'validating'
               }
             }
             output: ConnectionList
@@ -6612,10 +9528,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 connection_type?:
                   | 'ADFSSAML'
                   | 'AdpOidc'
@@ -6664,11 +9580,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'VercelOAuth'
                   | 'VMwareSAML'
                   | 'XeroOAuth'
-                  | undefined
-                domain?: string | undefined
-                organization_id?: string | undefined
-                search?: string | undefined
-                state?: 'active' | 'inactive' | 'validating' | undefined
+                domain?: string
+                organization_id?: string
+                search?: string
+                state?: 'active' | 'inactive' | 'validating'
               }
             }
             output: ErrorBody
@@ -6678,10 +9593,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
                 connection_type?:
                   | 'ADFSSAML'
                   | 'AdpOidc'
@@ -6730,11 +9645,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'VercelOAuth'
                   | 'VMwareSAML'
                   | 'XeroOAuth'
-                  | undefined
-                domain?: string | undefined
-                organization_id?: string | undefined
-                search?: string | undefined
-                state?: 'active' | 'inactive' | 'validating' | undefined
+                domain?: string
+                organization_id?: string
+                search?: string
+                state?: 'active' | 'inactive' | 'validating'
               }
             }
             output: ErrorBody
@@ -6772,7 +9686,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { connectionId: string } } & {
-              json: CreateSamlIdpSigningCertificateDto
+              json: CreateSamlIdpSigningCertificateDtoInput
             }
             output: SamlIdpSigningCertificate
             outputFormat: 'json'
@@ -6780,7 +9694,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { connectionId: string } } & {
-              json: CreateSamlIdpSigningCertificateDto
+              json: CreateSamlIdpSigningCertificateDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -6788,7 +9702,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { connectionId: string } } & {
-              json: CreateSamlIdpSigningCertificateDto
+              json: CreateSamlIdpSigningCertificateDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -6796,7 +9710,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { connectionId: string } } & {
-              json: CreateSamlIdpSigningCertificateDto
+              json: CreateSamlIdpSigningCertificateDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -6804,7 +9718,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { connectionId: string } } & {
-              json: CreateSamlIdpSigningCertificateDto
+              json: CreateSamlIdpSigningCertificateDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -7017,37 +9931,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/connections/:id': {
       $patch:
         | {
-            input: { param: { id: string } } & { json: PatchConnectionDto }
+            input: { param: { id: string } } & { json: PatchConnectionDtoInput }
             output: Connection
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: PatchConnectionDto }
+            input: { param: { id: string } } & { json: PatchConnectionDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: PatchConnectionDto }
+            input: { param: { id: string } } & { json: PatchConnectionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { id: string } } & { json: PatchConnectionDto }
+            input: { param: { id: string } } & { json: PatchConnectionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: PatchConnectionDto }
+            input: { param: { id: string } } & { json: PatchConnectionDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { id: string } } & { json: PatchConnectionDto }
+            input: { param: { id: string } } & { json: PatchConnectionDtoInput }
             output:
               | ErrorBody
               | ConnectionTypeNotUpdatableErrorBody
@@ -7075,43 +9989,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data-integrations': {
       $post:
         | {
-            input: { json: CreateDataIntegrationDto }
+            input: { json: CreateDataIntegrationDtoInput }
             output: DataIntegration
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateDataIntegrationDto }
+            input: { json: CreateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateDataIntegrationDto }
+            input: { json: CreateDataIntegrationDtoInput }
             output: {}
             outputFormat: string
             status: 401
           }
         | {
-            input: { json: CreateDataIntegrationDto }
+            input: { json: CreateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateDataIntegrationDto }
+            input: { json: CreateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateDataIntegrationDto }
+            input: { json: CreateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { json: CreateDataIntegrationDto }
+            input: { json: CreateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -7120,11 +10034,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                ownership?: 'user' | 'organization' | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                ownership?: 'user' | 'organization'
               }
             }
             output: DataIntegrationList
@@ -7134,11 +10048,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                ownership?: 'user' | 'organization' | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                ownership?: 'user' | 'organization'
               }
             }
             output: {}
@@ -7148,11 +10062,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                ownership?: 'user' | 'organization' | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                ownership?: 'user' | 'organization'
               }
             }
             output: ErrorBody
@@ -7162,11 +10076,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                ownership?: 'user' | 'organization' | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                ownership?: 'user' | 'organization'
               }
             }
             output: ErrorBody
@@ -7178,33 +10092,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data-integrations/finish': {
       $post:
         | {
-            input: {
-              json: { connect_code: string; code_verifier: string; state?: string | undefined }
-            }
+            input: { json: { connect_code: string; code_verifier: string; state?: string } }
             output: DataIntegrationFinishConnectionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              json: { connect_code: string; code_verifier: string; state?: string | undefined }
-            }
+            input: { json: { connect_code: string; code_verifier: string; state?: string } }
             output: ConnectionFinishErrorBody | ErrorBodyWithMessageOrMessageList
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              json: { connect_code: string; code_verifier: string; state?: string | undefined }
-            }
+            input: { json: { connect_code: string; code_verifier: string; state?: string } }
             output: {}
             outputFormat: string
             status: 401
           }
         | {
-            input: {
-              json: { connect_code: string; code_verifier: string; state?: string | undefined }
-            }
+            input: { json: { connect_code: string; code_verifier: string; state?: string } }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
@@ -7228,43 +10134,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: DataIntegration
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: {}
             outputFormat: string
             status: 401
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -7283,15 +10189,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data-integrations/:slug/api-key': {
       $post:
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
                 connection_intent: 'add'
               }
@@ -7301,15 +10205,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
                 connection_intent: 'add'
               }
@@ -7319,15 +10221,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
                 connection_intent: 'add'
               }
@@ -7337,15 +10237,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
                 connection_intent: 'add'
               }
@@ -7355,15 +10253,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 403
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
                 connection_intent: 'add'
               }
@@ -7373,15 +10269,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
                 connection_intent: 'add'
               }
@@ -7391,15 +10285,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 409
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
                 connection_intent: 'add'
               }
@@ -7412,14 +10304,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: ConnectedAccount
@@ -7429,14 +10321,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: ErrorBodyWithMessageOrMessageList
@@ -7446,14 +10338,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: {}
@@ -7463,14 +10355,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: ErrorBody
@@ -7480,14 +10372,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: EntityNotFoundErrorBody | ErrorBody
@@ -7497,14 +10389,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: AccountSelectionRequiredErrorBody
@@ -7514,14 +10406,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 secret: string
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: AuthMethodMismatchErrorBody
@@ -7535,16 +10427,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
+                account_display_name?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                return_to?: string | undefined
-                code_challenge?: string | undefined
-                code_challenge_method?: 'S256' | undefined
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'add' | 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
+                return_to?: string
+                code_challenge?: string
+                code_challenge_method?: 'S256'
+                config?: { [key: string]: string }
+                connection_intent?: 'add' | 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: DataIntegrationAuthorizeUrlResponse
@@ -7554,16 +10446,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
+                account_display_name?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                return_to?: string | undefined
-                code_challenge?: string | undefined
-                code_challenge_method?: 'S256' | undefined
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'add' | 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
+                return_to?: string
+                code_challenge?: string
+                code_challenge_method?: 'S256'
+                config?: { [key: string]: string }
+                connection_intent?: 'add' | 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: AuthorizationUrlRequestErrorBody | ErrorBodyWithMessageOrMessageList
@@ -7573,16 +10465,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
+                account_display_name?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                return_to?: string | undefined
-                code_challenge?: string | undefined
-                code_challenge_method?: 'S256' | undefined
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'add' | 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
+                return_to?: string
+                code_challenge?: string
+                code_challenge_method?: 'S256'
+                config?: { [key: string]: string }
+                connection_intent?: 'add' | 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: {}
@@ -7592,16 +10484,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
+                account_display_name?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                return_to?: string | undefined
-                code_challenge?: string | undefined
-                code_challenge_method?: 'S256' | undefined
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'add' | 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
+                return_to?: string
+                code_challenge?: string
+                code_challenge_method?: 'S256'
+                config?: { [key: string]: string }
+                connection_intent?: 'add' | 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: ErrorBody
@@ -7611,16 +10503,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
+                account_display_name?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                return_to?: string | undefined
-                code_challenge?: string | undefined
-                code_challenge_method?: 'S256' | undefined
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'add' | 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
+                return_to?: string
+                code_challenge?: string
+                code_challenge_method?: 'S256'
+                config?: { [key: string]: string }
+                connection_intent?: 'add' | 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: AuthorizationUrlNotFoundErrorBody | ErrorBody
@@ -7630,16 +10522,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
+                account_display_name?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                return_to?: string | undefined
-                code_challenge?: string | undefined
-                code_challenge_method?: 'S256' | undefined
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'add' | 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
+                return_to?: string
+                code_challenge?: string
+                code_challenge_method?: 'S256'
+                config?: { [key: string]: string }
+                connection_intent?: 'add' | 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: ConnectedAccountLimitReachedErrorBody | ErrorBody
@@ -7649,16 +10541,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
+                account_display_name?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                return_to?: string | undefined
-                code_challenge?: string | undefined
-                code_challenge_method?: 'S256' | undefined
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'add' | 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
+                return_to?: string
+                code_challenge?: string
+                code_challenge_method?: 'S256'
+                config?: { [key: string]: string }
+                connection_intent?: 'add' | 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: AuthMethodMismatchError
@@ -7670,18 +10562,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data-integrations/:slug/client-credentials': {
       $post:
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
+                config?: { [key: string]: string }
                 connection_intent: 'add'
               }
             }
@@ -7690,18 +10580,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
+                config?: { [key: string]: string }
                 connection_intent: 'add'
               }
             }
@@ -7710,18 +10598,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
+                config?: { [key: string]: string }
                 connection_intent: 'add'
               }
             }
@@ -7730,18 +10616,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
+                config?: { [key: string]: string }
                 connection_intent: 'add'
               }
             }
@@ -7750,18 +10634,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 403
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
+                config?: { [key: string]: string }
                 connection_intent: 'add'
               }
             }
@@ -7770,18 +10652,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
+                config?: { [key: string]: string }
                 connection_intent: 'add'
               }
             }
@@ -7790,18 +10670,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 409
           }
         | {
-            input: { param: { slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & {
+            input: { param: { slug: string } } & { header: { 'idempotency-key'?: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
+                config?: { [key: string]: string }
                 connection_intent: 'add'
               }
             }
@@ -7813,16 +10691,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                config?: { [key: string]: string }
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: ConnectedAccount
@@ -7832,16 +10710,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                config?: { [key: string]: string }
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: ErrorBodyWithMessageOrMessageList
@@ -7851,16 +10729,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                config?: { [key: string]: string }
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: {}
@@ -7870,16 +10748,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                config?: { [key: string]: string }
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: ErrorBody
@@ -7889,16 +10767,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                config?: { [key: string]: string }
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: EntityNotFoundErrorBody | ErrorBody
@@ -7908,16 +10786,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                config?: { [key: string]: string }
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: AccountSelectionRequiredErrorBody
@@ -7927,16 +10805,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { slug: string } } & {
               json: {
-                account_display_name?: (string | null) | undefined
-                account_identifier?: (string | null) | undefined
+                account_display_name?: string | null
+                account_identifier?: string | null
                 user_id: string
-                organization_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
+                organization_id?: string
+                connection_owner?: 'user' | 'organization'
                 client_id: string
                 client_secret: string
-                config?: { [x: string]: string } | undefined
-                connection_intent?: 'reauthorize' | undefined
-                connected_account_id?: string | undefined
+                config?: { [key: string]: string }
+                connection_intent?: 'reauthorize'
+                connected_account_id?: string
               }
             }
             output: AuthMethodMismatchErrorBody
@@ -7951,10 +10829,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: DataIntegrationCredentialsResponse
@@ -7965,10 +10843,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: ErrorBody
@@ -7979,10 +10857,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: {}
@@ -7993,10 +10871,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: ErrorBody
@@ -8007,10 +10885,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: ErrorBody
@@ -8021,10 +10899,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: AccountSelectionRequiredError
@@ -8035,10 +10913,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: ErrorBody
@@ -8064,43 +10942,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: DataIntegration
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: {}
             outputFormat: string
             status: 401
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { slug: string } } & { json: UpdateDataIntegrationDto }
+            input: { param: { slug: string } } & { json: UpdateDataIntegrationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -8122,10 +11000,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: DataIntegrationAccessTokenResponse
@@ -8136,10 +11014,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: ErrorBody
@@ -8150,10 +11028,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: {}
@@ -8164,10 +11042,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: ErrorBody
@@ -8178,10 +11056,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: ErrorBody
@@ -8192,10 +11070,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: AccountSelectionRequiredError
@@ -8206,10 +11084,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { slug: string } } & {
               json: {
                 user_id: string
-                organization_id?: string | undefined
-                connected_account_id?: string | undefined
-                connection_owner?: 'user' | 'organization' | undefined
-                supports_multiple_connections?: boolean | undefined
+                organization_id?: string
+                connected_account_id?: string
+                connection_owner?: 'user' | 'organization'
+                supports_multiple_connections?: boolean
               }
             }
             output: AuthMethodMismatchError
@@ -8223,13 +11101,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                search?: string | undefined
-                domain?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                search?: string
+                domain?: string
               }
             }
             output: DirectoryList
@@ -8239,13 +11117,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                search?: string | undefined
-                domain?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                search?: string
+                domain?: string
               }
             }
             output: ErrorBody
@@ -8255,13 +11133,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                search?: string | undefined
-                domain?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                search?: string
+                domain?: string
               }
             }
             output: ErrorBody
@@ -8275,29 +11153,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { directoryId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                user?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                user?: string
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: DirectoryGroup[] | undefined
-            }
+            } & { data?: DirectoryGroup[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { directoryId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                user?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                user?: string
               }
             }
             output: ErrorBody
@@ -8307,11 +11184,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { directoryId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                user?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                user?: string
               }
             }
             output: ErrorBody
@@ -8321,11 +11198,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { directoryId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                user?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                user?: string
               }
             }
             output: ErrorBody
@@ -8361,33 +11238,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { directoryId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: DirectoryUser[] | undefined
-            }
+            } & { data?: DirectoryUser[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { directoryId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: ErrorBody
@@ -8397,13 +11273,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { directoryId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: ErrorBody
@@ -8413,13 +11289,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { directoryId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: ErrorBody
@@ -8457,12 +11333,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 404 }
       $delete:
         | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 200 }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 202
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 202 }
         | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 403 }
     }
   } & {
@@ -8507,12 +11378,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                user?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                user?: string
               }
             }
             output: DirectoryGroupList
@@ -8522,12 +11393,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                user?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                user?: string
               }
             }
             output: ErrorBody
@@ -8537,12 +11408,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                user?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                user?: string
               }
             }
             output: ErrorBody
@@ -8552,12 +11423,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                user?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                user?: string
               }
             }
             output: ErrorBody
@@ -8583,14 +11454,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: DirectoryUserList
@@ -8600,14 +11471,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: ErrorBody
@@ -8617,14 +11488,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: ErrorBody
@@ -8634,14 +11505,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: ErrorBody
@@ -8651,14 +11522,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                directory?: string | undefined
-                group?: string | undefined
-                idp_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                directory?: string
+                group?: string
+                idp_id?: string
+                email?: string
               }
             }
             output: 'Ratelimited'
@@ -8684,12 +11555,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                after?: string | undefined
-                limit?: number | undefined
-                events: string[]
-                range_start?: string | undefined
-                range_end?: string | undefined
-                organization_id?: string | undefined
+                after?: string
+                limit?: unknown
+                events: unknown
+                range_start?: string
+                range_end?: string
+                organization_id?: string
               }
             }
             output: EventList
@@ -8699,12 +11570,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                after?: string | undefined
-                limit?: number | undefined
-                events: string[]
-                range_start?: string | undefined
-                range_end?: string | undefined
-                organization_id?: string | undefined
+                after?: string
+                limit?: unknown
+                events: unknown
+                range_start?: string
+                range_end?: string
+                organization_id?: string
               }
             }
             output: ErrorBody
@@ -8714,12 +11585,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                after?: string | undefined
-                limit?: number | undefined
-                events: string[]
-                range_start?: string | undefined
-                range_end?: string | undefined
-                organization_id?: string | undefined
+                after?: string
+                limit?: unknown
+                events: unknown
+                range_start?: string
+                range_end?: string
+                organization_id?: string
               }
             }
             output: ErrorBodyWithCodeFieldErrors
@@ -8733,10 +11604,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: FlagList
@@ -8746,10 +11617,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBodyWithCode
@@ -8759,10 +11630,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -8772,10 +11643,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -8805,9 +11676,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               slug: string
               name: string
               description: string | null
-              owner:
-                | { email: string; first_name: string | null; last_name: string | null }
-                | ({ [x: string]: unknown } | null)
+              owner: { email: string; first_name: string | null; last_name: string | null } | null
               tags: string[]
               enabled: boolean
               default_value: boolean
@@ -8841,9 +11710,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               slug: string
               name: string
               description: string | null
-              owner:
-                | { email: string; first_name: string | null; last_name: string | null }
-                | ({ [x: string]: unknown } | null)
+              owner: { email: string; first_name: string | null; last_name: string | null } | null
               tags: string[]
               enabled: boolean
               default_value: boolean
@@ -8923,7 +11790,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/organization_domains': {
       $post:
         | {
-            input: { json: CreateOrganizationDomainDto }
+            input: { json: CreateOrganizationDomainDtoInput }
             output: {
               object: 'organization_domain'
               id: string
@@ -8946,7 +11813,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { json: CreateOrganizationDomainDto }
+            input: { json: CreateOrganizationDomainDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
@@ -8988,12 +11855,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                domains?: string[] | undefined
-                search?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                domains?: unknown
+                search?: string
               }
             }
             output: OrganizationList
@@ -9003,12 +11870,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                domains?: string[] | undefined
-                search?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                domains?: unknown
+                search?: string
               }
             }
             output: ErrorBody
@@ -9017,19 +11884,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: OrganizationDto }
+            input: { json: OrganizationDtoInput }
             output: Organization
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: OrganizationDto }
+            input: { json: OrganizationDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
-        | { input: { json: OrganizationDto }; output: ErrorBody; outputFormat: 'json'; status: 409 }
-        | { input: { json: OrganizationDto }; output: ErrorBody; outputFormat: 'json'; status: 422 }
+        | {
+            input: { json: OrganizationDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 409
+          }
+        | {
+            input: { json: OrganizationDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/organizations/external_id/:external_id': {
@@ -9059,37 +11936,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 404 }
       $put:
         | {
-            input: { param: { id: string } } & { json: UpdateOrganizationDto }
+            input: { param: { id: string } } & { json: UpdateOrganizationDtoInput }
             output: Organization
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: UpdateOrganizationDto }
+            input: { param: { id: string } } & { json: UpdateOrganizationDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: UpdateOrganizationDto }
+            input: { param: { id: string } } & { json: UpdateOrganizationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { id: string } } & { json: UpdateOrganizationDto }
+            input: { param: { id: string } } & { json: UpdateOrganizationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: UpdateOrganizationDto }
+            input: { param: { id: string } } & { json: UpdateOrganizationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { id: string } } & { json: UpdateOrganizationDto }
+            input: { param: { id: string } } & { json: UpdateOrganizationDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -9128,25 +12005,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 404 }
       $put:
         | {
-            input: { param: { id: string } } & { json: UpdateAuditLogsRetentionDto }
+            input: { param: { id: string } } & { json: UpdateAuditLogsRetentionDtoInput }
             output: AuditLogsRetentionJson
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: UpdateAuditLogsRetentionDto }
+            input: { param: { id: string } } & { json: UpdateAuditLogsRetentionDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { param: { id: string } } & { json: UpdateAuditLogsRetentionDto }
+            input: { param: { id: string } } & { json: UpdateAuditLogsRetentionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: UpdateAuditLogsRetentionDto }
+            input: { param: { id: string } } & { json: UpdateAuditLogsRetentionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -9158,10 +12035,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: OrganizationApiKeyList
@@ -9171,10 +12048,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -9183,19 +12060,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationApiKeyDto }
+            input: { param: { organizationId: string } } & {
+              json: CreateOrganizationApiKeyDtoInput
+            }
             output: OrganizationApiKeyWithValue
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationApiKeyDto }
+            input: { param: { organizationId: string } } & {
+              json: CreateOrganizationApiKeyDtoInput
+            }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateOrganizationApiKeyDto }
+            input: { param: { organizationId: string } } & {
+              json: CreateOrganizationApiKeyDtoInput
+            }
             output: ErrorBodyWithCodeFieldErrors
             outputFormat: 'json'
             status: 422
@@ -9206,7 +12089,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { organizationId: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
+              query: { ownership?: 'user' | 'organization' }
             }
             output: DataIntegrationConfigurationListResponse
             outputFormat: 'json'
@@ -9214,7 +12097,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
+              query: { ownership?: 'user' | 'organization' }
             }
             output: {}
             outputFormat: string
@@ -9222,7 +12105,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
+              query: { ownership?: 'user' | 'organization' }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9230,7 +12113,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
+              query: { ownership?: 'user' | 'organization' }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9242,40 +12125,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
-            } & { json: ConfigureDataIntegrationBody }
+              query: { ownership?: 'user' | 'organization' }
+            } & { json: ConfigureDataIntegrationBodyInput }
             output: DataIntegrationConfigurationResponse
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
-            } & { json: ConfigureDataIntegrationBody }
+              query: { ownership?: 'user' | 'organization' }
+            } & { json: ConfigureDataIntegrationBodyInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
-            } & { json: ConfigureDataIntegrationBody }
+              query: { ownership?: 'user' | 'organization' }
+            } & { json: ConfigureDataIntegrationBodyInput }
             output: {}
             outputFormat: string
             status: 401
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
-            } & { json: ConfigureDataIntegrationBody }
+              query: { ownership?: 'user' | 'organization' }
+            } & { json: ConfigureDataIntegrationBodyInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { organizationId: string; slug: string } } & {
-              query: { ownership?: 'user' | 'organization' | undefined }
-            } & { json: ConfigureDataIntegrationBody }
+              query: { ownership?: 'user' | 'organization' }
+            } & { json: ConfigureDataIntegrationBodyInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -9287,10 +12170,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: FlagList
@@ -9300,10 +12183,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -9315,31 +12198,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/organizations/:organizationId/groups': {
       $post:
         | {
-            input: { param: { organizationId: string } } & { json: CreateGroupDto }
+            input: { param: { organizationId: string } } & { json: CreateGroupDtoInput }
             output: Group
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateGroupDto }
+            input: { param: { organizationId: string } } & { json: CreateGroupDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateGroupDto }
+            input: { param: { organizationId: string } } & { json: CreateGroupDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateGroupDto }
+            input: { param: { organizationId: string } } & { json: CreateGroupDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { organizationId: string } } & { json: CreateGroupDto }
+            input: { param: { organizationId: string } } & { json: CreateGroupDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -9348,11 +12231,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                search?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                search?: string
               }
             }
             output: GroupList
@@ -9362,11 +12245,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                search?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                search?: string
               }
             }
             output: ErrorBody
@@ -9376,11 +12259,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                search?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                search?: string
               }
             }
             output: ErrorBody
@@ -9411,31 +12294,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { organizationId: string; groupId: string } } & { json: UpdateGroupDto }
+            input: { param: { organizationId: string; groupId: string } } & {
+              json: UpdateGroupDtoInput
+            }
             output: Group
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { organizationId: string; groupId: string } } & { json: UpdateGroupDto }
+            input: { param: { organizationId: string; groupId: string } } & {
+              json: UpdateGroupDtoInput
+            }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { organizationId: string; groupId: string } } & { json: UpdateGroupDto }
+            input: { param: { organizationId: string; groupId: string } } & {
+              json: UpdateGroupDtoInput
+            }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { organizationId: string; groupId: string } } & { json: UpdateGroupDto }
+            input: { param: { organizationId: string; groupId: string } } & {
+              json: UpdateGroupDtoInput
+            }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { organizationId: string; groupId: string } } & { json: UpdateGroupDto }
+            input: { param: { organizationId: string; groupId: string } } & {
+              json: UpdateGroupDtoInput
+            }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -9465,7 +12358,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: CreateGroupMembershipDto
+              json: CreateGroupMembershipDtoInput
             }
             output: Group
             outputFormat: 'json'
@@ -9473,7 +12366,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: CreateGroupMembershipDto
+              json: CreateGroupMembershipDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -9481,7 +12374,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: CreateGroupMembershipDto
+              json: CreateGroupMembershipDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9489,7 +12382,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: CreateGroupMembershipDto
+              json: CreateGroupMembershipDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9497,7 +12390,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: CreateGroupMembershipDto
+              json: CreateGroupMembershipDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9507,10 +12400,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string; groupId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: UserlandUserOrganizationMembershipBaseList
@@ -9520,10 +12413,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string; groupId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -9533,10 +12426,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organizationId: string; groupId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -9546,7 +12439,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: PatchGroupMembershipsDto
+              json: PatchGroupMembershipsDtoInput
             }
             output: {}
             outputFormat: string
@@ -9554,7 +12447,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: PatchGroupMembershipsDto
+              json: PatchGroupMembershipsDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -9562,7 +12455,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: PatchGroupMembershipsDto
+              json: PatchGroupMembershipsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9570,7 +12463,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: PatchGroupMembershipsDto
+              json: PatchGroupMembershipsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9578,7 +12471,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organizationId: string; groupId: string } } & {
-              json: PatchGroupMembershipsDto
+              json: PatchGroupMembershipsDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9613,10 +12506,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: OrganizationAuthorizedConnectApplicationList
@@ -9626,10 +12519,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -9639,10 +12532,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -9655,10 +12548,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: ConnectedAccount
             outputFormat: 'json'
@@ -9666,10 +12556,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9677,10 +12564,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: {}
             outputFormat: string
@@ -9688,10 +12572,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9699,10 +12580,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: AccountSelectionRequiredErrorBody
             outputFormat: 'json'
@@ -9711,10 +12589,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: {}
             outputFormat: string
@@ -9722,10 +12597,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9733,10 +12605,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: {}
             outputFormat: string
@@ -9744,10 +12613,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -9755,10 +12621,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: AccountSelectionRequiredErrorBody
             outputFormat: 'json'
@@ -9766,10 +12629,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-              }
+              query: { supports_multiple_connections?: string; connected_account_id?: string }
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -9778,48 +12638,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & { json: CreateOrganizationConnectedAccountDto }
+              header: { 'idempotency-key'?: string }
+            } & { json: CreateOrganizationConnectedAccountDtoInput }
             output: ConnectedAccount
             outputFormat: 'json'
             status: 201
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & { json: CreateOrganizationConnectedAccountDto }
+              header: { 'idempotency-key'?: string }
+            } & { json: CreateOrganizationConnectedAccountDtoInput }
             output: {}
             outputFormat: string
             status: 401
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & { json: CreateOrganizationConnectedAccountDto }
+              header: { 'idempotency-key'?: string }
+            } & { json: CreateOrganizationConnectedAccountDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & { json: CreateOrganizationConnectedAccountDto }
+              header: { 'idempotency-key'?: string }
+            } & { json: CreateOrganizationConnectedAccountDtoInput }
             output: ConnectionCreationNotFoundErrorBody | ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & { json: CreateOrganizationConnectedAccountDto }
+              header: { 'idempotency-key'?: string }
+            } & { json: CreateOrganizationConnectedAccountDtoInput }
             output: ConnectionCreationConflictErrorBody | ErrorBody
             outputFormat: 'json'
             status: 409
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & { json: CreateOrganizationConnectedAccountDto }
+              header: { 'idempotency-key'?: string }
+            } & { json: CreateOrganizationConnectedAccountDtoInput }
             output:
               | OrganizationConnectedAccountImportErrorBody
               | InvalidRequestParametersErrorBodyWithErrors
@@ -9828,8 +12688,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; slug: string } } & {
-              header: { 'idempotency-key'?: string | undefined }
-            } & { json: CreateOrganizationConnectedAccountDto }
+              header: { 'idempotency-key'?: string }
+            } & { json: CreateOrganizationConnectedAccountDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 503
@@ -9838,11 +12698,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; slug: string } } & {
               query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: OrganizationConnectedAccountDto }
+            } & { json: OrganizationConnectedAccountDtoInput }
             output: ConnectedAccount
             outputFormat: 'json'
             status: 200
@@ -9850,11 +12710,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; slug: string } } & {
               query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: OrganizationConnectedAccountDto }
+            } & { json: OrganizationConnectedAccountDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
@@ -9862,11 +12722,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; slug: string } } & {
               query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: OrganizationConnectedAccountDto }
+            } & { json: OrganizationConnectedAccountDtoInput }
             output: {}
             outputFormat: string
             status: 401
@@ -9874,11 +12734,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; slug: string } } & {
               query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: OrganizationConnectedAccountDto }
+            } & { json: OrganizationConnectedAccountDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
@@ -9886,11 +12746,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; slug: string } } & {
               query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: OrganizationConnectedAccountDto }
+            } & { json: OrganizationConnectedAccountDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
@@ -9898,11 +12758,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; slug: string } } & {
               query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: OrganizationConnectedAccountDto }
+            } & { json: OrganizationConnectedAccountDtoInput }
             output: AccountSelectionRequiredErrorBody
             outputFormat: 'json'
             status: 409
@@ -9910,11 +12770,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; slug: string } } & {
               query: {
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: OrganizationConnectedAccountDto }
+            } & { json: OrganizationConnectedAccountDtoInput }
             output: ErrorBodyWithCodeErrors
             outputFormat: 'json'
             status: 422
@@ -9925,7 +12785,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { organization_id: string } } & {
-              query: { supports_multiple_connections?: boolean | undefined }
+              query: { supports_multiple_connections?: string }
             }
             output: DataIntegrationsListResponse
             outputFormat: 'json'
@@ -9933,7 +12793,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              query: { supports_multiple_connections?: boolean | undefined }
+              query: { supports_multiple_connections?: string }
             }
             output: {}
             outputFormat: string
@@ -9941,8 +12801,141 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              query: { supports_multiple_connections?: boolean | undefined }
+              query: { supports_multiple_connections?: string }
             }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+    }
+  } & {
+    '/organizations/:organization_id/issuer_trusts': {
+      $get:
+        | {
+            input: { param: { organization_id: string } }
+            output: IssuerTrustList
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+      $post:
+        | {
+            input: { param: { organization_id: string } } & {
+              json: { type: 'claude'; issuer: string }
+            }
+            output: IssuerTrust
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              json: { type: 'claude'; issuer: string }
+            }
+            output: ErrorBodyWithCode
+            outputFormat: 'json'
+            status: 400
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              json: { type: 'claude'; issuer: string }
+            }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 403
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              json: { type: 'claude'; issuer: string }
+            }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              json: { type: 'claude'; issuer: string }
+            }
+            output: ErrorBodyWithCodeErrors
+            outputFormat: 'json'
+            status: 422
+          }
+    }
+  } & {
+    '/organizations/:organization_id/issuer_trusts/:id': {
+      $get:
+        | {
+            input: { param: { organization_id: string; id: string } }
+            output: IssuerTrust
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { organization_id: string; id: string } }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+      $patch:
+        | {
+            input: { param: { organization_id: string; id: string } } & {
+              json: { enabled?: boolean }
+            }
+            output: IssuerTrust
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { organization_id: string; id: string } } & {
+              json: { enabled?: boolean }
+            }
+            output: ErrorBodyWithCode
+            outputFormat: 'json'
+            status: 400
+          }
+        | {
+            input: { param: { organization_id: string; id: string } } & {
+              json: { enabled?: boolean }
+            }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 403
+          }
+        | {
+            input: { param: { organization_id: string; id: string } } & {
+              json: { enabled?: boolean }
+            }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+        | {
+            input: { param: { organization_id: string; id: string } } & {
+              json: { enabled?: boolean }
+            }
+            output: ErrorBodyWithCodeErrors
+            outputFormat: 'json'
+            status: 422
+          }
+      $delete:
+        | {
+            input: { param: { organization_id: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { organization_id: string; id: string } }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 403
+          }
+        | {
+            input: { param: { organization_id: string; id: string } }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
@@ -9971,37 +12964,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { organization_id: string } } & { json: CreateItContactDto }
+            input: { param: { organization_id: string } } & { json: CreateItContactDtoInput }
             output: ItContact
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { organization_id: string } } & { json: CreateItContactDto }
+            input: { param: { organization_id: string } } & { json: CreateItContactDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { organization_id: string } } & { json: CreateItContactDto }
+            input: { param: { organization_id: string } } & { json: CreateItContactDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { organization_id: string } } & { json: CreateItContactDto }
+            input: { param: { organization_id: string } } & { json: CreateItContactDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { organization_id: string } } & { json: CreateItContactDto }
+            input: { param: { organization_id: string } } & { json: CreateItContactDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { organization_id: string } } & { json: CreateItContactDto }
+            input: { param: { organization_id: string } } & { json: CreateItContactDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 503
@@ -10040,7 +13033,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { organization_id: string; contact_id: string } } & {
-              json: InviteItContactDto
+              json: InviteItContactDtoInput
             }
             output: {}
             outputFormat: string
@@ -10048,7 +13041,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; contact_id: string } } & {
-              json: InviteItContactDto
+              json: InviteItContactDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -10056,7 +13049,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; contact_id: string } } & {
-              json: InviteItContactDto
+              json: InviteItContactDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -10064,7 +13057,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; contact_id: string } } & {
-              json: InviteItContactDto
+              json: InviteItContactDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -10072,7 +13065,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; contact_id: string } } & {
-              json: InviteItContactDto
+              json: InviteItContactDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -10080,7 +13073,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; contact_id: string } } & {
-              json: InviteItContactDto
+              json: InviteItContactDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -10088,7 +13081,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; contact_id: string } } & {
-              json: InviteItContactDto
+              json: InviteItContactDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -10096,7 +13089,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; contact_id: string } } & {
-              json: InviteItContactDto
+              json: InviteItContactDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -10134,14 +13127,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/platform/teams': {
       $post:
-        | { input: { json: CreateTeamDto }; output: Team; outputFormat: 'json'; status: 201 }
+        | { input: { json: CreateTeamDtoInput }; output: Team; outputFormat: 'json'; status: 201 }
         | {
-            input: { json: CreateTeamDto }
+            input: { json: CreateTeamDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
-        | { input: { json: CreateTeamDto }; output: ErrorBody; outputFormat: 'json'; status: 422 }
+        | {
+            input: { json: CreateTeamDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/platform/teams/:team_id': {
@@ -10158,28 +13156,58 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/portal/generate_link': {
       $post:
         | {
-            input: { json: GenerateLinkDto }
+            input: { json: GenerateLinkDtoInput }
             output: PortalLinkResponse
             outputFormat: 'json'
             status: 201
           }
-        | { input: { json: GenerateLinkDto }; output: ErrorBody; outputFormat: 'json'; status: 400 }
         | {
-            input: { json: GenerateLinkDto }
+            input: { json: GenerateLinkDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 400
+          }
+        | {
+            input: { json: GenerateLinkDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 402
           }
-        | { input: { json: GenerateLinkDto }; output: ErrorBody; outputFormat: 'json'; status: 403 }
-        | { input: { json: GenerateLinkDto }; output: ErrorBody; outputFormat: 'json'; status: 404 }
-        | { input: { json: GenerateLinkDto }; output: ErrorBody; outputFormat: 'json'; status: 422 }
+        | {
+            input: { json: GenerateLinkDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 403
+          }
+        | {
+            input: { json: GenerateLinkDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+        | {
+            input: { json: GenerateLinkDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/portal/revoke_link': {
       $post:
-        | { input: { json: RevokeLinkDto }; output: {}; outputFormat: string; status: 200 }
-        | { input: { json: RevokeLinkDto }; output: ErrorBody; outputFormat: 'json'; status: 404 }
-        | { input: { json: RevokeLinkDto }; output: ErrorBody; outputFormat: 'json'; status: 422 }
+        | { input: { json: RevokeLinkDtoInput }; output: {}; outputFormat: string; status: 200 }
+        | {
+            input: { json: RevokeLinkDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+        | {
+            input: { json: RevokeLinkDtoInput }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/radar/attempts': {
@@ -10200,7 +13228,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'SSO'
                   | 'Other'
                 action: 'sign-up' | 'sign-in'
-                signals_id?: string | undefined
+                signals_id?: string
               }
             }
             output: RadarStandaloneResponse
@@ -10223,7 +13251,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'SSO'
                   | 'Other'
                 action: 'sign-up' | 'sign-in'
-                signals_id?: string | undefined
+                signals_id?: string
               }
             }
             output: ErrorBody
@@ -10246,7 +13274,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'SSO'
                   | 'Other'
                 action: 'sign-up' | 'sign-in'
-                signals_id?: string | undefined
+                signals_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -10259,10 +13287,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { id: string } } & {
-              json: {
-                challenge_status?: 'success' | undefined
-                attempt_status?: 'success' | undefined
-              }
+              json: { challenge_status?: 'success'; attempt_status?: 'success' }
             }
             output: {}
             outputFormat: string
@@ -10270,10 +13295,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              json: {
-                challenge_status?: 'success' | undefined
-                attempt_status?: 'success' | undefined
-              }
+              json: { challenge_status?: 'success'; attempt_status?: 'success' }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -10281,10 +13303,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              json: {
-                challenge_status?: 'success' | undefined
-                attempt_status?: 'success' | undefined
-              }
+              json: { challenge_status?: 'success'; attempt_status?: 'success' }
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -10292,15 +13311,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              json: {
-                challenge_status?: 'success' | undefined
-                attempt_status?: 'success' | undefined
-              }
+              json: { challenge_status?: 'success'; attempt_status?: 'success' }
             }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
+    }
+  } & {
+    '/radar/detections/:id': {
+      $get:
+        | {
+            input: { param: { id: string } }
+            output: RadarDetection
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } }
+            output: ErrorBodyWithCode
+            outputFormat: 'json'
+            status: 402
+          }
+        | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 404 }
     }
   } & {
     '/radar/lists/:type/:action': {
@@ -10457,10 +13490,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                provider_scopes?: string[] | undefined
-                provider_query_params?: { [x: string]: string } | undefined
+                provider_scopes?: unknown
+                provider_query_params?: { [key: string]: string }
                 client_id: string
-                domain?: string | undefined
+                domain?: string
                 provider?:
                   | 'AppleOAuth'
                   | 'BitbucketOAuth'
@@ -10475,16 +13508,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'VercelMarketplaceOAuth'
                   | 'VercelOAuth'
                   | 'XeroOAuth'
-                  | undefined
                 redirect_uri: string
                 response_type: 'code'
-                state?: string | undefined
-                connection?: string | undefined
-                organization?: string | undefined
-                domain_hint?: string | undefined
-                login_hint?: string | undefined
-                nonce?: string | undefined
-                prompt?: 'login' | undefined
+                state?: string
+                connection?: string
+                organization?: string
+                domain_hint?: string
+                login_hint?: string
+                nonce?: string
+                prompt?: 'login'
               }
             }
             output: SsoAuthorizeUrlResponse
@@ -10494,10 +13526,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                provider_scopes?: string[] | undefined
-                provider_query_params?: { [x: string]: string } | undefined
+                provider_scopes?: unknown
+                provider_query_params?: { [key: string]: string }
                 client_id: string
-                domain?: string | undefined
+                domain?: string
                 provider?:
                   | 'AppleOAuth'
                   | 'BitbucketOAuth'
@@ -10512,16 +13544,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'VercelMarketplaceOAuth'
                   | 'VercelOAuth'
                   | 'XeroOAuth'
-                  | undefined
                 redirect_uri: string
                 response_type: 'code'
-                state?: string | undefined
-                connection?: string | undefined
-                organization?: string | undefined
-                domain_hint?: string | undefined
-                login_hint?: string | undefined
-                nonce?: string | undefined
-                prompt?: 'login' | undefined
+                state?: string
+                connection?: string
+                organization?: string
+                domain_hint?: string
+                login_hint?: string
+                nonce?: string
+                prompt?: 'login'
               }
             }
             output: {}
@@ -10595,10 +13626,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               query: {
                 client_id: string
                 client_secret: string
-                code?: string | undefined
+                code?: string
                 grant_type: 'authorization_code' | 'urn:ietf:params:oauth:grant-type:token-exchange'
               }
-            } & { json: TokenQueryDto }
+            } & { json: TokenQueryDtoInput }
             output: SsoTokenResponse
             outputFormat: 'json'
             status: 200
@@ -10608,10 +13639,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               query: {
                 client_id: string
                 client_secret: string
-                code?: string | undefined
+                code?: string
                 grant_type: 'authorization_code' | 'urn:ietf:params:oauth:grant-type:token-exchange'
               }
-            } & { json: TokenQueryDto }
+            } & { json: TokenQueryDtoInput }
             output: {}
             outputFormat: string
             status: 201
@@ -10621,10 +13652,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               query: {
                 client_id: string
                 client_secret: string
-                code?: string | undefined
+                code?: string
                 grant_type: 'authorization_code' | 'urn:ietf:params:oauth:grant-type:token-exchange'
               }
-            } & { json: TokenQueryDto }
+            } & { json: TokenQueryDtoInput }
             output: OAuthErrorBody
             outputFormat: 'json'
             status: 400
@@ -10634,10 +13665,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               query: {
                 client_id: string
                 client_secret: string
-                code?: string | undefined
+                code?: string
                 grant_type: 'authorization_code' | 'urn:ietf:params:oauth:grant-type:token-exchange'
               }
-            } & { json: TokenQueryDto }
+            } & { json: TokenQueryDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
@@ -10647,10 +13678,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               query: {
                 client_id: string
                 client_secret: string
-                code?: string | undefined
+                code?: string
                 grant_type: 'authorization_code' | 'urn:ietf:params:oauth:grant-type:token-exchange'
               }
-            } & { json: TokenQueryDto }
+            } & { json: TokenQueryDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -10664,15 +13695,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json:
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'authorization_code'
                     code: string
-                    code_verifier?: string | undefined
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    code_verifier?: string
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -10680,22 +13711,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'password'
                     email: string
                     password: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'refresh_token'
                     refresh_token: string
-                    organization_id?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    organization_id?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -10703,11 +13734,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:magic-auth:code'
                     code: string
                     email: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
@@ -10715,9 +13746,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-verification:code'
                     code: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -10726,9 +13757,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     pending_authentication_token: string
                     authentication_challenge_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -10736,10 +13767,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-completion'
                     email_completion_token: string
                     email: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -10747,9 +13778,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:organization-selection'
                     pending_authentication_token: string
                     organization_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -10758,29 +13789,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     radar_challenge_id: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     client_secret: string
                     grant_type: 'urn:workos:oauth:grant-type:radar-sms-challenge:code'
                     code: string
-                    verification_id?: string | undefined
-                    phone_number?: string | undefined
+                    verification_id?: string
+                    phone_number?: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
                     device_code: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
             }
             output: UserlandAuthenticateResponse
@@ -10792,15 +13823,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json:
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'authorization_code'
                     code: string
-                    code_verifier?: string | undefined
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    code_verifier?: string
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -10808,22 +13839,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'password'
                     email: string
                     password: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'refresh_token'
                     refresh_token: string
-                    organization_id?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    organization_id?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -10831,11 +13862,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:magic-auth:code'
                     code: string
                     email: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
@@ -10843,9 +13874,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-verification:code'
                     code: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -10854,9 +13885,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     pending_authentication_token: string
                     authentication_challenge_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -10864,10 +13895,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-completion'
                     email_completion_token: string
                     email: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -10875,9 +13906,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:organization-selection'
                     pending_authentication_token: string
                     organization_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -10886,29 +13917,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     radar_challenge_id: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     client_secret: string
                     grant_type: 'urn:workos:oauth:grant-type:radar-sms-challenge:code'
                     code: string
-                    verification_id?: string | undefined
-                    phone_number?: string | undefined
+                    verification_id?: string
+                    phone_number?: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
                     device_code: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
             }
             output:
@@ -10946,13 +13977,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               | OrganizationMembershipNotFoundOAuthErrorBody
               | MfaEnrollmentOAuthErrorBody
               | TokenTooBigOAuthErrorBody
-              | {
-                  error: 'sso_required'
-                  error_description: string
+              | ({ error: 'sso_required'; error_description: string } & {
                   connection_ids: string[]
                   email: string
                   pending_authentication_token?: string | undefined
-                }
+                })
             outputFormat: 'json'
             status: 400
           }
@@ -10961,15 +13990,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json:
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'authorization_code'
                     code: string
-                    code_verifier?: string | undefined
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    code_verifier?: string
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -10977,22 +14006,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'password'
                     email: string
                     password: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'refresh_token'
                     refresh_token: string
-                    organization_id?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    organization_id?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11000,11 +14029,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:magic-auth:code'
                     code: string
                     email: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
@@ -11012,9 +14041,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-verification:code'
                     code: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11023,9 +14052,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     pending_authentication_token: string
                     authentication_challenge_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11033,10 +14062,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-completion'
                     email_completion_token: string
                     email: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -11044,9 +14073,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:organization-selection'
                     pending_authentication_token: string
                     organization_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11055,29 +14084,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     radar_challenge_id: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     client_secret: string
                     grant_type: 'urn:workos:oauth:grant-type:radar-sms-challenge:code'
                     code: string
-                    verification_id?: string | undefined
-                    phone_number?: string | undefined
+                    verification_id?: string
+                    phone_number?: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
                     device_code: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
             }
             output:
@@ -11090,7 +14119,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               | OrganizationSelectionRequiredErrorBody
               | PasskeyProgressiveEnrollmentErrorBody
               | RadarChallengeErrorBody
+              | RadarEmailChallengeErrorBody
               | RadarSignUpChallengeErrorBody
+              | RadarSmsChallengeErrorBody
               | RadarSmsSignInChallengeErrorBody
               | ApplicationConsentRequiredErrorBody
               | PolicyDeniedErrorBody
@@ -11103,15 +14134,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json:
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'authorization_code'
                     code: string
-                    code_verifier?: string | undefined
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    code_verifier?: string
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -11119,22 +14150,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'password'
                     email: string
                     password: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'refresh_token'
                     refresh_token: string
-                    organization_id?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    organization_id?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11142,11 +14173,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:magic-auth:code'
                     code: string
                     email: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
@@ -11154,9 +14185,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-verification:code'
                     code: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11165,9 +14196,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     pending_authentication_token: string
                     authentication_challenge_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11175,10 +14206,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-completion'
                     email_completion_token: string
                     email: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -11186,9 +14217,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:organization-selection'
                     pending_authentication_token: string
                     organization_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11197,29 +14228,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     radar_challenge_id: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     client_secret: string
                     grant_type: 'urn:workos:oauth:grant-type:radar-sms-challenge:code'
                     code: string
-                    verification_id?: string | undefined
-                    phone_number?: string | undefined
+                    verification_id?: string
+                    phone_number?: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
                     device_code: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
             }
             output: ErrorBody
@@ -11231,15 +14262,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json:
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'authorization_code'
                     code: string
-                    code_verifier?: string | undefined
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    code_verifier?: string
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -11247,22 +14278,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'password'
                     email: string
                     password: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'refresh_token'
                     refresh_token: string
-                    organization_id?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    organization_id?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11270,11 +14301,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:magic-auth:code'
                     code: string
                     email: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
@@ -11282,9 +14313,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-verification:code'
                     code: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11293,9 +14324,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     pending_authentication_token: string
                     authentication_challenge_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11303,10 +14334,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-completion'
                     email_completion_token: string
                     email: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -11314,9 +14345,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:organization-selection'
                     pending_authentication_token: string
                     organization_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11325,29 +14356,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     radar_challenge_id: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     client_secret: string
                     grant_type: 'urn:workos:oauth:grant-type:radar-sms-challenge:code'
                     code: string
-                    verification_id?: string | undefined
-                    phone_number?: string | undefined
+                    verification_id?: string
+                    phone_number?: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
                     device_code: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
             }
             output: ErrorBodyWithCode
@@ -11359,15 +14390,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json:
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'authorization_code'
                     code: string
-                    code_verifier?: string | undefined
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    code_verifier?: string
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -11375,22 +14406,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'password'
                     email: string
                     password: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
-                    client_secret?: string | undefined
+                    client_secret?: string
                     grant_type: 'refresh_token'
                     refresh_token: string
-                    organization_id?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    organization_id?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11398,11 +14429,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:magic-auth:code'
                     code: string
                     email: string
-                    invitation_token?: string | undefined
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    radar_auth_attempt_id?: string | undefined
+                    invitation_token?: string
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    radar_auth_attempt_id?: string
                   }
                 | {
                     client_id: string
@@ -11410,9 +14441,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-verification:code'
                     code: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11421,9 +14452,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     pending_authentication_token: string
                     authentication_challenge_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11431,10 +14462,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:email-completion'
                     email_completion_token: string
                     email: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
-                    signals_id?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
+                    signals_id?: string
                   }
                 | {
                     client_id: string
@@ -11442,9 +14473,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     grant_type: 'urn:workos:oauth:grant-type:organization-selection'
                     pending_authentication_token: string
                     organization_id: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
@@ -11453,29 +14484,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     code: string
                     radar_challenge_id: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     client_secret: string
                     grant_type: 'urn:workos:oauth:grant-type:radar-sms-challenge:code'
                     code: string
-                    verification_id?: string | undefined
-                    phone_number?: string | undefined
+                    verification_id?: string
+                    phone_number?: string
                     pending_authentication_token: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
                 | {
                     client_id: string
                     grant_type: 'urn:ietf:params:oauth:grant-type:device_code'
                     device_code: string
-                    ip_address?: string | undefined
-                    device_id?: string | undefined
-                    user_agent?: string | undefined
+                    ip_address?: string
+                    device_id?: string
+                    user_agent?: string
                   }
             }
             output:
@@ -11490,19 +14521,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/authkit_oauth_resources': {
       $post:
         | {
-            input: { json: CreateAuthkitOauthResourceDto }
+            input: { json: CreateAuthkitOauthResourceDtoInput }
             output: AuthkitOauthResource
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateAuthkitOauthResourceDto }
+            input: { json: CreateAuthkitOauthResourceDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateAuthkitOauthResourceDto }
+            input: { json: CreateAuthkitOauthResourceDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -11511,27 +14542,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: AuthkitOauthResource[] | undefined
-            }
+            } & { data?: AuthkitOauthResource[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -11552,16 +14582,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                code_challenge_method?: 'S256' | undefined
-                code_challenge?: string | undefined
-                domain_hint?: string | undefined
-                connection_id?: string | undefined
-                provider_query_params?: { [x: string]: string } | undefined
-                provider_scopes?: string[] | undefined
-                invitation_token?: string | undefined
-                max_age?: number | undefined
-                screen_hint?: 'sign-up' | 'sign-in' | undefined
-                login_hint?: string | undefined
+                code_challenge_method?: 'S256'
+                code_challenge?: string
+                domain_hint?: string
+                connection_id?: string
+                provider_query_params?: { [key: string]: string }
+                provider_scopes?: unknown
+                invitation_token?: string
+                max_age?: unknown
+                screen_hint?: 'sign-up' | 'sign-in'
+                login_hint?: string
                 provider?:
                   | 'authkit'
                   | 'AppleOAuth'
@@ -11577,10 +14607,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'VercelMarketplaceOAuth'
                   | 'VercelOAuth'
                   | 'XeroOAuth'
-                  | undefined
-                prompt?: string | undefined
-                state?: string | undefined
-                organization_id?: string | undefined
+                prompt?: string
+                state?: string
+                organization_id?: string
                 response_type: 'code'
                 redirect_uri: string
                 client_id: string
@@ -11593,16 +14622,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                code_challenge_method?: 'S256' | undefined
-                code_challenge?: string | undefined
-                domain_hint?: string | undefined
-                connection_id?: string | undefined
-                provider_query_params?: { [x: string]: string } | undefined
-                provider_scopes?: string[] | undefined
-                invitation_token?: string | undefined
-                max_age?: number | undefined
-                screen_hint?: 'sign-up' | 'sign-in' | undefined
-                login_hint?: string | undefined
+                code_challenge_method?: 'S256'
+                code_challenge?: string
+                domain_hint?: string
+                connection_id?: string
+                provider_query_params?: { [key: string]: string }
+                provider_scopes?: unknown
+                invitation_token?: string
+                max_age?: unknown
+                screen_hint?: 'sign-up' | 'sign-in'
+                login_hint?: string
                 provider?:
                   | 'authkit'
                   | 'AppleOAuth'
@@ -11618,10 +14647,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'VercelMarketplaceOAuth'
                   | 'VercelOAuth'
                   | 'XeroOAuth'
-                  | undefined
-                prompt?: string | undefined
-                state?: string | undefined
-                organization_id?: string | undefined
+                prompt?: string
+                state?: string
+                organization_id?: string
                 response_type: 'code'
                 redirect_uri: string
                 client_id: string
@@ -11658,19 +14686,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/cors_origins': {
       $post:
         | {
-            input: { json: CreateCorsOriginDto }
+            input: { json: CreateCorsOriginDtoInput }
             output: CorsOriginResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateCorsOriginDto }
+            input: { json: CreateCorsOriginDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { json: CreateCorsOriginDto }
+            input: { json: CreateCorsOriginDtoInput }
             output: ErrorBodyWithConstraintsPropertyErrors
             outputFormat: 'json'
             status: 422
@@ -11679,33 +14707,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: CorsOriginResponse[] | undefined
-            }
+            } & { data?: CorsOriginResponse[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
             outputFormat: 'json'
             status: 401
           }
+    }
+  } & {
+    '/user_management/cors_origins/:id': {
+      $delete:
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: ErrorBody; outputFormat: 'json'; status: 404 }
     }
   } & {
     '/user_management/email_verification/:id': {
@@ -11724,12 +14758,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                email?: string
               }
             }
             output: UserlandUserInviteList
@@ -11739,12 +14773,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                email?: string
               }
             }
             output: ErrorBodyWithCode
@@ -11753,25 +14787,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: CreateUserlandUserInviteOptionsDto }
+            input: { json: CreateUserlandUserInviteOptionsDtoInput }
             output: UserlandUserInvite
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateUserlandUserInviteOptionsDto }
+            input: { json: CreateUserlandUserInviteOptionsDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateUserlandUserInviteOptionsDto }
+            input: { json: CreateUserlandUserInviteOptionsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateUserlandUserInviteOptionsDto }
+            input: { json: CreateUserlandUserInviteOptionsDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
@@ -11841,25 +14875,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/invitations/:id/resend': {
       $post:
         | {
-            input: { param: { id: string } } & { json: ResendUserlandUserInviteOptionsDto }
+            input: { param: { id: string } } & { json: ResendUserlandUserInviteOptionsDtoInput }
             output: UserlandUserInvite
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: ResendUserlandUserInviteOptionsDto }
+            input: { param: { id: string } } & { json: ResendUserlandUserInviteOptionsDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: ResendUserlandUserInviteOptionsDto }
+            input: { param: { id: string } } & { json: ResendUserlandUserInviteOptionsDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: ResendUserlandUserInviteOptionsDto }
+            input: { param: { id: string } } & { json: ResendUserlandUserInviteOptionsDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
@@ -11904,13 +14938,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ErrorBody; outputFormat: 'json'; status: 404 }
       $put:
         | {
-            input: { json: UpdateJwtTemplateDto }
+            input: { json: UpdateJwtTemplateDtoInput }
             output: JwtTemplate
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: UpdateJwtTemplateDto }
+            input: { json: UpdateJwtTemplateDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
@@ -11920,23 +14954,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/magic_auth': {
       $post:
         | {
-            input: { json: CreateUserlandMagicCodeAndReturnDto }
-            output: {
-              object: 'magic_auth'
-              id: string
-              user_id: string
-              email: string
-              expires_at: string
-              created_at: string
-              updated_at: string
-              code: string
-              radar_auth_attempt_id?: string | undefined
-            }
+            input: { json: CreateUserlandMagicCodeAndReturnDtoInput }
+            output: MagicAuth & { radar_auth_attempt_id?: string | undefined }
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateUserlandMagicCodeAndReturnDto }
+            input: { json: CreateUserlandMagicCodeAndReturnDtoInput }
             output:
               | InvitationInvalidOAuthErrorBody
               | AuthenticationMethodNotAllowedOAuthErrorBody
@@ -11946,19 +14970,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { json: CreateUserlandMagicCodeAndReturnDto }
+            input: { json: CreateUserlandMagicCodeAndReturnDtoInput }
             output: PolicyDeniedErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateUserlandMagicCodeAndReturnDto }
+            input: { json: CreateUserlandMagicCodeAndReturnDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { json: CreateUserlandMagicCodeAndReturnDto }
+            input: { json: CreateUserlandMagicCodeAndReturnDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 429
@@ -11976,13 +15000,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                statuses?: ('active' | 'inactive' | 'pending')[] | undefined
-                user_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                statuses?: unknown
+                user_id?: string
               }
             }
             output: UserlandUserOrganizationMembershipList
@@ -11992,13 +15016,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                statuses?: ('active' | 'inactive' | 'pending')[] | undefined
-                user_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                statuses?: unknown
+                user_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -12008,13 +15032,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                statuses?: ('active' | 'inactive' | 'pending')[] | undefined
-                user_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                statuses?: unknown
+                user_id?: string
               }
             }
             output: ErrorBody
@@ -12024,13 +15048,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
-                statuses?: ('active' | 'inactive' | 'pending')[] | undefined
-                user_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
+                statuses?: unknown
+                user_id?: string
               }
             }
             output: ErrorBody
@@ -12039,7 +15063,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: CreateUserlandUserOrganizationMembershipDto }
+            input: { json: CreateUserlandUserOrganizationMembershipDtoInput }
             output: {
               object: 'organization_membership'
               id: string
@@ -12048,7 +15072,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               status: 'active' | 'inactive' | 'pending'
               directory_managed: boolean
               organization_name?: string | undefined
-              custom_attributes?: { [x: string]: { [x: string]: unknown } } | undefined
+              custom_attributes?: { [key: string]: any } | undefined
               created_at: string
               updated_at: string
               role: SlimRole
@@ -12059,19 +15083,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { json: CreateUserlandUserOrganizationMembershipDto }
+            input: { json: CreateUserlandUserOrganizationMembershipDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateUserlandUserOrganizationMembershipDto }
-            output: ErrorBody
+            input: { json: CreateUserlandUserOrganizationMembershipDtoInput }
+            output: EntitiesNotFoundErrorBodyWithIdsList | EntityNotFoundErrorBodyWithEntityId
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateUserlandUserOrganizationMembershipDto }
+            input: { json: CreateUserlandUserOrganizationMembershipDtoInput }
             output:
               | InvalidRequestParametersErrorBody
               | InvalidRoleErrorBody
@@ -12102,19 +15126,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { id: string } } & { json: UpdateUserlandUserOrganizationMembershipDto }
+            input: { param: { id: string } } & {
+              json: UpdateUserlandUserOrganizationMembershipDtoInput
+            }
             output: UserlandUserOrganizationMembership
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: UpdateUserlandUserOrganizationMembershipDto }
+            input: { param: { id: string } } & {
+              json: UpdateUserlandUserOrganizationMembershipDtoInput
+            }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: UpdateUserlandUserOrganizationMembershipDto }
+            input: { param: { id: string } } & {
+              json: UpdateUserlandUserOrganizationMembershipDtoInput
+            }
             output:
               | InvalidRequestParametersErrorBody
               | InvalidRoleErrorBody
@@ -12137,7 +15167,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               status: 'active' | 'inactive' | 'pending'
               directory_managed: boolean
               organization_name?: string | undefined
-              custom_attributes?: { [x: string]: { [x: string]: unknown } } | undefined
+              custom_attributes?: { [key: string]: any } | undefined
               created_at: string
               updated_at: string
               role: SlimRole
@@ -12190,10 +15220,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { omId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: GroupList
@@ -12203,10 +15233,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { omId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -12218,31 +15248,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/password_reset': {
       $post:
         | {
-            input: { json: CreatePasswordResetTokenDto }
+            input: { json: CreatePasswordResetTokenDtoInput }
             output: PasswordReset
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreatePasswordResetTokenDto }
+            input: { json: CreatePasswordResetTokenDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreatePasswordResetTokenDto }
+            input: { json: CreatePasswordResetTokenDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreatePasswordResetTokenDto }
+            input: { json: CreatePasswordResetTokenDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { json: CreatePasswordResetTokenDto }
+            input: { json: CreatePasswordResetTokenDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 429
@@ -12252,31 +15282,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/password_reset/confirm': {
       $post:
         | {
-            input: { json: CreatePasswordResetDto }
+            input: { json: CreatePasswordResetDtoInput }
             output: ResetPasswordResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreatePasswordResetDto }
+            input: { json: CreatePasswordResetDtoInput }
             output: ErrorBodyWithCodeErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreatePasswordResetDto }
+            input: { json: CreatePasswordResetDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreatePasswordResetDto }
+            input: { json: CreatePasswordResetDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreatePasswordResetDto }
+            input: { json: CreatePasswordResetDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
@@ -12296,7 +15326,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/user_management/radar_challenges': {
       $post: {
-        input: { json: SendRadarSmsChallengeDto }
+        input: { json: SendRadarSmsChallengeDtoInput }
         output: SendRadarSmsChallengeResponse
         outputFormat: 'json'
         status: 201
@@ -12317,25 +15347,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/redirect_uris': {
       $post:
         | {
-            input: { json: CreateRedirectUriDto }
+            input: { json: CreateRedirectUriDtoInput }
             output: RedirectUri
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateRedirectUriDto }
+            input: { json: CreateRedirectUriDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateRedirectUriDto }
+            input: { json: CreateRedirectUriDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateRedirectUriDto }
+            input: { json: CreateRedirectUriDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -12344,27 +15374,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: RedirectUri[] | undefined
-            }
+            } & { data?: RedirectUri[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -12384,19 +15413,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/sessions/logout': {
       $get:
         | {
-            input: { query: { session_id: string; return_to?: string | undefined } }
+            input: { query: { session_id: string; return_to?: string } }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { query: { session_id: string; return_to?: string | undefined } }
+            input: { query: { session_id: string; return_to?: string } }
             output: {}
             outputFormat: string
             status: 302
           }
         | {
-            input: { query: { session_id: string; return_to?: string | undefined } }
+            input: { query: { session_id: string; return_to?: string } }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -12406,13 +15435,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/sessions/revoke': {
       $post:
         | {
-            input: { json: UserlandRevokeSessionDto }
+            input: { json: UserlandRevokeSessionDtoInput }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { json: UserlandRevokeSessionDto }
+            input: { json: UserlandRevokeSessionDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
@@ -12424,13 +15453,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization?: string | undefined
-                organization_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization?: string
+                organization_id?: string
+                email?: string
               }
             }
             output: UserlandUserList
@@ -12440,13 +15469,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization?: string | undefined
-                organization_id?: string | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization?: string
+                organization_id?: string
+                email?: string
               }
             }
             output: ErrorBody
@@ -12455,29 +15484,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: CreateUserlandUserDto }
-            output: {
-              object: 'user'
-              id: string
-              first_name: string | null
-              last_name: string | null
-              name?: (string | null) | undefined
-              profile_picture_url: string | null
-              email: string
-              email_verified: boolean
-              external_id: string | null
-              metadata?: { [x: string]: string } | undefined
-              last_sign_in_at: string | null
-              locale?: (string | null) | undefined
-              created_at: string
-              updated_at: string
-              radar_auth_attempt_id?: string | undefined
-            }
+            input: { json: CreateUserlandUserDtoInput }
+            output: UserlandUser & { radar_auth_attempt_id?: string | undefined }
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateUserlandUserDto }
+            input: { json: CreateUserlandUserDtoInput }
             output:
               | PasswordStrengthErrorErrorBodyWithErrors
               | UserCreationErrorErrorBodyWithErrors
@@ -12486,23 +15499,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               | PasswordAndPasswordHashTypeProvidedErrorBody
               | PasswordSaltPositionRequiresPasswordHashErrorBody
               | InvalidMetadataErrorBody
+              | EmailDomainNotDeliverableErrorBody
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateUserlandUserDto }
+            input: { json: CreateUserlandUserDtoInput }
             output: PolicyDeniedErrorBody
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateUserlandUserDto }
+            input: { json: CreateUserlandUserDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateUserlandUserDto }
+            input: { json: CreateUserlandUserDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
@@ -12525,16 +15539,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/user_management/users/:id': {
-      $put:
+    '/user_management/users/identities/:provider/:idp_id': {
+      $get:
         | {
-            input: { param: { id: string } } & { json: UpdateUserlandUserDto }
+            input: { param: { provider: string; idp_id: string } }
             output: UserlandUser
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: UpdateUserlandUserDto }
+            input: { param: { provider: string; idp_id: string } }
+            output: ErrorBody
+            outputFormat: 'json'
+            status: 404
+          }
+        | {
+            input: { param: { provider: string; idp_id: string } }
+            output: ErrorBodyWithCodeFieldErrors
+            outputFormat: 'json'
+            status: 422
+          }
+    }
+  } & {
+    '/user_management/users/:id': {
+      $put:
+        | {
+            input: { param: { id: string } } & { json: UpdateUserlandUserDtoInput }
+            output: UserlandUser
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { json: UpdateUserlandUserDtoInput }
             output:
               | PasswordStrengthErrorErrorBodyWithErrors
               | InvalidPasswordHashErrorBody
@@ -12552,13 +15588,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: UpdateUserlandUserDto }
+            input: { param: { id: string } } & { json: UpdateUserlandUserDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { id: string } } & { json: UpdateUserlandUserDto }
+            input: { param: { id: string } } & { json: UpdateUserlandUserDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 503
@@ -12579,7 +15615,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/users/:id/email_change/confirm': {
       $post:
         | {
-            input: { param: { id: string } } & { json: ConfirmEmailChangeDto }
+            input: { param: { id: string } } & { json: ConfirmEmailChangeDtoInput }
             output: {
               object: 'email_change_confirmation'
               user: {
@@ -12592,7 +15628,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 email: string
                 email_verified: boolean
                 external_id: string | null
-                metadata?: { [x: string]: string } | undefined
+                metadata?: { [key: string]: string } | undefined
                 last_sign_in_at: string | null
                 locale?: (string | null) | undefined
                 created_at: string
@@ -12603,31 +15639,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: ConfirmEmailChangeDto }
+            input: { param: { id: string } } & { json: ConfirmEmailChangeDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: ConfirmEmailChangeDto }
+            input: { param: { id: string } } & { json: ConfirmEmailChangeDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: ConfirmEmailChangeDto }
+            input: { param: { id: string } } & { json: ConfirmEmailChangeDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { id: string } } & { json: ConfirmEmailChangeDto }
+            input: { param: { id: string } } & { json: ConfirmEmailChangeDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { id: string } } & { json: ConfirmEmailChangeDto }
+            input: { param: { id: string } } & { json: ConfirmEmailChangeDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 429
@@ -12637,31 +15673,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/users/:id/email_change/send': {
       $post:
         | {
-            input: { param: { id: string } } & { json: SendEmailChangeDto }
+            input: { param: { id: string } } & { json: SendEmailChangeDtoInput }
             output: EmailChange
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: SendEmailChangeDto }
+            input: { param: { id: string } } & { json: SendEmailChangeDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: SendEmailChangeDto }
+            input: { param: { id: string } } & { json: SendEmailChangeDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { id: string } } & { json: SendEmailChangeDto }
+            input: { param: { id: string } } & { json: SendEmailChangeDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { id: string } } & { json: SendEmailChangeDto }
+            input: { param: { id: string } } & { json: SendEmailChangeDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 429
@@ -12671,25 +15707,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/users/:id/email_verification/confirm': {
       $post:
         | {
-            input: { param: { id: string } } & { json: VerifyEmailAddressDto }
+            input: { param: { id: string } } & { json: VerifyEmailAddressDtoInput }
             output: VerifyEmailResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: VerifyEmailAddressDto }
+            input: { param: { id: string } } & { json: VerifyEmailAddressDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: VerifyEmailAddressDto }
+            input: { param: { id: string } } & { json: VerifyEmailAddressDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: VerifyEmailAddressDto }
+            input: { param: { id: string } } & { json: VerifyEmailAddressDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
@@ -12699,31 +15735,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/user_management/users/:id/email_verification/send': {
       $post:
         | {
-            input: { param: { id: string } } & { json: SendVerificationEmailDto }
+            input: { param: { id: string } } & { json: SendVerificationEmailDtoInput }
             output: SendVerificationEmailResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: SendVerificationEmailDto }
+            input: { param: { id: string } } & { json: SendVerificationEmailDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: SendVerificationEmailDto }
+            input: { param: { id: string } } & { json: SendVerificationEmailDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: SendVerificationEmailDto }
+            input: { param: { id: string } } & { json: SendVerificationEmailDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { id: string } } & { json: SendVerificationEmailDto }
+            input: { param: { id: string } } & { json: SendVerificationEmailDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 429
@@ -12763,15 +15799,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
+            } & {
               data?:
                 | {
                     object: 'session'
@@ -12806,10 +15843,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -12819,10 +15856,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBodyWithCode
@@ -12836,11 +15873,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { userId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
               }
             }
             output: UserApiKeyList
@@ -12850,11 +15887,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { userId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                organization_id?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                organization_id?: string
               }
             }
             output: ErrorBody
@@ -12863,25 +15900,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { userId: string } } & { json: CreateUserApiKeyDto }
+            input: { param: { userId: string } } & { json: CreateUserApiKeyDtoInput }
             output: UserApiKeyWithValue
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { userId: string } } & { json: CreateUserApiKeyDto }
+            input: { param: { userId: string } } & { json: CreateUserApiKeyDtoInput }
             output: ErrorBodyWithCodeFieldErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { userId: string } } & { json: CreateUserApiKeyDto }
+            input: { param: { userId: string } } & { json: CreateUserApiKeyDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { userId: string } } & { json: CreateUserApiKeyDto }
+            input: { param: { userId: string } } & { json: CreateUserApiKeyDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422
@@ -12893,10 +15930,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { userId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: FlagList
@@ -12906,10 +15943,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { userId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -12923,10 +15960,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: AuthorizedConnectApplicationList
@@ -12936,10 +15973,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -12949,10 +15986,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -12982,9 +16019,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: ConnectedAccount
@@ -12994,9 +16031,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: ErrorBody
@@ -13006,9 +16043,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: {}
@@ -13018,9 +16055,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: ErrorBody
@@ -13030,9 +16067,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: AccountSelectionRequiredErrorBody
@@ -13043,9 +16080,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: {}
@@ -13055,9 +16092,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: ErrorBody
@@ -13067,9 +16104,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: {}
@@ -13079,9 +16116,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: ErrorBody
@@ -13091,9 +16128,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: AccountSelectionRequiredErrorBody
@@ -13103,9 +16140,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
               }
             }
             output: ErrorBodyWithCode
@@ -13115,9 +16152,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { user_id: string; slug: string } } & {
-              query: { organization_id?: string | undefined }
-            } & { header: { 'idempotency-key'?: string | undefined } } & {
-              json: CreateConnectedAccountDto
+              query: { organization_id?: string }
+            } & { header: { 'idempotency-key'?: string } } & {
+              json: CreateConnectedAccountDtoInput
             }
             output: ConnectedAccount
             outputFormat: 'json'
@@ -13125,9 +16162,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; slug: string } } & {
-              query: { organization_id?: string | undefined }
-            } & { header: { 'idempotency-key'?: string | undefined } } & {
-              json: CreateConnectedAccountDto
+              query: { organization_id?: string }
+            } & { header: { 'idempotency-key'?: string } } & {
+              json: CreateConnectedAccountDtoInput
             }
             output: {}
             outputFormat: string
@@ -13135,9 +16172,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; slug: string } } & {
-              query: { organization_id?: string | undefined }
-            } & { header: { 'idempotency-key'?: string | undefined } } & {
-              json: CreateConnectedAccountDto
+              query: { organization_id?: string }
+            } & { header: { 'idempotency-key'?: string } } & {
+              json: CreateConnectedAccountDtoInput
             }
             output: ConnectionCreationNotFoundErrorBody | ErrorBody
             outputFormat: 'json'
@@ -13145,9 +16182,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; slug: string } } & {
-              query: { organization_id?: string | undefined }
-            } & { header: { 'idempotency-key'?: string | undefined } } & {
-              json: CreateConnectedAccountDto
+              query: { organization_id?: string }
+            } & { header: { 'idempotency-key'?: string } } & {
+              json: CreateConnectedAccountDtoInput
             }
             output: ConnectionCreationConflictErrorBody | ErrorBody
             outputFormat: 'json'
@@ -13155,9 +16192,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; slug: string } } & {
-              query: { organization_id?: string | undefined }
-            } & { header: { 'idempotency-key'?: string | undefined } } & {
-              json: CreateConnectedAccountDto
+              query: { organization_id?: string }
+            } & { header: { 'idempotency-key'?: string } } & {
+              json: CreateConnectedAccountDtoInput
             }
             output:
               | UserConnectedAccountImportErrorBody
@@ -13167,9 +16204,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; slug: string } } & {
-              query: { organization_id?: string | undefined }
-            } & { header: { 'idempotency-key'?: string | undefined } } & {
-              json: CreateConnectedAccountDto
+              query: { organization_id?: string }
+            } & { header: { 'idempotency-key'?: string } } & {
+              json: CreateConnectedAccountDtoInput
             }
             output: ErrorBodyWithCode
             outputFormat: 'json'
@@ -13179,12 +16216,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: ConnectedAccountDto }
+            } & { json: ConnectedAccountDtoInput }
             output: ConnectedAccount
             outputFormat: 'json'
             status: 200
@@ -13192,12 +16229,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: ConnectedAccountDto }
+            } & { json: ConnectedAccountDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 400
@@ -13205,12 +16242,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: ConnectedAccountDto }
+            } & { json: ConnectedAccountDtoInput }
             output: {}
             outputFormat: string
             status: 401
@@ -13218,12 +16255,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: ConnectedAccountDto }
+            } & { json: ConnectedAccountDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
@@ -13231,12 +16268,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: ConnectedAccountDto }
+            } & { json: ConnectedAccountDtoInput }
             output: AccountSelectionRequiredErrorBody
             outputFormat: 'json'
             status: 409
@@ -13244,12 +16281,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: ConnectedAccountDto }
+            } & { json: ConnectedAccountDtoInput }
             output: InvalidRefreshTokenErrorBody | InvalidRequestParametersErrorBodyWithErrors
             outputFormat: 'json'
             status: 422
@@ -13257,12 +16294,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string; slug: string } } & {
               query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-                connected_account_id?: string | undefined
-                connection_intent?: 'reauthorize' | undefined
+                organization_id?: string
+                supports_multiple_connections?: string
+                connected_account_id?: string
+                connection_intent?: 'reauthorize'
               }
-            } & { json: ConnectedAccountDto }
+            } & { json: ConnectedAccountDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 503
@@ -13273,10 +16310,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { user_id: string } } & {
-              query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-              }
+              query: { organization_id?: string; supports_multiple_connections?: string }
             }
             output: DataIntegrationsListResponse
             outputFormat: 'json'
@@ -13284,10 +16318,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-              }
+              query: { organization_id?: string; supports_multiple_connections?: string }
             }
             output: {}
             outputFormat: string
@@ -13295,10 +16326,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              query: {
-                organization_id?: string | undefined
-                supports_multiple_connections?: boolean | undefined
-              }
+              query: { organization_id?: string; supports_multiple_connections?: string }
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -13310,7 +16338,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { userlandUserId: string } } & {
-              json: EnrollUserlandUserAuthenticationFactorDto
+              json: EnrollUserlandUserAuthenticationFactorDtoInput
             }
             output: UserlandUserAuthenticationFactorEnrollResponse
             outputFormat: 'json'
@@ -13318,7 +16346,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { userlandUserId: string } } & {
-              json: EnrollUserlandUserAuthenticationFactorDto
+              json: EnrollUserlandUserAuthenticationFactorDtoInput
             }
             output: ErrorBody
             outputFormat: 'json'
@@ -13328,10 +16356,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { userlandUserId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: UserlandUserAuthenticationFactorList
@@ -13341,10 +16369,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { userlandUserId: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
               }
             }
             output: ErrorBody
@@ -13368,7 +16396,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               email: string
               state: 'pending' | 'approved' | 'denied'
               approved_at: string | null
-              additional_fields?: { [x: string]: string } | undefined
+              additional_fields?: { [key: string]: string } | undefined
               waitlist_id?: (string | null) | undefined
               created_at: string
               updated_at: string
@@ -13395,7 +16423,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               email: string
               state: 'pending' | 'approved' | 'denied'
               approved_at: string | null
-              additional_fields?: { [x: string]: string } | undefined
+              additional_fields?: { [key: string]: string } | undefined
               waitlist_id?: (string | null) | undefined
               created_at: string
               updated_at: string
@@ -13437,31 +16465,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                state?: 'pending' | 'approved' | 'denied' | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                state?: 'pending' | 'approved' | 'denied'
+                email?: string
               }
             }
             output: {
               object?: 'list' | undefined
               list_metadata?: { before: string | null; after: string | null } | undefined
-              data?: WaitlistEntry[] | undefined
-            }
+            } & { data?: WaitlistEntry[] | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                state?: 'pending' | 'approved' | 'denied' | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                state?: 'pending' | 'approved' | 'denied'
+                email?: string
               }
             }
             output: ErrorBody
@@ -13471,12 +16498,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { id: string } } & {
               query: {
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                order?: PaginationOrder | undefined
-                state?: 'pending' | 'approved' | 'denied' | undefined
-                email?: string | undefined
+                before?: string
+                after?: string
+                limit?: unknown
+                order?: PaginationOrderInput
+                state?: 'pending' | 'approved' | 'denied'
+                email?: string
               }
             }
             output: ErrorBodyWithCode
@@ -13485,19 +16512,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { id: string } } & { json: CreateWaitlistEntryDto }
+            input: { param: { id: string } } & { json: CreateWaitlistEntryDtoInput }
             output: WaitlistEntry
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { id: string } } & { json: CreateWaitlistEntryDto }
+            input: { param: { id: string } } & { json: CreateWaitlistEntryDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: CreateWaitlistEntryDto }
+            input: { param: { id: string } } & { json: CreateWaitlistEntryDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 422
@@ -13507,19 +16534,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/vault/v1/keys/data-key': {
       $post:
         | {
-            input: { json: CreateDataKeyRequest }
+            input: { json: CreateDataKeyRequestInput }
             output: CreateDataKeyResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreateDataKeyRequest }
+            input: { json: CreateDataKeyRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateDataKeyRequest }
+            input: { json: CreateDataKeyRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -13529,24 +16556,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/vault/v1/keys/decrypt': {
       $post:
         | {
-            input: { json: DecryptRequest }
+            input: { json: DecryptRequestInput }
             output: DecryptResponse
             outputFormat: 'json'
             status: 200
           }
-        | { input: { json: DecryptRequest }; output: Error; outputFormat: 'json'; status: 400 }
+        | { input: { json: DecryptRequestInput }; output: Error; outputFormat: 'json'; status: 400 }
     }
   } & {
     '/vault/v1/keys/rekey': {
       $post:
         | {
-            input: { json: RekeyRequest }
+            input: { json: RekeyRequestInput }
             output: CreateDataKeyResponse
             outputFormat: 'json'
             status: 200
           }
-        | { input: { json: RekeyRequest }; output: Error; outputFormat: 'json'; status: 400 }
-        | { input: { json: RekeyRequest }; output: Error; outputFormat: 'json'; status: 422 }
+        | { input: { json: RekeyRequestInput }; output: Error; outputFormat: 'json'; status: 400 }
+        | { input: { json: RekeyRequestInput }; output: Error; outputFormat: 'json'; status: 422 }
     }
   } & {
     '/vault/v1/kv': {
@@ -13554,12 +16581,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                before?: string | undefined
-                after?: string | undefined
-                order?: 'asc' | 'desc' | undefined
-                search?: string | undefined
-                updatedAfter?: string | undefined
+                limit?: unknown
+                before?: string
+                after?: string
+                order?: 'asc' | 'desc'
+                search?: string
+                updatedAfter?: string
               }
             }
             output: ObjectListResponse
@@ -13569,12 +16596,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                before?: string | undefined
-                after?: string | undefined
-                order?: 'asc' | 'desc' | undefined
-                search?: string | undefined
-                updatedAfter?: string | undefined
+                limit?: unknown
+                before?: string
+                after?: string
+                order?: 'asc' | 'desc'
+                search?: string
+                updatedAfter?: string
               }
             }
             output: Error
@@ -13583,14 +16610,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: CreateObjectRequest }
+            input: { json: CreateObjectRequestInput }
             output: ObjectMetadata
             outputFormat: 'json'
             status: 201
           }
-        | { input: { json: CreateObjectRequest }; output: Error; outputFormat: 'json'; status: 400 }
-        | { input: { json: CreateObjectRequest }; output: Error; outputFormat: 'json'; status: 409 }
-        | { input: { json: CreateObjectRequest }; output: Error; outputFormat: 'json'; status: 422 }
+        | {
+            input: { json: CreateObjectRequestInput }
+            output: Error
+            outputFormat: 'json'
+            status: 400
+          }
+        | {
+            input: { json: CreateObjectRequestInput }
+            output: Error
+            outputFormat: 'json'
+            status: 409
+          }
+        | {
+            input: { json: CreateObjectRequestInput }
+            output: Error
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/vault/v1/kv/name/:name': {
@@ -13603,25 +16645,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/vault/v1/kv/:id': {
       $delete:
         | {
-            input: { param: { id: string } } & { query: { version_check?: string | undefined } }
+            input: { param: { id: string } } & { query: { version_check?: string } }
             output: DeleteObjectResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { query: { version_check?: string | undefined } }
+            input: { param: { id: string } } & { query: { version_check?: string } }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { query: { version_check?: string | undefined } }
+            input: { param: { id: string } } & { query: { version_check?: string } }
             output: Error
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { id: string } } & { query: { version_check?: string | undefined } }
+            input: { param: { id: string } } & { query: { version_check?: string } }
             output: Error
             outputFormat: 'json'
             status: 500
@@ -13632,19 +16674,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: string } }; output: Error; outputFormat: 'json'; status: 404 }
       $put:
         | {
-            input: { param: { id: string } } & { json: UpdateObjectRequest }
+            input: { param: { id: string } } & { json: UpdateObjectRequestInput }
             output: ObjectWithoutValue
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { id: string } } & { json: UpdateObjectRequest }
+            input: { param: { id: string } } & { json: UpdateObjectRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: UpdateObjectRequest }
+            input: { param: { id: string } } & { json: UpdateObjectRequestInput }
             output: Error
             outputFormat: 'json'
             status: 409
@@ -13678,12 +16720,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhook_endpoints': {
       $get: {
         input: {
-          query: {
-            before?: string | undefined
-            after?: string | undefined
-            limit?: number | undefined
-            order?: PaginationOrder | undefined
-          }
+          query: { before?: string; after?: string; limit?: unknown; order?: PaginationOrderInput }
         }
         output: WebhookEndpointList
         outputFormat: 'json'
@@ -13691,19 +16728,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
       $post:
         | {
-            input: { json: CreateWebhookEndpointDto }
+            input: { json: CreateWebhookEndpointDtoInput }
             output: WebhookEndpointJson
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateWebhookEndpointDto }
+            input: { json: CreateWebhookEndpointDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { json: CreateWebhookEndpointDto }
+            input: { json: CreateWebhookEndpointDtoInput }
             output: InvalidUrlErrorBody | InvalidRequestParametersErrorBodyWithErrors
             outputFormat: 'json'
             status: 422
@@ -13711,27 +16748,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/webhook_endpoints/:id': {
-      $patch:
+      $get:
         | {
-            input: { param: { id: string } } & { json: UpdateWebhookEndpointDto }
+            input: { param: { id: string } }
             output: WebhookEndpointJson
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: UpdateWebhookEndpointDto }
+            input: { param: { id: string } }
+            output: ErrorBodyWithCode
+            outputFormat: 'json'
+            status: 404
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { json: UpdateWebhookEndpointDtoInput }
+            output: WebhookEndpointJson
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { json: UpdateWebhookEndpointDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: UpdateWebhookEndpointDto }
+            input: { param: { id: string } } & { json: UpdateWebhookEndpointDtoInput }
             output: ErrorBodyWithCode
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { id: string } } & { json: UpdateWebhookEndpointDto }
+            input: { param: { id: string } } & { json: UpdateWebhookEndpointDtoInput }
             output: InvalidUrlErrorBody | InvalidRequestParametersErrorBodyWithErrors
             outputFormat: 'json'
             status: 422
@@ -13749,25 +16799,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/widgets/token': {
       $post:
         | {
-            input: { json: WidgetSessionTokenDto }
+            input: { json: WidgetSessionTokenDtoInput }
             output: WidgetSessionTokenResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: WidgetSessionTokenDto }
+            input: { json: WidgetSessionTokenDtoInput }
             output: ErrorBody | ErrorBodyWithErrorMessageList
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: WidgetSessionTokenDto }
+            input: { json: WidgetSessionTokenDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: WidgetSessionTokenDto }
+            input: { json: WidgetSessionTokenDtoInput }
             output: ErrorBody
             outputFormat: 'json'
             status: 422

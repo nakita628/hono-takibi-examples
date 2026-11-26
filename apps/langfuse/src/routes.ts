@@ -1,5 +1,921 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const CreatorSchema = z
+  .object({
+    id: z.string().openapi({ description: 'User identifier.' }),
+    name: z.string().nullable().openapi({ description: 'User name, or `null` when unavailable.' }),
+  })
+  .openapi({
+    title: 'Creator',
+    description: 'User who created the resource, or `null` when no user can be resolved.',
+    required: ['id', 'name'],
+  })
+  .openapi('Creator')
+
+const EvaluatorStatusSchema = z
+  .enum(['active', 'paused'])
+  .openapi({
+    title: 'EvaluatorStatus',
+    description:
+      'Effective evaluator runtime status.\n\n- `active`: the evaluator can run.\n- `paused`: Langfuse paused execution until the underlying issue is resolved.',
+  })
+  .openapi('EvaluatorStatus')
+
+const PromptVariableMappingReadSchema = z
+  .object({
+    variable: z.string().openapi({ description: 'Prompt variable name without braces.' }),
+    source: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Stored source field populating the variable, or `null` when the mapping is incomplete.',
+      }),
+    jsonPath: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Optional JSONPath selector applied to the selected source.' }),
+  })
+  .openapi({
+    title: 'PromptVariableMappingRead',
+    description:
+      'Connects one prompt variable to source data.\n\n`source` is `null` when the mapping is incomplete.',
+    required: ['variable', 'source'],
+  })
+  .openapi('PromptVariableMappingRead')
+
+const LegacyEvaluationObjectSchema = z
+  .enum([
+    'trace',
+    'span',
+    'generation',
+    'event',
+    'agent',
+    'tool',
+    'chain',
+    'retriever',
+    'evaluator',
+    'embedding',
+    'guardrail',
+    'dataset_item',
+  ])
+  .openapi({
+    title: 'LegacyEvaluationObject',
+    description:
+      '**Deprecated:** Legacy Langfuse object kind used by trace and dataset evaluation rules.',
+  })
+  .openapi('LegacyEvaluationObject')
+
+const LegacyPromptVariableMappingSchema = z
+  .object({
+    mappingType: z
+      .literal('legacy')
+      .openapi({ description: 'Explicitly marks this as a legacy mapping.' }),
+    variable: z.string().openapi({ description: 'Prompt variable name without braces.' }),
+    langfuseObject: LegacyEvaluationObjectSchema.openapi({
+      description: 'Legacy object kind selected as the mapping source.',
+    }),
+    objectName: z
+      .string()
+      .nullable()
+      .openapi({
+        description:
+          'Observation name to match, or `null` when `langfuseObject` is `trace` or `dataset_item`.',
+      }),
+    source: z.string().openapi({ description: 'Field selected from the legacy object.' }),
+    jsonPath: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Optional JSONPath selector applied to the selected field.' }),
+  })
+  .openapi({
+    title: 'LegacyPromptVariableMapping',
+    description:
+      '**Deprecated:** Connects one prompt variable to data from a legacy trace or dataset evaluation rule.\n\n`langfuseObject` selects the object kind. `objectName` separately selects a named observation and is `null` for trace and dataset-item mappings.',
+    required: ['mappingType', 'variable', 'langfuseObject', 'objectName', 'source'],
+  })
+  .openapi('LegacyPromptVariableMapping')
+
+const PromptVariableMappingSchema = z
+  .xor([PromptVariableMappingReadSchema, LegacyPromptVariableMappingSchema])
+  .openapi({
+    title: 'PromptVariableMapping',
+    description: 'Connects one prompt variable to source data.',
+  })
+  .openapi('PromptVariableMapping')
+
+const EvaluationRuleAssignmentSchema = z
+  .object({
+    evaluationRuleId: z
+      .string()
+      .openapi({ description: 'Stable identifier of the assigned evaluation rule.' }),
+    variableMappingOverride: z
+      .array(PromptVariableMappingSchema)
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          "Rule-specific variable mapping override. Omitted when the evaluator's latest default mapping is inherited. Legacy mappings use the explicit `legacy` variant.",
+      }),
+  })
+  .openapi({
+    title: 'EvaluationRuleAssignment',
+    description: 'Evaluation-rule assignment associated with this evaluator.',
+    required: ['evaluationRuleId'],
+  })
+  .openapi('EvaluationRuleAssignment')
+
+const EvaluatorBaseSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'Stable identifier of this evaluator across all versions.' }),
+    name: z
+      .string()
+      .openapi({
+        description:
+          'Human-readable evaluator name. Names are not identifiers and do not need to be unique.',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Optional human-readable evaluator description.' }),
+    createdBy: CreatorSchema.nullable().openapi({
+      description: 'User who created this evaluator, or `null` when no user can be resolved.',
+    }),
+    status: EvaluatorStatusSchema.openapi({
+      description: 'Effective evaluator status after Langfuse validates its runtime configuration.',
+    }),
+    pausedAt: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .openapi({ description: 'Timestamp when the evaluator was paused, otherwise `null`.' }),
+    pausedReason: z
+      .string()
+      .nullable()
+      .openapi({ description: 'Machine-readable reason when `status=paused`, otherwise `null`.' }),
+    pausedMessage: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Human-readable explanation when `status=paused`, otherwise `null`.',
+      }),
+    evaluationRuleAssignments: z
+      .array(EvaluationRuleAssignmentSchema)
+      .openapi({
+        description:
+          'All modern and legacy evaluation-rule assignments in newest-assignment-first order. Rule-specific mappings are exposed as `variableMappingOverride`; inherited defaults are omitted.',
+      }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Timestamp when the evaluator was created.' }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Timestamp when the evaluator was last updated.' }),
+    versionId: z
+      .string()
+      .openapi({ description: 'Stable identifier of the latest evaluator version.' }),
+    version: z
+      .int()
+      .openapi({ description: 'Monotonically increasing latest evaluator version number.' }),
+    versionCreatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Timestamp when the latest evaluator version was created.' }),
+    versionCreatedBy: CreatorSchema.nullable().openapi({
+      description:
+        'User who created the latest evaluator version, or `null` when no user can be resolved.',
+    }),
+  })
+  .openapi({
+    title: 'EvaluatorBase',
+    required: [
+      'id',
+      'name',
+      'description',
+      'createdBy',
+      'status',
+      'pausedAt',
+      'pausedReason',
+      'pausedMessage',
+      'evaluationRuleAssignments',
+      'createdAt',
+      'updatedAt',
+      'versionId',
+      'version',
+      'versionCreatedAt',
+      'versionCreatedBy',
+    ],
+  })
+  .openapi('EvaluatorBase')
+
+const EvaluatorChatMessageRoleSchema = z
+  .enum(['system', 'user', 'assistant'])
+  .openapi({
+    title: 'EvaluatorChatMessageRole',
+    description: 'Role of an evaluator prompt message.',
+  })
+  .openapi('EvaluatorChatMessageRole')
+
+const EvaluatorChatMessageSchema = z
+  .object({
+    role: EvaluatorChatMessageRoleSchema,
+    content: z
+      .string()
+      .openapi({ description: 'Message content. Evaluator variables use `{{variable}}` syntax.' }),
+  })
+  .openapi({
+    title: 'EvaluatorChatMessage',
+    description: 'One chat message in an evaluator prompt.',
+    required: ['role', 'content'],
+  })
+  .openapi('EvaluatorChatMessage')
+
+const EvaluatorChatPromptSchema = z
+  .array(EvaluatorChatMessageSchema)
+  .openapi({
+    title: 'EvaluatorChatPrompt',
+    description:
+      'An ordered list of chat messages. A system message is only allowed as the first message.',
+  })
+  .openapi('EvaluatorChatPrompt')
+
+const EvaluatorModelConfigSchema = z
+  .object({
+    provider: z
+      .string()
+      .openapi({
+        description:
+          'Provider identifier, for example `openai` or `anthropic`.\n\nTo discover valid values for the current project, call `GET /api/public/llm-connections` and use one of the returned `provider` values.',
+      }),
+    model: z
+      .string()
+      .openapi({
+        description: 'Model identifier exposed by the provider, for example `gpt-4.1-mini`.',
+      }),
+  })
+  .openapi({
+    title: 'EvaluatorModelConfig',
+    description:
+      "Explicit model configuration for an evaluator.\n\nIf the complete `modelConfig` is `null`, Langfuse uses the project's default evaluation model.\nIf provided, the model must be available to the project when the evaluator or evaluation rule is enabled.",
+    required: ['provider', 'model'],
+  })
+  .openapi('EvaluatorModelConfig')
+
+const EvaluatorOutputDefinitionBaseSchema = z
+  .object({
+    scoreReasoningInstructions: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Optional instructions for deriving the reasoning returned with the score.',
+      }),
+    scoreValueInstructions: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Optional instructions for deriving the score value.' }),
+  })
+  .openapi({ title: 'EvaluatorOutputDefinitionBase', required: [] })
+  .openapi('EvaluatorOutputDefinitionBase')
+
+const PublicEvaluatorNumericScoreSchema = EvaluatorOutputDefinitionBaseSchema.and(
+  z
+    .object({
+      dataType: z.literal('NUMERIC').openapi({ description: 'Numeric score output.' }),
+      minValue: z
+        .float64()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'Optional inclusive minimum value.' }),
+      maxValue: z
+        .float64()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: 'Optional inclusive maximum value.' }),
+    })
+    .openapi({ required: ['dataType'] }),
+)
+  .openapi({ title: 'PublicEvaluatorNumericScore', required: ['dataType'] })
+  .openapi('PublicEvaluatorNumericScore')
+
+const PublicEvaluatorBooleanScoreSchema = EvaluatorOutputDefinitionBaseSchema.and(
+  z
+    .object({ dataType: z.literal('BOOLEAN').openapi({ description: 'Boolean score output.' }) })
+    .openapi({ required: ['dataType'] }),
+)
+  .openapi({ title: 'PublicEvaluatorBooleanScore', required: ['dataType'] })
+  .openapi('PublicEvaluatorBooleanScore')
+
+const PublicEvaluatorCategoricalScoreSchema = EvaluatorOutputDefinitionBaseSchema.and(
+  z
+    .object({
+      dataType: z.literal('CATEGORICAL').openapi({ description: 'Categorical score output.' }),
+      categories: z
+        .array(z.string())
+        .openapi({
+          description: 'Allowed category values. At least two unique values are required.',
+        }),
+      shouldAllowMultipleMatches: z
+        .boolean()
+        .openapi({ description: 'Whether the evaluator may return more than one category.' }),
+    })
+    .openapi({ required: ['dataType', 'categories', 'shouldAllowMultipleMatches'] }),
+)
+  .openapi({
+    title: 'PublicEvaluatorCategoricalScore',
+    required: ['dataType', 'categories', 'shouldAllowMultipleMatches'],
+  })
+  .openapi('PublicEvaluatorCategoricalScore')
+
+const PublicEvaluatorOutputDefinitionSchema = z
+  .xor([
+    z
+      .object({ dataType: z.literal('NUMERIC').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['dataType'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'dataType')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(PublicEvaluatorNumericScoreSchema)
+      .openapi({ required: ['dataType'], title: 'PublicEvaluatorNumericScore' }),
+    z
+      .object({ dataType: z.literal('BOOLEAN').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['dataType'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'dataType')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(PublicEvaluatorBooleanScoreSchema)
+      .openapi({ required: ['dataType'], title: 'PublicEvaluatorBooleanScore' }),
+    z
+      .object({ dataType: z.literal('CATEGORICAL').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['dataType'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'dataType')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(PublicEvaluatorCategoricalScoreSchema)
+      .openapi({ required: ['dataType'], title: 'PublicEvaluatorCategoricalScore' }),
+  ])
+  .openapi({
+    title: 'PublicEvaluatorOutputDefinition',
+    description:
+      'Flat evaluator output definition returned by the public API.\n\nThis response always includes `dataType` and never includes an internal output-definition `version`.\nOptional empty descriptions from legacy definitions are omitted.',
+  })
+  .openapi('PublicEvaluatorOutputDefinition')
+
+const LlmAsJudgeEvaluatorSchema = EvaluatorBaseSchema.and(
+  z
+    .object({
+      type: z.literal('llm_as_judge').openapi({ description: 'Evaluator type.' }),
+      prompt: EvaluatorChatPromptSchema.openapi({
+        description: 'Ordered chat messages used by the latest evaluator version.',
+      }),
+      variables: z
+        .array(z.string())
+        .openapi({
+          description:
+            'Variables extracted from the latest prompt and available for evaluation-rule mappings.',
+        }),
+      variableMapping: z
+        .array(PromptVariableMappingReadSchema)
+        .nullable()
+        .openapi({
+          description:
+            'Default variable mapping for the latest version, or `null` when no default is configured.',
+        }),
+      modelConfig: EvaluatorModelConfigSchema.nullable().openapi({
+        description:
+          "Explicit model configuration for the latest version, or `null` when the project's default evaluation model is used.",
+      }),
+      outputDefinition: PublicEvaluatorOutputDefinitionSchema.openapi({
+        description: 'Structured output schema returned by the latest evaluator version.',
+      }),
+    })
+    .openapi({
+      required: [
+        'type',
+        'prompt',
+        'variables',
+        'variableMapping',
+        'modelConfig',
+        'outputDefinition',
+      ],
+    }),
+)
+  .openapi({
+    title: 'LlmAsJudgeEvaluator',
+    required: ['type', 'prompt', 'variables', 'variableMapping', 'modelConfig', 'outputDefinition'],
+  })
+  .openapi('LlmAsJudgeEvaluator')
+
+const CodeEvaluatorSourceCodeLanguageSchema = z
+  .enum(['PYTHON', 'TYPESCRIPT'])
+  .openapi({
+    title: 'CodeEvaluatorSourceCodeLanguage',
+    description: 'Code evaluator runtime language.',
+  })
+  .openapi('CodeEvaluatorSourceCodeLanguage')
+
+const CodeEvaluatorSchema = EvaluatorBaseSchema.and(
+  z
+    .object({
+      type: z.literal('code').openapi({ description: 'Evaluator type.' }),
+      sourceCode: z
+        .string()
+        .openapi({ description: 'Source code executed by the latest evaluator version.' }),
+      sourceCodeLanguage: CodeEvaluatorSourceCodeLanguageSchema.openapi({
+        description: 'Runtime language used to execute the latest source code.',
+      }),
+    })
+    .openapi({ required: ['type', 'sourceCode', 'sourceCodeLanguage'] }),
+)
+  .openapi({ title: 'CodeEvaluator', required: ['type', 'sourceCode', 'sourceCodeLanguage'] })
+  .openapi('CodeEvaluator')
+
+const DecisionModelEntrySchema = z
+  .xor([
+    z.string().openapi({ title: 'String' }),
+    z.looseObject({}).openapi({ title: 'Object' }),
+    z.array(z.any()).openapi({ title: 'Array' }),
+    z.float64().openapi({ title: 'DoubleNumber' }),
+    z.boolean().openapi({ title: 'Boolean' }),
+  ])
+  .openapi({
+    title: 'DecisionModelEntry',
+    description:
+      'Instruction text (1 to 20,000 characters), or a non-null JSON value that the decision model receives as structured instructions.',
+  })
+  .openapi('DecisionModelEntry')
+
+const DecisionModelChoiceCriterionSchema = z
+  .object({
+    value: z
+      .string()
+      .openapi({
+        description:
+          'Answer value stored as the categorical score value. Must be unique within the question.',
+      }),
+    description: DecisionModelEntrySchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'Optional description of when this answer applies.' }),
+  })
+  .openapi({
+    title: 'DecisionModelChoiceCriterion',
+    description: 'One allowed answer of a `choice` question.',
+    required: ['value'],
+  })
+  .openapi('DecisionModelChoiceCriterion')
+
+const DecisionModelChoiceQuestionSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'Question identifier. Must be unique within the evaluator.' }),
+    scoreName: z
+      .string()
+      .openapi({
+        description:
+          'Name of the score this question produces. Must be unique within the evaluator.',
+      }),
+    instructions: DecisionModelEntrySchema.openapi({
+      description:
+        'Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.',
+    }),
+    criteria: z
+      .array(DecisionModelChoiceCriterionSchema)
+      .openapi({ description: 'The allowed answers. Between 2 and 255, with unique values.' }),
+  })
+  .openapi({
+    title: 'DecisionModelChoiceQuestion',
+    description: 'Pick one of a fixed list of options. Produces a categorical score.',
+    required: ['id', 'scoreName', 'instructions', 'criteria'],
+  })
+  .openapi('DecisionModelChoiceQuestion')
+
+const DecisionModelScoreCriterionSchema = z
+  .object({
+    description: DecisionModelEntrySchema.openapi({ description: 'Description of this level.' }),
+  })
+  .openapi({
+    title: 'DecisionModelScoreCriterion',
+    description: 'One level of a `score` question, ordered from lowest to highest.',
+    required: ['description'],
+  })
+  .openapi('DecisionModelScoreCriterion')
+
+const DecisionModelScoreQuestionSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'Question identifier. Must be unique within the evaluator.' }),
+    scoreName: z
+      .string()
+      .openapi({
+        description:
+          'Name of the score this question produces. Must be unique within the evaluator.',
+      }),
+    instructions: DecisionModelEntrySchema.openapi({
+      description:
+        'Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.',
+    }),
+    criteria: z
+      .array(DecisionModelScoreCriterionSchema)
+      .openapi({
+        description: 'The levels of the scale. Between 2 and 10, ordered from lowest to highest.',
+      }),
+  })
+  .openapi({
+    title: 'DecisionModelScoreQuestion',
+    description: 'Rate on an ordered scale. Produces a numeric score.',
+    required: ['id', 'scoreName', 'instructions', 'criteria'],
+  })
+  .openapi('DecisionModelScoreQuestion')
+
+const DecisionModelBooleanCriterionSchema = z
+  .object({
+    description: DecisionModelEntrySchema.openapi({
+      description: 'Description of when this answer applies.',
+    }),
+  })
+  .openapi({
+    title: 'DecisionModelBooleanCriterion',
+    description: 'One answer of a `boolean` question.',
+    required: ['description'],
+  })
+  .openapi('DecisionModelBooleanCriterion')
+
+const DecisionModelBooleanCriteriaSchema = z
+  .object({
+    true: DecisionModelBooleanCriterionSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'When the statement is true.' }),
+    false: DecisionModelBooleanCriterionSchema.nullable()
+      .exactOptional()
+      .openapi({ description: 'When the statement is false.' }),
+  })
+  .openapi({
+    title: 'DecisionModelBooleanCriteria',
+    description:
+      'Optional descriptions of the two answers of a `boolean` question. The answer is always `true` or `false`; these descriptions only tell the model when each one applies.',
+    required: [],
+  })
+  .openapi('DecisionModelBooleanCriteria')
+
+const DecisionModelBooleanQuestionSchema = z
+  .object({
+    id: z
+      .string()
+      .openapi({ description: 'Question identifier. Must be unique within the evaluator.' }),
+    scoreName: z
+      .string()
+      .openapi({
+        description:
+          'Name of the score this question produces. Must be unique within the evaluator.',
+      }),
+    instructions: DecisionModelEntrySchema.openapi({
+      description:
+        'Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.',
+    }),
+    criteria: DecisionModelBooleanCriteriaSchema.nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Optional descriptions of when the statement is true and when it is false.',
+      }),
+  })
+  .openapi({
+    title: 'DecisionModelBooleanQuestion',
+    description:
+      'Decide whether a statement is true. Produces a numeric score: the probability (0–1) that the statement is true.',
+    required: ['id', 'scoreName', 'instructions'],
+  })
+  .openapi('DecisionModelBooleanQuestion')
+
+const DecisionModelQuestionSchema = z
+  .xor([
+    z
+      .object({ type: z.literal('choice').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(DecisionModelChoiceQuestionSchema)
+      .openapi({ required: ['type'], title: 'DecisionModelChoiceQuestion' }),
+    z
+      .object({ type: z.literal('score').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(DecisionModelScoreQuestionSchema)
+      .openapi({ required: ['type'], title: 'DecisionModelScoreQuestion' }),
+    z
+      .object({ type: z.literal('boolean').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(DecisionModelBooleanQuestionSchema)
+      .openapi({ required: ['type'], title: 'DecisionModelBooleanQuestion' }),
+  ])
+  .openapi({
+    title: 'DecisionModelQuestion',
+    description:
+      'One typed question answered by a decision-model evaluator. Each question produces one score.',
+  })
+  .openapi('DecisionModelQuestion')
+
+const DecisionModelEvaluatorSchema = EvaluatorBaseSchema.and(
+  z
+    .object({
+      type: z.literal('decision_model').openapi({ description: 'Evaluator type.' }),
+      questions: z
+        .array(DecisionModelQuestionSchema)
+        .openapi({ description: 'Typed questions answered by the latest evaluator version.' }),
+      variables: z
+        .array(z.string())
+        .openapi({
+          description: 'State keys available to the questions and evaluation-rule mappings.',
+        }),
+      variableMapping: z
+        .array(PromptVariableMappingReadSchema)
+        .openapi({
+          description:
+            'Default mapping from observation data to state keys for the latest version.',
+        }),
+      modelConfig: EvaluatorModelConfigSchema.openapi({
+        description: 'Decision-model connection and model used by the latest version.',
+      }),
+    })
+    .openapi({ required: ['type', 'questions', 'variables', 'variableMapping', 'modelConfig'] }),
+)
+  .openapi({
+    title: 'DecisionModelEvaluator',
+    required: ['type', 'questions', 'variables', 'variableMapping', 'modelConfig'],
+  })
+  .openapi('DecisionModelEvaluator')
+
+const EvaluatorSchema = z
+  .xor([
+    z
+      .object({ type: z.literal('llm_as_judge').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(LlmAsJudgeEvaluatorSchema)
+      .openapi({ required: ['type'], title: 'LlmAsJudgeEvaluator' }),
+    z
+      .object({ type: z.literal('code').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(CodeEvaluatorSchema)
+      .openapi({ required: ['type'], title: 'CodeEvaluator' }),
+    z
+      .object({ type: z.literal('decision_model').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(DecisionModelEvaluatorSchema)
+      .openapi({ required: ['type'], title: 'DecisionModelEvaluator' }),
+  ])
+  .openapi({
+    title: 'Evaluator',
+    description:
+      'One evaluator that can be used for scoring.\n\nAn evaluator describes **how** to score data. Associated evaluation rules describe **which** live objects should be evaluated.',
+  })
+  .openapi('Evaluator')
+
+const UtilsCursorMetaResponseSchema = z
+  .object({
+    cursor: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Opaque cursor for the next page. Omitted when there is no next page.',
+      }),
+  })
+  .openapi({
+    title: 'utilsCursorMetaResponse',
+    description: 'Metadata for cursor-based pagination.',
+    required: [],
+  })
+  .openapi('UtilsCursorMetaResponse')
+
+const CursorMetaSchema = UtilsCursorMetaResponseSchema.and(z.looseObject({}))
+  .openapi({ title: 'CursorMeta', description: 'Cursor pagination metadata.' })
+  .openapi('CursorMeta')
+
+type EvaluatorsPageType = {
+  data: z.infer<typeof EvaluatorSchema>[]
+  meta: z.infer<typeof CursorMetaSchema>
+}
+
+const EvaluatorVersionBaseSchema = z
+  .object({
+    id: z.string().openapi({ description: 'Stable identifier of this evaluator version.' }),
+    version: z.int().openapi({ description: 'Monotonically increasing evaluator version number.' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Timestamp when this evaluator version was created.' }),
+    createdBy: CreatorSchema.nullable().openapi({
+      description: 'User who created this version, or `null` when no user can be resolved.',
+    }),
+  })
+  .openapi({ title: 'EvaluatorVersionBase', required: ['id', 'version', 'createdAt', 'createdBy'] })
+  .openapi('EvaluatorVersionBase')
+
+const LlmAsJudgeEvaluatorVersionSchema = EvaluatorVersionBaseSchema.and(
+  z
+    .object({
+      type: z.literal('llm_as_judge').openapi({ description: 'Evaluator type.' }),
+      prompt: EvaluatorChatPromptSchema.openapi({
+        description: 'Ordered chat messages used during evaluation.',
+      }),
+      variables: z
+        .array(z.string())
+        .openapi({
+          description:
+            'Variables extracted from the prompt and available for evaluation-rule mappings.\n\nEvery variable must be mapped exactly once when a rule provides an explicit mapping.',
+        }),
+      variableMapping: z
+        .array(PromptVariableMappingReadSchema)
+        .nullable()
+        .openapi({
+          description:
+            'Default variable mapping for this evaluator version, or `null` when no default is configured.',
+        }),
+      modelConfig: EvaluatorModelConfigSchema.nullable().openapi({
+        description:
+          "Explicit model configuration, or `null` when the project's default evaluation model is used.",
+      }),
+      outputDefinition: PublicEvaluatorOutputDefinitionSchema.openapi({
+        description:
+          'Structured output schema returned by this evaluator.\n\nResponses include `dataType` and omit the internal output-definition persistence version.',
+      }),
+    })
+    .openapi({
+      required: [
+        'type',
+        'prompt',
+        'variables',
+        'variableMapping',
+        'modelConfig',
+        'outputDefinition',
+      ],
+    }),
+)
+  .openapi({
+    title: 'LlmAsJudgeEvaluatorVersion',
+    required: ['type', 'prompt', 'variables', 'variableMapping', 'modelConfig', 'outputDefinition'],
+  })
+  .openapi('LlmAsJudgeEvaluatorVersion')
+
+const CodeEvaluatorVersionSchema = EvaluatorVersionBaseSchema.and(
+  z
+    .object({
+      type: z.literal('code').openapi({ description: 'Evaluator type.' }),
+      sourceCode: z
+        .string()
+        .openapi({ description: 'Source code executed for each matched observation.' }),
+      sourceCodeLanguage: CodeEvaluatorSourceCodeLanguageSchema.openapi({
+        description: 'Runtime language used to execute the source code.',
+      }),
+    })
+    .openapi({ required: ['type', 'sourceCode', 'sourceCodeLanguage'] }),
+)
+  .openapi({
+    title: 'CodeEvaluatorVersion',
+    required: ['type', 'sourceCode', 'sourceCodeLanguage'],
+  })
+  .openapi('CodeEvaluatorVersion')
+
+const DecisionModelEvaluatorVersionSchema = EvaluatorVersionBaseSchema.and(
+  z
+    .object({
+      type: z.literal('decision_model').openapi({ description: 'Evaluator type.' }),
+      questions: z
+        .array(DecisionModelQuestionSchema)
+        .openapi({ description: 'Typed questions answered during evaluation.' }),
+      variables: z
+        .array(z.string())
+        .openapi({
+          description: 'State keys available to the questions and evaluation-rule mappings.',
+        }),
+      variableMapping: z
+        .array(PromptVariableMappingReadSchema)
+        .openapi({ description: 'Default mapping from observation data to state keys.' }),
+      modelConfig: EvaluatorModelConfigSchema.openapi({
+        description: 'Decision-model connection and model used for evaluation.',
+      }),
+    })
+    .openapi({ required: ['type', 'questions', 'variables', 'variableMapping', 'modelConfig'] }),
+)
+  .openapi({
+    title: 'DecisionModelEvaluatorVersion',
+    required: ['type', 'questions', 'variables', 'variableMapping', 'modelConfig'],
+  })
+  .openapi('DecisionModelEvaluatorVersion')
+
+const EvaluatorVersionSchema = z
+  .xor([
+    z
+      .object({ type: z.literal('llm_as_judge').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(LlmAsJudgeEvaluatorVersionSchema)
+      .openapi({ required: ['type'], title: 'LlmAsJudgeEvaluatorVersion' }),
+    z
+      .object({ type: z.literal('code').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(CodeEvaluatorVersionSchema)
+      .openapi({ required: ['type'], title: 'CodeEvaluatorVersion' }),
+    z
+      .object({ type: z.literal('decision_model').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(DecisionModelEvaluatorVersionSchema)
+      .openapi({ required: ['type'], title: 'DecisionModelEvaluatorVersion' }),
+  ])
+  .openapi({ title: 'EvaluatorVersion' })
+  .openapi('EvaluatorVersion')
+
+type EvaluatorVersionsPageType = {
+  data: z.infer<typeof EvaluatorVersionSchema>[]
+  meta: z.infer<typeof CursorMetaSchema>
+}
+
 const ModelUsageUnitSchema = z
   .enum(['CHARACTERS', 'TOKENS', 'MILLISECONDS', 'SECONDS', 'IMAGES', 'REQUESTS'])
   .openapi({ title: 'ModelUsageUnit', description: 'Unit of usage in Langfuse' })
@@ -1803,21 +2719,13 @@ const CreateDatasetRequestSchema = z
   .openapi('CreateDatasetRequest')
 
 const EvaluatorTypeSchema = z
-  .enum(['llm_as_judge', 'code'])
+  .enum(['llm_as_judge', 'code', 'decision_model'])
   .openapi({
     title: 'EvaluatorType',
     description:
-      'The evaluator type.\n\nThe public API supports LLM-as-a-judge and code evaluators.',
+      'The evaluator type.\n\nThe public API supports LLM-as-a-judge, code, and decision-model evaluators.',
   })
   .openapi('EvaluatorType')
-
-const CodeEvaluatorSourceCodeLanguageSchema = z
-  .enum(['PYTHON', 'TYPESCRIPT'])
-  .openapi({
-    title: 'CodeEvaluatorSourceCodeLanguage',
-    description: 'Code evaluator runtime language.',
-  })
-  .openapi('CodeEvaluatorSourceCodeLanguage')
 
 const PromptVariableMappingSourceSchema = z
   .enum([
@@ -1843,73 +2751,6 @@ const EvaluatorOutputScoreTypeSchema = z
       'Structured score type returned by an evaluator.\n\nThis controls the type of score value Langfuse stores for evaluation results:\n- `NUMERIC`: a numeric score such as `0.82`\n- `BOOLEAN`: a boolean score such as `true`\n- `CATEGORICAL`: one or more category labels from a fixed list',
   })
   .openapi('EvaluatorOutputScoreType')
-
-const EvaluatorOutputDefinitionBaseSchema = z
-  .object({
-    scoreReasoningInstructions: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Optional instructions for deriving the reasoning returned with the score.',
-      }),
-    scoreValueInstructions: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Optional instructions for deriving the score value.' }),
-  })
-  .openapi({ title: 'EvaluatorOutputDefinitionBase', required: [] })
-  .openapi('EvaluatorOutputDefinitionBase')
-
-const PublicEvaluatorNumericScoreSchema = EvaluatorOutputDefinitionBaseSchema.and(
-  z
-    .object({
-      dataType: z.literal('NUMERIC').openapi({ description: 'Numeric score output.' }),
-      minValue: z
-        .float64()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'Optional inclusive minimum value.' }),
-      maxValue: z
-        .float64()
-        .nullable()
-        .exactOptional()
-        .openapi({ description: 'Optional inclusive maximum value.' }),
-    })
-    .openapi({ required: ['dataType'] }),
-)
-  .openapi({ title: 'PublicEvaluatorNumericScore', required: ['dataType'] })
-  .openapi('PublicEvaluatorNumericScore')
-
-const PublicEvaluatorBooleanScoreSchema = EvaluatorOutputDefinitionBaseSchema.and(
-  z
-    .object({ dataType: z.literal('BOOLEAN').openapi({ description: 'Boolean score output.' }) })
-    .openapi({ required: ['dataType'] }),
-)
-  .openapi({ title: 'PublicEvaluatorBooleanScore', required: ['dataType'] })
-  .openapi('PublicEvaluatorBooleanScore')
-
-const PublicEvaluatorCategoricalScoreSchema = EvaluatorOutputDefinitionBaseSchema.and(
-  z
-    .object({
-      dataType: z.literal('CATEGORICAL').openapi({ description: 'Categorical score output.' }),
-      categories: z
-        .array(z.string())
-        .openapi({
-          description: 'Allowed category values. At least two unique values are required.',
-        }),
-      shouldAllowMultipleMatches: z
-        .boolean()
-        .openapi({ description: 'Whether the evaluator may return more than one category.' }),
-    })
-    .openapi({ required: ['dataType', 'categories', 'shouldAllowMultipleMatches'] }),
-)
-  .openapi({
-    title: 'PublicEvaluatorCategoricalScore',
-    required: ['dataType', 'categories', 'shouldAllowMultipleMatches'],
-  })
-  .openapi('PublicEvaluatorCategoricalScore')
 
 const EvaluatorOutputDefinitionSchema = z
   .xor([
@@ -1959,55 +2800,6 @@ const EvaluatorOutputDefinitionSchema = z
       'Flat structured output definition used when creating or updating an evaluator.\n\n- `dataType` is required.\n- `scoreReasoningInstructions` and `scoreValueInstructions` are optional instructions.\n- `minValue` and `maxValue` apply only to `NUMERIC` outputs. If both are set, `minValue` must not exceed `maxValue`.\n- `categories` and `shouldAllowMultipleMatches` apply only to `CATEGORICAL` outputs.\n- Do not send `version`; that is an internal storage detail.',
   })
   .openapi('EvaluatorOutputDefinition')
-
-const PublicEvaluatorOutputDefinitionSchema = z
-  .xor([
-    z
-      .object({ dataType: z.literal('NUMERIC').exactOptional() })
-      .openapi({ required: [] })
-      .and(z.looseObject({}).openapi({ required: ['dataType'] }))
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'dataType')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .and(PublicEvaluatorNumericScoreSchema)
-      .openapi({ required: ['dataType'], title: 'PublicEvaluatorNumericScore' }),
-    z
-      .object({ dataType: z.literal('BOOLEAN').exactOptional() })
-      .openapi({ required: [] })
-      .and(z.looseObject({}).openapi({ required: ['dataType'] }))
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'dataType')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .and(PublicEvaluatorBooleanScoreSchema)
-      .openapi({ required: ['dataType'], title: 'PublicEvaluatorBooleanScore' }),
-    z
-      .object({ dataType: z.literal('CATEGORICAL').exactOptional() })
-      .openapi({ required: [] })
-      .and(z.looseObject({}).openapi({ required: ['dataType'] }))
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'dataType')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .and(PublicEvaluatorCategoricalScoreSchema)
-      .openapi({ required: ['dataType'], title: 'PublicEvaluatorCategoricalScore' }),
-  ])
-  .openapi({
-    title: 'PublicEvaluatorOutputDefinition',
-    description:
-      'Flat evaluator output definition returned by the public API.\n\nThis response always includes `dataType` and never includes an internal output-definition `version`.\nOptional empty descriptions from legacy definitions are omitted.',
-  })
-  .openapi('PublicEvaluatorOutputDefinition')
 
 const EvaluationRuleStringFilterOperatorSchema = z
   .enum(['=', 'contains', 'does not contain', 'starts with', 'ends with'])
@@ -2199,91 +2991,6 @@ const PromptVariableMappingInputSchema = z
     required: ['variable', 'source'],
   })
   .openapi('PromptVariableMappingInput')
-
-const PromptVariableMappingReadSchema = z
-  .object({
-    variable: z.string().openapi({ description: 'Prompt variable name without braces.' }),
-    source: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Stored source field populating the variable, or `null` when the mapping is incomplete.',
-      }),
-    jsonPath: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Optional JSONPath selector applied to the selected source.' }),
-  })
-  .openapi({
-    title: 'PromptVariableMappingRead',
-    description:
-      'Connects one prompt variable to source data.\n\n`source` is `null` when the mapping is incomplete.',
-    required: ['variable', 'source'],
-  })
-  .openapi('PromptVariableMappingRead')
-
-const LegacyEvaluationObjectSchema = z
-  .enum([
-    'trace',
-    'span',
-    'generation',
-    'event',
-    'agent',
-    'tool',
-    'chain',
-    'retriever',
-    'evaluator',
-    'embedding',
-    'guardrail',
-    'dataset_item',
-  ])
-  .openapi({
-    title: 'LegacyEvaluationObject',
-    description:
-      '**Deprecated:** Legacy Langfuse object kind used by trace and dataset evaluation rules.',
-  })
-  .openapi('LegacyEvaluationObject')
-
-const LegacyPromptVariableMappingSchema = z
-  .object({
-    mappingType: z
-      .literal('legacy')
-      .openapi({ description: 'Explicitly marks this as a legacy mapping.' }),
-    variable: z.string().openapi({ description: 'Prompt variable name without braces.' }),
-    langfuseObject: LegacyEvaluationObjectSchema.openapi({
-      description: 'Legacy object kind selected as the mapping source.',
-    }),
-    objectName: z
-      .string()
-      .nullable()
-      .openapi({
-        description:
-          'Observation name to match, or `null` when `langfuseObject` is `trace` or `dataset_item`.',
-      }),
-    source: z.string().openapi({ description: 'Field selected from the legacy object.' }),
-    jsonPath: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Optional JSONPath selector applied to the selected field.' }),
-  })
-  .openapi({
-    title: 'LegacyPromptVariableMapping',
-    description:
-      '**Deprecated:** Connects one prompt variable to data from a legacy trace or dataset evaluation rule.\n\n`langfuseObject` selects the object kind. `objectName` separately selects a named observation and is `null` for trace and dataset-item mappings.',
-    required: ['mappingType', 'variable', 'langfuseObject', 'objectName', 'source'],
-  })
-  .openapi('LegacyPromptVariableMapping')
-
-const PromptVariableMappingSchema = z
-  .xor([PromptVariableMappingReadSchema, LegacyPromptVariableMappingSchema])
-  .openapi({
-    title: 'PromptVariableMapping',
-    description: 'Connects one prompt variable to source data.',
-  })
-  .openapi('PromptVariableMapping')
 
 const EvaluationRuleFilterSchema = z
   .xor([
@@ -2587,18 +3294,6 @@ const EvaluatorAssignmentSchema = z
   .openapi({ title: 'EvaluatorAssignment', required: ['evaluatorId', 'variableMapping'] })
   .openapi('EvaluatorAssignment')
 
-const CreatorSchema = z
-  .object({
-    id: z.string().openapi({ description: 'User identifier.' }),
-    name: z.string().nullable().openapi({ description: 'User name, or `null` when unavailable.' }),
-  })
-  .openapi({
-    title: 'Creator',
-    description: 'User who created the resource, or `null` when no user can be resolved.',
-    required: ['id', 'name'],
-  })
-  .openapi('Creator')
-
 const EvaluationRuleSchema = z
   .object({
     id: z.string().openapi({ description: 'Stable evaluation-rule identifier.' }),
@@ -2742,27 +3437,6 @@ const UpdateEvaluationRuleRequestSchema = z
   })
   .openapi('UpdateEvaluationRuleRequest')
 
-const UtilsCursorMetaResponseSchema = z
-  .object({
-    cursor: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Opaque cursor for the next page. Omitted when there is no next page.',
-      }),
-  })
-  .openapi({
-    title: 'utilsCursorMetaResponse',
-    description: 'Metadata for cursor-based pagination.',
-    required: [],
-  })
-  .openapi('UtilsCursorMetaResponse')
-
-const CursorMetaSchema = UtilsCursorMetaResponseSchema.and(z.looseObject({}))
-  .openapi({ title: 'CursorMeta', description: 'Cursor pagination metadata.' })
-  .openapi('CursorMeta')
-
 const EvaluationRulesPageSchema = z
   .object({
     data: z.array(EvaluationRuleSchema).openapi({ description: 'Evaluation rules for this page.' }),
@@ -2780,59 +3454,6 @@ const DeletedEvaluationRuleSchema = z
   })
   .openapi('DeletedEvaluationRule')
 
-const EvaluatorModelConfigSchema = z
-  .object({
-    provider: z
-      .string()
-      .openapi({
-        description:
-          'Provider identifier, for example `openai` or `anthropic`.\n\nTo discover valid values for the current project, call `GET /api/public/llm-connections` and use one of the returned `provider` values.',
-      }),
-    model: z
-      .string()
-      .openapi({
-        description: 'Model identifier exposed by the provider, for example `gpt-4.1-mini`.',
-      }),
-  })
-  .openapi({
-    title: 'EvaluatorModelConfig',
-    description:
-      "Explicit model configuration for an evaluator.\n\nIf the complete `modelConfig` is `null`, Langfuse uses the project's default evaluation model.\nIf provided, the model must be available to the project when the evaluator or evaluation rule is enabled.",
-    required: ['provider', 'model'],
-  })
-  .openapi('EvaluatorModelConfig')
-
-const EvaluatorChatMessageRoleSchema = z
-  .enum(['system', 'user', 'assistant'])
-  .openapi({
-    title: 'EvaluatorChatMessageRole',
-    description: 'Role of an evaluator prompt message.',
-  })
-  .openapi('EvaluatorChatMessageRole')
-
-const EvaluatorChatMessageSchema = z
-  .object({
-    role: EvaluatorChatMessageRoleSchema,
-    content: z
-      .string()
-      .openapi({ description: 'Message content. Evaluator variables use `{{variable}}` syntax.' }),
-  })
-  .openapi({
-    title: 'EvaluatorChatMessage',
-    description: 'One chat message in an evaluator prompt.',
-    required: ['role', 'content'],
-  })
-  .openapi('EvaluatorChatMessage')
-
-const EvaluatorChatPromptSchema = z
-  .array(EvaluatorChatMessageSchema)
-  .openapi({
-    title: 'EvaluatorChatPrompt',
-    description:
-      'An ordered list of chat messages. A system message is only allowed as the first message.',
-  })
-  .openapi('EvaluatorChatPrompt')
-
 const EvaluatorChatPromptInputSchema = z
   .xor([z.string().openapi({ title: 'String' }), EvaluatorChatPromptSchema])
   .openapi({
@@ -2840,327 +3461,6 @@ const EvaluatorChatPromptInputSchema = z
     description: 'A user prompt string shortcut, or an ordered list of chat messages.',
   })
   .openapi('EvaluatorChatPromptInput')
-
-const EvaluatorVersionBaseSchema = z
-  .object({
-    id: z.string().openapi({ description: 'Stable identifier of this evaluator version.' }),
-    version: z.int().openapi({ description: 'Monotonically increasing evaluator version number.' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Timestamp when this evaluator version was created.' }),
-    createdBy: CreatorSchema.nullable().openapi({
-      description: 'User who created this version, or `null` when no user can be resolved.',
-    }),
-  })
-  .openapi({ title: 'EvaluatorVersionBase', required: ['id', 'version', 'createdAt', 'createdBy'] })
-  .openapi('EvaluatorVersionBase')
-
-const LlmAsJudgeEvaluatorVersionSchema = EvaluatorVersionBaseSchema.and(
-  z
-    .object({
-      type: z.literal('llm_as_judge').openapi({ description: 'Evaluator type.' }),
-      prompt: EvaluatorChatPromptSchema.openapi({
-        description: 'Ordered chat messages used during evaluation.',
-      }),
-      variables: z
-        .array(z.string())
-        .openapi({
-          description:
-            'Variables extracted from the prompt and available for evaluation-rule mappings.\n\nEvery variable must be mapped exactly once when a rule provides an explicit mapping.',
-        }),
-      variableMapping: z
-        .array(PromptVariableMappingReadSchema)
-        .nullable()
-        .openapi({
-          description:
-            'Default variable mapping for this evaluator version, or `null` when no default is configured.',
-        }),
-      modelConfig: EvaluatorModelConfigSchema.nullable().openapi({
-        description:
-          "Explicit model configuration, or `null` when the project's default evaluation model is used.",
-      }),
-      outputDefinition: PublicEvaluatorOutputDefinitionSchema.openapi({
-        description:
-          'Structured output schema returned by this evaluator.\n\nResponses include `dataType` and omit the internal output-definition persistence version.',
-      }),
-    })
-    .openapi({
-      required: [
-        'type',
-        'prompt',
-        'variables',
-        'variableMapping',
-        'modelConfig',
-        'outputDefinition',
-      ],
-    }),
-)
-  .openapi({
-    title: 'LlmAsJudgeEvaluatorVersion',
-    required: ['type', 'prompt', 'variables', 'variableMapping', 'modelConfig', 'outputDefinition'],
-  })
-  .openapi('LlmAsJudgeEvaluatorVersion')
-
-const CodeEvaluatorVersionSchema = EvaluatorVersionBaseSchema.and(
-  z
-    .object({
-      type: z.literal('code').openapi({ description: 'Evaluator type.' }),
-      sourceCode: z
-        .string()
-        .openapi({ description: 'Source code executed for each matched observation.' }),
-      sourceCodeLanguage: CodeEvaluatorSourceCodeLanguageSchema.openapi({
-        description: 'Runtime language used to execute the source code.',
-      }),
-    })
-    .openapi({ required: ['type', 'sourceCode', 'sourceCodeLanguage'] }),
-)
-  .openapi({
-    title: 'CodeEvaluatorVersion',
-    required: ['type', 'sourceCode', 'sourceCodeLanguage'],
-  })
-  .openapi('CodeEvaluatorVersion')
-
-const EvaluatorVersionSchema = z
-  .xor([
-    z
-      .object({ type: z.literal('llm_as_judge').exactOptional() })
-      .openapi({ required: [] })
-      .and(z.looseObject({}).openapi({ required: ['type'] }))
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'type')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .and(LlmAsJudgeEvaluatorVersionSchema)
-      .openapi({ required: ['type'], title: 'LlmAsJudgeEvaluatorVersion' }),
-    z
-      .object({ type: z.literal('code').exactOptional() })
-      .openapi({ required: [] })
-      .and(z.looseObject({}).openapi({ required: ['type'] }))
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'type')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .and(CodeEvaluatorVersionSchema)
-      .openapi({ required: ['type'], title: 'CodeEvaluatorVersion' }),
-  ])
-  .openapi({ title: 'EvaluatorVersion' })
-  .openapi('EvaluatorVersion')
-
-const EvaluationRuleAssignmentSchema = z
-  .object({
-    evaluationRuleId: z
-      .string()
-      .openapi({ description: 'Stable identifier of the assigned evaluation rule.' }),
-    variableMappingOverride: z
-      .array(PromptVariableMappingSchema)
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          "Rule-specific variable mapping override. Omitted when the evaluator's latest default mapping is inherited. Legacy mappings use the explicit `legacy` variant.",
-      }),
-  })
-  .openapi({
-    title: 'EvaluationRuleAssignment',
-    description: 'Evaluation-rule assignment associated with this evaluator.',
-    required: ['evaluationRuleId'],
-  })
-  .openapi('EvaluationRuleAssignment')
-
-const EvaluatorStatusSchema = z
-  .enum(['active', 'paused'])
-  .openapi({
-    title: 'EvaluatorStatus',
-    description:
-      'Effective evaluator runtime status.\n\n- `active`: the evaluator can run.\n- `paused`: Langfuse paused execution until the underlying issue is resolved.',
-  })
-  .openapi('EvaluatorStatus')
-
-const EvaluatorBaseSchema = z
-  .object({
-    id: z
-      .string()
-      .openapi({ description: 'Stable identifier of this evaluator across all versions.' }),
-    name: z
-      .string()
-      .openapi({
-        description:
-          'Human-readable evaluator name. Names are not identifiers and do not need to be unique.',
-      }),
-    description: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Optional human-readable evaluator description.' }),
-    createdBy: CreatorSchema.nullable().openapi({
-      description: 'User who created this evaluator, or `null` when no user can be resolved.',
-    }),
-    status: EvaluatorStatusSchema.openapi({
-      description: 'Effective evaluator status after Langfuse validates its runtime configuration.',
-    }),
-    pausedAt: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .openapi({ description: 'Timestamp when the evaluator was paused, otherwise `null`.' }),
-    pausedReason: z
-      .string()
-      .nullable()
-      .openapi({ description: 'Machine-readable reason when `status=paused`, otherwise `null`.' }),
-    pausedMessage: z
-      .string()
-      .nullable()
-      .openapi({
-        description: 'Human-readable explanation when `status=paused`, otherwise `null`.',
-      }),
-    evaluationRuleAssignments: z
-      .array(EvaluationRuleAssignmentSchema)
-      .openapi({
-        description:
-          'All modern and legacy evaluation-rule assignments in newest-assignment-first order. Rule-specific mappings are exposed as `variableMappingOverride`; inherited defaults are omitted.',
-      }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Timestamp when the evaluator was created.' }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Timestamp when the evaluator was last updated.' }),
-    versionId: z
-      .string()
-      .openapi({ description: 'Stable identifier of the latest evaluator version.' }),
-    version: z
-      .int()
-      .openapi({ description: 'Monotonically increasing latest evaluator version number.' }),
-    versionCreatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Timestamp when the latest evaluator version was created.' }),
-    versionCreatedBy: CreatorSchema.nullable().openapi({
-      description:
-        'User who created the latest evaluator version, or `null` when no user can be resolved.',
-    }),
-  })
-  .openapi({
-    title: 'EvaluatorBase',
-    required: [
-      'id',
-      'name',
-      'description',
-      'createdBy',
-      'status',
-      'pausedAt',
-      'pausedReason',
-      'pausedMessage',
-      'evaluationRuleAssignments',
-      'createdAt',
-      'updatedAt',
-      'versionId',
-      'version',
-      'versionCreatedAt',
-      'versionCreatedBy',
-    ],
-  })
-  .openapi('EvaluatorBase')
-
-const LlmAsJudgeEvaluatorSchema = EvaluatorBaseSchema.and(
-  z
-    .object({
-      type: z.literal('llm_as_judge').openapi({ description: 'Evaluator type.' }),
-      prompt: EvaluatorChatPromptSchema.openapi({
-        description: 'Ordered chat messages used by the latest evaluator version.',
-      }),
-      variables: z
-        .array(z.string())
-        .openapi({
-          description:
-            'Variables extracted from the latest prompt and available for evaluation-rule mappings.',
-        }),
-      variableMapping: z
-        .array(PromptVariableMappingReadSchema)
-        .nullable()
-        .openapi({
-          description:
-            'Default variable mapping for the latest version, or `null` when no default is configured.',
-        }),
-      modelConfig: EvaluatorModelConfigSchema.nullable().openapi({
-        description:
-          "Explicit model configuration for the latest version, or `null` when the project's default evaluation model is used.",
-      }),
-      outputDefinition: PublicEvaluatorOutputDefinitionSchema.openapi({
-        description: 'Structured output schema returned by the latest evaluator version.',
-      }),
-    })
-    .openapi({
-      required: [
-        'type',
-        'prompt',
-        'variables',
-        'variableMapping',
-        'modelConfig',
-        'outputDefinition',
-      ],
-    }),
-)
-  .openapi({
-    title: 'LlmAsJudgeEvaluator',
-    required: ['type', 'prompt', 'variables', 'variableMapping', 'modelConfig', 'outputDefinition'],
-  })
-  .openapi('LlmAsJudgeEvaluator')
-
-const CodeEvaluatorSchema = EvaluatorBaseSchema.and(
-  z
-    .object({
-      type: z.literal('code').openapi({ description: 'Evaluator type.' }),
-      sourceCode: z
-        .string()
-        .openapi({ description: 'Source code executed by the latest evaluator version.' }),
-      sourceCodeLanguage: CodeEvaluatorSourceCodeLanguageSchema.openapi({
-        description: 'Runtime language used to execute the latest source code.',
-      }),
-    })
-    .openapi({ required: ['type', 'sourceCode', 'sourceCodeLanguage'] }),
-)
-  .openapi({ title: 'CodeEvaluator', required: ['type', 'sourceCode', 'sourceCodeLanguage'] })
-  .openapi('CodeEvaluator')
-
-const EvaluatorSchema = z
-  .xor([
-    z
-      .object({ type: z.literal('llm_as_judge').exactOptional() })
-      .openapi({ required: [] })
-      .and(z.looseObject({}).openapi({ required: ['type'] }))
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'type')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .and(LlmAsJudgeEvaluatorSchema)
-      .openapi({ required: ['type'], title: 'LlmAsJudgeEvaluator' }),
-    z
-      .object({ type: z.literal('code').exactOptional() })
-      .openapi({ required: [] })
-      .and(z.looseObject({}).openapi({ required: ['type'] }))
-      .superRefine((val, ctx) => {
-        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-          if (!Object.hasOwn(val, 'type')) {
-            ctx.addIssue({ code: 'custom' })
-          }
-        }
-      })
-      .and(CodeEvaluatorSchema)
-      .openapi({ required: ['type'], title: 'CodeEvaluator' }),
-  ])
-  .openapi({
-    title: 'Evaluator',
-    description:
-      'One evaluator that can be used for scoring.\n\nAn evaluator describes **how** to score data. Associated evaluation rules describe **which** live objects should be evaluated.',
-  })
-  .openapi('Evaluator')
 
 const CreateLlmAsJudgeEvaluatorRequestSchema = z
   .object({
@@ -3230,6 +3530,43 @@ const CreateCodeEvaluatorRequestSchema = z
   })
   .openapi('CreateCodeEvaluatorRequest')
 
+const CreateDecisionModelEvaluatorRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .openapi({
+        description:
+          'Human-readable evaluator name. Names are not identifiers and do not need to be unique.',
+      }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Optional human-readable evaluator description.' }),
+    type: z.literal('decision_model').openapi({ description: 'Evaluator type.' }),
+    questions: z
+      .array(DecisionModelQuestionSchema)
+      .openapi({
+        description:
+          'Between 1 and 50 typed questions. Question ids and score names must be unique.',
+      }),
+    modelConfig: EvaluatorModelConfigSchema.openapi({
+      description:
+        'Decision-model connection and model. Required.\n\nThe provider must be a decision-model connection of the project. Call `GET /api/public/llm-connections` to discover available providers.',
+    }),
+    variableMapping: z
+      .array(PromptVariableMappingInputSchema)
+      .openapi({
+        description:
+          'At least one mapping from observation data to a state key. Each `variable` is a state key that starts with a letter or underscore and contains only letters, digits, and underscores.',
+      }),
+  })
+  .openapi({
+    title: 'CreateDecisionModelEvaluatorRequest',
+    required: ['name', 'type', 'questions', 'modelConfig', 'variableMapping'],
+  })
+  .openapi('CreateDecisionModelEvaluatorRequest')
+
 const CreateEvaluatorRequestSchema = z
   .xor([
     z
@@ -3258,6 +3595,19 @@ const CreateEvaluatorRequestSchema = z
       })
       .and(CreateCodeEvaluatorRequestSchema)
       .openapi({ required: ['type'], title: 'CreateCodeEvaluatorRequest' }),
+    z
+      .object({ type: z.literal('decision_model').exactOptional() })
+      .openapi({ required: [] })
+      .and(z.looseObject({}).openapi({ required: ['type'] }))
+      .superRefine((val, ctx) => {
+        if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+          if (!Object.hasOwn(val, 'type')) {
+            ctx.addIssue({ code: 'custom' })
+          }
+        }
+      })
+      .and(CreateDecisionModelEvaluatorRequestSchema)
+      .openapi({ required: ['type'], title: 'CreateDecisionModelEvaluatorRequest' }),
   ])
   .openapi({
     title: 'CreateEvaluatorRequest',
@@ -3355,11 +3705,45 @@ const UpdateCodeEvaluatorRequestSchema = z
   })
   .openapi('UpdateCodeEvaluatorRequest')
 
+const UpdateDecisionModelEvaluatorRequestSchema = z
+  .object({
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'New human-readable evaluator name.' }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'New description. Set to `null` to clear it.' }),
+    type: z
+      .literal('decision_model')
+      .openapi({ description: 'Evaluator type. The type of an existing evaluator cannot change.' }),
+    questions: z
+      .array(DecisionModelQuestionSchema)
+      .openapi({ description: 'Complete replacement list of typed questions.' }),
+    modelConfig: EvaluatorModelConfigSchema.openapi({
+      description: 'Decision-model connection and model. Required.',
+    }),
+    variableMapping: z
+      .array(PromptVariableMappingInputSchema)
+      .openapi({
+        description: 'Complete replacement mapping from observation data to state keys.',
+      }),
+  })
+  .openapi({
+    title: 'UpdateDecisionModelEvaluatorRequest',
+    required: ['type', 'questions', 'modelConfig', 'variableMapping'],
+  })
+  .openapi('UpdateDecisionModelEvaluatorRequest')
+
 const UpdateEvaluatorRequestSchema = z
   .xor([
     UpdateEvaluatorMetadataRequestSchema,
     UpdateLlmAsJudgeEvaluatorRequestSchema,
     UpdateCodeEvaluatorRequestSchema,
+    UpdateDecisionModelEvaluatorRequestSchema,
   ])
   .openapi({
     title: 'UpdateEvaluatorRequest',
@@ -3368,7 +3752,7 @@ const UpdateEvaluatorRequestSchema = z
   })
   .openapi('UpdateEvaluatorRequest')
 
-const EvaluatorsPageSchema = z
+const EvaluatorsPageSchema: z.ZodType<EvaluatorsPageType> = z
   .object({
     data: z.array(EvaluatorSchema).openapi({ description: 'Evaluators for this page.' }),
     meta: CursorMetaSchema.openapi({ description: 'Cursor pagination metadata.' }),
@@ -3376,7 +3760,7 @@ const EvaluatorsPageSchema = z
   .openapi({ title: 'EvaluatorsPage', required: ['data', 'meta'] })
   .openapi('EvaluatorsPage')
 
-const EvaluatorVersionsPageSchema = z
+const EvaluatorVersionsPageSchema: z.ZodType<EvaluatorVersionsPageType> = z
   .object({
     data: z
       .array(EvaluatorVersionSchema)
@@ -3907,7 +4291,7 @@ const LlmConnectionSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Adapter-specific configuration. Required for Bedrock (`{"region":"us-east-1"}`), optional for OpenAI (`{"useResponsesApi":true}`), optional for VertexAI (`{"location":"us-central1"}`), not used by other adapters.',
+          'Adapter-specific configuration. Required for Bedrock (`{"region":"us-east-1"}`, optionally with `"customModelConfig"`), optional for OpenAI (`{"useResponsesApi":true}`), optional for VertexAI (`{"location":"us-central1"}`), not used by other adapters.',
       }),
     createdAt: z.iso.datetime({ offset: true }),
     updatedAt: z.iso.datetime({ offset: true }),
@@ -3977,7 +4361,7 @@ const UpsertLlmConnectionRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Adapter-specific configuration. Validation rules: - **Bedrock**: Required. Must be `{"region": "<aws-region>"}` (e.g., `{"region":"us-east-1"}`) - **OpenAI**: Optional. If provided, must be `{"useResponsesApi": <boolean>}` to control whether Langfuse routes calls through OpenAI\'s Responses API. - **VertexAI**: Optional. If provided, must be `{"location": "<gcp-location>"}` (e.g., `{"location":"us-central1"}`) - **Other adapters**: Not supported. Omit this field or set to null.',
+          'Adapter-specific configuration. Validation rules: - **Bedrock**: Required. Must be `{"region": "<aws-region>"}` (e.g., `{"region":"us-east-1"}`)\n  Optionally add `"customModelConfig": {"<custom model>": {"modelFamily": "anthropic"}}` to mark custom models, such as application inference profile ARNs, whose id does not show that they run an Anthropic model.\n- **OpenAI**: Optional. If provided, must be `{"useResponsesApi": <boolean>}` to control whether Langfuse routes calls through OpenAI\'s Responses API. - **VertexAI**: Optional. If provided, must be `{"location": "<gcp-location>"}` (e.g., `{"location":"us-central1"}`) - **Other adapters**: Not supported. Omit this field or set to null.',
       }),
   })
   .openapi({
@@ -5944,7 +6328,7 @@ const UnstableTopicRuleListSchema = z
   .openapi('UnstableTopicRuleList')
 
 const UnstableTopicSummaryStateSchema = z
-  .enum(['complete', 'not_applicable', 'insufficient_input'])
+  .enum(['complete', 'not_applicable', 'insufficient_input', 'empty_input', 'input_too_large'])
   .openapi({ title: 'unstableTopicSummaryState' })
   .openapi('UnstableTopicSummaryState')
 
@@ -5964,7 +6348,7 @@ const UnstableTopicSummarySchema = z
       .exactOptional()
       .openapi({ description: 'Set when `state` is `complete`.' }),
     summaryTruncated: z.boolean(),
-    processedAt: z.iso.datetime({ offset: true }),
+    createdAt: z.iso.datetime({ offset: true }),
   })
   .openapi({
     title: 'unstableTopicSummary',
@@ -5978,7 +6362,7 @@ const UnstableTopicSummarySchema = z
       'facetVersion',
       'state',
       'summaryTruncated',
-      'processedAt',
+      'createdAt',
     ],
   })
   .openapi('UnstableTopicSummary')
@@ -6004,11 +6388,11 @@ const UnstableTopicAssignmentStatusSchema = z
 
 const UnstableTopicAssignmentTopicSchema = z
   .object({
-    id: z.string().openapi({ description: 'Stable topic id.' }),
-    versionId: z.string(),
+    stableId: z.string().openapi({ description: 'Stable topic id.' }),
+    versionId: z.string().openapi({ description: 'Id of this topic version.' }),
     name: z.string(),
   })
-  .openapi({ title: 'unstableTopicAssignmentTopic', required: ['id', 'versionId', 'name'] })
+  .openapi({ title: 'unstableTopicAssignmentTopic', required: ['stableId', 'versionId', 'name'] })
   .openapi('UnstableTopicAssignmentTopic')
 
 const UnstableTopicAssignmentSchema = z
@@ -6029,14 +6413,12 @@ const UnstableTopicAssignmentSchema = z
     topic: UnstableTopicAssignmentTopicSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Set when `status` is `assigned`.' }),
-    runId: z
+    mapId: z
       .string()
       .nullable()
       .exactOptional()
-      .openapi({
-        description: 'The run that assigned the trace. Null for assignments made as traces arrive.',
-      }),
-    assignedAt: z.iso.datetime({ offset: true }),
+      .openapi({ description: 'The map that assigned the trace.' }),
+    createdAt: z.iso.datetime({ offset: true }),
   })
   .openapi({
     title: 'unstableTopicAssignment',
@@ -6047,7 +6429,7 @@ const UnstableTopicAssignmentSchema = z
       'facetName',
       'facetVersion',
       'status',
-      'assignedAt',
+      'createdAt',
     ],
   })
   .openapi('UnstableTopicAssignment')
@@ -6066,14 +6448,14 @@ const UnstableTopicsOrderBySchema = z
   .openapi({ title: 'unstableTopicsOrderBy' })
   .openapi('UnstableTopicsOrderBy')
 
-const UnstableTopicFacetPublishedRunSchema = z
+const UnstableTopicFacetPublishedMapSchema = z
   .object({
     id: z.string(),
     completedAt: z.iso.datetime({ offset: true }).nullable().exactOptional(),
     topicCount: z.int(),
   })
-  .openapi({ title: 'unstableTopicFacetPublishedRun', required: ['id', 'topicCount'] })
-  .openapi('UnstableTopicFacetPublishedRun')
+  .openapi({ title: 'unstableTopicFacetPublishedMap', required: ['id', 'topicCount'] })
+  .openapi('UnstableTopicFacetPublishedMap')
 
 const UnstableTopicFacetSchema = z
   .object({
@@ -6090,10 +6472,10 @@ const UnstableTopicFacetSchema = z
     ruleIds: z.array(z.string()).openapi({ description: 'The rules that run the facet.' }),
     version: z.int().openapi({ description: 'Latest facet version.' }),
     prompt: z.string().openapi({ description: 'Prompt of the latest facet version.' }),
-    publishedRun: UnstableTopicFacetPublishedRunSchema.nullable()
+    publishedMap: UnstableTopicFacetPublishedMapSchema.nullable()
       .exactOptional()
       .openapi({
-        description: "The run that produced the facet's current map. Null before the first map.",
+        description: "The facet's current published topic map. Null before the first map.",
       }),
   })
   .openapi({
@@ -6114,7 +6496,7 @@ const UnstableTopicFacetRefSchema = z
 
 const UnstableTopicSchema = z
   .object({
-    id: z.string().openapi({ description: 'Stable topic id, kept across map updates.' }),
+    stableId: z.string().openapi({ description: 'Stable topic id, kept across map updates.' }),
     versionId: z.string().openapi({ description: 'Id of this topic version.' }),
     name: z.string(),
     description: z.string(),
@@ -6126,7 +6508,7 @@ const UnstableTopicSchema = z
       .openapi({
         description: 'The rule whose live map has the topic. Null when the project has no rule.',
       }),
-    runId: z.string().openapi({ description: 'The run that produced this topic version.' }),
+    mapId: z.string().openapi({ description: 'The map that produced this topic version.' }),
     traceCount: z
       .int()
       .openapi({
@@ -6135,7 +6517,7 @@ const UnstableTopicSchema = z
   })
   .openapi({
     title: 'unstableTopic',
-    required: ['id', 'versionId', 'name', 'description', 'facet', 'runId', 'traceCount'],
+    required: ['stableId', 'versionId', 'name', 'description', 'facet', 'mapId', 'traceCount'],
   })
   .openapi('UnstableTopic')
 
@@ -6159,11 +6541,21 @@ const UnstableTopicStatusCountsSchema = z
     awaitingMap: z.int(),
     notApplicable: z.int(),
     insufficientInput: z.int(),
+    emptyInput: z.int(),
+    inputTooLarge: z.int(),
   })
   .openapi({
     title: 'unstableTopicStatusCounts',
     description: 'Traces in the window by their current result for one facet.',
-    required: ['assigned', 'outlier', 'awaitingMap', 'notApplicable', 'insufficientInput'],
+    required: [
+      'assigned',
+      'outlier',
+      'awaitingMap',
+      'notApplicable',
+      'insufficientInput',
+      'emptyInput',
+      'inputTooLarge',
+    ],
   })
   .openapi('UnstableTopicStatusCounts')
 
@@ -6171,7 +6563,7 @@ const UnstableTopicFacetCountsSchema = z
   .object({
     facet: UnstableTopicFacetRefSchema,
     ruleId: z.string().nullable().exactOptional(),
-    publishedRunId: z.string().nullable().exactOptional(),
+    publishedMapId: z.string().nullable().exactOptional(),
     counts: UnstableTopicStatusCountsSchema,
   })
   .openapi({ title: 'unstableTopicFacetCounts', required: ['facet', 'counts'] })
@@ -7558,7 +7950,7 @@ export const postApiPublicV2EvaluatorsRoute = createRoute({
   path: '/api/public/v2/evaluators',
   tags: ['Evaluators'],
   description:
-    'Create an evaluator in the authenticated project.\n\nAn evaluator defines **how** Langfuse should score data. LLM-as-a-judge evaluators define a prompt, expected structured output, and optional model configuration. Code evaluators define source code and a runtime language.\n\nThis always creates a new evaluator with version `1`. Names are not identifiers and do not need to be unique.',
+    'Create an evaluator in the authenticated project.\n\nAn evaluator defines **how** Langfuse should score data. LLM-as-a-judge evaluators define a prompt, expected structured output, and optional model configuration. Code evaluators define source code and a runtime language. Decision-model evaluators define typed questions, a decision-model configuration, and a mapping from observation data to state keys.\n\nThis always creates a new evaluator with version `1`. Names are not identifiers and do not need to be unique.',
   operationId: 'evaluators_create',
   request: {
     body: {
@@ -7655,7 +8047,7 @@ export const patchApiPublicV2EvaluatorsEvaluatorIdRoute = createRoute({
   path: '/api/public/v2/evaluators/{evaluatorId}',
   tags: ['Evaluators'],
   description:
-    "Update an evaluator by its stable identifier.\n\nProvide only the top-level fields to change. Metadata-only changes do not create a version. Evaluator type cannot change.\n\nDefinition fields are flattened into the request. To replace a definition, include `type` and every definition field for that type. Definition fields are replaced as a complete unit rather than merged. For LLM-as-a-judge evaluators, omitting or setting `modelConfig` to `null` selects the project's default evaluation model.\n\nReplacing a definition automatically returns an evaluator paused by an invalid or missing model configuration to `active`, while preserving its id and evaluation-rule assignments. Pauses caused by provider authentication, billing, connectivity, account state, or an unknown legacy reason remain paused until the explicit reactivation check succeeds.",
+    "Update an evaluator by its stable identifier.\n\nProvide only the top-level fields to change. Metadata-only changes do not create a version. Evaluator type cannot change.\n\nDefinition fields are flattened into the request. To replace a definition, include `type` and every definition field for that type. Definition fields are replaced as a complete unit rather than merged. For LLM-as-a-judge evaluators, omitting or setting `modelConfig` to `null` selects the project's default evaluation model. Decision-model evaluators always require `modelConfig`.\n\nReplacing a definition automatically returns an evaluator paused by an invalid or missing model configuration to `active`, while preserving its id and evaluation-rule assignments. Pauses caused by provider authentication, billing, connectivity, account state, or an unknown legacy reason remain paused until the explicit reactivation check succeeds.",
   operationId: 'evaluators_update',
   request: {
     params: z.object({
@@ -9004,7 +9396,7 @@ export const getApiPublicV2ObservationsRoute = createRoute({
             name: 'filter',
             in: 'query',
             description:
-              'JSON string containing an array of filter conditions. A condition on the same field as a query parameter filter (userId, name, type, level, environment, fromStartTime, ...) replaces that parameter. Query parameters for other fields still apply. A `startTime` condition replaces both `fromStartTime` and `toStartTime`.\n\n## Filter Structure\nEach filter condition has the following structure:\n```json\n[\n  {\n    "type": string,           // Required. One of: "datetime", "string", "number", "stringOptions", "arrayOptions", "stringObject", "boolean", "null"\n    "column": string,         // Required. Column to filter on (see available columns below)\n    "operator": string,       // Required. Operator based on type:\n                              // - datetime: ">", "<", ">=", "<="\n                              // - string: "=", "contains", "does not contain", "starts with", "ends with", "is not empty", "matches" (input/output only)\n                              // - stringOptions: "any of", "none of" (works on any string column except input/output)\n                              // - arrayOptions: "any of", "none of", "all of"\n                              // - number: "=", ">", "<", ">=", "<="\n                              // - stringObject: "=", "contains", "does not contain", "starts with", "ends with", "matches", "is set", "is not set"\n                              // - boolean: "=", "<>"\n                              // - null: "is null", "is not null"\n    "value": any,             // Required. Type depends on filter type: ISO 8601 string for datetime, JSON number for number (not a numeric string), array of strings for stringOptions/arrayOptions, boolean for boolean, and "" (empty string) for null\n    "key": string             // Required only for stringObject (the metadata key to filter on)\n  }\n]\n```\n\n## Available Columns\n\n### Core Observation Fields\n- `id` (string) - Observation ID\n- `type` (string) - Observation type (SPAN, GENERATION, EVENT)\n- `name` (string) - Observation name\n- `traceId` (string) - Associated trace ID\n- `startTime` (datetime) - Observation start time\n- `endTime` (datetime) - Observation end time\n- `environment` (string) - Environment tag\n- `level` (string) - Log level (DEBUG, DEFAULT, WARNING, ERROR)\n- `statusMessage` (string) - Status message\n- `version` (string) - Version tag\n- `userId` (string) - User ID\n- `sessionId` (string) - Session ID\n- `isRootObservation` (boolean) - Whether the observation is a logical root. Observations marked as app roots by the SDK may retain a non-null parentObservationId.\n\n### Trace-Related Fields\n- `traceName` (string) - Name of the parent trace\n- `traceTags` (arrayOptions) - Tags from the parent trace\n- `tags` (arrayOptions) - Alias for traceTags\n\n### Performance Metrics\n- `latency` (number) - Latency in seconds (calculated: end_time - start_time)\n- `timeToFirstToken` (number) - Time to first token in seconds\n- `tokensPerSecond` (number) - Output tokens per second\n\n### Token Usage\n- `inputTokens` (number) - Number of input tokens\n- `outputTokens` (number) - Number of output tokens\n- `totalTokens` (number) - Total tokens (alias: `tokens`)\n\n### Cost Metrics\n- `inputCost` (number) - Input cost in USD\n- `outputCost` (number) - Output cost in USD\n- `totalCost` (number) - Total cost in USD\n\n### Model Information\n- `model` (string) - Provided model name (alias: `providedModelName`)\n- `promptName` (string) - Associated prompt name\n- `promptVersion` (number) - Associated prompt version\n\n### Structured Data\n- `input` (string) - Observation input. Supports accelerated indexed literal search with the `matches` operator.\n- `output` (string) - Observation output. Supports accelerated indexed literal search with the `matches` operator.\n- `metadata` (stringObject) - Metadata key-value pairs. Use the `key` parameter to filter on a specific metadata key. Metadata values are stored as strings, so match numbers and booleans by their string form with `=` (for example `"value": "true"` or `"value": "42"`); numeric comparisons such as `>` are not supported on metadata.\n\nThe `matches` operator is only supported for `input`, `output`, and stringObject `metadata` filters. It performs indexed literal search with token-boundary pruning using the events table text indexes. Case sensitivity differs by target: `input` and `output` matches are case-insensitive, while metadata value matches are case-sensitive. Unlike SQL `LIKE`, `%` and `_` are treated as literal characters. Use `contains` for legacy substring semantics where the API allows it. Any v2 `input` or `output` filter must be accompanied by at least one `=` or `matches` filter on `input` or `output`; standalone `contains`, `starts with`, `ends with`, and `does not contain` filters on these columns are rejected.\n\n## Filter Examples\n```json\n[\n  {\n    "type": "string",\n    "column": "type",\n    "operator": "=",\n    "value": "GENERATION"\n  },\n  {\n    "type": "number",\n    "column": "latency",\n    "operator": ">=",\n    "value": 2.5\n  },\n  {\n    "type": "stringObject",\n    "column": "metadata",\n    "key": "environment",\n    "operator": "=",\n    "value": "production"\n  },\n  {\n    "type": "string",\n    "column": "output",\n    "operator": "matches",\n    "value": "needle"\n  },\n  {\n    "type": "boolean",\n    "column": "isRootObservation",\n    "operator": "=",\n    "value": true\n  }\n]\n```',
+              'JSON string containing an array of filter conditions. A condition on the same field as a query parameter filter (userId, name, type, level, environment, fromStartTime, ...) replaces that parameter. Query parameters for other fields still apply. A `startTime` condition replaces both `fromStartTime` and `toStartTime`.\n\n## Filter Structure\nEach filter condition has the following structure:\n```json\n[\n  {\n    "type": string,           // Required. One of: "datetime", "string", "number", "stringOptions", "arrayOptions", "stringObject", "numberObject", "boolean", "null"\n    "column": string,         // Required. Column to filter on (see available columns below)\n    "operator": string,       // Required. Operator based on type:\n                              // - datetime: ">", "<", ">=", "<="\n                              // - string: "=", "contains", "does not contain", "starts with", "ends with", "is not empty", "matches" (input/output only)\n                              // - stringOptions: "any of", "none of" (works on any string column except input/output)\n                              // - arrayOptions: "any of", "none of", "all of"\n                              // - number: "=", ">", "<", ">=", "<="\n                              // - stringObject: "=", "contains", "does not contain", "starts with", "ends with", "matches", "is set", "is not set"\n                              // - numberObject: "=", ">", "<", ">=", "<=" (metadata only)\n                              // - boolean: "=", "<>"\n                              // - null: "is null", "is not null"\n    "value": any,             // Required. Type depends on filter type: ISO 8601 string for datetime, JSON number for number and numberObject (not a numeric string), array of strings for stringOptions/arrayOptions, boolean for boolean, and "" (empty string) for null\n    "key": string             // Required only for stringObject and numberObject (the metadata key to filter on)\n  }\n]\n```\n\n## Available Columns\n\n### Core Observation Fields\n- `id` (string) - Observation ID\n- `type` (string) - Observation type (SPAN, GENERATION, EVENT)\n- `name` (string) - Observation name\n- `traceId` (string) - Associated trace ID\n- `startTime` (datetime) - Observation start time\n- `endTime` (datetime) - Observation end time\n- `environment` (string) - Environment tag\n- `level` (string) - Log level (DEBUG, DEFAULT, WARNING, ERROR)\n- `statusMessage` (string) - Status message\n- `version` (string) - Version tag\n- `userId` (string) - User ID\n- `sessionId` (string) - Session ID\n- `isRootObservation` (boolean) - Whether the observation is a logical root. Observations marked as app roots by the SDK may retain a non-null parentObservationId.\n\n### Trace-Related Fields\n- `traceName` (string) - Name of the parent trace\n- `traceTags` (arrayOptions) - Tags from the parent trace\n- `tags` (arrayOptions) - Alias for traceTags\n\n### Performance Metrics\n- `latency` (number) - Latency in seconds (calculated: end_time - start_time)\n- `timeToFirstToken` (number) - Time to first token in seconds\n- `tokensPerSecond` (number) - Output tokens per second\n\n### Token Usage\n- `inputTokens` (number) - Number of input tokens\n- `outputTokens` (number) - Number of output tokens\n- `totalTokens` (number) - Total tokens (alias: `tokens`)\n\n### Cost Metrics\n- `inputCost` (number) - Input cost in USD\n- `outputCost` (number) - Output cost in USD\n- `totalCost` (number) - Total cost in USD\n\n### Model Information\n- `model` (string) - Provided model name (alias: `providedModelName`)\n- `promptName` (string) - Associated prompt name\n- `promptVersion` (number) - Associated prompt version\n\n### Structured Data\n- `input` (string) - Observation input. Supports accelerated indexed literal search with the `matches` operator.\n- `output` (string) - Observation output. Supports accelerated indexed literal search with the `matches` operator.\n- `metadata` (stringObject) - Metadata key-value pairs. Use the `key` parameter to filter on a specific metadata key. Metadata values are stored as strings: a stringObject filter matches numbers and booleans by their string form with `=` (for example `"value": "true"` or `"value": "42"`). A numberObject filter compares the value as a number (for example `"operator": ">", "value": 20` matches `"20.5"` and `"21"`); values that are not numbers never match.\n\nThe `matches` operator is only supported for `input`, `output`, and stringObject `metadata` filters. It performs indexed literal search with token-boundary pruning using the events table text indexes. Case sensitivity differs by target: `input` and `output` matches are case-insensitive, while metadata value matches are case-sensitive. Unlike SQL `LIKE`, `%` and `_` are treated as literal characters. Use `contains` for legacy substring semantics where the API allows it. Any v2 `input` or `output` filter must be accompanied by at least one `=` or `matches` filter on `input` or `output`; standalone `contains`, `starts with`, `ends with`, and `does not contain` filters on these columns are rejected.\n\n## Filter Examples\n```json\n[\n  {\n    "type": "string",\n    "column": "type",\n    "operator": "=",\n    "value": "GENERATION"\n  },\n  {\n    "type": "number",\n    "column": "latency",\n    "operator": ">=",\n    "value": 2.5\n  },\n  {\n    "type": "stringObject",\n    "column": "metadata",\n    "key": "environment",\n    "operator": "=",\n    "value": "production"\n  },\n  {\n    "type": "string",\n    "column": "output",\n    "operator": "matches",\n    "value": "needle"\n  },\n  {\n    "type": "boolean",\n    "column": "isRootObservation",\n    "operator": "=",\n    "value": true\n  }\n]\n```',
             required: false,
             schema: { type: 'string', nullable: true },
           },
@@ -11908,7 +12300,7 @@ export const getApiPublicUnstableTopicFacetsRoute = createRoute({
   path: '/api/public/unstable/topic-facets',
   tags: ['UnstableTopics'],
   description:
-    "Unstable: Topics is in closed beta. The shape may change without notice.\n\nList the project's Topics facets. Only active facets (run by a Topics\nrule, or all facets if the project has no rule) are returned unless\n`filter` contains an `active` condition.\n\n`filter` is a JSON array of filter conditions combined with AND.\nString matching is case-insensitive. Columns: `id` (stringOptions),\n`name` (string, stringOptions), `description` (string), `isBuiltIn`\n(boolean), `active` (boolean).",
+    "Unstable: Topics is in public beta. The shape may change without notice.\n\nList the project's Topics facets. Only active facets (run by a Topics\nrule, or all facets if the project has no rule) are returned unless\n`filter` contains an `active` condition.\n\n`filter` is a JSON array of filter conditions combined with AND.\nString matching is case-insensitive. Columns: `id` (stringOptions),\n`name` (string, stringOptions), `description` (string), `isBuiltIn`\n(boolean), `active` (boolean).",
   operationId: 'unstable_topics_listFacets',
   request: {
     query: z.object({
@@ -12005,7 +12397,7 @@ export const getApiPublicUnstableTopicFacetsFacetIdRoute = createRoute({
   path: '/api/public/unstable/topic-facets/{facetId}',
   tags: ['UnstableTopics'],
   description:
-    'Unstable: Topics is in closed beta. The shape may change without notice.\n\nGet one Topics facet by id, including inactive facets.',
+    'Unstable: Topics is in public beta. The shape may change without notice.\n\nGet one Topics facet by id, including inactive facets.',
   operationId: 'unstable_topics_getFacet',
   request: {
     params: z.object({
@@ -12040,7 +12432,7 @@ export const getApiPublicUnstableTopicsRoute = createRoute({
   path: '/api/public/unstable/topics',
   tags: ['UnstableTopics'],
   description:
-    "Unstable: Topics is in closed beta. The shape may change without notice.\n\nList the topics of each active facet's live map, with\nthe number of traces currently assigned to each topic in the window.\nRetired topics are not listed. `facets` holds per-facet trace counts\nby topic status.\n\nThe window applies to the trace start time. It defaults to the last\n7 days and can span at most 93 days.\n\n`filter` is a JSON array of filter conditions combined with AND.\nString matching is case-insensitive. Columns: `facetId`\n(stringOptions), `facetName` (string, stringOptions), `ruleId`\n(stringOptions), `id` (stringOptions), `name` (string, stringOptions).\nFacet and rule conditions also restrict `facets`.",
+    "Unstable: Topics is in public beta. The shape may change without notice.\n\nList the topics of each active facet's live map, with\nthe number of traces currently assigned to each topic in the window.\nRetired topics are not listed. `facets` holds per-facet trace counts\nby topic status.\n\nThe window applies to the trace start time. It defaults to the last\n7 days and can span at most 93 days.\n\n`filter` is a JSON array of filter conditions combined with AND.\nString matching is case-insensitive. Columns: `facetId`\n(stringOptions), `facetName` (string, stringOptions), `ruleId`\n(stringOptions), `stableId` (stringOptions), `name` (string, stringOptions).\nFacet and rule conditions also restrict `facets`.",
   operationId: 'unstable_topics_list',
   request: {
     query: z.object({
@@ -12178,19 +12570,19 @@ export const getApiPublicUnstableTopicsRoute = createRoute({
   security: [{ BasicAuth: [] }],
 })
 
-export const getApiPublicUnstableTopicsTopicIdRoute = createRoute({
+export const getApiPublicUnstableTopicsTopicStableIdRoute = createRoute({
   method: 'get',
-  path: '/api/public/unstable/topics/{topicId}',
+  path: '/api/public/unstable/topics/{topicStableId}',
   tags: ['UnstableTopics'],
   description:
-    "Unstable: Topics is in closed beta. The shape may change without notice.\n\nGet one topic of a facet's current map by its stable id. Retired\ntopics are not found.",
+    "Unstable: Topics is in public beta. The shape may change without notice.\n\nGet one topic of a facet's current map by its stable id. Retired\ntopics are not found.",
   operationId: 'unstable_topics_get',
   request: {
     params: z.object({
-      topicId: z
+      topicStableId: z
         .string()
         .openapi({
-          param: { name: 'topicId', in: 'path', required: true, schema: { type: 'string' } },
+          param: { name: 'topicStableId', in: 'path', required: true, schema: { type: 'string' } },
         }),
     }),
     query: z.object({
@@ -12252,7 +12644,7 @@ export const getApiPublicUnstableTopicRulesRoute = createRoute({
   path: '/api/public/unstable/topic-rules',
   tags: ['UnstableTopics'],
   description:
-    "Unstable: Topics is in closed beta. The shape may change without notice.\n\nList the project's Topics rules. A rule selects traces with an\nobservation filter and a sampling rate, runs the facets in `facetIds`\nand keeps its own live topic map.\n\n`filter` is a JSON array of filter conditions combined with AND.\nString matching is case-insensitive. Columns: `id` (stringOptions),\n`name` (string, stringOptions).",
+    "Unstable: Topics is in public beta. The shape may change without notice.\n\nList the project's Topics rules. A rule selects traces with an\nobservation filter and a sampling rate, runs the facets in `facetIds`\nand keeps its own live topic map.\n\n`filter` is a JSON array of filter conditions combined with AND.\nString matching is case-insensitive. Columns: `id` (stringOptions),\n`name` (string, stringOptions).",
   operationId: 'unstable_topics_listRules',
   request: {
     query: z.object({
@@ -12349,7 +12741,7 @@ export const getApiPublicUnstableTopicRulesRuleIdRoute = createRoute({
   path: '/api/public/unstable/topic-rules/{ruleId}',
   tags: ['UnstableTopics'],
   description:
-    'Unstable: Topics is in closed beta. The shape may change without notice.\n\nGet one Topics rule by id.',
+    'Unstable: Topics is in public beta. The shape may change without notice.\n\nGet one Topics rule by id.',
   operationId: 'unstable_topics_getRule',
   request: {
     params: z.object({
@@ -12384,7 +12776,7 @@ export const getApiPublicUnstableTopicSummariesRoute = createRoute({
   path: '/api/public/unstable/topic-summaries',
   tags: ['UnstableTopics'],
   description:
-    'Unstable: Topics is in closed beta. The shape may change without notice.\n\nList the current Topics summary per trace and facet: what the trace\nis about from the facet\'s perspective. Summaries are shared by all\nrules. A trace that was re-summarized lists only its latest summary.\n\nThe window applies to the trace start time. It defaults to the last\n7 days and can span at most 30 days, starting no earlier than the\nplan\'s data access window. Without `fromTimestamp` and `toTimestamp`,\na `traceId` `any of` filter reads the listed traces at their own start\ntime within the last 93 days. Rows are ordered by trace start time.\n\nEach request scans a bounded number of candidate rows. A page shorter\nthan `limit` (even an empty one) with a `meta.cursor` does not\nindicate completion; continue with the cursor until it is null.\n\nOnly active facets (attached to a Topics rule, or all facets if the\nproject has no rule) are read. Traces Topics never processed are not\nlisted.\n\n`filter` is a JSON array of filter conditions combined with AND, with\nat most 100 `traceId` values. Columns: `traceId`, `facetId`, `facetName`, `ruleId`, `environment`\n(stringOptions), `timestamp`, `processedAt` (datetime), `state`,\n`topicId`, `topicName` (stringOptions), `assignmentStatus`\n(stringOptions, `any of` only). An unknown `topicName` matches nothing under `any of`\nand is ignored under `none of`.\n\n`state` values: `complete` (summarized), `not_applicable` (the facet\ndoes not apply to the trace), `insufficient_input` (too little input\nto summarize). `assignmentStatus` values: `assigned`, `outlier` (no\ntopic fits), `awaiting_map` (summarized, not yet assigned).\n\nCommon questions:\n- Summaries of specific traces: `traceId` `any of` the trace ids.\n- Summaries of a topic\'s traces: `topicId` or `topicName`.\n- Traces without a topic yet: `assignmentStatus` `any of` `["awaiting_map", "outlier"]`.',
+    'Unstable: Topics is in public beta. The shape may change without notice.\n\nList the current Topics summary per trace and facet: what the trace\nis about from the facet\'s perspective. Summaries are shared by all\nrules. A trace that was re-summarized lists only its latest summary.\n\nThe window applies to the trace start time. It defaults to the last\n7 days and can span at most 30 days, starting no earlier than the\nplan\'s data access window. Without `fromTimestamp` and `toTimestamp`,\na `traceId` `any of` filter reads the listed traces at their own start\ntime within the last 93 days. Rows are ordered by trace start time.\n\nEach request scans a bounded number of candidate rows. A page shorter\nthan `limit` (even an empty one) with a `meta.cursor` does not\nindicate completion; continue with the cursor until it is null.\n\nOnly active facets (attached to a Topics rule, or all facets if the\nproject has no rule) are read. Traces Topics never processed are not\nlisted.\n\n`filter` is a JSON array of filter conditions combined with AND, with\nat most 100 `traceId` values. Columns: `traceId`, `facetId`, `facetName`, `ruleId`, `environment`\n(stringOptions), `timestamp`, `createdAt` (datetime), `state`,\n`topicStableId`, `topicName` (stringOptions), `assignmentStatus`\n(stringOptions, `any of` only). An unknown `topicName` matches nothing under `any of`\nand is ignored under `none of`.\n\n`state` values: `complete` (summarized), `not_applicable` (the facet\ndoes not apply to the trace), `insufficient_input` (too little input\nto summarize), `empty_input` (no usable text in the trace),\n`input_too_large` (trace text exceeded the Topics input limit).\n`assignmentStatus` values: `assigned`, `outlier` (no\ntopic fits), `awaiting_map` (summarized, not yet assigned).\n\nCommon questions:\n- Summaries of specific traces: `traceId` `any of` the trace ids.\n- Summaries of a topic\'s traces: `topicStableId` or `topicName`.\n- Traces without a topic yet: `assignmentStatus` `any of` `["awaiting_map", "outlier"]`.',
   operationId: 'unstable_topics_listSummaries',
   request: {
     query: z.object({
@@ -12530,7 +12922,7 @@ export const getApiPublicUnstableTopicAssignmentsRoute = createRoute({
   path: '/api/public/unstable/topic-assignments',
   tags: ['UnstableTopics'],
   description:
-    "Unstable: Topics is in closed beta. The shape may change without notice.\n\nList the current topic per trace, facet and rule on each rule's live\nmap: `assigned` with its topic, or `outlier` when no topic fits.\nSummarized traces that are not assigned yet are not listed; find\nthem through `GET /topic-summaries` with `assignmentStatus`.\n\nThe window applies to the trace start time. It defaults to the last\n7 days and can span at most 30 days, starting no earlier than the\nplan's data access window. Without `fromTimestamp` and `toTimestamp`,\na `traceId` `any of` filter reads the listed traces at their own start\ntime within the last 93 days. Rows are ordered by trace start time.\n\nEach request scans a bounded number of candidate rows. A page shorter\nthan `limit` (even an empty one) with a `meta.cursor` does not\nindicate completion; continue with the cursor until it is null.\n\nOnly active facets (attached to a Topics rule, or all facets if the\nproject has no rule) are read. Traces Topics never processed are not\nlisted.\n\n`filter` is a JSON array of filter conditions combined with AND, with\nat most 100 `traceId` values. Columns: `traceId`, `facetId`, `facetName`, `ruleId`, `environment`,\n`topicId`, `topicName` (stringOptions), `status` (stringOptions,\n`any of` only: `assigned`, `outlier`), `timestamp` (datetime). An\nunknown `topicName` matches nothing under `any of` and is ignored\nunder `none of`.\n\nCommon questions:\n- Topics of specific traces: `traceId` `any of` the trace ids.\n- Traces in a topic: `topicId` or `topicName`.",
+    "Unstable: Topics is in public beta. The shape may change without notice.\n\nList the current topic per trace, facet and rule on each rule's live\nmap: `assigned` with its topic, or `outlier` when no topic fits.\nSummarized traces that are not assigned yet are not listed; find\nthem through `GET /topic-summaries` with `assignmentStatus`.\n\nThe window applies to the trace start time. It defaults to the last\n7 days and can span at most 30 days, starting no earlier than the\nplan's data access window. Without `fromTimestamp` and `toTimestamp`,\na `traceId` `any of` filter reads the listed traces at their own start\ntime within the last 93 days. Rows are ordered by trace start time.\n\nEach request scans a bounded number of candidate rows. A page shorter\nthan `limit` (even an empty one) with a `meta.cursor` does not\nindicate completion; continue with the cursor until it is null.\n\nOnly active facets (attached to a Topics rule, or all facets if the\nproject has no rule) are read. Traces Topics never processed are not\nlisted.\n\n`filter` is a JSON array of filter conditions combined with AND, with\nat most 100 `traceId` values. Columns: `traceId`, `facetId`, `facetName`, `ruleId`, `environment`,\n`topicStableId`, `topicName` (stringOptions), `status` (stringOptions,\n`any of` only: `assigned`, `outlier`), `timestamp`, `createdAt` (datetime). An\nunknown `topicName` matches nothing under `any of` and is ignored\nunder `none of`.\n\nCommon questions:\n- Topics of specific traces: `traceId` `any of` the trace ids.\n- Traces in a topic: `topicStableId` or `topicName`.",
   operationId: 'unstable_topics_listAssignments',
   request: {
     query: z.object({

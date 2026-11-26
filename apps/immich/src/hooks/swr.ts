@@ -5209,6 +5209,62 @@ export function usePostAuthChangePassword<TError = unknown>(options?: {
   }
 }
 
+export function getPostAuthCodeKey() {
+  return ['auth', '/auth/code', 'POST'] as const
+}
+
+export function usePostAuthCode<TError = unknown>(options?: {
+  mutation?: SWRMutationConfiguration<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.auth.code.$post>>>>>,
+    TError,
+    Key,
+    InferRequestType<typeof client.auth.code.$post>
+  > & { swrKey?: Key; throwOnError?: boolean }
+  options?: ClientRequestOptions
+}) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, ...restMutationOptions } = mutationOptions ?? {}
+  const swrKey = customKey ?? getPostAuthCodeKey()
+  return {
+    swrKey,
+    ...useSWRMutation(
+      swrKey,
+      async (_: Key, { arg }: { arg: InferRequestType<typeof client.auth.code.$post> }) =>
+        parseResponse(client.auth.code.$post(arg, clientOptions)),
+      restMutationOptions,
+    ),
+  }
+}
+
+export function getPostAuthExchangeKey() {
+  return ['auth', '/auth/exchange', 'POST'] as const
+}
+
+export function usePostAuthExchange<TError = unknown>(options?: {
+  mutation?: SWRMutationConfiguration<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.auth.exchange.$post>>>>
+    >,
+    TError,
+    Key,
+    InferRequestType<typeof client.auth.exchange.$post>
+  > & { swrKey?: Key; throwOnError?: boolean }
+  options?: ClientRequestOptions
+}) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, ...restMutationOptions } = mutationOptions ?? {}
+  const swrKey = customKey ?? getPostAuthExchangeKey()
+  return {
+    swrKey,
+    ...useSWRMutation(
+      swrKey,
+      async (_: Key, { arg }: { arg: InferRequestType<typeof client.auth.exchange.$post> }) =>
+        parseResponse(client.auth.exchange.$post(arg, clientOptions)),
+      restMutationOptions,
+    ),
+  }
+}
+
 export function getPostAuthLoginKey() {
   return ['auth', '/auth/login', 'POST'] as const
 }
@@ -8052,39 +8108,6 @@ export function usePutPartnersId<TError = unknown>(options?: {
       swrKey,
       async (_: Key, { arg }: { arg: InferRequestType<(typeof client.partners)[':id']['$put']> }) =>
         parseResponse(client.partners[':id'].$put(arg, clientOptions)),
-      restMutationOptions,
-    ),
-  }
-}
-
-export function getPostPartnersIdKey() {
-  return ['partners', '/partners/:id', 'POST'] as const
-}
-
-export function usePostPartnersId<TError = unknown>(options?: {
-  mutation?: SWRMutationConfiguration<
-    Awaited<
-      ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.partners)[':id']['$post']>>>
-      >
-    >,
-    TError,
-    Key,
-    InferRequestType<(typeof client.partners)[':id']['$post']>
-  > & { swrKey?: Key; throwOnError?: boolean }
-  options?: ClientRequestOptions
-}) {
-  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
-  const { swrKey: customKey, ...restMutationOptions } = mutationOptions ?? {}
-  const swrKey = customKey ?? getPostPartnersIdKey()
-  return {
-    swrKey,
-    ...useSWRMutation(
-      swrKey,
-      async (
-        _: Key,
-        { arg }: { arg: InferRequestType<(typeof client.partners)[':id']['$post']> },
-      ) => parseResponse(client.partners[':id'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }

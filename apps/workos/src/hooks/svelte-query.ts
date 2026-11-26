@@ -13412,6 +13412,463 @@ export function createOrganizationsOrganizationIdDataProviders<
   }, queryClient)
 }
 
+export function getOrganizationsOrganizationIdIssuerTrustsQueryKey(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts']['$get']
+  >,
+) {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts', args] as const
+}
+
+export function getOrganizationsOrganizationIdIssuerTrustsQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$get']>
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getOrganizationsOrganizationIdIssuerTrustsQueryKey>
+  >({
+    queryKey: getOrganizationsOrganizationIdIssuerTrustsQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.organizations[':organization_id'].issuer_trusts.$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createOrganizationsOrganizationIdIssuerTrusts<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$get']>
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.organizations)[':organization_id']['issuer_trusts']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getOrganizationsOrganizationIdIssuerTrustsQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getOrganizationsOrganizationIdIssuerTrustsQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getPostOrganizationsOrganizationIdIssuerTrustsMutationKey() {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts', 'POST'] as const
+}
+
+export function getPostOrganizationsOrganizationIdIssuerTrustsMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$post']>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostOrganizationsOrganizationIdIssuerTrustsMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.organizations)[':organization_id']['issuer_trusts']['$post']
+      >,
+    ) {
+      return parseResponse(
+        client.organizations[':organization_id'].issuer_trusts.$post(args, options),
+      )
+    },
+  })
+}
+
+export function createPostOrganizationsOrganizationIdIssuerTrusts<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.organizations)[':organization_id']['issuer_trusts']['$post']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.organizations)[':organization_id']['issuer_trusts']['$post']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostOrganizationsOrganizationIdIssuerTrustsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getOrganizationsOrganizationIdIssuerTrustsIdQueryKey(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+  >,
+) {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts/:id', args] as const
+}
+
+export function getOrganizationsOrganizationIdIssuerTrustsIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getOrganizationsOrganizationIdIssuerTrustsIdQueryKey>
+  >({
+    queryKey: getOrganizationsOrganizationIdIssuerTrustsIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.organizations[':organization_id'].issuer_trusts[':id'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createOrganizationsOrganizationIdIssuerTrustsId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getOrganizationsOrganizationIdIssuerTrustsIdQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getOrganizationsOrganizationIdIssuerTrustsIdQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getDeleteOrganizationsOrganizationIdIssuerTrustsIdMutationKey() {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts/:id', 'DELETE'] as const
+}
+
+export function getDeleteOrganizationsOrganizationIdIssuerTrustsIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<
+      (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteOrganizationsOrganizationIdIssuerTrustsIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+      >,
+    ) {
+      return parseResponse(
+        client.organizations[':organization_id'].issuer_trusts[':id'].$delete(args, options),
+      )
+    },
+  })
+}
+
+export function createDeleteOrganizationsOrganizationIdIssuerTrustsId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        | Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<
+                  ReturnType<
+                    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+                  >
+                >
+              >
+            >
+          >
+        | undefined,
+        TError,
+        InferRequestType<
+          (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteOrganizationsOrganizationIdIssuerTrustsIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPatchOrganizationsOrganizationIdIssuerTrustsIdMutationKey() {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts/:id', 'PATCH'] as const
+}
+
+export function getPatchOrganizationsOrganizationIdIssuerTrustsIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    InferRequestType<
+      (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+    >,
+    TOnMutateResult
+  >({
+    mutationKey: getPatchOrganizationsOrganizationIdIssuerTrustsIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<
+        (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+      >,
+    ) {
+      return parseResponse(
+        client.organizations[':organization_id'].issuer_trusts[':id'].$patch(args, options),
+      )
+    },
+  })
+}
+
+export function createPatchOrganizationsOrganizationIdIssuerTrustsId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        InferRequestType<
+          (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+        >,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPatchOrganizationsOrganizationIdIssuerTrustsIdMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
 export function getOrganizationsOrganizationIdItContactsQueryKey(
   args: InferRequestType<(typeof client.organizations)[':organization_id']['it_contacts']['$get']>,
 ) {
@@ -14209,6 +14666,80 @@ export function createPutRadarAttemptsId<TError = DefaultError, TOnMutateResult 
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
+  }, queryClient)
+}
+
+export function getRadarDetectionsIdQueryKey(
+  args: InferRequestType<(typeof client.radar.detections)[':id']['$get']>,
+) {
+  return ['radar', '/radar/detections/:id', args] as const
+}
+
+export function getRadarDetectionsIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.radar.detections)[':id']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.radar.detections)[':id']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.radar.detections)[':id']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getRadarDetectionsIdQueryKey>
+  >({
+    queryKey: getRadarDetectionsIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.radar.detections[':id'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createRadarDetectionsId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.radar.detections)[':id']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.radar.detections)[':id']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.radar.detections)[':id']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getRadarDetectionsIdQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getRadarDetectionsIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
   }, queryClient)
 }
 
@@ -15240,6 +15771,75 @@ export function createPostUserManagementCorsOrigins<
   return createMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
     const mutationDefaults = getPostUserManagementCorsOriginsMutationOptions<
+      TError,
+      TOnMutateResult
+    >(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getDeleteUserManagementCorsOriginsIdMutationKey() {
+  return ['user_management', '/user_management/cors_origins/:id', 'DELETE'] as const
+}
+
+export function getDeleteUserManagementCorsOriginsIdMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.user_management.cors_origins)[':id']['$delete']>>
+          >
+        >
+      >
+    | undefined,
+    TError,
+    InferRequestType<(typeof client.user_management.cors_origins)[':id']['$delete']>,
+    TOnMutateResult
+  >({
+    mutationKey: getDeleteUserManagementCorsOriginsIdMutationKey(),
+    async mutationFn(
+      args: InferRequestType<(typeof client.user_management.cors_origins)[':id']['$delete']>,
+    ) {
+      return parseResponse(client.user_management.cors_origins[':id'].$delete(args, options))
+    },
+  })
+}
+
+export function createDeleteUserManagementCorsOriginsId<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        | Awaited<
+            ReturnType<
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client.user_management.cors_origins)[':id']['$delete']>>
+              >
+            >
+          >
+        | undefined,
+        TError,
+        InferRequestType<(typeof client.user_management.cors_origins)[':id']['$delete']>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getDeleteUserManagementCorsOriginsIdMutationOptions<
       TError,
       TOnMutateResult
     >(clientOptions)
@@ -17736,6 +18336,114 @@ export function createUserManagementUsersExternalIdExternalId<
     const { query, options: clientOptions } = options?.() ?? {}
     return {
       ...getUserManagementUsersExternalIdExternalIdQueryOptions<TData, TError>(
+        args(),
+        clientOptions,
+      ),
+      ...query,
+    }
+  }, queryClient)
+}
+
+export function getUserManagementUsersIdentitiesProviderIdpIdQueryKey(
+  args: InferRequestType<
+    (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+  >,
+) {
+  return ['user_management', '/user_management/users/identities/:provider/:idp_id', args] as const
+}
+
+export function getUserManagementUsersIdentitiesProviderIdpIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<
+    (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getUserManagementUsersIdentitiesProviderIdpIdQueryKey>
+  >({
+    queryKey: getUserManagementUsersIdentitiesProviderIdpIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.user_management.users.identities[':provider'][':idp_id'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createUserManagementUsersIdentitiesProviderIdpId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<
+        Awaited<
+          ReturnType<
+            (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+          >
+        >
+      >
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<
+    (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+  >,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<
+                ReturnType<
+                  (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+                >
+              >
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getUserManagementUsersIdentitiesProviderIdpIdQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return {
+      ...getUserManagementUsersIdentitiesProviderIdpIdQueryOptions<TData, TError>(
         args(),
         clientOptions,
       ),
@@ -20906,6 +21614,80 @@ export function createPostWebhookEndpoints<TError = DefaultError, TOnMutateResul
       ...mutationDefaults,
       mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
     }
+  }, queryClient)
+}
+
+export function getWebhookEndpointsIdQueryKey(
+  args: InferRequestType<(typeof client.webhook_endpoints)[':id']['$get']>,
+) {
+  return ['webhook_endpoints', '/webhook_endpoints/:id', args] as const
+}
+
+export function getWebhookEndpointsIdQueryOptions<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.webhook_endpoints)[':id']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: InferRequestType<(typeof client.webhook_endpoints)[':id']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return queryOptions<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<Awaited<ReturnType<(typeof client.webhook_endpoints)[':id']['$get']>>>
+      >
+    >,
+    TError,
+    TData,
+    ReturnType<typeof getWebhookEndpointsIdQueryKey>
+  >({
+    queryKey: getWebhookEndpointsIdQueryKey(args),
+    queryFn({ signal }) {
+      return parseResponse(
+        client.webhook_endpoints[':id'].$get(args, {
+          ...options,
+          init: { ...options?.init, signal },
+        }),
+      )
+    },
+  })
+}
+
+export function createWebhookEndpointsId<
+  TData = Awaited<
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.webhook_endpoints)[':id']['$get']>>>
+    >
+  >,
+  TError = DefaultError,
+>(
+  args: () => InferRequestType<(typeof client.webhook_endpoints)[':id']['$get']>,
+  options?: () => {
+    query?: Omit<
+      CreateQueryOptions<
+        Awaited<
+          ReturnType<
+            typeof parseResponse<
+              Awaited<ReturnType<(typeof client.webhook_endpoints)[':id']['$get']>>
+            >
+          >
+        >,
+        TError,
+        TData,
+        ReturnType<typeof getWebhookEndpointsIdQueryKey>
+      >,
+      'queryKey' | 'queryFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createQuery(() => {
+    const { query, options: clientOptions } = options?.() ?? {}
+    return { ...getWebhookEndpointsIdQueryOptions<TData, TError>(args(), clientOptions), ...query }
   }, queryClient)
 }
 

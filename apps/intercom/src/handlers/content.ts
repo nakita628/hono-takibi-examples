@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getContentSearchRoute, postContentBulkActionsRoute } from '../routes'
+import type { postContentBulkActionsRoute, getContentSearchRoute } from '../routes'
 
 export const postContentBulkActionsRouteHandler: RouteHandler<
   typeof postContentBulkActionsRoute

@@ -1,13 +1,13 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
     "generated": true,
     "config": "06c15c5236e7e7d17fa4d9e58015503a107fd5cec912e5c782d8889d5cd17d02",
     "sources": {
       "https://raw.githubusercontent.com/workos/openapi-spec/main/spec/open-api-spec.yaml": {
-        "etag": "W/\"b3f3a49cf77f3df6293a03abc3fd4baa682e0fc3df398ce2aca207ef70ca0b73\"",
-        "sha256": "177b02cdc5832df3c57aa32d6e2190a7bf8ea2e28c40e4d69038e4a1aabf5e00"
+        "etag": "W/\"fac9411c3d81c96b326e48f28cb7c0033bedbde6a85e01aaf6c4a554de98ef95\"",
+        "sha256": "53cf26e5278dab2f7e866c6e5bdbbdbc51b8a5c8bc0a15e1387c7fa2deb8b331"
       }
     },
     "typecheck": {

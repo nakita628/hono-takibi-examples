@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteFeatureFlagsSlugTargetsResourceIdRoute,
   getFeatureFlagsRoute,
   getFeatureFlagsSlugRoute,
-  postFeatureFlagsSlugTargetsResourceIdRoute,
   putFeatureFlagsSlugDisableRoute,
   putFeatureFlagsSlugEnableRoute,
+  postFeatureFlagsSlugTargetsResourceIdRoute,
+  deleteFeatureFlagsSlugTargetsResourceIdRoute,
 } from '../routes'
 
 export const getFeatureFlagsRouteHandler: RouteHandler<typeof getFeatureFlagsRoute> = async (c) => {

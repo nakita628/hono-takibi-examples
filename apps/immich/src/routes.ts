@@ -163,11 +163,37 @@ const UserResponseDtoSchema = z
         /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
       )
       .openapi({ description: 'User ID' }),
-    name: z.string().openapi({ description: 'User name' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'User name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     profileChangedAt: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Profile change date' }),
-    profileImagePath: z.string().openapi({ description: 'Profile image path' }),
+    profileImagePath: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Profile image path',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
   })
   .openapi({
     required: ['avatarColor', 'email', 'id', 'name', 'profileChangedAt', 'profileImagePath'],
@@ -184,7 +210,19 @@ const PersonUserRoleSchema = z
 const PersonOtherResponseDtoSchema = z
   .object({
     birthDate: z.string().nullable(),
-    name: z.string(),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     role: PersonUserRoleSchema,
     sharedById: z
       .uuid()
@@ -210,11 +248,37 @@ const PeopleUserResponseDtoSchema = z
         /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
       )
       .openapi({ description: 'User ID' }),
-    name: z.string().openapi({ description: 'User name' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'User name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     profileChangedAt: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Profile change date' }),
-    profileImagePath: z.string().openapi({ description: 'Profile image path' }),
+    profileImagePath: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Profile image path',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     role: PersonUserRoleSchema.openapi({ description: 'Access role' }),
   })
   .openapi({
@@ -262,7 +326,20 @@ const PersonResponseDtoSchema = z
         'x-immich-state': 'Stable',
       }),
     isHidden: z.boolean().openapi({ description: 'Is hidden' }),
-    name: z.string().openapi({ description: 'Person name' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Person name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     otherPeople: z.array(PersonOtherResponseDtoSchema),
     sharedBy: z
       .array(PeopleUserResponseDtoSchema)
@@ -270,7 +347,20 @@ const PersonResponseDtoSchema = z
     sharedWith: z
       .array(PeopleUserResponseDtoSchema)
       .openapi({ description: 'Users the current user gave access to this person' }),
-    thumbnailPath: z.string().openapi({ description: 'Thumbnail path' }),
+    thumbnailPath: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Thumbnail path',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     updatedAt: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -445,17 +535,6 @@ const AssetResponseDtoSchema = z
       )
       .openapi({ description: 'Owner user ID' }),
     people: z.array(PersonResponseDtoSchema).exactOptional(),
-    resized: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'Is resized',
-        'x-immich-history': [
-          { state: 'Added', version: 'v1' },
-          { state: 'Deprecated', version: 'v1.113.0' },
-        ],
-        'x-immich-state': 'Deprecated',
-      }),
     stack: z.union([AssetStackResponseDtoSchema, z.null().nullable()]).exactOptional(),
     tags: z.array(TagResponseDtoSchema).exactOptional(),
     thumbhash: z
@@ -588,18 +667,27 @@ const AlbumResponseDtoSchema = z
     assetCount: z.int().min(0).max(9007199254740991).openapi({ description: 'Number of assets' }),
     contributorCounts: z.array(ContributorCountResponseDtoSchema).exactOptional(),
     createdAt: z.iso.datetime({ offset: true }).openapi({ description: 'Creation date' }),
-    description: z.string().openapi({
-      description: 'Album description',
-      'x-immich-history': [
-        { state: 'Added', version: 'v1' },
-        {
-          description:
-            'An empty string is returned instead of null for backwards compatibility; null will be returned in v4.',
-          state: 'Updated',
-          version: 'v3',
-        },
-      ],
-    }),
+    description: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Album description',
+        'x-immich-history': [
+          { state: 'Added', version: 'v1' },
+          {
+            description:
+              'An empty string is returned instead of null for backwards compatibility; null will be returned in v4.',
+            state: 'Updated',
+            version: 'v3',
+          },
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     endDate: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -688,17 +776,8 @@ const SearchAssetResponseDtoSchema = z
         ],
         'x-immich-state': 'Deprecated',
       }),
-    total: z
-      .int()
-      .min(0)
-      .max(9007199254740991)
-      .openapi({
-        description: 'Total number of matching assets',
-        'x-immich-history': [{ state: 'Deprecated', version: 'v3.0.0' }],
-        'x-immich-state': 'Deprecated',
-      }),
   })
-  .openapi({ required: ['count', 'facets', 'items', 'nextCursor', 'nextPage', 'total'] })
+  .openapi({ required: ['count', 'facets', 'items', 'nextCursor', 'nextPage'] })
   .openapi('SearchAssetResponseDto')
 
 type SearchResponseDtoType = {
@@ -1850,7 +1929,21 @@ const AssetBulkUpdateDtoSchema = z
       .max(9007199254740991)
       .exactOptional()
       .openapi({ description: 'Relative time offset in minutes' }),
-    description: z.string().exactOptional().openapi({ description: 'Asset description' }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Asset description',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     duplicateId: z.string().nullable().exactOptional().openapi({ description: 'Duplicate ID' }),
     ids: z
       .array(
@@ -2423,7 +2516,7 @@ const AssetMediaResponseDtoSchema = z
   .openapi('AssetMediaResponseDto')
 
 const AssetMediaSizeSchema = z
-  .enum(['original', 'fullsize', 'preview', 'thumbnail'])
+  .enum(['fullsize', 'preview', 'thumbnail'])
   .openapi({ description: 'Asset media size' })
   .openapi('AssetMediaSize')
 
@@ -2583,6 +2676,38 @@ const AssetStatsResponseDtoSchema = z
   })
   .openapi({ required: ['images', 'total', 'videos'] })
   .openapi('AssetStatsResponseDto')
+
+const AuthCodeCreateDtoSchema = z
+  .object({
+    codeChallenge: z
+      .string()
+      .regex(/^[A-Za-z0-9_-]{43}$/)
+      .openapi({ description: 'PKCE code challenge (S256, base64url)' }),
+  })
+  .openapi({ required: ['codeChallenge'] })
+  .openapi('AuthCodeCreateDto')
+
+const AuthCodeExchangeDtoSchema = z
+  .object({
+    code: z.string().min(1).openapi({ description: 'One-time code' }),
+    codeVerifier: z
+      .base64url()
+      .transform((val) =>
+        new TextDecoder().decode(
+          Uint8Array.from(atob(val.replace(/-/g, '+').replace(/_/g, '/')), (char) =>
+            char.charCodeAt(0),
+          ),
+        ),
+      )
+      .openapi({ description: 'PKCE code verifier (base64url)' }),
+  })
+  .openapi({ required: ['code', 'codeVerifier'] })
+  .openapi('AuthCodeExchangeDto')
+
+const AuthCodeResponseDtoSchema = z
+  .object({ code: z.string().openapi({ description: 'One-time code' }) })
+  .openapi({ required: ['code'] })
+  .openapi('AuthCodeResponseDto')
 
 const AuthStatusResponseDtoSchema = z
   .object({
@@ -2764,6 +2889,12 @@ const CreateAlbumDtoSchema = z
               'Sending an empty string is deprecated; send null instead. Empty strings will no longer be coerced to null in v4.',
             state: 'Updated',
             version: 'v3',
+          },
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
           },
         ],
       }),
@@ -3559,8 +3690,34 @@ const LoginResponseDtoSchema = z
     accessToken: z.string().openapi({ description: 'Access token' }),
     isAdmin: z.boolean().openapi({ description: 'Is admin user' }),
     isOnboarded: z.boolean().openapi({ description: 'Is onboarded' }),
-    name: z.string().openapi({ description: 'User name' }),
-    profileImagePath: z.string().openapi({ description: 'Profile image path' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'User name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
+    profileImagePath: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Profile image path',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     shouldChangePassword: z.boolean().openapi({ description: 'Should change password' }),
     userEmail: z
       .email()
@@ -4906,11 +5063,37 @@ const PartnerResponseDtoSchema = z
       )
       .openapi({ description: 'User ID' }),
     inTimeline: z.boolean().exactOptional().openapi({ description: 'Show in timeline' }),
-    name: z.string().openapi({ description: 'User name' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'User name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     profileChangedAt: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Profile change date' }),
-    profileImagePath: z.string().openapi({ description: 'Profile image path' }),
+    profileImagePath: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Profile image path',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
   })
   .openapi({
     description: 'Partner response',
@@ -5135,7 +5318,21 @@ const PeopleUpdateItemSchema = z
       .openapi({ description: 'Person ID' }),
     isFavorite: z.boolean().exactOptional().openapi({ description: 'Mark as favorite' }),
     isHidden: z.boolean().exactOptional().openapi({ description: 'Person visibility (hidden)' }),
-    name: z.string().exactOptional().openapi({ description: 'Person name' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Person name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     userId: z
       .uuid()
       .regex(
@@ -5202,7 +5399,21 @@ const PersonCreateDtoSchema = z
       .openapi({ description: 'Person color (hex)' }),
     isFavorite: z.boolean().exactOptional().openapi({ description: 'Mark as favorite' }),
     isHidden: z.boolean().exactOptional().openapi({ description: 'Person visibility (hidden)' }),
-    name: z.string().exactOptional().openapi({ description: 'Person name' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Person name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
   })
   .openapi({ required: [] })
   .openapi('PersonCreateDto')
@@ -5256,7 +5467,21 @@ const PersonUpdateDtoSchema = z
       .openapi({ description: 'Asset ID used for feature face thumbnail' }),
     isFavorite: z.boolean().exactOptional().openapi({ description: 'Mark as favorite' }),
     isHidden: z.boolean().exactOptional().openapi({ description: 'Person visibility (hidden)' }),
-    name: z.string().exactOptional().openapi({ description: 'Person name' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Person name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     userId: z
       .uuid()
       .regex(
@@ -6443,8 +6668,11 @@ const ServerConfigDtoSchema = z
   .openapi('ServerConfigDto')
 
 const ServerFeatureLevelSchema = z
-  .union([z.literal(1), z.literal(2)])
-  .openapi({ description: 'Server feature level', 'x-enum-varnames': ['FeatureLevel', 'Passkeys'] })
+  .union([z.literal(1), z.literal(2), z.literal(3)])
+  .openapi({
+    description: 'Server feature level',
+    'x-enum-varnames': ['FeatureLevel', 'Passkeys', 'SyncPendingReset'],
+  })
   .openapi('ServerFeatureLevel')
 
 const ServerFeaturesDtoSchema = z
@@ -6660,8 +6888,36 @@ const ServerVersionHistoryResponseDtoSchema = z
 
 const SessionCreateDtoSchema = z
   .object({
-    deviceOS: z.string().exactOptional().openapi({ description: 'Device OS' }),
-    deviceType: z.string().exactOptional().openapi({ description: 'Device type' }),
+    deviceOS: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Device OS',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
+    deviceType: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Device type',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     duration: z
       .int()
       .min(1)
@@ -6677,8 +6933,34 @@ const SessionCreateResponseDtoSchema = z
     appVersion: z.string().nullable().openapi({ description: 'App version' }),
     createdAt: z.string().openapi({ description: 'Creation date' }),
     current: z.boolean().openapi({ description: 'Is current session' }),
-    deviceOS: z.string().openapi({ description: 'Device OS' }),
-    deviceType: z.string().openapi({ description: 'Device type' }),
+    deviceOS: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Device OS',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
+    deviceType: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Device type',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     expiresAt: z.string().exactOptional().openapi({ description: 'Expiration date' }),
     id: z
       .uuid()
@@ -6710,8 +6992,34 @@ const SessionResponseDtoSchema = z
     appVersion: z.string().nullable().openapi({ description: 'App version' }),
     createdAt: z.string().openapi({ description: 'Creation date' }),
     current: z.boolean().openapi({ description: 'Is current session' }),
-    deviceOS: z.string().openapi({ description: 'Device OS' }),
-    deviceType: z.string().openapi({ description: 'Device type' }),
+    deviceOS: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Device OS',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
+    deviceType: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Device type',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     expiresAt: z.string().exactOptional().openapi({ description: 'Expiration date' }),
     id: z
       .uuid()
@@ -6955,7 +7263,21 @@ const SignUpDtoSchema = z
         /^[\p{L}\p{M}\p{N}.!#$%&'*+\/=?^_`{|}~-]+@[\p{L}\p{N}](?:[\p{L}\p{M}\p{N}-]{0,61}[\p{L}\p{M}\p{N}])?(?:\.[\p{L}\p{N}](?:[\p{L}\p{M}\p{N}-]{0,61}[\p{L}\p{M}\p{N}])?)*$/u,
       )
       .openapi({ description: 'User email', example: 'testuser@email.com' }),
-    name: z.string().openapi({ description: 'User name', example: 'Admin' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'User name',
+        example: 'Admin',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     password: z.string().openapi({ description: 'User password', example: 'password' }),
   })
   .openapi({ required: ['email', 'name', 'password'] })
@@ -8047,6 +8369,7 @@ const SyncEntityTypeSchema = z
     'SyncAckV1',
     'SyncResetV1',
     'SyncCompleteV1',
+    'SyncPendingResetV1',
   ])
   .openapi({ description: 'Sync entity type' })
   .openapi('SyncEntityType')
@@ -9206,6 +9529,44 @@ const SyncPartnerV1Schema = z
   .openapi({ required: ['inTimeline', 'sharedById', 'sharedWithId'] })
   .openapi('SyncPartnerV1')
 
+const SyncRequestTypeSchema = z
+  .enum([
+    'AlbumsV2',
+    'AlbumUsersV1',
+    'AlbumToAssetsV1',
+    'AlbumAssetsV2',
+    'AlbumAssetExifsV1',
+    'AssetsV2',
+    'AssetExifsV1',
+    'AssetEditsV1',
+    'AssetMetadataV1',
+    'AssetOcrV1',
+    'AuthUsersV1',
+    'AuthUsersV2',
+    'MemoriesV1',
+    'MemoriesV2',
+    'MemoryToAssetsV1',
+    'MemoryToAssetsV2',
+    'PartnersV1',
+    'PartnerAssetsV2',
+    'PartnerAssetExifsV1',
+    'PartnerStacksV1',
+    'StacksV1',
+    'UsersV1',
+    'PeopleV1',
+    'AssetFacesV2',
+    'AssetFacesV3',
+    'UserMetadataV1',
+    'PendingResetV1',
+  ])
+  .openapi({ description: 'Sync request type' })
+  .openapi('SyncRequestType')
+
+const SyncPendingResetV1Schema = z
+  .object({ type: SyncRequestTypeSchema.openapi({ description: 'Sync request type to reset' }) })
+  .openapi({ required: ['type'] })
+  .openapi('SyncPendingResetV1')
+
 const SyncPersonDeleteV1Schema = z
   .object({
     personId: z
@@ -9272,43 +9633,6 @@ const SyncPersonV1Schema = z
     ],
   })
   .openapi('SyncPersonV1')
-
-const SyncRequestTypeSchema = z
-  .enum([
-    'AlbumsV1',
-    'AlbumsV2',
-    'AlbumUsersV1',
-    'AlbumToAssetsV1',
-    'AlbumAssetsV1',
-    'AlbumAssetsV2',
-    'AlbumAssetExifsV1',
-    'AssetsV1',
-    'AssetsV2',
-    'AssetExifsV1',
-    'AssetEditsV1',
-    'AssetMetadataV1',
-    'AssetOcrV1',
-    'AuthUsersV1',
-    'AuthUsersV2',
-    'MemoriesV1',
-    'MemoriesV2',
-    'MemoryToAssetsV1',
-    'MemoryToAssetsV2',
-    'PartnersV1',
-    'PartnerAssetsV1',
-    'PartnerAssetsV2',
-    'PartnerAssetExifsV1',
-    'PartnerStacksV1',
-    'StacksV1',
-    'UsersV1',
-    'PeopleV1',
-    'AssetFacesV1',
-    'AssetFacesV2',
-    'AssetFacesV3',
-    'UserMetadataV1',
-  ])
-  .openapi({ description: 'Sync request type' })
-  .openapi('SyncRequestType')
 
 const SyncResetV1Schema = z.looseObject({}).openapi('SyncResetV1')
 
@@ -9756,6 +10080,12 @@ const UpdateAlbumDtoSchema = z
             state: 'Updated',
             version: 'v3',
           },
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
         ],
       }),
     isActivityEnabled: z.boolean().exactOptional().openapi({ description: 'Enable activity feed' }),
@@ -9772,7 +10102,21 @@ const UpdateAlbumUserDtoSchema = z
 const UpdateAssetDtoSchema = z
   .object({
     dateTimeOriginal: z.string().exactOptional().openapi({ description: 'Original date and time' }),
-    description: z.string().exactOptional().openapi({ description: 'Asset description' }),
+    description: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Asset description',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     isFavorite: z.boolean().exactOptional().openapi({ description: 'Mark as favorite' }),
     latitude: z
       .float64()
@@ -9845,7 +10189,20 @@ const UserAdminCreateDtoSchema = z
       )
       .openapi({ description: 'User email' }),
     isAdmin: z.boolean().exactOptional().openapi({ description: 'Grant admin privileges' }),
-    name: z.string().openapi({ description: 'User name' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'User name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     notify: z.boolean().exactOptional().openapi({ description: 'Send notification email' }),
     password: z.string().openapi({ description: 'User password' }),
     pinCode: z
@@ -9924,12 +10281,51 @@ const UserAdminResponseDtoSchema = z
       .openapi({ description: 'User ID' }),
     isAdmin: z.boolean().openapi({ description: 'Is admin user' }),
     license: z.union([UserLicenseSchema, z.null().nullable()]),
-    name: z.string().openapi({ description: 'User name' }),
-    oauthId: z.string().openapi({ description: 'OAuth ID' }),
+    name: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'User name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
+    oauthId: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'OAuth ID',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     profileChangedAt: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'Profile change date' }),
-    profileImagePath: z.string().openapi({ description: 'Profile image path' }),
+    profileImagePath: z
+      .string()
+      .nullable()
+      .openapi({
+        description: 'Profile image path',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     quotaSizeInBytes: z
       .int()
       .min(0)
@@ -9989,7 +10385,21 @@ const UserAdminUpdateDtoSchema = z
       .exactOptional()
       .openapi({ description: 'User email' }),
     isAdmin: z.boolean().exactOptional().openapi({ description: 'Grant admin privileges' }),
-    name: z.string().exactOptional().openapi({ description: 'User name' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'User name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
     password: z.string().exactOptional().openapi({ description: 'User password' }),
     pinCode: z
       .string()
@@ -10258,7 +10668,21 @@ const UserUpdateMeDtoSchema = z
       )
       .exactOptional()
       .openapi({ description: 'User email' }),
-    name: z.string().exactOptional().openapi({ description: 'User name' }),
+    name: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'User name',
+        'x-immich-history': [
+          {
+            description:
+              'Empty strings are deprecated; use null instead. In v5, null will be returned instead of an empty string, and empty strings will be rejected.',
+            state: 'Updated',
+            version: 'v4.0.0',
+          },
+        ],
+      }),
   })
   .openapi({ required: [] })
   .openapi('UserUpdateMeDto')
@@ -13950,6 +14374,43 @@ export const postAuthChangePasswordRoute = createRoute({
   security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
 })
 
+export const postAuthCodeRoute = createRoute({
+  method: 'post',
+  path: '/auth/code',
+  tags: ['Authentication'],
+  summary: 'Create app login code',
+  description: 'Create a one-time code that the mobile app exchanges for a session.',
+  operationId: 'createAuthCode',
+  request: {
+    body: { content: { 'application/json': { schema: AuthCodeCreateDtoSchema } }, required: true },
+  },
+  responses: {
+    201: {
+      description: '',
+      content: { 'application/json': { schema: AuthCodeResponseDtoSchema } },
+    },
+  },
+  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
+})
+
+export const postAuthExchangeRoute = createRoute({
+  method: 'post',
+  path: '/auth/exchange',
+  tags: ['Authentication'],
+  summary: 'Exchange app login code',
+  description: 'Exchange a one-time code and its code verifier for a session.',
+  operationId: 'exchangeAuthCode',
+  request: {
+    body: {
+      content: { 'application/json': { schema: AuthCodeExchangeDtoSchema } },
+      required: true,
+    },
+  },
+  responses: {
+    201: { description: '', content: { 'application/json': { schema: LoginResponseDtoSchema } } },
+  },
+})
+
 export const postAuthLoginRoute = createRoute({
   method: 'post',
   path: '/auth/login',
@@ -16031,42 +16492,6 @@ export const putPartnersIdRoute = createRoute({
   responses: {
     200: { description: '', content: { 'application/json': { schema: PartnerResponseDtoSchema } } },
   },
-  security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
-})
-
-export const postPartnersIdRoute = createRoute({
-  method: 'post',
-  path: '/partners/{id}',
-  tags: ['Partners', 'Deprecated'],
-  summary: 'Create a partner',
-  description: 'Create a new partner to share assets with.',
-  operationId: 'createPartnerDeprecated',
-  request: {
-    params: z.object({
-      id: z
-        .uuid()
-        .regex(
-          /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$/,
-        )
-        .openapi({
-          param: {
-            in: 'path',
-            name: 'id',
-            required: true,
-            schema: {
-              format: 'uuid',
-              pattern:
-                '^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$',
-              type: 'string',
-            },
-          },
-        }),
-    }),
-  },
-  responses: {
-    201: { description: '', content: { 'application/json': { schema: PartnerResponseDtoSchema } } },
-  },
-  deprecated: true,
   security: [{ bearer: [] }, { cookie: [] }, { api_key: [] }],
 })
 
@@ -19835,6 +20260,19 @@ export const getTimelineBucketRoute = createRoute({
           },
           example: '11.075683,49.416711,11.117589,49.454875',
         }),
+      hasCoordinates: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter by GPS coordinates (true for assets with coordinates only, false for assets without)',
+            in: 'query',
+            name: 'hasCoordinates',
+            required: false,
+            schema: { type: 'boolean' },
+          },
+        }),
       isFavorite: z
         .stringbool()
         .exactOptional()
@@ -20063,6 +20501,19 @@ export const getTimelineBucketsRoute = createRoute({
             schema: { example: '11.075683,49.416711,11.117589,49.454875', type: 'string' },
           },
           example: '11.075683,49.416711,11.117589,49.454875',
+        }),
+      hasCoordinates: z
+        .stringbool()
+        .exactOptional()
+        .openapi({
+          param: {
+            description:
+              'Filter by GPS coordinates (true for assets with coordinates only, false for assets without)',
+            in: 'query',
+            name: 'hasCoordinates',
+            required: false,
+            schema: { type: 'boolean' },
+          },
         }),
       isFavorite: z
         .stringbool()

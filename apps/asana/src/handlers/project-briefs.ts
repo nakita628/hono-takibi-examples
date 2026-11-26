@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteProjectBriefsProjectBriefGidRoute,
   getProjectBriefsProjectBriefGidRoute,
   putProjectBriefsProjectBriefGidRoute,
+  deleteProjectBriefsProjectBriefGidRoute,
 } from '../routes'
 
 export const getProjectBriefsProjectBriefGidRouteHandler: RouteHandler<

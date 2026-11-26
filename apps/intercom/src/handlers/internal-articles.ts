@@ -1,13 +1,13 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteInternalArticlesInternalArticleIdRoute,
-  deleteInternalArticlesInternalArticleIdTagsIdRoute,
-  getInternalArticlesInternalArticleIdRoute,
   getInternalArticlesRoute,
-  getInternalArticlesSearchRoute,
-  postInternalArticlesInternalArticleIdTagsRoute,
   postInternalArticlesRoute,
+  getInternalArticlesInternalArticleIdRoute,
   putInternalArticlesInternalArticleIdRoute,
+  deleteInternalArticlesInternalArticleIdRoute,
+  postInternalArticlesInternalArticleIdTagsRoute,
+  deleteInternalArticlesInternalArticleIdTagsIdRoute,
+  getInternalArticlesSearchRoute,
 } from '../routes'
 
 export const getInternalArticlesRouteHandler: RouteHandler<

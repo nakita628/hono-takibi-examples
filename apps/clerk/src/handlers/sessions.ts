@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   getSessionsRoute,
-  getSessionsSessionIdReverificationsReverificationIdRoute,
+  postSessionsRoute,
   getSessionsSessionIdRoute,
   patchSessionsSessionIdRoute,
-  postSessionsRoute,
   postSessionsSessionIdRefreshRoute,
+  getSessionsSessionIdReverificationsReverificationIdRoute,
   postSessionsSessionIdRevokeRoute,
   postSessionsSessionIdTokensRoute,
   postSessionsSessionIdTokensTemplateNameRoute,

@@ -121,7 +121,7 @@ type Session = {
   id: string
   user_id: string
   client_id: string
-  actor?: ({ [x: string]: unknown } | null) | undefined
+  actor?: ({ [key: string]: unknown } | null) | undefined
   status:
     | 'active'
     | 'revoked'
@@ -157,11 +157,11 @@ type ClerkError = {
   message: string
   long_message: string
   code: string
-  meta?: { [x: string]: unknown } | undefined
+  meta?: { [key: string]: unknown } | undefined
 }
 type ClerkErrors = {
   errors: ClerkError[]
-  meta?: { [x: string]: unknown } | undefined
+  meta?: { [key: string]: unknown } | undefined
   clerk_trace_id?: string | undefined
 }
 type Session_2 = {
@@ -169,7 +169,7 @@ type Session_2 = {
   id: string
   user_id: string
   client_id: string
-  actor?: ({ [x: string]: unknown } | null) | undefined
+  actor?: ({ [key: string]: unknown } | null) | undefined
   status: 'active' | 'revoked' | 'ended' | 'expired' | 'removed' | 'abandoned' | 'replaced'
   last_active_organization_id?: (string | null) | undefined
   last_active_at: number
@@ -213,7 +213,7 @@ type VerificationFromOauth = {
   object?: 'verification_from_oauth' | undefined
   status: 'unverified' | 'verified'
   strategy: string
-  error?: ClerkError | undefined
+  error?: (ClerkError | null) | undefined
   expire_at: number | null
   attempts: number | null
   verified_at_client?: (string | null) | undefined
@@ -231,7 +231,7 @@ type VerificationSaml = {
   status: 'unverified' | 'verified' | 'failed' | 'expired' | 'transferable'
   strategy: 'saml'
   external_verification_redirect_url?: (string | null) | undefined
-  error?: ClerkError | undefined
+  error?: (ClerkError | null) | undefined
   expire_at?: (number | null) | undefined
   attempts: number | null
   verified_at_client?: (string | null) | undefined
@@ -258,13 +258,16 @@ type EmailAddress = {
   email_address: string
   reserved: boolean
   verification:
-    | VerificationOtp
-    | VerificationAdmin
-    | VerificationFromOauth
-    | VerificationTicket
-    | VerificationSaml
-    | VerificationEmailLink
-    | VerificationScim
+    | (
+        | VerificationOtp
+        | VerificationAdmin
+        | VerificationFromOauth
+        | VerificationTicket
+        | VerificationSaml
+        | VerificationEmailLink
+        | VerificationScim
+      )
+    | null
   linked_to: IdentificationLink[]
   matches_sso_connection?: boolean | undefined
   created_at: bigint
@@ -284,7 +287,7 @@ type PhoneNumber = {
   reserved_for_second_factor?: boolean | undefined
   default_second_factor?: boolean | undefined
   reserved: boolean
-  verification: VerificationOtp | VerificationAdmin
+  verification: (VerificationOtp | VerificationAdmin) | null
   linked_to: IdentificationLink[]
   backup_codes?: (string[] | null) | undefined
   created_at: bigint
@@ -350,7 +353,7 @@ type Web3Wallet = {
   id?: string | undefined
   object: 'web3_wallet'
   web3_wallet: string
-  verification: VerificationWeb3 | VerificationAdmin
+  verification: (VerificationWeb3 | VerificationAdmin) | null
   created_at: bigint
   updated_at: bigint
 }
@@ -369,14 +372,14 @@ type Passkey = {
   object: 'passkey'
   name: string
   last_used_at: bigint
-  verification: VerificationPasskey
+  verification: VerificationPasskey | null
 }
 type VerificationOauth = {
   object?: 'verification_oauth' | undefined
   status: 'unverified' | 'verified' | 'failed' | 'expired' | 'transferable'
   strategy: string
   external_verification_redirect_url?: string | undefined
-  error?: ClerkError | undefined
+  error?: (ClerkError | null) | undefined
   expire_at: number
   attempts: number | null
   verified_at_client?: (string | null) | undefined
@@ -388,7 +391,7 @@ type VerificationGoogleOneTap = {
   expire_at: number | null
   attempts: number | null
   verified_at_client?: (string | null) | undefined
-  error?: ClerkError | undefined
+  error?: (ClerkError | null) | undefined
 }
 type ExternalAccountWithVerification = {
   object: 'external_account' | 'facebook_account' | 'google_account'
@@ -405,13 +408,13 @@ type ExternalAccountWithVerification = {
   image_url?: (string | null) | undefined
   username?: (string | null) | undefined
   phone_number?: (string | null) | undefined
-  public_metadata: { [x: string]: unknown }
+  public_metadata: { [key: string]: unknown }
   label?: (string | null) | undefined
   created_at: bigint
   updated_at: bigint
-  verification: VerificationOauth | VerificationGoogleOneTap
+  verification: (VerificationOauth | VerificationGoogleOneTap) | null
 }
-type SAMLAccountConnection = { [x: string]: unknown } | { [x: string]: unknown }
+type SAMLAccountConnection = unknown | unknown
 type SAMLAccount = {
   id: string
   object: 'saml_account'
@@ -422,11 +425,11 @@ type SAMLAccount = {
   last_name?: (string | null) | undefined
   provider_user_id?: (string | null) | undefined
   last_authenticated_at?: (bigint | null) | undefined
-  public_metadata?: { [x: string]: unknown } | undefined
-  verification: VerificationSaml | VerificationTicket
-  saml_connection?: SAMLAccountConnection | undefined
+  public_metadata?: { [key: string]: unknown } | undefined
+  verification: (VerificationSaml | VerificationTicket) | null
+  saml_connection?: (SAMLAccountConnection | null) | undefined
 }
-type EnterpriseAccountConnection = { [x: string]: unknown } | { [x: string]: unknown }
+type EnterpriseAccountConnection = unknown | unknown
 type EnterpriseAccount = {
   id: string
   object: 'enterprise_account'
@@ -438,10 +441,32 @@ type EnterpriseAccount = {
   last_name?: (string | null) | undefined
   provider_user_id?: (string | null) | undefined
   enterprise_connection_id?: (string | null) | undefined
-  public_metadata?: { [x: string]: unknown } | undefined
-  verification: VerificationTicket | VerificationSaml | VerificationOauth
-  enterprise_connection?: EnterpriseAccountConnection | undefined
+  public_metadata?: { [key: string]: unknown } | undefined
+  verification: (VerificationTicket | VerificationSaml | VerificationOauth) | null
+  enterprise_connection?: (EnterpriseAccountConnection | null) | undefined
   last_authenticated_at?: (bigint | null) | undefined
+}
+type Organization = {
+  object: 'organization'
+  id: string
+  name: string
+  slug: string
+  image_url?: string | undefined
+  has_image: boolean
+  members_count?: number | undefined
+  missing_member_with_elevated_permissions?: boolean | undefined
+  pending_invitations_count?: number | undefined
+  max_allowed_memberships: number
+  admin_delete_enabled: boolean
+  self_serve_sso_enabled?: boolean | undefined
+  self_serve_directory_sync_enabled?: boolean | undefined
+  public_metadata: { [key: string]: unknown }
+  private_metadata?: { [key: string]: unknown } | undefined
+  created_by?: string | undefined
+  created_at: bigint
+  updated_at: bigint
+  last_active_at?: bigint | undefined
+  role_set_key?: (string | null) | undefined
 }
 type OrganizationMembershipPublicUserData = {
   user_id: string
@@ -461,30 +486,9 @@ type OrganizationMembership = {
   role: string
   role_name?: string | undefined
   permissions: string[]
-  public_metadata: { [x: string]: unknown }
-  private_metadata?: { [x: string]: unknown } | undefined
-  organization: {
-    object: 'organization'
-    id: string
-    name: string
-    slug: string
-    image_url?: string | undefined
-    has_image: boolean
-    members_count?: number | undefined
-    missing_member_with_elevated_permissions?: boolean | undefined
-    pending_invitations_count?: number | undefined
-    max_allowed_memberships: number
-    admin_delete_enabled: boolean
-    self_serve_sso_enabled?: boolean | undefined
-    self_serve_directory_sync_enabled?: boolean | undefined
-    public_metadata: { [x: string]: unknown }
-    private_metadata?: { [x: string]: unknown } | undefined
-    created_by?: string | undefined
-    created_at: bigint
-    updated_at: bigint
-    last_active_at?: bigint | undefined
-    role_set_key?: (string | null) | undefined
-  }
+  public_metadata: { [key: string]: unknown }
+  private_metadata?: { [key: string]: unknown } | undefined
+  organization: Organization
   public_user_data?: OrganizationMembershipPublicUserData | undefined
   created_at: bigint
   updated_at: bigint
@@ -514,9 +518,9 @@ type User = {
   profile_image_url?: string | undefined
   image_url?: string | undefined
   has_image: boolean
-  public_metadata: { [x: string]: unknown }
-  private_metadata?: ({ [x: string]: unknown } | null) | undefined
-  unsafe_metadata?: { [x: string]: unknown } | undefined
+  public_metadata: { [key: string]: unknown }
+  private_metadata?: ({ [key: string]: unknown } | null) | undefined
+  unsafe_metadata?: { [key: string]: unknown } | undefined
   email_addresses: EmailAddress[]
   phone_numbers: PhoneNumber[]
   web3_wallets: Web3Wallet[]
@@ -547,33 +551,31 @@ type User = {
   legal_accepted_at: bigint | null
   bypass_client_trust?: boolean | undefined
   directories?: SCIMUserMetadata[] | undefined
-  directory?:
-    | {
-        id: string
-        directory_name: string
-        provider: string
-        enterprise_connection_id: string | null
-        groups?: { id: string; display_name: string }[] | undefined
-        directory_id: string
-        directory_enabled: boolean
-        external_id: string | null
-      }
-    | undefined
-  scim?:
-    | {
-        id: string
-        directory_name: string
-        provider: string
-        enterprise_connection_id: string | null
-        groups?: { id: string; display_name: string }[] | undefined
-        directory_id: string
-        directory_enabled: boolean
-        external_id: string | null
-      }
-    | undefined
+  directory?: SCIMUserMetadata | undefined
+  scim?: (SCIMUserMetadata | null) | undefined
 }
-type PasswordHasher = string
+type UserCursorPage = {
+  data: User[]
+  cursor: {
+    starting_after: string | null
+    ending_before: string | null
+    has_next_page: boolean
+    remaining_count_exact?: number | undefined
+    remaining_count_at_least?: number | undefined
+  }
+}
+type PasswordHasherInput = string
 type TotalCount = { object: 'total_count'; total_count: bigint }
+type CommerceMoneyResponse = {
+  amount: bigint
+  amount_formatted: string
+  currency: string
+  currency_symbol: string
+}
+type CommerceSubscriptionCreditResponse = {
+  amount?: (CommerceMoneyResponse | null) | undefined
+  cycle_remaining_percent?: number | undefined
+}
 type FeatureResponse = {
   object: 'feature'
   id: string
@@ -582,11 +584,55 @@ type FeatureResponse = {
   slug: string
   avatar_url: string
 }
-type CommerceMoneyResponse = {
+type CommercePlan = {
+  object: 'commerce_plan'
+  id: string
+  name: string
+  fee: CommerceMoneyResponse | null
+  annual_monthly_fee: CommerceMoneyResponse | null
+  annual_fee: CommerceMoneyResponse | null
   amount: bigint
   amount_formatted: string
-  currency: string
+  annual_monthly_amount: bigint
+  annual_monthly_amount_formatted: string
+  annual_amount: bigint
+  annual_amount_formatted: string
   currency_symbol: string
+  currency: string
+  description: string
+  product_id: string
+  is_default: boolean
+  is_recurring: boolean
+  publicly_visible: boolean
+  has_base_fee: boolean
+  payer_type: string[]
+  for_payer_type: string
+  slug: string
+  avatar_url: string
+  period?: string | undefined
+  interval?: bigint | undefined
+  features: FeatureResponse[]
+  free_trial_enabled?: boolean | undefined
+  free_trial_days?: (bigint | null) | undefined
+}
+type CommercePaymentSourceResponse = {
+  object: 'commerce_source'
+  id: string
+  payer_id: string
+  payment_method: 'card' | 'apple_pay' | 'google_pay'
+  is_default?: (boolean | null) | undefined
+  gateway: string
+  gateway_external_id: string
+  gateway_external_account_id?: (string | null) | undefined
+  last4: string
+  status: 'active' | 'disconnected'
+  wallet_type: string
+  card_type: string
+  expiry_year?: number | undefined
+  expiry_month?: number | undefined
+  created_at: bigint
+  updated_at: bigint
+  is_removable?: (boolean | null) | undefined
 }
 type CommercePerUnitTotalTier = {
   quantity?: (bigint | null) | undefined
@@ -594,197 +640,79 @@ type CommercePerUnitTotalTier = {
   total: CommerceMoneyResponse
 }
 type CommercePerUnitTotal = { name: string; block_size: bigint; tiers: CommercePerUnitTotalTier[] }
+type CommerceProrationCreditDetailResponse = {
+  amount: CommerceMoneyResponse
+  cycle_days_remaining: bigint
+  cycle_days_total: bigint
+  cycle_remaining_percent: number
+}
+type CommercePayerCreditResponse = {
+  remaining_balance: CommerceMoneyResponse
+  applied_amount: CommerceMoneyResponse
+}
+type CommerceCreditsResponse = {
+  proration: CommerceProrationCreditDetailResponse | null
+  payer: CommercePayerCreditResponse | null
+  total: CommerceMoneyResponse
+}
+type CommerceProrationDiscountResponse = {
+  amount: CommerceMoneyResponse
+  cycle_days_passed: bigint
+  cycle_days_total: bigint
+  cycle_passed_percent: number
+}
+type CommerceDiscountsResponse = {
+  proration: CommerceProrationDiscountResponse | null
+  total: CommerceMoneyResponse
+}
+type CommerceTotalsResponse = {
+  subtotal: CommerceMoneyResponse
+  base_fee: CommerceMoneyResponse
+  tax_total: CommerceMoneyResponse
+  grand_total: CommerceMoneyResponse
+  per_unit_totals?: CommercePerUnitTotal[] | undefined
+  credits?: (CommerceCreditsResponse | null) | undefined
+  discounts?: (CommerceDiscountsResponse | null) | undefined
+}
+type CommerceSubscriptionItemNextPaymentResponse = {
+  amount?: (CommerceMoneyResponse | null) | undefined
+  date?: (bigint | null) | undefined
+  per_unit_totals?: CommercePerUnitTotal[] | undefined
+  totals?: (CommerceTotalsResponse | null) | undefined
+}
+type CommercePayerResponse = {
+  object: 'commerce_payer'
+  id: string
+  instance_id: string
+  user_id?: string | undefined
+  first_name: string
+  last_name: string
+  email: string
+  organization_id?: string | undefined
+  organization_name?: string | undefined
+  image_url: string
+  credits_balance?: CommerceMoneyResponse | undefined
+  created_at: bigint
+  updated_at: bigint
+}
 type CommerceSubscriptionItem = {
   object: 'commerce_subscription_item'
   id: string
   instance_id: string
   status: 'active' | 'ended' | 'past_due' | 'upcoming' | 'incomplete' | 'abandoned'
-  credit?:
-    | {
-        amount?:
-          | { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-          | undefined
-        cycle_remaining_percent?: number | undefined
-      }
-    | undefined
+  credit?: (CommerceSubscriptionCreditResponse | null) | undefined
   plan_id: string
   price_id?: string | undefined
-  plan: {
-    object: 'commerce_plan'
-    id: string
-    name: string
-    fee: { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-    annual_monthly_fee: {
-      amount: bigint
-      amount_formatted: string
-      currency: string
-      currency_symbol: string
-    }
-    annual_fee: {
-      amount: bigint
-      amount_formatted: string
-      currency: string
-      currency_symbol: string
-    }
-    amount: bigint
-    amount_formatted: string
-    annual_monthly_amount: bigint
-    annual_monthly_amount_formatted: string
-    annual_amount: bigint
-    annual_amount_formatted: string
-    currency_symbol: string
-    currency: string
-    description: string
-    product_id: string
-    is_default: boolean
-    is_recurring: boolean
-    publicly_visible: boolean
-    has_base_fee: boolean
-    payer_type: string[]
-    for_payer_type: string
-    slug: string
-    avatar_url: string
-    period?: string | undefined
-    interval?: bigint | undefined
-    features: FeatureResponse[]
-    free_trial_enabled?: boolean | undefined
-    free_trial_days?: (bigint | null) | undefined
-  }
+  plan: CommercePlan | null
   plan_period: 'month' | 'annual'
   payment_source_id: string
-  payment_source?:
-    | {
-        object: 'commerce_source'
-        id: string
-        payer_id: string
-        payment_method: 'card' | 'apple_pay' | 'google_pay'
-        is_default?: (boolean | null) | undefined
-        gateway: string
-        gateway_external_id: string
-        gateway_external_account_id?: (string | null) | undefined
-        last4: string
-        status: 'active' | 'disconnected'
-        wallet_type: string
-        card_type: string
-        expiry_year?: number | undefined
-        expiry_month?: number | undefined
-        created_at: bigint
-        updated_at: bigint
-        is_removable?: (boolean | null) | undefined
-      }
-    | undefined
-  lifetime_paid?:
-    | { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-    | undefined
-  amount?:
-    | { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-    | undefined
-  next_invoice?:
-    | {
-        amount?:
-          | { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-          | undefined
-        date?: (bigint | null) | undefined
-        per_unit_totals?: CommercePerUnitTotal[] | undefined
-        totals?:
-          | {
-              subtotal: CommerceMoneyResponse
-              base_fee: CommerceMoneyResponse
-              tax_total: CommerceMoneyResponse
-              grand_total: CommerceMoneyResponse
-              per_unit_totals?: CommercePerUnitTotal[] | undefined
-              credits?:
-                | {
-                    proration: {
-                      amount: CommerceMoneyResponse
-                      cycle_days_remaining: bigint
-                      cycle_days_total: bigint
-                      cycle_remaining_percent: number
-                    }
-                    payer: {
-                      remaining_balance: CommerceMoneyResponse
-                      applied_amount: CommerceMoneyResponse
-                    }
-                    total: CommerceMoneyResponse
-                  }
-                | undefined
-              discounts?:
-                | {
-                    proration: {
-                      amount: CommerceMoneyResponse
-                      cycle_days_passed: bigint
-                      cycle_days_total: bigint
-                      cycle_passed_percent: number
-                    }
-                    total: CommerceMoneyResponse
-                  }
-                | undefined
-            }
-          | undefined
-      }
-    | undefined
-  next_payment?:
-    | {
-        amount?:
-          | { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-          | undefined
-        date?: (bigint | null) | undefined
-        per_unit_totals?: CommercePerUnitTotal[] | undefined
-        totals?:
-          | {
-              subtotal: CommerceMoneyResponse
-              base_fee: CommerceMoneyResponse
-              tax_total: CommerceMoneyResponse
-              grand_total: CommerceMoneyResponse
-              per_unit_totals?: CommercePerUnitTotal[] | undefined
-              credits?:
-                | {
-                    proration: {
-                      amount: CommerceMoneyResponse
-                      cycle_days_remaining: bigint
-                      cycle_days_total: bigint
-                      cycle_remaining_percent: number
-                    }
-                    payer: {
-                      remaining_balance: CommerceMoneyResponse
-                      applied_amount: CommerceMoneyResponse
-                    }
-                    total: CommerceMoneyResponse
-                  }
-                | undefined
-              discounts?:
-                | {
-                    proration: {
-                      amount: CommerceMoneyResponse
-                      cycle_days_passed: bigint
-                      cycle_days_total: bigint
-                      cycle_passed_percent: number
-                    }
-                    total: CommerceMoneyResponse
-                  }
-                | undefined
-            }
-          | undefined
-      }
-    | undefined
+  payment_source?: (CommercePaymentSourceResponse | null) | undefined
+  lifetime_paid?: (CommerceMoneyResponse | null) | undefined
+  amount?: (CommerceMoneyResponse | null) | undefined
+  next_invoice?: (CommerceSubscriptionItemNextPaymentResponse | null) | undefined
+  next_payment?: (CommerceSubscriptionItemNextPaymentResponse | null) | undefined
   payer_id: string
-  payer?:
-    | {
-        object: 'commerce_payer'
-        id: string
-        instance_id: string
-        user_id?: string | undefined
-        first_name: string
-        last_name: string
-        email: string
-        organization_id?: string | undefined
-        organization_name?: string | undefined
-        image_url: string
-        credits_balance?: CommerceMoneyResponse | undefined
-        created_at: bigint
-        updated_at: bigint
-      }
-    | undefined
+  payer?: (CommercePayerResponse | null) | undefined
   is_free_trial: boolean
   period_start?: (bigint | null) | undefined
   period_end?: (bigint | null) | undefined
@@ -800,41 +728,7 @@ type CommerceSubscriptionNextPayment = {
   date: bigint
   amount: CommerceMoneyResponse
   per_unit_totals?: CommercePerUnitTotal[] | undefined
-  totals?:
-    | {
-        subtotal: CommerceMoneyResponse
-        base_fee: CommerceMoneyResponse
-        tax_total: CommerceMoneyResponse
-        grand_total: CommerceMoneyResponse
-        per_unit_totals?: CommercePerUnitTotal[] | undefined
-        credits?:
-          | {
-              proration: {
-                amount: CommerceMoneyResponse
-                cycle_days_remaining: bigint
-                cycle_days_total: bigint
-                cycle_remaining_percent: number
-              }
-              payer: {
-                remaining_balance: CommerceMoneyResponse
-                applied_amount: CommerceMoneyResponse
-              }
-              total: CommerceMoneyResponse
-            }
-          | undefined
-        discounts?:
-          | {
-              proration: {
-                amount: CommerceMoneyResponse
-                cycle_days_passed: bigint
-                cycle_days_total: bigint
-                cycle_passed_percent: number
-              }
-              total: CommerceMoneyResponse
-            }
-          | undefined
-      }
-    | undefined
+  totals?: (CommerceTotalsResponse | null) | undefined
 }
 type CommerceSubscription = {
   object: 'commerce_subscription'
@@ -847,19 +741,16 @@ type CommerceSubscription = {
   active_at?: (bigint | null) | undefined
   past_due_at?: (bigint | null) | undefined
   subscription_items: CommerceSubscriptionItem[]
-  next_payment?: CommerceSubscriptionNextPayment | undefined
+  next_payment?: (CommerceSubscriptionNextPayment | null) | undefined
   eligible_for_free_trial?: (boolean | null) | undefined
 }
-type CommerceCreditBalanceResponse = {
-  object: string
-  balance: { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-}
-type AdjustCreditBalanceRequest = {
+type CommerceCreditBalanceResponse = { object: string; balance: CommerceMoneyResponse | null }
+type AdjustCreditBalanceRequestInput = {
   amount: bigint
   action: 'increase' | 'decrease'
-  currency?: string | undefined
+  currency?: string
   idempotency_key: string
-  note?: string | undefined
+  note?: string
 }
 type CommerceCreditLedgerResponse = {
   object: string
@@ -878,7 +769,7 @@ type OAuthAccessToken = {
   token: string
   expires_at: bigint | null
   provider: string
-  public_metadata: { [x: string]: unknown }
+  public_metadata: { [key: string]: unknown }
   label: string | null
   scopes?: string[] | undefined
   id_token?: string | undefined
@@ -910,14 +801,13 @@ type OrganizationInvitationWithPublicOrganizationData = {
   inviter_id?: (string | null) | undefined
   public_inviter_data?: OrganizationInvitationPublicUserData | undefined
   status?: string | undefined
-  public_metadata?: { [x: string]: unknown } | undefined
-  private_metadata?: { [x: string]: unknown } | undefined
+  public_metadata?: { [key: string]: unknown } | undefined
+  private_metadata?: { [key: string]: unknown } | undefined
   url?: (string | null) | undefined
   expires_at?: (bigint | null) | undefined
   created_at?: bigint | undefined
   updated_at?: bigint | undefined
-  public_organization_data?: OrganizationInvitationPublicOrganizationData | undefined
-}
+} & { public_organization_data?: OrganizationInvitationPublicOrganizationData | undefined }
 type OrganizationInvitationsWithPublicOrganizationData = {
   data: OrganizationInvitationWithPublicOrganizationData[]
   total_count: bigint
@@ -939,7 +829,7 @@ type Invitation = {
   object: 'invitation'
   id: string
   email_address: string
-  public_metadata: { [x: string]: unknown }
+  public_metadata: { [key: string]: unknown }
   revoked?: boolean | undefined
   status: 'pending' | 'accepted' | 'revoked' | 'expired'
   url?: string | undefined
@@ -972,7 +862,7 @@ type ActorToken = {
   id: string
   status: 'pending' | 'accepted' | 'revoked'
   user_id: string
-  actor: { [x: string]: unknown }
+  actor: { [key: string]: unknown }
   token?: string | undefined
   url?: string | undefined
   created_at: bigint
@@ -1068,7 +958,7 @@ type JWTTemplate = {
   object: 'jwt_template'
   id: string
   name: string
-  claims: { [x: string]: unknown }
+  claims: { [key: string]: unknown }
   lifetime: number
   allowed_clock_skew: number
   custom_signing_key: boolean
@@ -1085,67 +975,19 @@ type MachineWithoutScopedMachines = {
   updated_at: bigint
   default_token_ttl?: number | undefined
 }
-type Machine = {
-  object: 'machine'
-  id: string
-  name: string
-  instance_id: string
-  created_at: bigint
-  updated_at: bigint
-  default_token_ttl?: number | undefined
-  scoped_machines: MachineWithoutScopedMachines[]
-}
+type Machine = MachineWithoutScopedMachines & { scoped_machines: MachineWithoutScopedMachines[] }
 type MachineScope = {
   object: 'machine_scope'
   from_machine_id: string
   to_machine_id: string
   created_at: bigint
 }
-type Organization = {
-  object: 'organization'
-  id: string
-  name: string
-  slug: string
-  image_url?: string | undefined
-  has_image: boolean
-  members_count?: number | undefined
-  missing_member_with_elevated_permissions?: boolean | undefined
-  pending_invitations_count?: number | undefined
-  max_allowed_memberships: number
-  admin_delete_enabled: boolean
-  self_serve_sso_enabled?: boolean | undefined
-  self_serve_directory_sync_enabled?: boolean | undefined
-  public_metadata: { [x: string]: unknown }
-  private_metadata?: { [x: string]: unknown } | undefined
-  created_by?: string | undefined
-  created_at: bigint
-  updated_at: bigint
-  last_active_at?: bigint | undefined
-  role_set_key?: (string | null) | undefined
-}
 type Organizations = { data: Organization[]; total_count: bigint }
-type OrganizationWithLogo = {
-  object: 'organization'
-  id: string
-  name: string
-  slug: string
+type ReassignmentMappingsInput = { [key: string]: string }
+type OrganizationWithLogo = Organization & {
+  logo_url?: string | undefined
   image_url: string
   has_image: boolean
-  members_count?: number | undefined
-  missing_member_with_elevated_permissions?: boolean | undefined
-  pending_invitations_count?: number | undefined
-  max_allowed_memberships: number
-  admin_delete_enabled: boolean
-  self_serve_sso_enabled?: boolean | undefined
-  self_serve_directory_sync_enabled?: boolean | undefined
-  public_metadata: { [x: string]: unknown }
-  private_metadata?: { [x: string]: unknown } | undefined
-  created_by?: string | undefined
-  created_at: bigint
-  updated_at: bigint
-  last_active_at?: bigint | undefined
-  role_set_key?: (string | null) | undefined
-  logo_url?: string | undefined
 }
 type OrganizationInvitation = {
   object: 'organization_invitation'
@@ -1157,8 +999,8 @@ type OrganizationInvitation = {
   inviter_id: string | null
   public_inviter_data: OrganizationInvitationPublicUserData
   status?: string | undefined
-  public_metadata: { [x: string]: unknown }
-  private_metadata?: { [x: string]: unknown } | undefined
+  public_metadata: { [key: string]: unknown }
+  private_metadata?: { [key: string]: unknown } | undefined
   url: string | null
   expires_at: bigint | null
   created_at: bigint
@@ -1187,6 +1029,13 @@ type Role = {
   updated_at: bigint
 }
 type Roles = { data: Role[]; total_count: bigint }
+type OrganizationDomainVerification = {
+  status: string
+  strategy: string
+  attempts: number | null
+  expire_at: bigint | null
+  verified_at: bigint | null
+}
 type OrganizationDomain = {
   object: 'organization_domain'
   id: string
@@ -1198,32 +1047,12 @@ type OrganizationDomain = {
     | 'automatic_suggestion'
     | 'enterprise_sso'
   affiliation_email_address: string | null
-  affiliation_verification: {
-    status: string
-    strategy: string
-    attempts: number | null
-    expire_at: bigint | null
-    verified_at: bigint | null
-  }
-  ownership_verification: {
-    status: string
-    strategy: string
-    attempts: number | null
-    expire_at: bigint | null
-    verified_at: bigint | null
-  }
-  verification: {
-    status: string
-    strategy: string
-    attempts: number | null
-    expire_at: bigint | null
-    verified_at: bigint | null
-  }
+  affiliation_verification: OrganizationDomainVerification | null
+  ownership_verification: OrganizationDomainVerification | null
+  verification: OrganizationDomainVerification | null
   total_pending_invitations: number
   total_pending_suggestions: number
-  public_organization_data?:
-    | { id: string; name: string; slug: string; image_url?: string | undefined; has_image: boolean }
-    | undefined
+  public_organization_data?: (OrganizationInvitationPublicOrganizationData | null) | undefined
   created_at: bigint
   updated_at: bigint
 }
@@ -1263,7 +1092,7 @@ type SignUpVerifications = {
   email_address: SignUpVerification
   phone_number: SignUpVerification
   web3_wallet: SignUpVerification
-  external_account: { [x: string]: unknown } | null
+  external_account: { [key: string]: unknown } | null
 }
 type SignUp = {
   object: 'sign_up_attempt'
@@ -1281,8 +1110,8 @@ type SignUp = {
   password_enabled: boolean
   first_name: string | null
   last_name: string | null
-  unsafe_metadata?: { [x: string]: unknown } | undefined
-  public_metadata?: { [x: string]: unknown } | undefined
+  unsafe_metadata?: { [key: string]: unknown } | undefined
+  public_metadata?: { [key: string]: unknown } | undefined
   custom_action: boolean
   external_id: string | null
   created_session_id: string | null
@@ -1291,7 +1120,7 @@ type SignUp = {
   legal_accepted_at: bigint | null
   timezone?: (string | null) | undefined
   locale?: (string | null) | undefined
-  external_account?: { [x: string]: unknown } | undefined
+  external_account?: { [key: string]: unknown } | undefined
 }
 type OAuthApplication = {
   object: 'oauth_application'
@@ -1320,34 +1149,8 @@ type OAuthApplication = {
   updated_at: bigint
 }
 type OAuthApplications = { data: OAuthApplication[]; total_count: bigint }
-type OAuthApplicationWithSecret = {
-  object: 'oauth_application'
-  id: string
-  instance_id: string
-  name: string
-  client_id: string
-  client_uri: string | null
-  client_image_url: string | null
-  dynamically_registered: boolean
-  consent_screen_enabled: boolean
-  pkce_required: boolean
-  audience_uri: string | null
-  token_exchange_enabled: boolean
-  device_authorization_grant_enabled: boolean
-  public: boolean
-  scopes: string
-  redirect_uris: string[]
-  callback_url: string
-  authorize_url: string
-  token_fetch_url: string
-  user_info_url: string
-  discovery_url: string
-  token_introspection_url: string
-  created_at: bigint
-  updated_at: bigint
-  client_secret?: string | undefined
-}
-type SAMLConnection = { [x: string]: unknown } | { [x: string]: unknown }
+type OAuthApplicationWithSecret = OAuthApplication & { client_secret?: string | undefined }
+type SAMLConnection = unknown | unknown
 type SAMLConnections = { data: SAMLConnection[]; total_count: bigint }
 type EnterpriseConnection = {
   object: 'enterprise_connection'
@@ -1463,69 +1266,15 @@ type WaitlistEntry = {
   is_locked?: boolean | undefined
   created_at: bigint
   updated_at: bigint
-  invitation?:
-    | {
-        object: 'invitation'
-        id: string
-        email_address: string
-        public_metadata: { [x: string]: unknown }
-        revoked?: boolean | undefined
-        status: 'pending' | 'accepted' | 'revoked' | 'expired'
-        url?: string | undefined
-        expires_at?: (bigint | null) | undefined
-        created_at: bigint
-        updated_at: bigint
-      }
-    | undefined
-}
-type CommercePlan = {
-  object: 'commerce_plan'
-  id: string
-  name: string
-  fee: { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-  annual_monthly_fee: {
-    amount: bigint
-    amount_formatted: string
-    currency: string
-    currency_symbol: string
-  }
-  annual_fee: {
-    amount: bigint
-    amount_formatted: string
-    currency: string
-    currency_symbol: string
-  }
-  amount: bigint
-  amount_formatted: string
-  annual_monthly_amount: bigint
-  annual_monthly_amount_formatted: string
-  annual_amount: bigint
-  annual_amount_formatted: string
-  currency_symbol: string
-  currency: string
-  description: string
-  product_id: string
-  is_default: boolean
-  is_recurring: boolean
-  publicly_visible: boolean
-  has_base_fee: boolean
-  payer_type: string[]
-  for_payer_type: string
-  slug: string
-  avatar_url: string
-  period?: string | undefined
-  interval?: bigint | undefined
-  features: FeatureResponse[]
-  free_trial_enabled?: boolean | undefined
-  free_trial_days?: (bigint | null) | undefined
+  invitation?: (Invitation | null) | undefined
 }
 type PaginatedCommercePlanResponse = { data: CommercePlan[]; total_count: bigint }
 type PaginatedCommerceSubscriptionItemResponse = {
   data: CommerceSubscriptionItem[]
   total_count: bigint
 }
-type ExtendFreeTrialRequest = { extend_to: string }
-type PriceTransitionRequest = { from_price_id: string; to_price_id: string }
+type ExtendFreeTrialRequestInput = { extend_to: string }
+type PriceTransitionRequestInput = { from_price_id: string; to_price_id: string }
 type BillingPriceResponse = {
   object: 'commerce_price'
   id: string
@@ -1535,13 +1284,8 @@ type BillingPriceResponse = {
   currency_symbol: string
   amount: bigint
   annual_monthly_amount: bigint
-  fee: { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-  annual_monthly_fee: {
-    amount: bigint
-    amount_formatted: string
-    currency: string
-    currency_symbol: string
-  }
+  fee: CommerceMoneyResponse | null
+  annual_monthly_fee: CommerceMoneyResponse | null
   description?: (string | null) | undefined
   is_default: boolean
   created_at: bigint
@@ -1554,9 +1298,7 @@ type CommercePriceTransitionDetails = {
   effective_mode: 'immediate' | 'end_of_period'
   next_billing_date?: (bigint | null) | undefined
   charged_immediately: boolean
-  immediate_charge?:
-    | { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-    | undefined
+  immediate_charge?: (CommerceMoneyResponse | null) | undefined
   previous_subscription_item_status: 'canceled' | 'ended' | 'abandoned'
   previous_subscription_item_id: string
 }
@@ -1565,7 +1307,7 @@ type CommercePriceTransitionResponse = {
   subscription_item: CommerceSubscriptionItem
   transition: CommercePriceTransitionDetails
 }
-type ApplyCommerceDiscountRequest = { discount_id: string }
+type ApplyCommerceDiscountRequestInput = { discount_id: string }
 type CommerceDiscountRedemptionResponse = {
   object: 'commerce_discount_redemption'
   id: string
@@ -1576,12 +1318,8 @@ type CommerceDiscountRedemptionResponse = {
   promo_code?: string | undefined
   effect?: 'percentage' | 'fixed_amount' | undefined
   percent_off?: (number | null) | undefined
-  amount_off?:
-    | { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-    | undefined
-  amount?:
-    | { amount: bigint; amount_formatted: string; currency: string; currency_symbol: string }
-    | undefined
+  amount_off?: (CommerceMoneyResponse | null) | undefined
+  amount?: (CommerceMoneyResponse | null) | undefined
   cycles_remaining: number | null
   cycles_applied: number
   status?: 'active' | 'exhausted' | 'removed' | undefined
@@ -1600,6 +1338,22 @@ type RoleSetItem = {
   created_at: bigint
   updated_at: bigint
 }
+type RoleSetMigration = {
+  object: 'role_set_migration'
+  id: string
+  organization_id?: (string | null) | undefined
+  instance_id: string
+  source_role_set_id: string
+  dest_role_set_id?: (string | null) | undefined
+  trigger_type: string
+  status: string
+  migrated_members: number
+  mappings?: ({ [key: string]: string } | null) | undefined
+  started_at?: (bigint | null) | undefined
+  completed_at?: (bigint | null) | undefined
+  created_at: bigint
+  updated_at: bigint
+}
 type RoleSet = {
   object: 'role_set'
   id: string
@@ -1607,51 +1361,10 @@ type RoleSet = {
   key: string
   description: string | null
   roles: RoleSetItem[]
-  default_role?:
-    | {
-        object: 'role_set_item'
-        id: string
-        name: string
-        key: string
-        description: string | null
-        members_count?: (bigint | null) | undefined
-        has_members?: (boolean | null) | undefined
-        created_at: bigint
-        updated_at: bigint
-      }
-    | undefined
-  creator_role?:
-    | {
-        object: 'role_set_item'
-        id: string
-        name: string
-        key: string
-        description: string | null
-        members_count?: (bigint | null) | undefined
-        has_members?: (boolean | null) | undefined
-        created_at: bigint
-        updated_at: bigint
-      }
-    | undefined
+  default_role?: (RoleSetItem | null) | undefined
+  creator_role?: (RoleSetItem | null) | undefined
   type: 'initial' | 'custom'
-  role_set_migration?:
-    | {
-        object: 'role_set_migration'
-        id: string
-        organization_id?: (string | null) | undefined
-        instance_id: string
-        source_role_set_id: string
-        dest_role_set_id?: (string | null) | undefined
-        trigger_type: string
-        status: string
-        migrated_members: number
-        mappings?: ({ [x: string]: string } | null) | undefined
-        started_at?: (bigint | null) | undefined
-        completed_at?: (bigint | null) | undefined
-        created_at: bigint
-        updated_at: bigint
-      }
-    | undefined
+  role_set_migration?: (RoleSetMigration | null) | undefined
   created_at: bigint
   updated_at: bigint
 }
@@ -1688,7 +1401,7 @@ type LogDeviceContext = {
 }
 type LogContext = {
   environment?: LogEnvironmentContext | undefined
-  device?: LogDeviceContext | undefined
+  device?: (LogDeviceContext | null) | undefined
 }
 type Log = {
   object: string
@@ -1709,7 +1422,7 @@ type Log = {
   group_id?: (string | null) | undefined
   group_type?: (string | null) | undefined
   group_started_at?: (bigint | null) | undefined
-  payload?: { [x: string]: unknown } | undefined
+  payload?: { [key: string]: unknown } | undefined
 }
 type LogGroup = {
   object: 'log_group'
@@ -1721,27 +1434,7 @@ type LogGroup = {
   status: string | null
   status_label: string | null
   subject: string
-  first_event: {
-    object: string
-    id: string
-    event_time: bigint
-    actor: string
-    actor_type?: string | undefined
-    impersonator?: ({ user_id?: (string | null) | undefined } | null) | undefined
-    subject: string
-    type: string
-    client_id?: (string | null) | undefined
-    source: string | null
-    session_id?: (string | null) | undefined
-    trace_id: string
-    span_id: string
-    parent_span_id?: (string | null) | undefined
-    event_context: LogContext
-    group_id?: (string | null) | undefined
-    group_type?: (string | null) | undefined
-    group_started_at?: (bigint | null) | undefined
-    payload?: { [x: string]: unknown } | undefined
-  }
+  first_event: Log | null
   events: Log[]
   has_more_events: boolean
   events_cursor: string | null
@@ -1762,27 +1455,7 @@ type LogSchema = {
   fields: LogSchemaField[]
 }
 type LogSchemaList = { object: string; data: LogSchema[]; total_count: bigint }
-type LogWithPayload = {
-  object: string
-  id: string
-  event_time: bigint
-  actor: string
-  actor_type?: string | undefined
-  impersonator?: ({ user_id?: (string | null) | undefined } | null) | undefined
-  subject: string
-  type: string
-  client_id?: (string | null) | undefined
-  source: string | null
-  session_id?: (string | null) | undefined
-  trace_id: string
-  span_id: string
-  parent_span_id?: (string | null) | undefined
-  event_context: LogContext
-  group_id?: (string | null) | undefined
-  group_type?: (string | null) | undefined
-  group_started_at?: (bigint | null) | undefined
-  payload: { [x: string]: unknown }
-}
+type LogWithPayload = Log & { payload: { [key: string]: unknown } }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
@@ -1791,13 +1464,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                frontendApi?: string | undefined
-                frontend_api?: string | undefined
-                publishable_key?: string | undefined
-                proxy_url?: string | undefined
-                domain?: string | undefined
-                sign_in_url?: string | undefined
-                use_domain_for_script?: boolean | undefined
+                frontendApi?: string
+                frontend_api?: string
+                publishable_key?: string
+                proxy_url?: string
+                domain?: string
+                sign_in_url?: string
+                use_domain_for_script?: string
               }
             }
             output: {}
@@ -1807,13 +1480,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                frontendApi?: string | undefined
-                frontend_api?: string | undefined
-                publishable_key?: string | undefined
-                proxy_url?: string | undefined
-                domain?: string | undefined
-                sign_in_url?: string | undefined
-                use_domain_for_script?: boolean | undefined
+                frontendApi?: string
+                frontend_api?: string
+                publishable_key?: string
+                proxy_url?: string
+                domain?: string
+                sign_in_url?: string
+                use_domain_for_script?: string
               }
             }
             output: {}
@@ -1823,13 +1496,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                frontendApi?: string | undefined
-                frontend_api?: string | undefined
-                publishable_key?: string | undefined
-                proxy_url?: string | undefined
-                domain?: string | undefined
-                sign_in_url?: string | undefined
-                use_domain_for_script?: boolean | undefined
+                frontendApi?: string
+                frontend_api?: string
+                publishable_key?: string
+                proxy_url?: string
+                domain?: string
+                sign_in_url?: string
+                use_domain_for_script?: string
               }
             }
             output: {}
@@ -1841,61 +1514,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/clients': {
       $get:
         | {
-            input: {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
             output: Client[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 410
           }
         | {
-            input: {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -1982,9 +1625,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 email_address: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: EmailAddress
@@ -1996,9 +1639,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 email_address: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2010,9 +1653,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 email_address: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2024,9 +1667,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 email_address: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2038,9 +1681,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 email_address: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2052,9 +1695,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 email_address: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2066,9 +1709,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 email_address: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2150,9 +1793,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { email_address_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: EmailAddress
@@ -2162,9 +1805,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { email_address_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2174,9 +1817,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { email_address_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2186,9 +1829,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { email_address_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2198,9 +1841,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { email_address_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2210,9 +1853,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { email_address_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2279,7 +1922,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { email_address_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: {
               object?: string | undefined
@@ -2295,7 +1938,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { email_address_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2303,7 +1946,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { email_address_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2311,7 +1954,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { email_address_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2319,7 +1962,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { email_address_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2327,7 +1970,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { email_address_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2341,8 +1984,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 email_address: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: EmailAddress
@@ -2353,8 +1996,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 email_address: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2365,8 +2008,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 email_address: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2377,8 +2020,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 email_address: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2389,8 +2032,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 email_address: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2401,8 +2044,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 email_address: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
+                notify_primary_email_address_changed?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2418,9 +2061,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 phone_number: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: PhoneNumber
@@ -2432,9 +2075,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 phone_number: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2446,9 +2089,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 phone_number: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2460,9 +2103,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 phone_number: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2474,9 +2117,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 phone_number: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2488,9 +2131,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 phone_number: string
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2566,9 +2209,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { phone_number_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: PhoneNumber
@@ -2578,9 +2221,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { phone_number_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2590,9 +2233,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { phone_number_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2602,9 +2245,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { phone_number_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2614,9 +2257,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { phone_number_id: string } } & {
               json: {
-                verified?: (boolean | null) | undefined
-                primary?: (boolean | null) | undefined
-                reserved_for_second_factor?: (boolean | null) | undefined
+                verified?: boolean | null
+                primary?: boolean | null
+                reserved_for_second_factor?: boolean | null
               }
             }
             output: ClerkErrors
@@ -2683,7 +2326,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { phone_number_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: {
               object?: string | undefined
@@ -2699,7 +2342,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2707,7 +2350,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2715,7 +2358,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2723,7 +2366,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2731,7 +2374,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2739,7 +2382,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2747,7 +2390,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number_id: string } } & {
-              json: { verification_id: string; code: string; honor_lockout?: boolean | undefined }
+              json: { verification_id: string; code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -2761,7 +2404,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 phone_number: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
               }
             }
             output: PhoneNumber
@@ -2772,7 +2415,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 phone_number: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
               }
             }
             output: ClerkErrors
@@ -2783,7 +2426,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 phone_number: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
               }
             }
             output: ClerkErrors
@@ -2794,7 +2437,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 phone_number: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
               }
             }
             output: ClerkErrors
@@ -2805,7 +2448,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 phone_number: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
               }
             }
             output: ClerkErrors
@@ -2816,7 +2459,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { user_id: string } } & {
               json: {
                 phone_number: string
-                identification_status?: 'verified' | 'reserved' | 'unverified' | undefined
+                identification_status?: 'verified' | 'reserved' | 'unverified'
               }
             }
             output: ClerkErrors
@@ -2830,8 +2473,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                client_id?: string | undefined
-                user_id?: string | undefined
+                client_id?: string
+                user_id?: string
                 status?:
                   | 'abandoned'
                   | 'active'
@@ -2840,10 +2483,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'removed'
                   | 'replaced'
                   | 'revoked'
-                  | undefined
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: Session[]
@@ -2853,8 +2495,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                client_id?: string | undefined
-                user_id?: string | undefined
+                client_id?: string
+                user_id?: string
                 status?:
                   | 'abandoned'
                   | 'active'
@@ -2863,10 +2505,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'removed'
                   | 'replaced'
                   | 'revoked'
-                  | undefined
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -2876,8 +2517,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                client_id?: string | undefined
-                user_id?: string | undefined
+                client_id?: string
+                user_id?: string
                 status?:
                   | 'abandoned'
                   | 'active'
@@ -2886,10 +2527,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'removed'
                   | 'replaced'
                   | 'revoked'
-                  | undefined
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -2899,8 +2539,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                client_id?: string | undefined
-                user_id?: string | undefined
+                client_id?: string
+                user_id?: string
                 status?:
                   | 'abandoned'
                   | 'active'
@@ -2909,10 +2549,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'removed'
                   | 'replaced'
                   | 'revoked'
-                  | undefined
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -2921,31 +2560,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: { user_id: string; active_organization_id?: string | undefined } }
+            input: { json: { user_id: string; active_organization_id?: string } }
             output: Session
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { user_id: string; active_organization_id?: string | undefined } }
+            input: { json: { user_id: string; active_organization_id?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { user_id: string; active_organization_id?: string | undefined } }
+            input: { json: { user_id: string; active_organization_id?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: { user_id: string; active_organization_id?: string | undefined } }
+            input: { json: { user_id: string; active_organization_id?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: { user_id: string; active_organization_id?: string | undefined } }
+            input: { json: { user_id: string; active_organization_id?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -3025,9 +2664,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 expired_token: string
                 refresh_token: string
                 request_origin: string
-                request_headers?: ({ [x: string]: unknown } | null) | undefined
-                format?: 'token' | 'cookie' | undefined
-                request_originating_ip?: (string | null) | undefined
+                request_headers?: { [key: string]: unknown } | null
+                format?: 'token' | 'cookie' | null
+                request_originating_ip?: string | null
               }
             }
             output: SessionRefresh
@@ -3040,9 +2679,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 expired_token: string
                 refresh_token: string
                 request_origin: string
-                request_headers?: ({ [x: string]: unknown } | null) | undefined
-                format?: 'token' | 'cookie' | undefined
-                request_originating_ip?: (string | null) | undefined
+                request_headers?: { [key: string]: unknown } | null
+                format?: 'token' | 'cookie' | null
+                request_originating_ip?: string | null
               }
             }
             output: ClerkErrors
@@ -3055,9 +2694,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 expired_token: string
                 refresh_token: string
                 request_origin: string
-                request_headers?: ({ [x: string]: unknown } | null) | undefined
-                format?: 'token' | 'cookie' | undefined
-                request_originating_ip?: (string | null) | undefined
+                request_headers?: { [key: string]: unknown } | null
+                format?: 'token' | 'cookie' | null
+                request_originating_ip?: string | null
               }
             }
             output: ClerkErrors
@@ -3070,9 +2709,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 expired_token: string
                 refresh_token: string
                 request_origin: string
-                request_headers?: ({ [x: string]: unknown } | null) | undefined
-                format?: 'token' | 'cookie' | undefined
-                request_originating_ip?: (string | null) | undefined
+                request_headers?: { [key: string]: unknown } | null
+                format?: 'token' | 'cookie' | null
+                request_originating_ip?: string | null
               }
             }
             output: ClerkErrors
@@ -3112,41 +2751,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/sessions/:session_id/revoke': {
       $post:
         | {
-            input: { param: { session_id: string } } & {
-              json: { reset_client_trust?: boolean | undefined }
-            }
+            input: { param: { session_id: string } } & { json: { reset_client_trust?: boolean } }
             output: Session
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { session_id: string } } & {
-              json: { reset_client_trust?: boolean | undefined }
-            }
+            input: { param: { session_id: string } } & { json: { reset_client_trust?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { session_id: string } } & {
-              json: { reset_client_trust?: boolean | undefined }
-            }
+            input: { param: { session_id: string } } & { json: { reset_client_trust?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { session_id: string } } & {
-              json: { reset_client_trust?: boolean | undefined }
-            }
+            input: { param: { session_id: string } } & { json: { reset_client_trust?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { session_id: string } } & {
-              json: { reset_client_trust?: boolean | undefined }
-            }
+            input: { param: { session_id: string } } & { json: { reset_client_trust?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -3157,7 +2786,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { session_id: string } } & {
-              json: { expires_in_seconds?: (number | null) | undefined }
+              json: { expires_in_seconds?: number | null }
             }
             output: { object?: 'token' | undefined; jwt?: string | undefined }
             outputFormat: 'json'
@@ -3165,7 +2794,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { session_id: string } } & {
-              json: { expires_in_seconds?: (number | null) | undefined }
+              json: { expires_in_seconds?: number | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3173,7 +2802,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { session_id: string } } & {
-              json: { expires_in_seconds?: (number | null) | undefined }
+              json: { expires_in_seconds?: number | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3181,7 +2810,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { session_id: string } } & {
-              json: { expires_in_seconds?: (number | null) | undefined }
+              json: { expires_in_seconds?: number | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3193,7 +2822,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { session_id: string; template_name: string } } & {
-              json: { expires_in_seconds?: (number | null) | undefined }
+              json: { expires_in_seconds?: number | null }
             }
             output: { object?: 'token' | undefined; jwt?: string | undefined }
             outputFormat: 'json'
@@ -3201,7 +2830,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { session_id: string; template_name: string } } & {
-              json: { expires_in_seconds?: (number | null) | undefined }
+              json: { expires_in_seconds?: number | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3209,7 +2838,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { session_id: string; template_name: string } } & {
-              json: { expires_in_seconds?: (number | null) | undefined }
+              json: { expires_in_seconds?: number | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3217,7 +2846,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { session_id: string; template_name: string } } & {
-              json: { expires_in_seconds?: (number | null) | undefined }
+              json: { expires_in_seconds?: number | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3229,11 +2858,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { template_type: 'email' | 'sms' } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: Template[]
             outputFormat: 'json'
@@ -3241,11 +2866,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { template_type: 'email' | 'sms' } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3253,11 +2874,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { template_type: 'email' | 'sms' } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3265,11 +2882,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { template_type: 'email' | 'sms' } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3307,13 +2920,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: Template
@@ -3323,13 +2936,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3339,13 +2952,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3355,13 +2968,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3371,13 +2984,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3387,13 +3000,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3403,13 +3016,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3419,13 +3032,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3435,13 +3048,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
               json: {
-                name?: string | undefined
-                subject?: (string | null) | undefined
-                markup?: (string | null) | undefined
-                body?: string | undefined
-                delivered_by_clerk?: (boolean | null) | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                name?: string
+                subject?: string | null
+                markup?: string | null
+                body?: string
+                delivered_by_clerk?: boolean | null
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3489,23 +3102,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: string; slug: string } } & {
               json: {
-                subject?: (string | null) | undefined
-                body?: string | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                subject?: string | null
+                body?: string
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
-            output: { [x: string]: unknown }
+            output: { [key: string]: unknown }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { template_type: string; slug: string } } & {
               json: {
-                subject?: (string | null) | undefined
-                body?: string | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                subject?: string | null
+                body?: string
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3515,10 +3128,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: string; slug: string } } & {
               json: {
-                subject?: (string | null) | undefined
-                body?: string | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                subject?: string | null
+                body?: string
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3528,10 +3141,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: string; slug: string } } & {
               json: {
-                subject?: (string | null) | undefined
-                body?: string | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                subject?: string | null
+                body?: string
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3541,10 +3154,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { template_type: string; slug: string } } & {
               json: {
-                subject?: (string | null) | undefined
-                body?: string | undefined
-                from_email_name?: string | undefined
-                reply_to_email_name?: string | undefined
+                subject?: string | null
+                body?: string
+                from_email_name?: string
+                reply_to_email_name?: string
               }
             }
             output: ClerkErrors
@@ -3557,7 +3170,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
-              json: { delivered_by_clerk?: boolean | undefined }
+              json: { delivered_by_clerk?: boolean }
             }
             output: Template
             outputFormat: 'json'
@@ -3565,7 +3178,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
-              json: { delivered_by_clerk?: boolean | undefined }
+              json: { delivered_by_clerk?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3573,7 +3186,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
-              json: { delivered_by_clerk?: boolean | undefined }
+              json: { delivered_by_clerk?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3581,7 +3194,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
-              json: { delivered_by_clerk?: boolean | undefined }
+              json: { delivered_by_clerk?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3589,7 +3202,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
-              json: { delivered_by_clerk?: boolean | undefined }
+              json: { delivered_by_clerk?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3597,7 +3210,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { template_type: 'email' | 'sms'; slug: string } } & {
-              json: { delivered_by_clerk?: boolean | undefined }
+              json: { delivered_by_clerk?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -3610,67 +3223,75 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                external_id?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                banned?: boolean | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                last_active_at_since?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                last_sign_in_at_before?: number | undefined
-                last_sign_in_at_after?: number | undefined
-                provider?: string | undefined
-                provider_user_id?: string[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                starting_after?: string | undefined
-                order_by?: string | undefined
+                email_address?: unknown
+                phone_number?: unknown
+                external_id?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                user_id?: unknown
+                organization_id?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                banned?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                last_active_at_since?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                last_sign_in_at_before?: unknown
+                last_sign_in_at_after?: unknown
+                provider?: string
+                provider_user_id?: unknown
+                metadata?: unknown
+                limit?: unknown
+                offset?: unknown
+                starting_after?: string
+                pagination?: 'offset' | 'cursor'
+                ending_before?: string
+                remaining_count?: '100' | '1000' | '10000' | 'exact'
+                order_by?: string
               }
             }
-            output: User[]
+            output: User[] | UserCursorPage
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
               query: {
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                external_id?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                banned?: boolean | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                last_active_at_since?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                last_sign_in_at_before?: number | undefined
-                last_sign_in_at_after?: number | undefined
-                provider?: string | undefined
-                provider_user_id?: string[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                starting_after?: string | undefined
-                order_by?: string | undefined
+                email_address?: unknown
+                phone_number?: unknown
+                external_id?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                user_id?: unknown
+                organization_id?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                banned?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                last_active_at_since?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                last_sign_in_at_before?: unknown
+                last_sign_in_at_after?: unknown
+                provider?: string
+                provider_user_id?: unknown
+                metadata?: unknown
+                limit?: unknown
+                offset?: unknown
+                starting_after?: string
+                pagination?: 'offset' | 'cursor'
+                ending_before?: string
+                remaining_count?: '100' | '1000' | '10000' | 'exact'
+                order_by?: string
               }
             }
             output: ClerkErrors
@@ -3680,32 +3301,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                external_id?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                banned?: boolean | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                last_active_at_since?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                last_sign_in_at_before?: number | undefined
-                last_sign_in_at_after?: number | undefined
-                provider?: string | undefined
-                provider_user_id?: string[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                starting_after?: string | undefined
-                order_by?: string | undefined
+                email_address?: unknown
+                phone_number?: unknown
+                external_id?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                user_id?: unknown
+                organization_id?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                banned?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                last_active_at_since?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                last_sign_in_at_before?: unknown
+                last_sign_in_at_after?: unknown
+                provider?: string
+                provider_user_id?: unknown
+                metadata?: unknown
+                limit?: unknown
+                offset?: unknown
+                starting_after?: string
+                pagination?: 'offset' | 'cursor'
+                ending_before?: string
+                remaining_count?: '100' | '1000' | '10000' | 'exact'
+                order_by?: string
               }
             }
             output: ClerkErrors
@@ -3715,32 +3340,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                external_id?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                banned?: boolean | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                last_active_at_since?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                last_sign_in_at_before?: number | undefined
-                last_sign_in_at_after?: number | undefined
-                provider?: string | undefined
-                provider_user_id?: string[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                starting_after?: string | undefined
-                order_by?: string | undefined
+                email_address?: unknown
+                phone_number?: unknown
+                external_id?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                user_id?: unknown
+                organization_id?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                banned?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                last_active_at_since?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                last_sign_in_at_before?: unknown
+                last_sign_in_at_after?: unknown
+                provider?: string
+                provider_user_id?: unknown
+                metadata?: unknown
+                limit?: unknown
+                offset?: unknown
+                starting_after?: string
+                pagination?: 'offset' | 'cursor'
+                ending_before?: string
+                remaining_count?: '100' | '1000' | '10000' | 'exact'
+                order_by?: string
               }
             }
             output: ClerkErrors
@@ -3750,32 +3379,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                external_id?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                banned?: boolean | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                last_active_at_since?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                last_sign_in_at_before?: number | undefined
-                last_sign_in_at_after?: number | undefined
-                provider?: string | undefined
-                provider_user_id?: string[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                starting_after?: string | undefined
-                order_by?: string | undefined
+                email_address?: unknown
+                phone_number?: unknown
+                external_id?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                user_id?: unknown
+                organization_id?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                banned?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                last_active_at_since?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                last_sign_in_at_before?: unknown
+                last_sign_in_at_after?: unknown
+                provider?: string
+                provider_user_id?: unknown
+                metadata?: unknown
+                limit?: unknown
+                offset?: unknown
+                starting_after?: string
+                pagination?: 'offset' | 'cursor'
+                ending_before?: string
+                remaining_count?: '100' | '1000' | '10000' | 'exact'
+                order_by?: string
               }
             }
             output: ClerkErrors
@@ -3785,32 +3418,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                external_id?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                banned?: boolean | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                last_active_at_since?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                last_sign_in_at_before?: number | undefined
-                last_sign_in_at_after?: number | undefined
-                provider?: string | undefined
-                provider_user_id?: string[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                starting_after?: string | undefined
-                order_by?: string | undefined
+                email_address?: unknown
+                phone_number?: unknown
+                external_id?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                user_id?: unknown
+                organization_id?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                banned?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                last_active_at_since?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                last_sign_in_at_before?: unknown
+                last_sign_in_at_after?: unknown
+                provider?: string
+                provider_user_id?: unknown
+                metadata?: unknown
+                limit?: unknown
+                offset?: unknown
+                starting_after?: string
+                pagination?: 'offset' | 'cursor'
+                ending_before?: string
+                remaining_count?: '100' | '1000' | '10000' | 'exact'
+                order_by?: string
               }
             }
             output: ClerkErrors
@@ -3821,38 +3458,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                email_address?: string[] | undefined
-                email_address_identification_status?: ('verified' | 'reserved')[] | undefined
-                phone_number?: string[] | undefined
-                phone_number_identification_status?: ('verified' | 'reserved')[] | undefined
-                web3_wallet?: string[] | undefined
-                username?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: (string | null) | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                skip_password_requirement?: (boolean | null) | undefined
-                skip_restriction_checks?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                skip_user_requirement?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
-                banned?: (boolean | null) | undefined
-                locked?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                email_address?: string[]
+                email_address_identification_status?: ('verified' | 'reserved')[]
+                phone_number?: string[]
+                phone_number_identification_status?: ('verified' | 'reserved')[]
+                web3_wallet?: string[]
+                username?: string | null
+                password?: string | null
+                password_digest?: string | null
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                skip_password_requirement?: boolean | null
+                skip_restriction_checks?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
+                delete_self_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                skip_user_requirement?: boolean | null
+                create_organization_enabled?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
+                banned?: boolean | null
+                locked?: boolean | null
               }
             }
             output: User
@@ -3862,38 +3499,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                email_address?: string[] | undefined
-                email_address_identification_status?: ('verified' | 'reserved')[] | undefined
-                phone_number?: string[] | undefined
-                phone_number_identification_status?: ('verified' | 'reserved')[] | undefined
-                web3_wallet?: string[] | undefined
-                username?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: (string | null) | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                skip_password_requirement?: (boolean | null) | undefined
-                skip_restriction_checks?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                skip_user_requirement?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
-                banned?: (boolean | null) | undefined
-                locked?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                email_address?: string[]
+                email_address_identification_status?: ('verified' | 'reserved')[]
+                phone_number?: string[]
+                phone_number_identification_status?: ('verified' | 'reserved')[]
+                web3_wallet?: string[]
+                username?: string | null
+                password?: string | null
+                password_digest?: string | null
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                skip_password_requirement?: boolean | null
+                skip_restriction_checks?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
+                delete_self_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                skip_user_requirement?: boolean | null
+                create_organization_enabled?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
+                banned?: boolean | null
+                locked?: boolean | null
               }
             }
             output: ClerkErrors
@@ -3903,38 +3540,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                email_address?: string[] | undefined
-                email_address_identification_status?: ('verified' | 'reserved')[] | undefined
-                phone_number?: string[] | undefined
-                phone_number_identification_status?: ('verified' | 'reserved')[] | undefined
-                web3_wallet?: string[] | undefined
-                username?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: (string | null) | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                skip_password_requirement?: (boolean | null) | undefined
-                skip_restriction_checks?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                skip_user_requirement?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
-                banned?: (boolean | null) | undefined
-                locked?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                email_address?: string[]
+                email_address_identification_status?: ('verified' | 'reserved')[]
+                phone_number?: string[]
+                phone_number_identification_status?: ('verified' | 'reserved')[]
+                web3_wallet?: string[]
+                username?: string | null
+                password?: string | null
+                password_digest?: string | null
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                skip_password_requirement?: boolean | null
+                skip_restriction_checks?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
+                delete_self_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                skip_user_requirement?: boolean | null
+                create_organization_enabled?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
+                banned?: boolean | null
+                locked?: boolean | null
               }
             }
             output: ClerkErrors
@@ -3944,38 +3581,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                email_address?: string[] | undefined
-                email_address_identification_status?: ('verified' | 'reserved')[] | undefined
-                phone_number?: string[] | undefined
-                phone_number_identification_status?: ('verified' | 'reserved')[] | undefined
-                web3_wallet?: string[] | undefined
-                username?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: (string | null) | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                skip_password_requirement?: (boolean | null) | undefined
-                skip_restriction_checks?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                skip_user_requirement?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
-                banned?: (boolean | null) | undefined
-                locked?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                email_address?: string[]
+                email_address_identification_status?: ('verified' | 'reserved')[]
+                phone_number?: string[]
+                phone_number_identification_status?: ('verified' | 'reserved')[]
+                web3_wallet?: string[]
+                username?: string | null
+                password?: string | null
+                password_digest?: string | null
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                skip_password_requirement?: boolean | null
+                skip_restriction_checks?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
+                delete_self_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                skip_user_requirement?: boolean | null
+                create_organization_enabled?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
+                banned?: boolean | null
+                locked?: boolean | null
               }
             }
             output: ClerkErrors
@@ -3985,38 +3622,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                email_address?: string[] | undefined
-                email_address_identification_status?: ('verified' | 'reserved')[] | undefined
-                phone_number?: string[] | undefined
-                phone_number_identification_status?: ('verified' | 'reserved')[] | undefined
-                web3_wallet?: string[] | undefined
-                username?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: (string | null) | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                skip_password_requirement?: (boolean | null) | undefined
-                skip_restriction_checks?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                skip_user_requirement?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
-                banned?: (boolean | null) | undefined
-                locked?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                email_address?: string[]
+                email_address_identification_status?: ('verified' | 'reserved')[]
+                phone_number?: string[]
+                phone_number_identification_status?: ('verified' | 'reserved')[]
+                web3_wallet?: string[]
+                username?: string | null
+                password?: string | null
+                password_digest?: string | null
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                skip_password_requirement?: boolean | null
+                skip_restriction_checks?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
+                delete_self_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                skip_user_requirement?: boolean | null
+                create_organization_enabled?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
+                banned?: boolean | null
+                locked?: boolean | null
               }
             }
             output: ClerkErrors
@@ -4026,38 +3663,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                email_address?: string[] | undefined
-                email_address_identification_status?: ('verified' | 'reserved')[] | undefined
-                phone_number?: string[] | undefined
-                phone_number_identification_status?: ('verified' | 'reserved')[] | undefined
-                web3_wallet?: string[] | undefined
-                username?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: (string | null) | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                skip_password_requirement?: (boolean | null) | undefined
-                skip_restriction_checks?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                skip_user_requirement?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
-                banned?: (boolean | null) | undefined
-                locked?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                email_address?: string[]
+                email_address_identification_status?: ('verified' | 'reserved')[]
+                phone_number?: string[]
+                phone_number_identification_status?: ('verified' | 'reserved')[]
+                web3_wallet?: string[]
+                username?: string | null
+                password?: string | null
+                password_digest?: string | null
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                skip_password_requirement?: boolean | null
+                skip_restriction_checks?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
+                delete_self_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                skip_user_requirement?: boolean | null
+                create_organization_enabled?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
+                banned?: boolean | null
+                locked?: boolean | null
               }
             }
             output: ClerkErrors
@@ -4071,28 +3708,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                external_id?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                banned?: boolean | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                last_active_at_since?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                last_sign_in_at_before?: number | undefined
-                last_sign_in_at_after?: number | undefined
-                provider?: string | undefined
-                provider_user_id?: string[] | undefined
+                email_address?: unknown
+                phone_number?: unknown
+                external_id?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                user_id?: unknown
+                organization_id?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                banned?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                last_active_at_since?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                last_sign_in_at_before?: unknown
+                last_sign_in_at_after?: unknown
+                provider?: string
+                provider_user_id?: unknown
               }
             }
             output: TotalCount
@@ -4102,28 +3739,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                external_id?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                banned?: boolean | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                last_active_at_since?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                last_sign_in_at_before?: number | undefined
-                last_sign_in_at_after?: number | undefined
-                provider?: string | undefined
-                provider_user_id?: string[] | undefined
+                email_address?: unknown
+                phone_number?: unknown
+                external_id?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                user_id?: unknown
+                organization_id?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                banned?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                last_active_at_since?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                last_sign_in_at_before?: unknown
+                last_sign_in_at_after?: unknown
+                provider?: string
+                provider_user_id?: unknown
               }
             }
             output: ClerkErrors
@@ -4157,34 +3794,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                primary_email_address_id?: (string | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
-                primary_phone_number_id?: (string | null) | undefined
-                primary_web3_wallet_id?: (string | null) | undefined
-                username?: (string | null) | undefined
-                profile_image_id?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: string | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                sign_out_of_other_sessions?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                unsafe_metadata?: ({ [x: string]: unknown } | null) | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                primary_email_address_id?: string | null
+                notify_primary_email_address_changed?: boolean | null
+                primary_phone_number_id?: string | null
+                primary_web3_wallet_id?: string | null
+                username?: string | null
+                profile_image_id?: string | null
+                password?: string | null
+                password_digest?: string
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                sign_out_of_other_sessions?: boolean | null
+                reset_client_trust?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                unsafe_metadata?: { [key: string]: unknown } | null
+                delete_self_enabled?: boolean | null
+                create_organization_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
               }
             }
             output: User
@@ -4194,34 +3832,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                primary_email_address_id?: (string | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
-                primary_phone_number_id?: (string | null) | undefined
-                primary_web3_wallet_id?: (string | null) | undefined
-                username?: (string | null) | undefined
-                profile_image_id?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: string | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                sign_out_of_other_sessions?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                unsafe_metadata?: ({ [x: string]: unknown } | null) | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                primary_email_address_id?: string | null
+                notify_primary_email_address_changed?: boolean | null
+                primary_phone_number_id?: string | null
+                primary_web3_wallet_id?: string | null
+                username?: string | null
+                profile_image_id?: string | null
+                password?: string | null
+                password_digest?: string
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                sign_out_of_other_sessions?: boolean | null
+                reset_client_trust?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                unsafe_metadata?: { [key: string]: unknown } | null
+                delete_self_enabled?: boolean | null
+                create_organization_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
               }
             }
             output: ClerkErrors
@@ -4231,34 +3870,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                primary_email_address_id?: (string | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
-                primary_phone_number_id?: (string | null) | undefined
-                primary_web3_wallet_id?: (string | null) | undefined
-                username?: (string | null) | undefined
-                profile_image_id?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: string | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                sign_out_of_other_sessions?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                unsafe_metadata?: ({ [x: string]: unknown } | null) | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                primary_email_address_id?: string | null
+                notify_primary_email_address_changed?: boolean | null
+                primary_phone_number_id?: string | null
+                primary_web3_wallet_id?: string | null
+                username?: string | null
+                profile_image_id?: string | null
+                password?: string | null
+                password_digest?: string
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                sign_out_of_other_sessions?: boolean | null
+                reset_client_trust?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                unsafe_metadata?: { [key: string]: unknown } | null
+                delete_self_enabled?: boolean | null
+                create_organization_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
               }
             }
             output: ClerkErrors
@@ -4268,34 +3908,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                primary_email_address_id?: (string | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
-                primary_phone_number_id?: (string | null) | undefined
-                primary_web3_wallet_id?: (string | null) | undefined
-                username?: (string | null) | undefined
-                profile_image_id?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: string | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                sign_out_of_other_sessions?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                unsafe_metadata?: ({ [x: string]: unknown } | null) | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                primary_email_address_id?: string | null
+                notify_primary_email_address_changed?: boolean | null
+                primary_phone_number_id?: string | null
+                primary_web3_wallet_id?: string | null
+                username?: string | null
+                profile_image_id?: string | null
+                password?: string | null
+                password_digest?: string
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                sign_out_of_other_sessions?: boolean | null
+                reset_client_trust?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                unsafe_metadata?: { [key: string]: unknown } | null
+                delete_self_enabled?: boolean | null
+                create_organization_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
               }
             }
             output: ClerkErrors
@@ -4305,34 +3946,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                primary_email_address_id?: (string | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
-                primary_phone_number_id?: (string | null) | undefined
-                primary_web3_wallet_id?: (string | null) | undefined
-                username?: (string | null) | undefined
-                profile_image_id?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: string | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                sign_out_of_other_sessions?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                unsafe_metadata?: ({ [x: string]: unknown } | null) | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                primary_email_address_id?: string | null
+                notify_primary_email_address_changed?: boolean | null
+                primary_phone_number_id?: string | null
+                primary_web3_wallet_id?: string | null
+                username?: string | null
+                profile_image_id?: string | null
+                password?: string | null
+                password_digest?: string
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                sign_out_of_other_sessions?: boolean | null
+                reset_client_trust?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                unsafe_metadata?: { [key: string]: unknown } | null
+                delete_self_enabled?: boolean | null
+                create_organization_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
               }
             }
             output: ClerkErrors
@@ -4342,34 +3984,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                external_id?: (string | null) | undefined
-                first_name?: (string | null) | undefined
-                last_name?: (string | null) | undefined
-                locale?: (string | null) | undefined
-                timezone?: (string | null) | undefined
-                primary_email_address_id?: (string | null) | undefined
-                notify_primary_email_address_changed?: (boolean | null) | undefined
-                primary_phone_number_id?: (string | null) | undefined
-                primary_web3_wallet_id?: (string | null) | undefined
-                username?: (string | null) | undefined
-                profile_image_id?: (string | null) | undefined
-                password?: (string | null) | undefined
-                password_digest?: string | undefined
-                password_hasher?: PasswordHasher | undefined
-                skip_password_checks?: (boolean | null) | undefined
-                sign_out_of_other_sessions?: (boolean | null) | undefined
-                totp_secret?: (string | null) | undefined
-                backup_codes?: string[] | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                unsafe_metadata?: ({ [x: string]: unknown } | null) | undefined
-                delete_self_enabled?: (boolean | null) | undefined
-                create_organization_enabled?: (boolean | null) | undefined
-                legal_accepted_at?: (string | null) | undefined
-                skip_legal_checks?: (boolean | null) | undefined
-                create_organizations_limit?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                bypass_client_trust?: (boolean | null) | undefined
+                external_id?: string | null
+                first_name?: string | null
+                last_name?: string | null
+                locale?: string | null
+                timezone?: string | null
+                primary_email_address_id?: string | null
+                notify_primary_email_address_changed?: boolean | null
+                primary_phone_number_id?: string | null
+                primary_web3_wallet_id?: string | null
+                username?: string | null
+                profile_image_id?: string | null
+                password?: string | null
+                password_digest?: string
+                password_hasher?: PasswordHasherInput
+                skip_password_checks?: boolean | null
+                sign_out_of_other_sessions?: boolean | null
+                reset_client_trust?: boolean | null
+                totp_secret?: string | null
+                backup_codes?: string[]
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                unsafe_metadata?: { [key: string]: unknown } | null
+                delete_self_enabled?: boolean | null
+                create_organization_enabled?: boolean | null
+                legal_accepted_at?: string | null
+                skip_legal_checks?: boolean | null
+                create_organizations_limit?: number | null
+                created_at?: string | null
+                bypass_client_trust?: boolean | null
               }
             }
             output: ClerkErrors
@@ -4495,7 +4138,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { user_id: string } } & {
-              json: { from_user_id: string; dry_run?: boolean | undefined }
+              json: { from_user_id: string; dry_run?: boolean }
             }
             output: { user: User; deleted_user: User }
             outputFormat: 'json'
@@ -4503,7 +4146,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { from_user_id: string; dry_run?: boolean | undefined }
+              json: { from_user_id: string; dry_run?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4511,7 +4154,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { from_user_id: string; dry_run?: boolean | undefined }
+              json: { from_user_id: string; dry_run?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4519,7 +4162,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { from_user_id: string; dry_run?: boolean | undefined }
+              json: { from_user_id: string; dry_run?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4527,7 +4170,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { from_user_id: string; dry_run?: boolean | undefined }
+              json: { from_user_id: string; dry_run?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4538,25 +4181,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/users/:user_id/profile_image': {
       $post:
         | {
-            input: { param: { user_id: string } } & { form: { file?: File | undefined } }
+            input: { param: { user_id: string } } & { form: { file?: File } }
             output: User
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { user_id: string } } & { form: { file?: File | undefined } }
+            input: { param: { user_id: string } } & { form: { file?: File } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { user_id: string } } & { form: { file?: File | undefined } }
+            input: { param: { user_id: string } } & { form: { file?: File } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { user_id: string } } & { form: { file?: File | undefined } }
+            input: { param: { user_id: string } } & { form: { file?: File } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
@@ -4576,9 +4219,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: User
@@ -4588,9 +4231,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -4600,9 +4243,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -4612,9 +4255,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -4624,9 +4267,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -4637,9 +4280,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: User
@@ -4649,9 +4292,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -4661,9 +4304,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -4673,9 +4316,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -4685,9 +4328,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
-                unsafe_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
+                unsafe_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -4788,49 +4431,49 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequestInput }
             output: CommerceCreditLedgerResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequestInput }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequestInput }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequestInput }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequestInput }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequestInput }
             output: ClerkErrors
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequestInput }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { user_id: string } } & { json: AdjustCreditBalanceRequestInput }
             output: ClerkErrors
             outputFormat: 'json'
             status: 500
@@ -4841,11 +4484,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { user_id: string; provider: string } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: OAuthAccessToken
             outputFormat: 'json'
@@ -4853,11 +4492,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; provider: string } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4865,11 +4500,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; provider: string } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4877,11 +4508,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; provider: string } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4889,11 +4516,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string; provider: string } } & {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { paginated?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4904,17 +4527,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/users/:user_id/organization_memberships': {
       $get:
         | {
-            input: { param: { user_id: string } } & {
-              query: { limit?: number | undefined; offset?: number | undefined }
-            }
+            input: { param: { user_id: string } } & { query: { limit?: unknown; offset?: unknown } }
             output: OrganizationMemberships
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { user_id: string } } & {
-              query: { limit?: number | undefined; offset?: number | undefined }
-            }
+            input: { param: { user_id: string } } & { query: { limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
@@ -4926,9 +4545,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
+                limit?: unknown
+                offset?: unknown
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
               }
             }
             output: OrganizationInvitationsWithPublicOrganizationData
@@ -4938,9 +4557,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
+                limit?: unknown
+                offset?: unknown
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
               }
             }
             output: ClerkErrors
@@ -4950,9 +4569,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
+                limit?: unknown
+                offset?: unknown
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
               }
             }
             output: ClerkErrors
@@ -4962,9 +4581,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { user_id: string } } & {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
+                limit?: unknown
+                offset?: unknown
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
               }
             }
             output: ClerkErrors
@@ -4977,7 +4596,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { user_id: string } } & {
-              json: { sign_out_of_other_sessions?: boolean | undefined }
+              json: { sign_out_of_other_sessions?: boolean }
             }
             output: User
             outputFormat: 'json'
@@ -4985,7 +4604,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { sign_out_of_other_sessions?: boolean | undefined }
+              json: { sign_out_of_other_sessions?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -4993,7 +4612,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { sign_out_of_other_sessions?: boolean | undefined }
+              json: { sign_out_of_other_sessions?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -5001,7 +4620,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { sign_out_of_other_sessions?: boolean | undefined }
+              json: { sign_out_of_other_sessions?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -5009,7 +4628,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { sign_out_of_other_sessions?: boolean | undefined }
+              json: { sign_out_of_other_sessions?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -5017,7 +4636,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { sign_out_of_other_sessions?: boolean | undefined }
+              json: { sign_out_of_other_sessions?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -5029,7 +4648,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { user_id: string } } & {
-              json: { password: string; honor_lockout?: boolean | undefined }
+              json: { password: string; honor_lockout?: boolean }
             }
             output: { verified?: boolean | undefined }
             outputFormat: 'json'
@@ -5037,7 +4656,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { password: string; honor_lockout?: boolean | undefined }
+              json: { password: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5045,7 +4664,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { password: string; honor_lockout?: boolean | undefined }
+              json: { password: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5053,7 +4672,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { password: string; honor_lockout?: boolean | undefined }
+              json: { password: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5061,7 +4680,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { password: string; honor_lockout?: boolean | undefined }
+              json: { password: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5069,7 +4688,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { password: string; honor_lockout?: boolean | undefined }
+              json: { password: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5077,7 +4696,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { password: string; honor_lockout?: boolean | undefined }
+              json: { password: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -5089,7 +4708,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { user_id: string } } & {
-              json: { code: string; honor_lockout?: boolean | undefined }
+              json: { code: string; honor_lockout?: boolean }
             }
             output: {
               verified?: boolean | undefined
@@ -5100,7 +4719,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { code: string; honor_lockout?: boolean | undefined }
+              json: { code: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5108,7 +4727,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { code: string; honor_lockout?: boolean | undefined }
+              json: { code: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5116,7 +4735,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { code: string; honor_lockout?: boolean | undefined }
+              json: { code: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5124,7 +4743,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { code: string; honor_lockout?: boolean | undefined }
+              json: { code: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5132,7 +4751,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { code: string; honor_lockout?: boolean | undefined }
+              json: { code: string; honor_lockout?: boolean }
             }
             output: {}
             outputFormat: string
@@ -5140,7 +4759,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { user_id: string } } & {
-              json: { code: string; honor_lockout?: boolean | undefined }
+              json: { code: string; honor_lockout?: boolean }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -5372,12 +4991,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 email_address: string
-                public_metadata?: { [x: string]: unknown } | undefined
-                redirect_url?: string | undefined
-                notify?: (boolean | null) | undefined
-                ignore_existing?: (boolean | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                template_slug?: 'invitation' | 'waitlist_invitation' | undefined
+                public_metadata?: { [key: string]: unknown }
+                redirect_url?: string
+                notify?: boolean | null
+                ignore_existing?: boolean | null
+                expires_in_days?: number | null
+                template_slug?: 'invitation' | 'waitlist_invitation'
               }
             }
             output: Invitation
@@ -5388,12 +5007,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 email_address: string
-                public_metadata?: { [x: string]: unknown } | undefined
-                redirect_url?: string | undefined
-                notify?: (boolean | null) | undefined
-                ignore_existing?: (boolean | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                template_slug?: 'invitation' | 'waitlist_invitation' | undefined
+                public_metadata?: { [key: string]: unknown }
+                redirect_url?: string
+                notify?: boolean | null
+                ignore_existing?: boolean | null
+                expires_in_days?: number | null
+                template_slug?: 'invitation' | 'waitlist_invitation'
               }
             }
             output: ClerkErrors
@@ -5404,12 +5023,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 email_address: string
-                public_metadata?: { [x: string]: unknown } | undefined
-                redirect_url?: string | undefined
-                notify?: (boolean | null) | undefined
-                ignore_existing?: (boolean | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                template_slug?: 'invitation' | 'waitlist_invitation' | undefined
+                public_metadata?: { [key: string]: unknown }
+                redirect_url?: string
+                notify?: boolean | null
+                ignore_existing?: boolean | null
+                expires_in_days?: number | null
+                template_slug?: 'invitation' | 'waitlist_invitation'
               }
             }
             output: ClerkErrors
@@ -5419,13 +5038,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get: {
         input: {
           query: {
-            status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-            query?: string | undefined
-            email_address?: string[] | undefined
-            order_by?: string | undefined
-            paginated?: boolean | undefined
-            limit?: number | undefined
-            offset?: number | undefined
+            status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+            query?: string
+            email_address?: unknown
+            order_by?: string
+            paginated?: string
+            limit?: unknown
+            offset?: unknown
           }
         }
         output: Invitation[]
@@ -5440,12 +5059,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 email_address: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                notify?: (boolean | null) | undefined
-                ignore_existing?: (boolean | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                template_slug?: 'invitation' | 'waitlist_invitation' | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                notify?: boolean | null
+                ignore_existing?: boolean | null
+                expires_in_days?: number | null
+                template_slug?: 'invitation' | 'waitlist_invitation'
               }[]
             }
             output: Invitation[]
@@ -5456,12 +5075,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 email_address: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                notify?: (boolean | null) | undefined
-                ignore_existing?: (boolean | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                template_slug?: 'invitation' | 'waitlist_invitation' | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                notify?: boolean | null
+                ignore_existing?: boolean | null
+                expires_in_days?: number | null
+                template_slug?: 'invitation' | 'waitlist_invitation'
               }[]
             }
             output: ClerkErrors
@@ -5472,12 +5091,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 email_address: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                notify?: (boolean | null) | undefined
-                ignore_existing?: (boolean | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                template_slug?: 'invitation' | 'waitlist_invitation' | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                notify?: boolean | null
+                ignore_existing?: boolean | null
+                expires_in_days?: number | null
+                template_slug?: 'invitation' | 'waitlist_invitation'
               }[]
             }
             output: ClerkErrors
@@ -5506,18 +5125,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { invitation_id: string } }
-            output: {
-              object: 'invitation'
-              id: string
-              email_address: string
-              public_metadata: { [x: string]: unknown }
-              revoked?: true | undefined
-              status: 'revoked'
-              url?: string | undefined
-              expires_at?: (bigint | null) | undefined
-              created_at: bigint
-              updated_at: bigint
-            }
+            output: Invitation & { revoked?: true | undefined; status?: 'revoked' | undefined }
             outputFormat: 'json'
             status: 200
           }
@@ -5540,11 +5148,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                order_by?: string | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                query?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                order_by?: string
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                query?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: OrganizationInvitationsWithPublicOrganizationData
@@ -5554,11 +5162,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                order_by?: string | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                query?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                order_by?: string
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                query?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -5568,11 +5176,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                order_by?: string | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                query?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                order_by?: string
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                query?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -5582,11 +5190,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                order_by?: string | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                query?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                order_by?: string
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                query?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -5596,11 +5204,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                order_by?: string | undefined
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                query?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                order_by?: string
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                query?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -5612,62 +5220,44 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/allowlist_identifiers': {
       $get:
         | {
-            input: {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
             output: AllowlistIdentifier[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 402
           }
       $post:
         | {
-            input: { json: { identifier: string; notify?: boolean | undefined } }
+            input: { json: { identifier: string; notify?: boolean } }
             output: AllowlistIdentifier
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { identifier: string; notify?: boolean | undefined } }
+            input: { json: { identifier: string; notify?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { identifier: string; notify?: boolean | undefined } }
+            input: { json: { identifier: string; notify?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { json: { identifier: string; notify?: boolean | undefined } }
+            input: { json: { identifier: string; notify?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -5755,10 +5345,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                restricted_to_allowlist?: (boolean | null) | undefined
-                from_email_address?: (string | null) | undefined
-                progressive_sign_up?: (boolean | null) | undefined
-                test_mode?: (boolean | null) | undefined
+                restricted_to_allowlist?: boolean | null
+                from_email_address?: string | null
+                progressive_sign_up?: boolean | null
+                test_mode?: boolean | null
               }
             }
             output: {
@@ -5775,10 +5365,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                restricted_to_allowlist?: (boolean | null) | undefined
-                from_email_address?: (string | null) | undefined
-                progressive_sign_up?: (boolean | null) | undefined
-                test_mode?: (boolean | null) | undefined
+                restricted_to_allowlist?: boolean | null
+                from_email_address?: string | null
+                progressive_sign_up?: boolean | null
+                test_mode?: boolean | null
               }
             }
             output: ClerkErrors
@@ -5788,10 +5378,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                restricted_to_allowlist?: (boolean | null) | undefined
-                from_email_address?: (string | null) | undefined
-                progressive_sign_up?: (boolean | null) | undefined
-                test_mode?: (boolean | null) | undefined
+                restricted_to_allowlist?: boolean | null
+                from_email_address?: string | null
+                progressive_sign_up?: boolean | null
+                test_mode?: boolean | null
               }
             }
             output: ClerkErrors
@@ -5803,25 +5393,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/beta_features/domain': {
       $put:
         | {
-            input: { json: { home_url?: string | undefined; is_secondary?: boolean | undefined } }
+            input: { json: { home_url?: string; is_secondary?: boolean } }
             output: {}
             outputFormat: string
             status: 202
           }
         | {
-            input: { json: { home_url?: string | undefined; is_secondary?: boolean | undefined } }
+            input: { json: { home_url?: string; is_secondary?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { home_url?: string | undefined; is_secondary?: boolean | undefined } }
+            input: { json: { home_url?: string; is_secondary?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: { home_url?: string | undefined; is_secondary?: boolean | undefined } }
+            input: { json: { home_url?: string; is_secondary?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -5834,9 +5424,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                actor: { sub: string; type?: string | undefined }
-                expires_in_seconds?: number | undefined
-                session_max_duration_in_seconds?: number | undefined
+                actor: { sub: string; type?: string }
+                expires_in_seconds?: number
+                session_max_duration_in_seconds?: number
               }
             }
             output: ActorToken
@@ -5847,9 +5437,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                actor: { sub: string; type?: string | undefined }
-                expires_in_seconds?: number | undefined
-                session_max_duration_in_seconds?: number | undefined
+                actor: { sub: string; type?: string }
+                expires_in_seconds?: number
+                session_max_duration_in_seconds?: number
               }
             }
             output: ClerkErrors
@@ -5860,9 +5450,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                actor: { sub: string; type?: string | undefined }
-                expires_in_seconds?: number | undefined
-                session_max_duration_in_seconds?: number | undefined
+                actor: { sub: string; type?: string }
+                expires_in_seconds?: number
+                session_max_duration_in_seconds?: number
               }
             }
             output: ClerkErrors
@@ -5873,9 +5463,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                actor: { sub: string; type?: string | undefined }
-                expires_in_seconds?: number | undefined
-                session_max_duration_in_seconds?: number | undefined
+                actor: { sub: string; type?: string }
+                expires_in_seconds?: number
+                session_max_duration_in_seconds?: number
               }
             }
             output: ClerkErrors
@@ -5886,9 +5476,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                actor: { sub: string; type?: string | undefined }
-                expires_in_seconds?: number | undefined
-                session_max_duration_in_seconds?: number | undefined
+                actor: { sub: string; type?: string }
+                expires_in_seconds?: number
+                session_max_duration_in_seconds?: number
               }
             }
             output: ClerkErrors
@@ -5923,41 +5513,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get: { input: {}; output: Domains; outputFormat: 'json'; status: 200 }
       $post:
         | {
-            input: {
-              json: { name: string; is_satellite: boolean; proxy_url?: (string | null) | undefined }
-            }
+            input: { json: { name: string; is_satellite: boolean; proxy_url?: string | null } }
             output: Domain
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              json: { name: string; is_satellite: boolean; proxy_url?: (string | null) | undefined }
-            }
+            input: { json: { name: string; is_satellite: boolean; proxy_url?: string | null } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              json: { name: string; is_satellite: boolean; proxy_url?: (string | null) | undefined }
-            }
+            input: { json: { name: string; is_satellite: boolean; proxy_url?: string | null } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: {
-              json: { name: string; is_satellite: boolean; proxy_url?: (string | null) | undefined }
-            }
+            input: { json: { name: string; is_satellite: boolean; proxy_url?: string | null } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              json: { name: string; is_satellite: boolean; proxy_url?: (string | null) | undefined }
-            }
+            input: { json: { name: string; is_satellite: boolean; proxy_url?: string | null } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -5988,9 +5568,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { domain_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                proxy_url?: (string | null) | undefined
-                is_secondary?: (boolean | null) | undefined
+                name?: string | null
+                proxy_url?: string | null
+                is_secondary?: boolean | null
               }
             }
             output: Domain
@@ -6000,9 +5580,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { domain_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                proxy_url?: (string | null) | undefined
-                is_secondary?: (boolean | null) | undefined
+                name?: string | null
+                proxy_url?: string | null
+                is_secondary?: boolean | null
               }
             }
             output: ClerkErrors
@@ -6012,9 +5592,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { domain_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                proxy_url?: (string | null) | undefined
-                is_secondary?: (boolean | null) | undefined
+                name?: string | null
+                proxy_url?: string | null
+                is_secondary?: boolean | null
               }
             }
             output: ClerkErrors
@@ -6024,9 +5604,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { domain_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                proxy_url?: (string | null) | undefined
-                is_secondary?: (boolean | null) | undefined
+                name?: string | null
+                proxy_url?: string | null
+                is_secondary?: boolean | null
               }
             }
             output: ClerkErrors
@@ -6036,9 +5616,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { domain_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                proxy_url?: (string | null) | undefined
-                is_secondary?: (boolean | null) | undefined
+                name?: string | null
+                proxy_url?: string | null
+                is_secondary?: boolean | null
               }
             }
             output: ClerkErrors
@@ -6053,21 +5633,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                test_mode?: (boolean | null) | undefined
-                hibp?: (boolean | null) | undefined
-                support_email?: (string | null) | undefined
-                clerk_js_version?: (string | null) | undefined
-                development_origin?: (string | null) | undefined
-                allowed_origins?: (string[] | null) | undefined
-                allowed_subdomains?: (string[] | null) | undefined
-                subdomain_allowlist_enabled?: (boolean | null) | undefined
-                cookieless_dev?: (boolean | null) | undefined
-                url_based_session_syncing?: (boolean | null) | undefined
-                preferred_sign_in_strategy_when_password_required?:
-                  | 'password'
-                  | 'otp'
-                  | ''
-                  | undefined
+                test_mode?: boolean | null
+                hibp?: boolean | null
+                support_email?: string | null
+                clerk_js_version?: string | null
+                development_origin?: string | null
+                allowed_origins?: string[] | null
+                allowed_subdomains?: string[] | null
+                subdomain_allowlist_enabled?: boolean | null
+                cookieless_dev?: boolean | null
+                url_based_session_syncing?: boolean | null
+                preferred_sign_in_strategy_when_password_required?: 'password' | 'otp' | '' | null
               }
             }
             output: {}
@@ -6077,21 +5653,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                test_mode?: (boolean | null) | undefined
-                hibp?: (boolean | null) | undefined
-                support_email?: (string | null) | undefined
-                clerk_js_version?: (string | null) | undefined
-                development_origin?: (string | null) | undefined
-                allowed_origins?: (string[] | null) | undefined
-                allowed_subdomains?: (string[] | null) | undefined
-                subdomain_allowlist_enabled?: (boolean | null) | undefined
-                cookieless_dev?: (boolean | null) | undefined
-                url_based_session_syncing?: (boolean | null) | undefined
-                preferred_sign_in_strategy_when_password_required?:
-                  | 'password'
-                  | 'otp'
-                  | ''
-                  | undefined
+                test_mode?: boolean | null
+                hibp?: boolean | null
+                support_email?: string | null
+                clerk_js_version?: string | null
+                development_origin?: string | null
+                allowed_origins?: string[] | null
+                allowed_subdomains?: string[] | null
+                subdomain_allowlist_enabled?: boolean | null
+                cookieless_dev?: boolean | null
+                url_based_session_syncing?: boolean | null
+                preferred_sign_in_strategy_when_password_required?: 'password' | 'otp' | '' | null
               }
             }
             output: ClerkErrors
@@ -6105,11 +5677,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                allowlist?: (boolean | null) | undefined
-                blocklist?: (boolean | null) | undefined
-                allowlist_blocklist_disabled_on_sign_in?: (boolean | null) | undefined
-                block_email_subaddresses?: (boolean | null) | undefined
-                block_disposable_email_domains?: (boolean | null) | undefined
+                allowlist?: boolean | null
+                blocklist?: boolean | null
+                allowlist_blocklist_disabled_on_sign_in?: boolean | null
+                block_email_subaddresses?: boolean | null
+                block_disposable_email_domains?: boolean | null
               }
             }
             output: InstanceRestrictions
@@ -6119,11 +5691,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                allowlist?: (boolean | null) | undefined
-                blocklist?: (boolean | null) | undefined
-                allowlist_blocklist_disabled_on_sign_in?: (boolean | null) | undefined
-                block_email_subaddresses?: (boolean | null) | undefined
-                block_disposable_email_domains?: (boolean | null) | undefined
+                allowlist?: boolean | null
+                blocklist?: boolean | null
+                allowlist_blocklist_disabled_on_sign_in?: boolean | null
+                block_email_subaddresses?: boolean | null
+                block_disposable_email_domains?: boolean | null
               }
             }
             output: ClerkErrors
@@ -6133,11 +5705,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                allowlist?: (boolean | null) | undefined
-                blocklist?: (boolean | null) | undefined
-                allowlist_blocklist_disabled_on_sign_in?: (boolean | null) | undefined
-                block_email_subaddresses?: (boolean | null) | undefined
-                block_disposable_email_domains?: (boolean | null) | undefined
+                allowlist?: boolean | null
+                blocklist?: boolean | null
+                allowlist_blocklist_disabled_on_sign_in?: boolean | null
+                block_email_subaddresses?: boolean | null
+                block_disposable_email_domains?: boolean | null
               }
             }
             output: ClerkErrors
@@ -6150,13 +5722,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get: { input: {}; output: InstanceProtect; outputFormat: 'json'; status: 200 }
       $patch:
         | {
-            input: { json: { rules_enabled?: (boolean | null) | undefined } }
+            input: { json: { rules_enabled?: boolean | null } }
             output: InstanceProtect
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { rules_enabled?: (boolean | null) | undefined } }
+            input: { json: { rules_enabled?: boolean | null } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -6167,13 +5739,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get: { input: {}; output: InstanceCommunication; outputFormat: 'json'; status: 200 }
       $patch:
         | {
-            input: { json: { blocked_country_codes?: (string[] | null) | undefined } }
+            input: { json: { blocked_country_codes?: string[] | null } }
             output: InstanceCommunication
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { blocked_country_codes?: (string[] | null) | undefined } }
+            input: { json: { blocked_country_codes?: string[] | null } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -6186,20 +5758,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                dynamic_oauth_client_registration?: (boolean | null) | undefined
-                dynamic_client_allowed_scopes?: (string[] | null) | undefined
-                default_scopes?: (string[] | null) | undefined
-                oauth_jwt_access_tokens?: (boolean | null) | undefined
-                aud_claim_enabled?: (boolean | null) | undefined
-                aud_claim_refresh_backfill_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                client_id_metadata_documents_advertised?: (boolean | null) | undefined
-                client_id_metadata_documents_only_allow_pre_registered_clients?:
-                  | (boolean | null)
-                  | undefined
-                client_id_metadata_documents_block_implicitly_allowed_clients?:
-                  | (boolean | null)
-                  | undefined
+                dynamic_oauth_client_registration?: boolean | null
+                dynamic_client_allowed_scopes?: string[] | null
+                default_scopes?: string[] | null
+                oauth_jwt_access_tokens?: boolean | null
+                aud_claim_enabled?: boolean | null
+                aud_claim_refresh_backfill_enabled?: boolean | null
+                pkce_required?: boolean | null
+                client_id_metadata_documents_advertised?: boolean | null
+                client_id_metadata_documents_only_allow_pre_registered_clients?: boolean | null
+                client_id_metadata_documents_block_implicitly_allowed_clients?: boolean | null
               }
             }
             output: OAuthApplicationSettings
@@ -6209,20 +5777,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                dynamic_oauth_client_registration?: (boolean | null) | undefined
-                dynamic_client_allowed_scopes?: (string[] | null) | undefined
-                default_scopes?: (string[] | null) | undefined
-                oauth_jwt_access_tokens?: (boolean | null) | undefined
-                aud_claim_enabled?: (boolean | null) | undefined
-                aud_claim_refresh_backfill_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                client_id_metadata_documents_advertised?: (boolean | null) | undefined
-                client_id_metadata_documents_only_allow_pre_registered_clients?:
-                  | (boolean | null)
-                  | undefined
-                client_id_metadata_documents_block_implicitly_allowed_clients?:
-                  | (boolean | null)
-                  | undefined
+                dynamic_oauth_client_registration?: boolean | null
+                dynamic_client_allowed_scopes?: string[] | null
+                default_scopes?: string[] | null
+                oauth_jwt_access_tokens?: boolean | null
+                aud_claim_enabled?: boolean | null
+                aud_claim_refresh_backfill_enabled?: boolean | null
+                pkce_required?: boolean | null
+                client_id_metadata_documents_advertised?: boolean | null
+                client_id_metadata_documents_only_allow_pre_registered_clients?: boolean | null
+                client_id_metadata_documents_block_implicitly_allowed_clients?: boolean | null
               }
             }
             output: ClerkErrors
@@ -6234,25 +5798,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/instance/change_domain': {
       $post:
         | {
-            input: { json: { home_url?: string | undefined; is_secondary?: boolean | undefined } }
+            input: { json: { home_url?: string; is_secondary?: boolean } }
             output: {}
             outputFormat: string
             status: 202
           }
         | {
-            input: { json: { home_url?: string | undefined; is_secondary?: boolean | undefined } }
+            input: { json: { home_url?: string; is_secondary?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { home_url?: string | undefined; is_secondary?: boolean | undefined } }
+            input: { json: { home_url?: string; is_secondary?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: { home_url?: string | undefined; is_secondary?: boolean | undefined } }
+            input: { json: { home_url?: string; is_secondary?: boolean } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -6269,14 +5833,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                enabled?: (boolean | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                domains_enabled?: (boolean | null) | undefined
-                slug_disabled?: (boolean | null) | undefined
-                domains_enrollment_modes?: string[] | undefined
-                creator_role_id?: (string | null) | undefined
-                domains_default_role_id?: (string | null) | undefined
+                enabled?: boolean | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                domains_enabled?: boolean | null
+                slug_disabled?: boolean | null
+                domains_enrollment_modes?: string[]
+                creator_role_id?: string | null
+                domains_default_role_id?: string | null
               }
             }
             output: OrganizationSettings
@@ -6286,14 +5850,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                enabled?: (boolean | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                domains_enabled?: (boolean | null) | undefined
-                slug_disabled?: (boolean | null) | undefined
-                domains_enrollment_modes?: string[] | undefined
-                creator_role_id?: (string | null) | undefined
-                domains_default_role_id?: (string | null) | undefined
+                enabled?: boolean | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                domains_enabled?: boolean | null
+                slug_disabled?: boolean | null
+                domains_enrollment_modes?: string[]
+                creator_role_id?: string | null
+                domains_default_role_id?: string | null
               }
             }
             output: ClerkErrors
@@ -6303,14 +5867,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                enabled?: (boolean | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                domains_enabled?: (boolean | null) | undefined
-                slug_disabled?: (boolean | null) | undefined
-                domains_enrollment_modes?: string[] | undefined
-                creator_role_id?: (string | null) | undefined
-                domains_default_role_id?: (string | null) | undefined
+                enabled?: boolean | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                domains_enabled?: boolean | null
+                slug_disabled?: boolean | null
+                domains_enrollment_modes?: string[]
+                creator_role_id?: string | null
+                domains_default_role_id?: string | null
               }
             }
             output: ClerkErrors
@@ -6320,14 +5884,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                enabled?: (boolean | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                domains_enabled?: (boolean | null) | undefined
-                slug_disabled?: (boolean | null) | undefined
-                domains_enrollment_modes?: string[] | undefined
-                creator_role_id?: (string | null) | undefined
-                domains_default_role_id?: (string | null) | undefined
+                enabled?: boolean | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                domains_enabled?: boolean | null
+                slug_disabled?: boolean | null
+                domains_enrollment_modes?: string[]
+                creator_role_id?: string | null
+                domains_default_role_id?: string | null
               }
             }
             output: ClerkErrors
@@ -6337,14 +5901,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                enabled?: (boolean | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                domains_enabled?: (boolean | null) | undefined
-                slug_disabled?: (boolean | null) | undefined
-                domains_enrollment_modes?: string[] | undefined
-                creator_role_id?: (string | null) | undefined
-                domains_default_role_id?: (string | null) | undefined
+                enabled?: boolean | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                domains_enabled?: boolean | null
+                slug_disabled?: boolean | null
+                domains_enrollment_modes?: string[]
+                creator_role_id?: string | null
+                domains_default_role_id?: string | null
               }
             }
             output: ClerkErrors
@@ -6354,14 +5918,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                enabled?: (boolean | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                domains_enabled?: (boolean | null) | undefined
-                slug_disabled?: (boolean | null) | undefined
-                domains_enrollment_modes?: string[] | undefined
-                creator_role_id?: (string | null) | undefined
-                domains_default_role_id?: (string | null) | undefined
+                enabled?: boolean | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                domains_enabled?: boolean | null
+                slug_disabled?: boolean | null
+                domains_enrollment_modes?: string[]
+                creator_role_id?: string | null
+                domains_default_role_id?: string | null
               }
             }
             output: ClerkErrors
@@ -6387,13 +5951,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/jwt_templates': {
       $get: {
-        input: {
-          query: {
-            paginated?: boolean | undefined
-            limit?: number | undefined
-            offset?: number | undefined
-          }
-        }
+        input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
         output: JWTTemplate[]
         outputFormat: 'json'
         status: 200
@@ -6403,12 +5961,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                claims: { [x: string]: unknown }
-                lifetime?: (number | null) | undefined
-                allowed_clock_skew?: (number | null) | undefined
-                custom_signing_key?: boolean | undefined
-                signing_algorithm?: (string | null) | undefined
-                signing_key?: (string | null) | undefined
+                claims: { [key: string]: unknown }
+                lifetime?: number | null
+                allowed_clock_skew?: number | null
+                custom_signing_key?: boolean
+                signing_algorithm?: string | null
+                signing_key?: string | null
               }
             }
             output: JWTTemplate
@@ -6419,12 +5977,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                claims: { [x: string]: unknown }
-                lifetime?: (number | null) | undefined
-                allowed_clock_skew?: (number | null) | undefined
-                custom_signing_key?: boolean | undefined
-                signing_algorithm?: (string | null) | undefined
-                signing_key?: (string | null) | undefined
+                claims: { [key: string]: unknown }
+                lifetime?: number | null
+                allowed_clock_skew?: number | null
+                custom_signing_key?: boolean
+                signing_algorithm?: string | null
+                signing_key?: string | null
               }
             }
             output: ClerkErrors
@@ -6435,12 +5993,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                claims: { [x: string]: unknown }
-                lifetime?: (number | null) | undefined
-                allowed_clock_skew?: (number | null) | undefined
-                custom_signing_key?: boolean | undefined
-                signing_algorithm?: (string | null) | undefined
-                signing_key?: (string | null) | undefined
+                claims: { [key: string]: unknown }
+                lifetime?: number | null
+                allowed_clock_skew?: number | null
+                custom_signing_key?: boolean
+                signing_algorithm?: string | null
+                signing_key?: string | null
               }
             }
             output: ClerkErrors
@@ -6451,12 +6009,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                claims: { [x: string]: unknown }
-                lifetime?: (number | null) | undefined
-                allowed_clock_skew?: (number | null) | undefined
-                custom_signing_key?: boolean | undefined
-                signing_algorithm?: (string | null) | undefined
-                signing_key?: (string | null) | undefined
+                claims: { [key: string]: unknown }
+                lifetime?: number | null
+                allowed_clock_skew?: number | null
+                custom_signing_key?: boolean
+                signing_algorithm?: string | null
+                signing_key?: string | null
               }
             }
             output: ClerkErrors
@@ -6484,12 +6042,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { template_id: string } } & {
               json: {
                 name: string
-                claims: { [x: string]: unknown }
-                lifetime?: (number | null) | undefined
-                allowed_clock_skew?: (number | null) | undefined
-                custom_signing_key?: boolean | undefined
-                signing_algorithm?: (string | null) | undefined
-                signing_key?: (string | null) | undefined
+                claims: { [key: string]: unknown }
+                lifetime?: number | null
+                allowed_clock_skew?: number | null
+                custom_signing_key?: boolean
+                signing_algorithm?: string | null
+                signing_key?: string | null
               }
             }
             output: JWTTemplate
@@ -6500,12 +6058,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { template_id: string } } & {
               json: {
                 name: string
-                claims: { [x: string]: unknown }
-                lifetime?: (number | null) | undefined
-                allowed_clock_skew?: (number | null) | undefined
-                custom_signing_key?: boolean | undefined
-                signing_algorithm?: (string | null) | undefined
-                signing_key?: (string | null) | undefined
+                claims: { [key: string]: unknown }
+                lifetime?: number | null
+                allowed_clock_skew?: number | null
+                custom_signing_key?: boolean
+                signing_algorithm?: string | null
+                signing_key?: string | null
               }
             }
             output: ClerkErrors
@@ -6516,12 +6074,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { template_id: string } } & {
               json: {
                 name: string
-                claims: { [x: string]: unknown }
-                lifetime?: (number | null) | undefined
-                allowed_clock_skew?: (number | null) | undefined
-                custom_signing_key?: boolean | undefined
-                signing_algorithm?: (string | null) | undefined
-                signing_key?: (string | null) | undefined
+                claims: { [key: string]: unknown }
+                lifetime?: number | null
+                allowed_clock_skew?: number | null
+                custom_signing_key?: boolean
+                signing_algorithm?: string | null
+                signing_key?: string | null
               }
             }
             output: ClerkErrors
@@ -6532,12 +6090,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { template_id: string } } & {
               json: {
                 name: string
-                claims: { [x: string]: unknown }
-                lifetime?: (number | null) | undefined
-                allowed_clock_skew?: (number | null) | undefined
-                custom_signing_key?: boolean | undefined
-                signing_algorithm?: (string | null) | undefined
-                signing_key?: (string | null) | undefined
+                claims: { [key: string]: unknown }
+                lifetime?: number | null
+                allowed_clock_skew?: number | null
+                custom_signing_key?: boolean
+                signing_algorithm?: string | null
+                signing_key?: string | null
               }
             }
             output: ClerkErrors
@@ -6569,12 +6127,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; query?: string; order_by?: string }
             }
             output: { data: Machine[]; total_count: number }
             outputFormat: 'json'
@@ -6582,12 +6135,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; query?: string; order_by?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6595,12 +6143,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; query?: string; order_by?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6608,12 +6151,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; query?: string; order_by?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6621,12 +6159,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; query?: string; order_by?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6635,33 +6168,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: {
-              json: {
-                name: string
-                scoped_machines?: string[] | undefined
-                default_token_ttl?: number | undefined
-              }
+              json: { name: string; scoped_machines?: string[]; default_token_ttl?: number }
             }
-            output: {
-              object: 'machine'
-              id: string
-              name: string
-              instance_id: string
-              created_at: bigint
-              updated_at: bigint
-              default_token_ttl?: number | undefined
-              scoped_machines: MachineWithoutScopedMachines[]
-              secret_key: string
-            }
+            output: Machine & { secret_key: string }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
-              json: {
-                name: string
-                scoped_machines?: string[] | undefined
-                default_token_ttl?: number | undefined
-              }
+              json: { name: string; scoped_machines?: string[]; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6669,11 +6184,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              json: {
-                name: string
-                scoped_machines?: string[] | undefined
-                default_token_ttl?: number | undefined
-              }
+              json: { name: string; scoped_machines?: string[]; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6681,11 +6192,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              json: {
-                name: string
-                scoped_machines?: string[] | undefined
-                default_token_ttl?: number | undefined
-              }
+              json: { name: string; scoped_machines?: string[]; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6693,11 +6200,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              json: {
-                name: string
-                scoped_machines?: string[] | undefined
-                default_token_ttl?: number | undefined
-              }
+              json: { name: string; scoped_machines?: string[]; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6746,7 +6249,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { machine_id: string } } & {
-              json: { name?: string | undefined; default_token_ttl?: number | undefined }
+              json: { name?: string; default_token_ttl?: number }
             }
             output: Machine
             outputFormat: 'json'
@@ -6754,7 +6257,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { machine_id: string } } & {
-              json: { name?: string | undefined; default_token_ttl?: number | undefined }
+              json: { name?: string; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6762,7 +6265,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { machine_id: string } } & {
-              json: { name?: string | undefined; default_token_ttl?: number | undefined }
+              json: { name?: string; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6770,7 +6273,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { machine_id: string } } & {
-              json: { name?: string | undefined; default_token_ttl?: number | undefined }
+              json: { name?: string; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6778,7 +6281,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { machine_id: string } } & {
-              json: { name?: string | undefined; default_token_ttl?: number | undefined }
+              json: { name?: string; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -6786,7 +6289,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { machine_id: string } } & {
-              json: { name?: string | undefined; default_token_ttl?: number | undefined }
+              json: { name?: string; default_token_ttl?: number }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -7001,14 +6504,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                include_members_count?: boolean | undefined
-                include_missing_member_with_elevated_permissions?: boolean | undefined
-                query?: string | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                include_members_count?: string
+                include_missing_member_with_elevated_permissions?: string
+                query?: string
+                user_id?: unknown
+                organization_id?: unknown
+                order_by?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: Organizations
@@ -7018,14 +6521,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                include_members_count?: boolean | undefined
-                include_missing_member_with_elevated_permissions?: boolean | undefined
-                query?: string | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                include_members_count?: string
+                include_missing_member_with_elevated_permissions?: string
+                query?: string
+                user_id?: unknown
+                organization_id?: unknown
+                order_by?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -7035,14 +6538,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                include_members_count?: boolean | undefined
-                include_missing_member_with_elevated_permissions?: boolean | undefined
-                query?: string | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                include_members_count?: string
+                include_missing_member_with_elevated_permissions?: string
+                query?: string
+                user_id?: unknown
+                organization_id?: unknown
+                order_by?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -7052,14 +6555,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                include_members_count?: boolean | undefined
-                include_missing_member_with_elevated_permissions?: boolean | undefined
-                query?: string | undefined
-                user_id?: string[] | undefined
-                organization_id?: string[] | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                include_members_count?: string
+                include_missing_member_with_elevated_permissions?: string
+                query?: string
+                user_id?: unknown
+                organization_id?: unknown
+                order_by?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -7071,13 +6574,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                created_by?: (string | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
+                created_by?: string | null
+                private_metadata?: { [key: string]: unknown } | null
+                public_metadata?: { [key: string]: unknown } | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                created_at?: string | null
+                role_set_key?: string | null
               }
             }
             output: Organization
@@ -7088,13 +6591,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                created_by?: (string | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
+                created_by?: string | null
+                private_metadata?: { [key: string]: unknown } | null
+                public_metadata?: { [key: string]: unknown } | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                created_at?: string | null
+                role_set_key?: string | null
               }
             }
             output: ClerkErrors
@@ -7105,13 +6608,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                created_by?: (string | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
+                created_by?: string | null
+                private_metadata?: { [key: string]: unknown } | null
+                public_metadata?: { [key: string]: unknown } | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                created_at?: string | null
+                role_set_key?: string | null
               }
             }
             output: ClerkErrors
@@ -7122,13 +6625,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                created_by?: (string | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
+                created_by?: string | null
+                private_metadata?: { [key: string]: unknown } | null
+                public_metadata?: { [key: string]: unknown } | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                created_at?: string | null
+                role_set_key?: string | null
               }
             }
             output: ClerkErrors
@@ -7139,13 +6642,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                created_by?: (string | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
+                created_by?: string | null
+                private_metadata?: { [key: string]: unknown } | null
+                public_metadata?: { [key: string]: unknown } | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                created_at?: string | null
+                role_set_key?: string | null
               }
             }
             output: ClerkErrors
@@ -7159,8 +6662,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                include_members_count?: boolean | undefined
-                include_missing_member_with_elevated_permissions?: boolean | undefined
+                include_members_count?: string
+                include_missing_member_with_elevated_permissions?: string
               }
             }
             output: Organization
@@ -7170,8 +6673,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                include_members_count?: boolean | undefined
-                include_missing_member_with_elevated_permissions?: boolean | undefined
+                include_members_count?: string
+                include_missing_member_with_elevated_permissions?: string
               }
             }
             output: ClerkErrors
@@ -7181,8 +6684,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                include_members_count?: boolean | undefined
-                include_missing_member_with_elevated_permissions?: boolean | undefined
+                include_members_count?: string
+                include_missing_member_with_elevated_permissions?: string
               }
             }
             output: ClerkErrors
@@ -7193,17 +6696,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                name?: (string | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                self_serve_sso_enabled?: (boolean | null) | undefined
-                self_serve_directory_sync_enabled?: (boolean | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
-                reassignment_mappings?: {} | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                name?: string | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                self_serve_sso_enabled?: boolean | null
+                self_serve_directory_sync_enabled?: boolean | null
+                created_at?: string | null
+                role_set_key?: string | null
+                reassignment_mappings?: ReassignmentMappingsInput | null
               }
             }
             output: Organization
@@ -7213,17 +6716,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                name?: (string | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                self_serve_sso_enabled?: (boolean | null) | undefined
-                self_serve_directory_sync_enabled?: (boolean | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
-                reassignment_mappings?: {} | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                name?: string | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                self_serve_sso_enabled?: boolean | null
+                self_serve_directory_sync_enabled?: boolean | null
+                created_at?: string | null
+                role_set_key?: string | null
+                reassignment_mappings?: ReassignmentMappingsInput | null
               }
             }
             output: ClerkErrors
@@ -7233,17 +6736,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                name?: (string | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                self_serve_sso_enabled?: (boolean | null) | undefined
-                self_serve_directory_sync_enabled?: (boolean | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
-                reassignment_mappings?: {} | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                name?: string | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                self_serve_sso_enabled?: boolean | null
+                self_serve_directory_sync_enabled?: boolean | null
+                created_at?: string | null
+                role_set_key?: string | null
+                reassignment_mappings?: ReassignmentMappingsInput | null
               }
             }
             output: ClerkErrors
@@ -7253,17 +6756,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                name?: (string | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                self_serve_sso_enabled?: (boolean | null) | undefined
-                self_serve_directory_sync_enabled?: (boolean | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
-                reassignment_mappings?: {} | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                name?: string | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                self_serve_sso_enabled?: boolean | null
+                self_serve_directory_sync_enabled?: boolean | null
+                created_at?: string | null
+                role_set_key?: string | null
+                reassignment_mappings?: ReassignmentMappingsInput | null
               }
             }
             output: ClerkErrors
@@ -7273,17 +6776,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                name?: (string | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                self_serve_sso_enabled?: (boolean | null) | undefined
-                self_serve_directory_sync_enabled?: (boolean | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
-                reassignment_mappings?: {} | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                name?: string | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                self_serve_sso_enabled?: boolean | null
+                self_serve_directory_sync_enabled?: boolean | null
+                created_at?: string | null
+                role_set_key?: string | null
+                reassignment_mappings?: ReassignmentMappingsInput | null
               }
             }
             output: ClerkErrors
@@ -7293,17 +6796,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                name?: (string | null) | undefined
-                slug?: (string | null) | undefined
-                max_allowed_memberships?: (number | null) | undefined
-                admin_delete_enabled?: (boolean | null) | undefined
-                self_serve_sso_enabled?: (boolean | null) | undefined
-                self_serve_directory_sync_enabled?: (boolean | null) | undefined
-                created_at?: (string | null) | undefined
-                role_set_key?: (string | null) | undefined
-                reassignment_mappings?: {} | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                name?: string | null
+                slug?: string | null
+                max_allowed_memberships?: number | null
+                admin_delete_enabled?: boolean | null
+                self_serve_sso_enabled?: boolean | null
+                self_serve_directory_sync_enabled?: boolean | null
+                created_at?: string | null
+                role_set_key?: string | null
+                reassignment_mappings?: ReassignmentMappingsInput | null
               }
             }
             output: ClerkErrors
@@ -7330,8 +6833,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: Organization
@@ -7341,8 +6844,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -7352,8 +6855,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -7363,8 +6866,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -7374,8 +6877,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -7386,8 +6889,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: Organization
@@ -7397,8 +6900,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -7408,8 +6911,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -7419,8 +6922,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -7430,8 +6933,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -7444,7 +6947,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { organization_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: OrganizationWithLogo
             outputFormat: 'json'
@@ -7452,7 +6955,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -7460,7 +6963,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -7468,7 +6971,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -7476,7 +6979,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -7589,49 +7092,65 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { organization_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { organization_id: string } } & {
+              json: AdjustCreditBalanceRequestInput
+            }
             output: CommerceCreditLedgerResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { organization_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { organization_id: string } } & {
+              json: AdjustCreditBalanceRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { organization_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { organization_id: string } } & {
+              json: AdjustCreditBalanceRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { organization_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { organization_id: string } } & {
+              json: AdjustCreditBalanceRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { organization_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { organization_id: string } } & {
+              json: AdjustCreditBalanceRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { organization_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { organization_id: string } } & {
+              json: AdjustCreditBalanceRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { organization_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { organization_id: string } } & {
+              json: AdjustCreditBalanceRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { organization_id: string } } & { json: AdjustCreditBalanceRequest }
+            input: { param: { organization_id: string } } & {
+              json: AdjustCreditBalanceRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 500
@@ -7644,13 +7163,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }
             }
             output: OrganizationInvitation
@@ -7661,13 +7180,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }
             }
             output: ClerkErrors
@@ -7678,13 +7197,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }
             }
             output: ClerkErrors
@@ -7695,13 +7214,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }
             }
             output: ClerkErrors
@@ -7712,13 +7231,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }
             }
             output: ClerkErrors
@@ -7729,13 +7248,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }
             }
             output: ClerkErrors
@@ -7746,13 +7265,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }
             }
             output: ClerkErrors
@@ -7763,11 +7282,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                email_address?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                email_address?: string
+                order_by?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: OrganizationInvitations
@@ -7777,11 +7296,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                email_address?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                email_address?: string
+                order_by?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -7791,11 +7310,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                email_address?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                email_address?: string
+                order_by?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -7805,11 +7324,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                status?: 'pending' | 'accepted' | 'revoked' | 'expired' | undefined
-                email_address?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                status?: 'pending' | 'accepted' | 'revoked' | 'expired'
+                email_address?: string
+                order_by?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -7824,13 +7343,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }[]
             }
             output: OrganizationInvitations
@@ -7841,13 +7360,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }[]
             }
             output: ClerkErrors
@@ -7858,13 +7377,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }[]
             }
             output: ClerkErrors
@@ -7875,13 +7394,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }[]
             }
             output: ClerkErrors
@@ -7892,13 +7411,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }[]
             }
             output: ClerkErrors
@@ -7909,13 +7428,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { organization_id: string } } & {
               json: {
                 email_address: string
-                inviter_user_id?: (string | null) | undefined
+                inviter_user_id?: string | null
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
-                redirect_url?: (string | null) | undefined
-                expires_in_days?: (number | null) | undefined
-                notify?: (boolean | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
+                redirect_url?: string | null
+                expires_in_days?: number | null
+                notify?: boolean | null
               }[]
             }
             output: ClerkErrors
@@ -7928,7 +7447,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { organization_id: string } } & {
-              query: { limit?: number | undefined; offset?: number | undefined }
+              query: { limit?: unknown; offset?: unknown }
             }
             output: OrganizationInvitations
             outputFormat: 'json'
@@ -7936,7 +7455,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              query: { limit?: number | undefined; offset?: number | undefined }
+              query: { limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -7944,7 +7463,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              query: { limit?: number | undefined; offset?: number | undefined }
+              query: { limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -7984,7 +7503,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { organization_id: string; invitation_id: string } } & {
-              json: { requesting_user_id?: (string | null) | undefined }
+              json: { requesting_user_id?: string | null }
             }
             output: OrganizationInvitation
             outputFormat: 'json'
@@ -7992,7 +7511,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; invitation_id: string } } & {
-              json: { requesting_user_id?: (string | null) | undefined }
+              json: { requesting_user_id?: string | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8000,7 +7519,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; invitation_id: string } } & {
-              json: { requesting_user_id?: (string | null) | undefined }
+              json: { requesting_user_id?: string | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8008,7 +7527,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; invitation_id: string } } & {
-              json: { requesting_user_id?: (string | null) | undefined }
+              json: { requesting_user_id?: string | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8020,12 +7539,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: Roles
             outputFormat: 'json'
@@ -8033,12 +7547,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8046,12 +7555,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8059,12 +7563,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8072,12 +7571,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8089,9 +7583,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 name: string
                 key: string
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
-                include_in_initial_role_set?: (boolean | null) | undefined
+                description?: string | null
+                permissions?: string[] | null
+                include_in_initial_role_set?: boolean | null
               }
             }
             output: Role
@@ -8103,9 +7597,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 name: string
                 key: string
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
-                include_in_initial_role_set?: (boolean | null) | undefined
+                description?: string | null
+                permissions?: string[] | null
+                include_in_initial_role_set?: boolean | null
               }
             }
             output: ClerkErrors
@@ -8117,9 +7611,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 name: string
                 key: string
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
-                include_in_initial_role_set?: (boolean | null) | undefined
+                description?: string | null
+                permissions?: string[] | null
+                include_in_initial_role_set?: boolean | null
               }
             }
             output: ClerkErrors
@@ -8131,9 +7625,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 name: string
                 key: string
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
-                include_in_initial_role_set?: (boolean | null) | undefined
+                description?: string | null
+                permissions?: string[] | null
+                include_in_initial_role_set?: boolean | null
               }
             }
             output: ClerkErrors
@@ -8145,9 +7639,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 name: string
                 key: string
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
-                include_in_initial_role_set?: (boolean | null) | undefined
+                description?: string | null
+                permissions?: string[] | null
+                include_in_initial_role_set?: boolean | null
               }
             }
             output: ClerkErrors
@@ -8159,9 +7653,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 name: string
                 key: string
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
-                include_in_initial_role_set?: (boolean | null) | undefined
+                description?: string | null
+                permissions?: string[] | null
+                include_in_initial_role_set?: boolean | null
               }
             }
             output: ClerkErrors
@@ -8173,9 +7667,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 name: string
                 key: string
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
-                include_in_initial_role_set?: (boolean | null) | undefined
+                description?: string | null
+                permissions?: string[] | null
+                include_in_initial_role_set?: boolean | null
               }
             }
             output: ClerkErrors
@@ -8214,10 +7708,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_role_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                permissions?: string[] | null
               }
             }
             output: Role
@@ -8227,10 +7721,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_role_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                permissions?: string[] | null
               }
             }
             output: ClerkErrors
@@ -8240,10 +7734,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_role_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                permissions?: string[] | null
               }
             }
             output: ClerkErrors
@@ -8253,10 +7747,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_role_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                permissions?: string[] | null
               }
             }
             output: ClerkErrors
@@ -8266,10 +7760,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_role_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                permissions?: string[] | null
               }
             }
             output: ClerkErrors
@@ -8279,10 +7773,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_role_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                permissions?: (string[] | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                permissions?: string[] | null
               }
             }
             output: ClerkErrors
@@ -8394,8 +7888,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
               }
             }
             output: OrganizationMembership
@@ -8407,8 +7901,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
               }
             }
             output: ClerkErrors
@@ -8420,8 +7914,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
               }
             }
             output: ClerkErrors
@@ -8433,8 +7927,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
               }
             }
             output: ClerkErrors
@@ -8446,8 +7940,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 user_id: string
                 role: string
-                public_metadata?: ({ [x: string]: unknown } | null) | undefined
-                private_metadata?: ({ [x: string]: unknown } | null) | undefined
+                public_metadata?: { [key: string]: unknown } | null
+                private_metadata?: { [key: string]: unknown } | null
               }
             }
             output: ClerkErrors
@@ -8458,24 +7952,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                order_by?: string | undefined
-                user_id?: string[] | undefined
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                role?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                order_by?: string
+                user_id?: unknown
+                email_address?: unknown
+                phone_number?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                role?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: OrganizationMemberships
@@ -8485,24 +7979,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                order_by?: string | undefined
-                user_id?: string[] | undefined
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                role?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                order_by?: string
+                user_id?: unknown
+                email_address?: unknown
+                phone_number?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                role?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -8512,24 +8006,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                order_by?: string | undefined
-                user_id?: string[] | undefined
-                email_address?: string[] | undefined
-                phone_number?: string[] | undefined
-                username?: string[] | undefined
-                web3_wallet?: string[] | undefined
-                role?: string[] | undefined
-                query?: string | undefined
-                email_address_query?: string | undefined
-                phone_number_query?: string | undefined
-                username_query?: string | undefined
-                name_query?: string | undefined
-                last_active_at_before?: number | undefined
-                last_active_at_after?: number | undefined
-                created_at_before?: number | undefined
-                created_at_after?: number | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                order_by?: string
+                user_id?: unknown
+                email_address?: unknown
+                phone_number?: unknown
+                username?: unknown
+                web3_wallet?: unknown
+                role?: unknown
+                query?: string
+                email_address_query?: string
+                phone_number_query?: string
+                username_query?: string
+                name_query?: string
+                last_active_at_before?: unknown
+                last_active_at_after?: unknown
+                created_at_before?: unknown
+                created_at_after?: unknown
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -8596,8 +8090,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: OrganizationMembership
@@ -8607,8 +8101,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -8618,8 +8112,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -8629,8 +8123,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string; user_id: string } } & {
               json: {
-                public_metadata?: { [x: string]: unknown } | undefined
-                private_metadata?: { [x: string]: unknown } | undefined
+                public_metadata?: { [key: string]: unknown }
+                private_metadata?: { [key: string]: unknown }
               }
             }
             output: ClerkErrors
@@ -8643,11 +8137,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { organization_id: string } } & {
-              json: {
-                name?: string | undefined
-                enrollment_mode?: string | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { name?: string; enrollment_mode?: string; verified?: boolean | null }
             }
             output: OrganizationDomain
             outputFormat: 'json'
@@ -8655,11 +8145,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              json: {
-                name?: string | undefined
-                enrollment_mode?: string | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { name?: string; enrollment_mode?: string; verified?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8667,11 +8153,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              json: {
-                name?: string | undefined
-                enrollment_mode?: string | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { name?: string; enrollment_mode?: string; verified?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8679,11 +8161,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              json: {
-                name?: string | undefined
-                enrollment_mode?: string | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { name?: string; enrollment_mode?: string; verified?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8691,11 +8169,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string } } & {
-              json: {
-                name?: string | undefined
-                enrollment_mode?: string | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { name?: string; enrollment_mode?: string; verified?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8705,10 +8179,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                verified?: string | undefined
-                enrollment_mode?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                verified?: string
+                enrollment_mode?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: OrganizationDomains
@@ -8718,10 +8192,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                verified?: string | undefined
-                enrollment_mode?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                verified?: string
+                enrollment_mode?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -8731,10 +8205,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { organization_id: string } } & {
               query: {
-                verified?: string | undefined
-                enrollment_mode?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                verified?: string
+                enrollment_mode?: string
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ClerkErrors
@@ -8747,10 +8221,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { organization_id: string; domain_id: string } } & {
-              json: {
-                enrollment_mode?: (string | null) | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { enrollment_mode?: string | null; verified?: boolean | null }
             }
             output: OrganizationDomain
             outputFormat: 'json'
@@ -8758,10 +8229,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; domain_id: string } } & {
-              json: {
-                enrollment_mode?: (string | null) | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { enrollment_mode?: string | null; verified?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8769,10 +8237,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; domain_id: string } } & {
-              json: {
-                enrollment_mode?: (string | null) | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { enrollment_mode?: string | null; verified?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8780,10 +8245,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; domain_id: string } } & {
-              json: {
-                enrollment_mode?: (string | null) | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { enrollment_mode?: string | null; verified?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8791,10 +8253,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { organization_id: string; domain_id: string } } & {
-              json: {
-                enrollment_mode?: (string | null) | undefined
-                verified?: (boolean | null) | undefined
-              }
+              json: { enrollment_mode?: string | null; verified?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -8866,25 +8325,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                organization_id?: string | undefined
-                verified?: 'true' | 'false' | undefined
-                enrollment_mode?:
-                  | (
-                      | 'manual_invitation'
-                      | 'automatic_invitation'
-                      | 'automatic_suggestion'
-                      | 'enterprise_sso'
-                      | '-manual_invitation'
-                      | '-automatic_invitation'
-                      | '-automatic_suggestion'
-                      | '-enterprise_sso'
-                    )[]
-                  | undefined
-                query?: string | undefined
-                domains?: string[] | undefined
-                order_by?: string | undefined
-                offset?: number | undefined
-                limit?: number | undefined
+                organization_id?: string
+                verified?: 'true' | 'false'
+                enrollment_mode?: unknown
+                query?: string
+                domains?: unknown
+                order_by?: string
+                offset?: unknown
+                limit?: unknown
               }
             }
             output: OrganizationDomains
@@ -8894,25 +8342,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                organization_id?: string | undefined
-                verified?: 'true' | 'false' | undefined
-                enrollment_mode?:
-                  | (
-                      | 'manual_invitation'
-                      | 'automatic_invitation'
-                      | 'automatic_suggestion'
-                      | 'enterprise_sso'
-                      | '-manual_invitation'
-                      | '-automatic_invitation'
-                      | '-automatic_suggestion'
-                      | '-enterprise_sso'
-                    )[]
-                  | undefined
-                query?: string | undefined
-                domains?: string[] | undefined
-                order_by?: string | undefined
-                offset?: number | undefined
-                limit?: number | undefined
+                organization_id?: string
+                verified?: 'true' | 'false'
+                enrollment_mode?: unknown
+                query?: string
+                domains?: unknown
+                order_by?: string
+                offset?: unknown
+                limit?: unknown
               }
             }
             output: ClerkErrors
@@ -8922,25 +8359,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                organization_id?: string | undefined
-                verified?: 'true' | 'false' | undefined
-                enrollment_mode?:
-                  | (
-                      | 'manual_invitation'
-                      | 'automatic_invitation'
-                      | 'automatic_suggestion'
-                      | 'enterprise_sso'
-                      | '-manual_invitation'
-                      | '-automatic_invitation'
-                      | '-automatic_suggestion'
-                      | '-enterprise_sso'
-                    )[]
-                  | undefined
-                query?: string | undefined
-                domains?: string[] | undefined
-                order_by?: string | undefined
-                offset?: number | undefined
-                limit?: number | undefined
+                organization_id?: string
+                verified?: 'true' | 'false'
+                enrollment_mode?: unknown
+                query?: string
+                domains?: unknown
+                order_by?: string
+                offset?: unknown
+                limit?: unknown
               }
             }
             output: ClerkErrors
@@ -8950,25 +8376,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                organization_id?: string | undefined
-                verified?: 'true' | 'false' | undefined
-                enrollment_mode?:
-                  | (
-                      | 'manual_invitation'
-                      | 'automatic_invitation'
-                      | 'automatic_suggestion'
-                      | 'enterprise_sso'
-                      | '-manual_invitation'
-                      | '-automatic_invitation'
-                      | '-automatic_suggestion'
-                      | '-enterprise_sso'
-                    )[]
-                  | undefined
-                query?: string | undefined
-                domains?: string[] | undefined
-                order_by?: string | undefined
-                offset?: number | undefined
-                limit?: number | undefined
+                organization_id?: string
+                verified?: 'true' | 'false'
+                enrollment_mode?: unknown
+                query?: string
+                domains?: unknown
+                order_by?: string
+                offset?: unknown
+                limit?: unknown
               }
             }
             output: ClerkErrors
@@ -8980,19 +8395,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/proxy_checks': {
       $post:
         | {
-            input: { json: { domain_id?: string | undefined; proxy_url?: string | undefined } }
+            input: { json: { domain_id?: string; proxy_url?: string } }
             output: ProxyCheck
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { domain_id?: string | undefined; proxy_url?: string | undefined } }
+            input: { json: { domain_id?: string; proxy_url?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { domain_id?: string | undefined; proxy_url?: string | undefined } }
+            input: { json: { domain_id?: string; proxy_url?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -9001,13 +8416,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/redirect_urls': {
       $get: {
-        input: {
-          query: {
-            paginated?: boolean | undefined
-            limit?: number | undefined
-            offset?: number | undefined
-          }
-        }
+        input: { query: { paginated?: string; limit?: unknown; offset?: unknown } }
         output: RedirectURL[]
         outputFormat: 'json'
         status: 200
@@ -9068,10 +8477,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                org_id?: (string | null) | undefined
-                expires_in_seconds?: (number | null) | undefined
-                second_factor_verification?: 'fresh' | 'stale' | undefined
-                honor_lockout?: boolean | undefined
+                org_id?: string | null
+                expires_in_seconds?: number | null
+                second_factor_verification?: 'fresh' | 'stale' | null
+                honor_lockout?: boolean
               }
             }
             output: SignInToken
@@ -9082,10 +8491,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                org_id?: (string | null) | undefined
-                expires_in_seconds?: (number | null) | undefined
-                second_factor_verification?: 'fresh' | 'stale' | undefined
-                honor_lockout?: boolean | undefined
+                org_id?: string | null
+                expires_in_seconds?: number | null
+                second_factor_verification?: 'fresh' | 'stale' | null
+                honor_lockout?: boolean
               }
             }
             output: ClerkErrors
@@ -9096,10 +8505,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                org_id?: (string | null) | undefined
-                expires_in_seconds?: (number | null) | undefined
-                second_factor_verification?: 'fresh' | 'stale' | undefined
-                honor_lockout?: boolean | undefined
+                org_id?: string | null
+                expires_in_seconds?: number | null
+                second_factor_verification?: 'fresh' | 'stale' | null
+                honor_lockout?: boolean
               }
             }
             output: ClerkErrors
@@ -9110,10 +8519,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 user_id: string
-                org_id?: (string | null) | undefined
-                expires_in_seconds?: (number | null) | undefined
-                second_factor_verification?: 'fresh' | 'stale' | undefined
-                honor_lockout?: boolean | undefined
+                org_id?: string | null
+                expires_in_seconds?: number | null
+                second_factor_verification?: 'fresh' | 'stale' | null
+                honor_lockout?: boolean
               }
             }
             output: ClerkErrors
@@ -9156,10 +8565,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { id: string } } & {
-              json: {
-                external_id?: (string | null) | undefined
-                custom_action?: (boolean | null) | undefined
-              }
+              json: { external_id?: string | null; custom_action?: boolean | null }
             }
             output: SignUp
             outputFormat: 'json'
@@ -9167,10 +8573,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              json: {
-                external_id?: (string | null) | undefined
-                custom_action?: (boolean | null) | undefined
-              }
+              json: { external_id?: string | null; custom_action?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -9182,12 +8585,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                order_by?: string | undefined
-                name_query?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; order_by?: string; name_query?: string }
             }
             output: OAuthApplications
             outputFormat: 'json'
@@ -9195,12 +8593,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                order_by?: string | undefined
-                name_query?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; order_by?: string; name_query?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -9208,12 +8601,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                order_by?: string | undefined
-                name_query?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; order_by?: string; name_query?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -9221,12 +8609,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                order_by?: string | undefined
-                name_query?: string | undefined
-              }
+              query: { limit?: unknown; offset?: unknown; order_by?: string; name_query?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -9237,16 +8620,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: OAuthApplicationWithSecret
@@ -9257,16 +8640,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9277,16 +8660,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9297,16 +8680,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9339,17 +8722,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { oauth_application_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                name?: string | null
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: OAuthApplication
@@ -9359,17 +8742,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { oauth_application_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                name?: string | null
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9379,17 +8762,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { oauth_application_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                name?: string | null
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9399,17 +8782,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { oauth_application_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                name?: string | null
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9419,17 +8802,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { oauth_application_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                redirect_uris?: (string[] | null) | undefined
-                callback_url?: (string | null) | undefined
-                scopes?: (string | null) | undefined
-                consent_screen_enabled?: (boolean | null) | undefined
-                pkce_required?: (boolean | null) | undefined
-                audience_uri?: (string | null) | undefined
-                token_exchange_enabled?: boolean | undefined
-                adopt_audience_resource?: boolean | undefined
-                device_authorization_grant_enabled?: (boolean | null) | undefined
-                public?: (boolean | null) | undefined
+                name?: string | null
+                redirect_uris?: string[] | null
+                callback_url?: string | null
+                scopes?: string | null
+                consent_screen_enabled?: boolean | null
+                pkce_required?: boolean | null
+                audience_uri?: string | null
+                token_exchange_enabled?: boolean
+                adopt_audience_resource?: boolean
+                device_authorization_grant_enabled?: boolean | null
+                public?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9461,7 +8844,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { oauth_application_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: OAuthApplication
             outputFormat: 'json'
@@ -9469,7 +8852,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { oauth_application_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -9477,7 +8860,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { oauth_application_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -9485,7 +8868,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { oauth_application_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -9493,7 +8876,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { oauth_application_id: string } } & {
-              form: { uploader_user_id?: string | undefined; file: File }
+              form: { uploader_user_id?: string; file: File }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -9562,11 +8945,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-                organization_id?: string[] | undefined
+                limit?: unknown
+                offset?: unknown
+                query?: string
+                order_by?: string
+                organization_id?: unknown
               }
             }
             output: SAMLConnections
@@ -9576,11 +8959,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-                organization_id?: string[] | undefined
+                limit?: unknown
+                offset?: unknown
+                query?: string
+                order_by?: string
+                organization_id?: unknown
               }
             }
             output: ClerkErrors
@@ -9590,11 +8973,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-                organization_id?: string[] | undefined
+                limit?: unknown
+                offset?: unknown
+                query?: string
+                order_by?: string
+                organization_id?: unknown
               }
             }
             output: ClerkErrors
@@ -9604,11 +8987,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                query?: string | undefined
-                order_by?: string | undefined
-                organization_id?: string[] | undefined
+                limit?: unknown
+                offset?: unknown
+                query?: string
+                order_by?: string
+                organization_id?: unknown
               }
             }
             output: ClerkErrors
@@ -9617,37 +9000,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: { [x: string]: unknown } | { [x: string]: unknown } }
+            input: { json: unknown | unknown }
             output: SAMLConnection
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { [x: string]: unknown } | { [x: string]: unknown } }
+            input: { json: unknown | unknown }
             output: ClerkErrors
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { json: { [x: string]: unknown } | { [x: string]: unknown } }
+            input: { json: unknown | unknown }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: { [x: string]: unknown } | { [x: string]: unknown } }
+            input: { json: unknown | unknown }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: { [x: string]: unknown } | { [x: string]: unknown } }
+            input: { json: unknown | unknown }
             output: ClerkErrors
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { json: { [x: string]: unknown } | { [x: string]: unknown } }
+            input: { json: unknown | unknown }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -9684,38 +9067,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { saml_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domain?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                idp_entity_id?: (string | null) | undefined
-                idp_sso_url?: (string | null) | undefined
-                idp_certificate?: (string | null) | undefined
-                idp_certificates?: string[] | undefined
-                idp_metadata_url?: (string | null) | undefined
-                idp_metadata?: (string | null) | undefined
-                organization_id?: (string | null) | undefined
-                attribute_mapping?:
-                  | ({
-                      user_id?: string | undefined
-                      email_address?: string | undefined
-                      first_name?: string | undefined
-                      last_name?: string | undefined
-                    } | null)
-                  | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                allow_subdomains?: (boolean | null) | undefined
-                allow_idp_initiated?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                force_authn?: boolean | undefined
-                login_hint?:
-                  | ({
-                      mode: 'email_address' | 'custom_attribute' | 'off'
-                      source?: string | undefined
-                    } | null)
-                  | undefined
-                consent_verified_domains_deletion?: (boolean | null) | undefined
+                name?: string | null
+                domain?: string | null
+                domains?: string[] | null
+                idp_entity_id?: string | null
+                idp_sso_url?: string | null
+                idp_certificate?: string | null
+                idp_certificates?: string[]
+                idp_metadata_url?: string | null
+                idp_metadata?: string | null
+                organization_id?: string | null
+                attribute_mapping?: {
+                  user_id?: string
+                  email_address?: string
+                  first_name?: string
+                  last_name?: string
+                } | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                allow_subdomains?: boolean | null
+                allow_idp_initiated?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                force_authn?: boolean
+                login_hint?: {
+                  mode: 'email_address' | 'custom_attribute' | 'off'
+                  source?: string
+                } | null
+                consent_verified_domains_deletion?: boolean | null
               }
             }
             output: SAMLConnection
@@ -9725,38 +9104,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { saml_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domain?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                idp_entity_id?: (string | null) | undefined
-                idp_sso_url?: (string | null) | undefined
-                idp_certificate?: (string | null) | undefined
-                idp_certificates?: string[] | undefined
-                idp_metadata_url?: (string | null) | undefined
-                idp_metadata?: (string | null) | undefined
-                organization_id?: (string | null) | undefined
-                attribute_mapping?:
-                  | ({
-                      user_id?: string | undefined
-                      email_address?: string | undefined
-                      first_name?: string | undefined
-                      last_name?: string | undefined
-                    } | null)
-                  | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                allow_subdomains?: (boolean | null) | undefined
-                allow_idp_initiated?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                force_authn?: boolean | undefined
-                login_hint?:
-                  | ({
-                      mode: 'email_address' | 'custom_attribute' | 'off'
-                      source?: string | undefined
-                    } | null)
-                  | undefined
-                consent_verified_domains_deletion?: (boolean | null) | undefined
+                name?: string | null
+                domain?: string | null
+                domains?: string[] | null
+                idp_entity_id?: string | null
+                idp_sso_url?: string | null
+                idp_certificate?: string | null
+                idp_certificates?: string[]
+                idp_metadata_url?: string | null
+                idp_metadata?: string | null
+                organization_id?: string | null
+                attribute_mapping?: {
+                  user_id?: string
+                  email_address?: string
+                  first_name?: string
+                  last_name?: string
+                } | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                allow_subdomains?: boolean | null
+                allow_idp_initiated?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                force_authn?: boolean
+                login_hint?: {
+                  mode: 'email_address' | 'custom_attribute' | 'off'
+                  source?: string
+                } | null
+                consent_verified_domains_deletion?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9766,38 +9141,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { saml_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domain?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                idp_entity_id?: (string | null) | undefined
-                idp_sso_url?: (string | null) | undefined
-                idp_certificate?: (string | null) | undefined
-                idp_certificates?: string[] | undefined
-                idp_metadata_url?: (string | null) | undefined
-                idp_metadata?: (string | null) | undefined
-                organization_id?: (string | null) | undefined
-                attribute_mapping?:
-                  | ({
-                      user_id?: string | undefined
-                      email_address?: string | undefined
-                      first_name?: string | undefined
-                      last_name?: string | undefined
-                    } | null)
-                  | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                allow_subdomains?: (boolean | null) | undefined
-                allow_idp_initiated?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                force_authn?: boolean | undefined
-                login_hint?:
-                  | ({
-                      mode: 'email_address' | 'custom_attribute' | 'off'
-                      source?: string | undefined
-                    } | null)
-                  | undefined
-                consent_verified_domains_deletion?: (boolean | null) | undefined
+                name?: string | null
+                domain?: string | null
+                domains?: string[] | null
+                idp_entity_id?: string | null
+                idp_sso_url?: string | null
+                idp_certificate?: string | null
+                idp_certificates?: string[]
+                idp_metadata_url?: string | null
+                idp_metadata?: string | null
+                organization_id?: string | null
+                attribute_mapping?: {
+                  user_id?: string
+                  email_address?: string
+                  first_name?: string
+                  last_name?: string
+                } | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                allow_subdomains?: boolean | null
+                allow_idp_initiated?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                force_authn?: boolean
+                login_hint?: {
+                  mode: 'email_address' | 'custom_attribute' | 'off'
+                  source?: string
+                } | null
+                consent_verified_domains_deletion?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9807,38 +9178,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { saml_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domain?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                idp_entity_id?: (string | null) | undefined
-                idp_sso_url?: (string | null) | undefined
-                idp_certificate?: (string | null) | undefined
-                idp_certificates?: string[] | undefined
-                idp_metadata_url?: (string | null) | undefined
-                idp_metadata?: (string | null) | undefined
-                organization_id?: (string | null) | undefined
-                attribute_mapping?:
-                  | ({
-                      user_id?: string | undefined
-                      email_address?: string | undefined
-                      first_name?: string | undefined
-                      last_name?: string | undefined
-                    } | null)
-                  | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                allow_subdomains?: (boolean | null) | undefined
-                allow_idp_initiated?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                force_authn?: boolean | undefined
-                login_hint?:
-                  | ({
-                      mode: 'email_address' | 'custom_attribute' | 'off'
-                      source?: string | undefined
-                    } | null)
-                  | undefined
-                consent_verified_domains_deletion?: (boolean | null) | undefined
+                name?: string | null
+                domain?: string | null
+                domains?: string[] | null
+                idp_entity_id?: string | null
+                idp_sso_url?: string | null
+                idp_certificate?: string | null
+                idp_certificates?: string[]
+                idp_metadata_url?: string | null
+                idp_metadata?: string | null
+                organization_id?: string | null
+                attribute_mapping?: {
+                  user_id?: string
+                  email_address?: string
+                  first_name?: string
+                  last_name?: string
+                } | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                allow_subdomains?: boolean | null
+                allow_idp_initiated?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                force_authn?: boolean
+                login_hint?: {
+                  mode: 'email_address' | 'custom_attribute' | 'off'
+                  source?: string
+                } | null
+                consent_verified_domains_deletion?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9848,38 +9215,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { saml_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domain?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                idp_entity_id?: (string | null) | undefined
-                idp_sso_url?: (string | null) | undefined
-                idp_certificate?: (string | null) | undefined
-                idp_certificates?: string[] | undefined
-                idp_metadata_url?: (string | null) | undefined
-                idp_metadata?: (string | null) | undefined
-                organization_id?: (string | null) | undefined
-                attribute_mapping?:
-                  | ({
-                      user_id?: string | undefined
-                      email_address?: string | undefined
-                      first_name?: string | undefined
-                      last_name?: string | undefined
-                    } | null)
-                  | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                allow_subdomains?: (boolean | null) | undefined
-                allow_idp_initiated?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                force_authn?: boolean | undefined
-                login_hint?:
-                  | ({
-                      mode: 'email_address' | 'custom_attribute' | 'off'
-                      source?: string | undefined
-                    } | null)
-                  | undefined
-                consent_verified_domains_deletion?: (boolean | null) | undefined
+                name?: string | null
+                domain?: string | null
+                domains?: string[] | null
+                idp_entity_id?: string | null
+                idp_sso_url?: string | null
+                idp_certificate?: string | null
+                idp_certificates?: string[]
+                idp_metadata_url?: string | null
+                idp_metadata?: string | null
+                organization_id?: string | null
+                attribute_mapping?: {
+                  user_id?: string
+                  email_address?: string
+                  first_name?: string
+                  last_name?: string
+                } | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                allow_subdomains?: boolean | null
+                allow_idp_initiated?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                force_authn?: boolean
+                login_hint?: {
+                  mode: 'email_address' | 'custom_attribute' | 'off'
+                  source?: string
+                } | null
+                consent_verified_domains_deletion?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9889,38 +9252,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { saml_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domain?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                idp_entity_id?: (string | null) | undefined
-                idp_sso_url?: (string | null) | undefined
-                idp_certificate?: (string | null) | undefined
-                idp_certificates?: string[] | undefined
-                idp_metadata_url?: (string | null) | undefined
-                idp_metadata?: (string | null) | undefined
-                organization_id?: (string | null) | undefined
-                attribute_mapping?:
-                  | ({
-                      user_id?: string | undefined
-                      email_address?: string | undefined
-                      first_name?: string | undefined
-                      last_name?: string | undefined
-                    } | null)
-                  | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                allow_subdomains?: (boolean | null) | undefined
-                allow_idp_initiated?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                force_authn?: boolean | undefined
-                login_hint?:
-                  | ({
-                      mode: 'email_address' | 'custom_attribute' | 'off'
-                      source?: string | undefined
-                    } | null)
-                  | undefined
-                consent_verified_domains_deletion?: (boolean | null) | undefined
+                name?: string | null
+                domain?: string | null
+                domains?: string[] | null
+                idp_entity_id?: string | null
+                idp_sso_url?: string | null
+                idp_certificate?: string | null
+                idp_certificates?: string[]
+                idp_metadata_url?: string | null
+                idp_metadata?: string | null
+                organization_id?: string | null
+                attribute_mapping?: {
+                  user_id?: string
+                  email_address?: string
+                  first_name?: string
+                  last_name?: string
+                } | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                allow_subdomains?: boolean | null
+                allow_idp_initiated?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                force_authn?: boolean
+                login_hint?: {
+                  mode: 'email_address' | 'custom_attribute' | 'off'
+                  source?: string
+                } | null
+                consent_verified_domains_deletion?: boolean | null
               }
             }
             output: ClerkErrors
@@ -9959,10 +9318,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                organization_id?: string | undefined
-                active?: boolean | undefined
+                limit?: unknown
+                offset?: unknown
+                organization_id?: string
+                active?: string
               }
             }
             output: EnterpriseConnections
@@ -9972,10 +9331,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                organization_id?: string | undefined
-                active?: boolean | undefined
+                limit?: unknown
+                offset?: unknown
+                organization_id?: string
+                active?: string
               }
             }
             output: ClerkErrors
@@ -9985,10 +9344,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                organization_id?: string | undefined
-                active?: boolean | undefined
+                limit?: unknown
+                offset?: unknown
+                organization_id?: string
+                active?: string
               }
             }
             output: ClerkErrors
@@ -9998,10 +9357,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                offset?: number | undefined
-                organization_id?: string | undefined
-                active?: boolean | undefined
+                limit?: unknown
+                offset?: unknown
+                organization_id?: string
+                active?: string
               }
             }
             output: ClerkErrors
@@ -10022,57 +9381,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'oidc_github_enterprise'
                   | 'oidc_gitlab'
                 domains: string[]
-                organization_id?: (string | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                active?: (boolean | null) | undefined
-                saml?:
-                  | ({
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
-                custom_attributes?:
-                  | {
-                      name: string
-                      key: string
-                      sso_path?: string | undefined
-                      scim_path?: string | undefined
-                      directory_path?: string | undefined
-                      multi_valued?: boolean | undefined
-                    }[]
-                  | undefined
+                organization_id?: string | null
+                allow_organization_account_linking?: boolean | null
+                active?: boolean | null
+                saml?: {
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
+                custom_attributes?: {
+                  name: string
+                  key: string
+                  sso_path?: string
+                  scim_path?: string
+                  directory_path?: string
+                  multi_valued?: boolean
+                }[]
               }
             }
             output: EnterpriseConnection
@@ -10092,57 +9441,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'oidc_github_enterprise'
                   | 'oidc_gitlab'
                 domains: string[]
-                organization_id?: (string | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                active?: (boolean | null) | undefined
-                saml?:
-                  | ({
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
-                custom_attributes?:
-                  | {
-                      name: string
-                      key: string
-                      sso_path?: string | undefined
-                      scim_path?: string | undefined
-                      directory_path?: string | undefined
-                      multi_valued?: boolean | undefined
-                    }[]
-                  | undefined
+                organization_id?: string | null
+                allow_organization_account_linking?: boolean | null
+                active?: boolean | null
+                saml?: {
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
+                custom_attributes?: {
+                  name: string
+                  key: string
+                  sso_path?: string
+                  scim_path?: string
+                  directory_path?: string
+                  multi_valued?: boolean
+                }[]
               }
             }
             output: ClerkErrors
@@ -10162,57 +9501,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'oidc_github_enterprise'
                   | 'oidc_gitlab'
                 domains: string[]
-                organization_id?: (string | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                active?: (boolean | null) | undefined
-                saml?:
-                  | ({
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
-                custom_attributes?:
-                  | {
-                      name: string
-                      key: string
-                      sso_path?: string | undefined
-                      scim_path?: string | undefined
-                      directory_path?: string | undefined
-                      multi_valued?: boolean | undefined
-                    }[]
-                  | undefined
+                organization_id?: string | null
+                allow_organization_account_linking?: boolean | null
+                active?: boolean | null
+                saml?: {
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
+                custom_attributes?: {
+                  name: string
+                  key: string
+                  sso_path?: string
+                  scim_path?: string
+                  directory_path?: string
+                  multi_valued?: boolean
+                }[]
               }
             }
             output: ClerkErrors
@@ -10232,57 +9561,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'oidc_github_enterprise'
                   | 'oidc_gitlab'
                 domains: string[]
-                organization_id?: (string | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                active?: (boolean | null) | undefined
-                saml?:
-                  | ({
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
-                custom_attributes?:
-                  | {
-                      name: string
-                      key: string
-                      sso_path?: string | undefined
-                      scim_path?: string | undefined
-                      directory_path?: string | undefined
-                      multi_valued?: boolean | undefined
-                    }[]
-                  | undefined
+                organization_id?: string | null
+                allow_organization_account_linking?: boolean | null
+                active?: boolean | null
+                saml?: {
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
+                custom_attributes?: {
+                  name: string
+                  key: string
+                  sso_path?: string
+                  scim_path?: string
+                  directory_path?: string
+                  multi_valued?: boolean
+                }[]
               }
             }
             output: ClerkErrors
@@ -10302,57 +9621,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'oidc_github_enterprise'
                   | 'oidc_gitlab'
                 domains: string[]
-                organization_id?: (string | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                active?: (boolean | null) | undefined
-                saml?:
-                  | ({
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
-                custom_attributes?:
-                  | {
-                      name: string
-                      key: string
-                      sso_path?: string | undefined
-                      scim_path?: string | undefined
-                      directory_path?: string | undefined
-                      multi_valued?: boolean | undefined
-                    }[]
-                  | undefined
+                organization_id?: string | null
+                allow_organization_account_linking?: boolean | null
+                active?: boolean | null
+                saml?: {
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
+                custom_attributes?: {
+                  name: string
+                  key: string
+                  sso_path?: string
+                  scim_path?: string
+                  directory_path?: string
+                  multi_valued?: boolean
+                }[]
               }
             }
             output: ClerkErrors
@@ -10372,57 +9681,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'oidc_github_enterprise'
                   | 'oidc_gitlab'
                 domains: string[]
-                organization_id?: (string | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                active?: (boolean | null) | undefined
-                saml?:
-                  | ({
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
-                custom_attributes?:
-                  | {
-                      name: string
-                      key: string
-                      sso_path?: string | undefined
-                      scim_path?: string | undefined
-                      directory_path?: string | undefined
-                      multi_valued?: boolean | undefined
-                    }[]
-                  | undefined
+                organization_id?: string | null
+                allow_organization_account_linking?: boolean | null
+                active?: boolean | null
+                saml?: {
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
+                custom_attributes?: {
+                  name: string
+                  key: string
+                  sso_path?: string
+                  scim_path?: string
+                  directory_path?: string
+                  multi_valued?: boolean
+                }[]
               }
             }
             output: ClerkErrors
@@ -10461,65 +9760,54 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { enterprise_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                organization_id?: (string | null) | undefined
-                saml?:
-                  | ({
-                      name?: (string | null) | undefined
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
+                name?: string | null
+                domains?: string[] | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                organization_id?: string | null
+                saml?: {
+                  name?: string | null
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
                 custom_attributes?:
-                  | (
-                      | {
-                          name: string
-                          key: string
-                          sso_path?: string | undefined
-                          scim_path?: string | undefined
-                          directory_path?: string | undefined
-                          multi_valued?: boolean | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
+                  | {
+                      name: string
+                      key: string
+                      sso_path?: string
+                      scim_path?: string
+                      directory_path?: string
+                      multi_valued?: boolean
+                    }[]
+                  | null
               }
             }
             output: EnterpriseConnection
@@ -10529,65 +9817,54 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { enterprise_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                organization_id?: (string | null) | undefined
-                saml?:
-                  | ({
-                      name?: (string | null) | undefined
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
+                name?: string | null
+                domains?: string[] | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                organization_id?: string | null
+                saml?: {
+                  name?: string | null
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
                 custom_attributes?:
-                  | (
-                      | {
-                          name: string
-                          key: string
-                          sso_path?: string | undefined
-                          scim_path?: string | undefined
-                          directory_path?: string | undefined
-                          multi_valued?: boolean | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
+                  | {
+                      name: string
+                      key: string
+                      sso_path?: string
+                      scim_path?: string
+                      directory_path?: string
+                      multi_valued?: boolean
+                    }[]
+                  | null
               }
             }
             output: ClerkErrors
@@ -10597,65 +9874,54 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { enterprise_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                organization_id?: (string | null) | undefined
-                saml?:
-                  | ({
-                      name?: (string | null) | undefined
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
+                name?: string | null
+                domains?: string[] | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                organization_id?: string | null
+                saml?: {
+                  name?: string | null
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
                 custom_attributes?:
-                  | (
-                      | {
-                          name: string
-                          key: string
-                          sso_path?: string | undefined
-                          scim_path?: string | undefined
-                          directory_path?: string | undefined
-                          multi_valued?: boolean | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
+                  | {
+                      name: string
+                      key: string
+                      sso_path?: string
+                      scim_path?: string
+                      directory_path?: string
+                      multi_valued?: boolean
+                    }[]
+                  | null
               }
             }
             output: ClerkErrors
@@ -10665,65 +9931,54 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { enterprise_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                organization_id?: (string | null) | undefined
-                saml?:
-                  | ({
-                      name?: (string | null) | undefined
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
+                name?: string | null
+                domains?: string[] | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                organization_id?: string | null
+                saml?: {
+                  name?: string | null
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
                 custom_attributes?:
-                  | (
-                      | {
-                          name: string
-                          key: string
-                          sso_path?: string | undefined
-                          scim_path?: string | undefined
-                          directory_path?: string | undefined
-                          multi_valued?: boolean | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
+                  | {
+                      name: string
+                      key: string
+                      sso_path?: string
+                      scim_path?: string
+                      directory_path?: string
+                      multi_valued?: boolean
+                    }[]
+                  | null
               }
             }
             output: ClerkErrors
@@ -10733,65 +9988,54 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { enterprise_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                organization_id?: (string | null) | undefined
-                saml?:
-                  | ({
-                      name?: (string | null) | undefined
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
+                name?: string | null
+                domains?: string[] | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                organization_id?: string | null
+                saml?: {
+                  name?: string | null
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
                 custom_attributes?:
-                  | (
-                      | {
-                          name: string
-                          key: string
-                          sso_path?: string | undefined
-                          scim_path?: string | undefined
-                          directory_path?: string | undefined
-                          multi_valued?: boolean | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
+                  | {
+                      name: string
+                      key: string
+                      sso_path?: string
+                      scim_path?: string
+                      directory_path?: string
+                      multi_valued?: boolean
+                    }[]
+                  | null
               }
             }
             output: ClerkErrors
@@ -10801,65 +10045,54 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { enterprise_connection_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                domains?: (string[] | null) | undefined
-                active?: (boolean | null) | undefined
-                sync_user_attributes?: (boolean | null) | undefined
-                disable_additional_identifications?: (boolean | null) | undefined
-                allow_organization_account_linking?: (boolean | null) | undefined
-                organization_id?: (string | null) | undefined
-                saml?:
-                  | ({
-                      name?: (string | null) | undefined
-                      idp_entity_id?: (string | null) | undefined
-                      idp_sso_url?: (string | null) | undefined
-                      idp_certificate?: (string | null) | undefined
-                      idp_certificates?: string[] | undefined
-                      idp_metadata_url?: (string | null) | undefined
-                      idp_metadata?: (string | null) | undefined
-                      attribute_mapping?:
-                        | ({
-                            user_id?: (string | null) | undefined
-                            email_address?: (string | null) | undefined
-                            first_name?: (string | null) | undefined
-                            last_name?: (string | null) | undefined
-                          } | null)
-                        | undefined
-                      allow_subdomains?: (boolean | null) | undefined
-                      allow_idp_initiated?: (boolean | null) | undefined
-                      force_authn?: (boolean | null) | undefined
-                      login_hint?:
-                        | ({
-                            mode: 'email_address' | 'custom_attribute' | 'off'
-                            source?: string | undefined
-                          } | null)
-                        | undefined
-                    } | null)
-                  | undefined
-                oidc?:
-                  | ({
-                      client_id?: (string | null) | undefined
-                      client_secret?: (string | null) | undefined
-                      discovery_url?: (string | null) | undefined
-                      auth_url?: (string | null) | undefined
-                      token_url?: (string | null) | undefined
-                      user_info_url?: (string | null) | undefined
-                      requires_pkce?: (boolean | null) | undefined
-                    } | null)
-                  | undefined
+                name?: string | null
+                domains?: string[] | null
+                active?: boolean | null
+                sync_user_attributes?: boolean | null
+                disable_additional_identifications?: boolean | null
+                allow_organization_account_linking?: boolean | null
+                organization_id?: string | null
+                saml?: {
+                  name?: string | null
+                  idp_entity_id?: string | null
+                  idp_sso_url?: string | null
+                  idp_certificate?: string | null
+                  idp_certificates?: string[]
+                  idp_metadata_url?: string | null
+                  idp_metadata?: string | null
+                  attribute_mapping?: {
+                    user_id?: string | null
+                    email_address?: string | null
+                    first_name?: string | null
+                    last_name?: string | null
+                  } | null
+                  allow_subdomains?: boolean | null
+                  allow_idp_initiated?: boolean | null
+                  force_authn?: boolean | null
+                  login_hint?: {
+                    mode: 'email_address' | 'custom_attribute' | 'off'
+                    source?: string
+                  } | null
+                } | null
+                oidc?: {
+                  client_id?: string | null
+                  client_secret?: string | null
+                  discovery_url?: string | null
+                  auth_url?: string | null
+                  token_url?: string | null
+                  user_info_url?: string | null
+                  requires_pkce?: boolean | null
+                } | null
                 custom_attributes?:
-                  | (
-                      | {
-                          name: string
-                          key: string
-                          sso_path?: string | undefined
-                          scim_path?: string | undefined
-                          directory_path?: string | undefined
-                          multi_valued?: boolean | undefined
-                        }[]
-                      | null
-                    )
-                  | undefined
+                  | {
+                      name: string
+                      key: string
+                      sso_path?: string
+                      scim_path?: string
+                      directory_path?: string
+                      multi_valued?: boolean
+                    }[]
+                  | null
               }
             }
             output: ClerkErrors
@@ -10897,11 +10130,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { enterprise_connection_id: string } } & {
-              query: {
-                status?: ('pending' | 'success' | 'failed')[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { status?: unknown; limit?: unknown; offset?: unknown }
             }
             output: EnterpriseConnectionTestRuns
             outputFormat: 'json'
@@ -10909,11 +10138,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { enterprise_connection_id: string } } & {
-              query: {
-                status?: ('pending' | 'success' | 'failed')[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { status?: unknown; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -10921,11 +10146,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { enterprise_connection_id: string } } & {
-              query: {
-                status?: ('pending' | 'success' | 'failed')[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { status?: unknown; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -10933,11 +10154,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { enterprise_connection_id: string } } & {
-              query: {
-                status?: ('pending' | 'success' | 'failed')[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { status?: unknown; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -10945,11 +10162,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { enterprise_connection_id: string } } & {
-              query: {
-                status?: ('pending' | 'success' | 'failed')[] | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { status?: unknown; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -10989,61 +10202,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/organization_memberships': {
       $get:
         | {
-            input: {
-              query: {
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { order_by?: string; limit?: unknown; offset?: unknown } }
             output: OrganizationMemberships
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { order_by?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { order_by?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { order_by?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: {
-              query: {
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
-            }
+            input: { query: { order_by?: string; limit?: unknown; offset?: unknown } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 500
@@ -11054,11 +10237,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get: {
         input: {
           query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            query?: string | undefined
-            status?: 'pending' | 'invited' | 'completed' | 'rejected' | undefined
-            order_by?: string | undefined
+            limit?: unknown
+            offset?: unknown
+            query?: string
+            status?: 'pending' | 'invited' | 'completed' | 'rejected'
+            order_by?: string
           }
         }
         output: { data: WaitlistEntry[]; total_count: number }
@@ -11067,19 +10250,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
       $post:
         | {
-            input: { json: { email_address: string; notify?: (boolean | null) | undefined } }
+            input: { json: { email_address: string; notify?: boolean | null } }
             output: WaitlistEntry
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { email_address: string; notify?: (boolean | null) | undefined } }
+            input: { json: { email_address: string; notify?: boolean | null } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { email_address: string; notify?: (boolean | null) | undefined } }
+            input: { json: { email_address: string; notify?: boolean | null } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -11124,7 +10307,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { waitlist_entry_id: string } } & {
-              json: { ignore_existing?: (boolean | null) | undefined }
+              json: { ignore_existing?: boolean | null }
             }
             output: WaitlistEntry
             outputFormat: 'json'
@@ -11132,7 +10315,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { waitlist_entry_id: string } } & {
-              json: { ignore_existing?: (boolean | null) | undefined }
+              json: { ignore_existing?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11140,7 +10323,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { waitlist_entry_id: string } } & {
-              json: { ignore_existing?: (boolean | null) | undefined }
+              json: { ignore_existing?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11148,7 +10331,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { waitlist_entry_id: string } } & {
-              json: { ignore_existing?: (boolean | null) | undefined }
+              json: { ignore_existing?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11156,7 +10339,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { waitlist_entry_id: string } } & {
-              json: { ignore_existing?: (boolean | null) | undefined }
+              json: { ignore_existing?: boolean | null }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11203,10 +10386,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                payer_type?: 'user' | 'org' | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                payer_type?: 'user' | 'org'
               }
             }
             output: PaginatedCommercePlanResponse
@@ -11216,10 +10399,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                payer_type?: 'user' | 'org' | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                payer_type?: 'user' | 'org'
               }
             }
             output: ClerkErrors
@@ -11229,10 +10412,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                payer_type?: 'user' | 'org' | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                payer_type?: 'user' | 'org'
               }
             }
             output: ClerkErrors
@@ -11242,10 +10425,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                payer_type?: 'user' | 'org' | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                payer_type?: 'user' | 'org'
               }
             }
             output: ClerkErrors
@@ -11255,10 +10438,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                payer_type?: 'user' | 'org' | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                payer_type?: 'user' | 'org'
               }
             }
             output: ClerkErrors
@@ -11272,16 +10455,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial' | undefined
-                payer_type?: 'user' | 'org' | undefined
-                plan_id?: string | undefined
-                include_free?: boolean | undefined
-                query?: string | undefined
-                user_id?: string | undefined
-                organization_id?: string | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial'
+                payer_type?: 'user' | 'org'
+                plan_id?: string
+                include_free?: string
+                query?: string
+                user_id?: string
+                organization_id?: string
               }
             }
             output: PaginatedCommerceSubscriptionItemResponse
@@ -11291,16 +10474,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial' | undefined
-                payer_type?: 'user' | 'org' | undefined
-                plan_id?: string | undefined
-                include_free?: boolean | undefined
-                query?: string | undefined
-                user_id?: string | undefined
-                organization_id?: string | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial'
+                payer_type?: 'user' | 'org'
+                plan_id?: string
+                include_free?: string
+                query?: string
+                user_id?: string
+                organization_id?: string
               }
             }
             output: ClerkErrors
@@ -11310,16 +10493,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial' | undefined
-                payer_type?: 'user' | 'org' | undefined
-                plan_id?: string | undefined
-                include_free?: boolean | undefined
-                query?: string | undefined
-                user_id?: string | undefined
-                organization_id?: string | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial'
+                payer_type?: 'user' | 'org'
+                plan_id?: string
+                include_free?: string
+                query?: string
+                user_id?: string
+                organization_id?: string
               }
             }
             output: ClerkErrors
@@ -11329,16 +10512,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial' | undefined
-                payer_type?: 'user' | 'org' | undefined
-                plan_id?: string | undefined
-                include_free?: boolean | undefined
-                query?: string | undefined
-                user_id?: string | undefined
-                organization_id?: string | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial'
+                payer_type?: 'user' | 'org'
+                plan_id?: string
+                include_free?: string
+                query?: string
+                user_id?: string
+                organization_id?: string
               }
             }
             output: ClerkErrors
@@ -11348,16 +10531,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                paginated?: boolean | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial' | undefined
-                payer_type?: 'user' | 'org' | undefined
-                plan_id?: string | undefined
-                include_free?: boolean | undefined
-                query?: string | undefined
-                user_id?: string | undefined
-                organization_id?: string | undefined
+                paginated?: string
+                limit?: unknown
+                offset?: unknown
+                status?: 'active' | 'ended' | 'past_due' | 'upcoming' | 'free_trial'
+                payer_type?: 'user' | 'org'
+                plan_id?: string
+                include_free?: string
+                query?: string
+                user_id?: string
+                organization_id?: string
               }
             }
             output: ClerkErrors
@@ -11369,57 +10552,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/commerce/subscription_items/:subscription_item_id': {
       $delete:
         | {
-            input: { param: { subscription_item_id: string } } & {
-              query: { end_now?: boolean | undefined }
-            }
+            input: { param: { subscription_item_id: string } } & { query: { end_now?: string } }
             output: CommerceSubscriptionItem
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { subscription_item_id: string } } & {
-              query: { end_now?: boolean | undefined }
-            }
+            input: { param: { subscription_item_id: string } } & { query: { end_now?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { subscription_item_id: string } } & {
-              query: { end_now?: boolean | undefined }
-            }
+            input: { param: { subscription_item_id: string } } & { query: { end_now?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { subscription_item_id: string } } & {
-              query: { end_now?: boolean | undefined }
-            }
+            input: { param: { subscription_item_id: string } } & { query: { end_now?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { subscription_item_id: string } } & {
-              query: { end_now?: boolean | undefined }
-            }
+            input: { param: { subscription_item_id: string } } & { query: { end_now?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { subscription_item_id: string } } & {
-              query: { end_now?: boolean | undefined }
-            }
+            input: { param: { subscription_item_id: string } } & { query: { end_now?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { subscription_item_id: string } } & {
-              query: { end_now?: boolean | undefined }
-            }
+            input: { param: { subscription_item_id: string } } & { query: { end_now?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 500
@@ -11429,43 +10598,57 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/billing/subscription_items/:subscription_item_id/extend_free_trial': {
       $post:
         | {
-            input: { param: { subscription_item_id: string } } & { json: ExtendFreeTrialRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: ExtendFreeTrialRequestInput
+            }
             output: CommerceSubscriptionItem
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: ExtendFreeTrialRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: ExtendFreeTrialRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: ExtendFreeTrialRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: ExtendFreeTrialRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: ExtendFreeTrialRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: ExtendFreeTrialRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: ExtendFreeTrialRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: ExtendFreeTrialRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: ExtendFreeTrialRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: ExtendFreeTrialRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: ExtendFreeTrialRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: ExtendFreeTrialRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 500
@@ -11475,49 +10658,65 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/billing/subscription_items/:subscription_item_id/price_transition': {
       $post:
         | {
-            input: { param: { subscription_item_id: string } } & { json: PriceTransitionRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: PriceTransitionRequestInput
+            }
             output: CommercePriceTransitionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: PriceTransitionRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: PriceTransitionRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: PriceTransitionRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: PriceTransitionRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: PriceTransitionRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: PriceTransitionRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: PriceTransitionRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: PriceTransitionRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: PriceTransitionRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: PriceTransitionRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: PriceTransitionRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: PriceTransitionRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { param: { subscription_item_id: string } } & { json: PriceTransitionRequest }
+            input: { param: { subscription_item_id: string } } & {
+              json: PriceTransitionRequestInput
+            }
             output: ClerkErrors
             outputFormat: 'json'
             status: 500
@@ -11528,7 +10727,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { subscription_item_id: string } } & {
-              json: ApplyCommerceDiscountRequest
+              json: ApplyCommerceDiscountRequestInput
             }
             output: CommerceDiscountRedemptionResponse
             outputFormat: 'json'
@@ -11536,7 +10735,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { subscription_item_id: string } } & {
-              json: ApplyCommerceDiscountRequest
+              json: ApplyCommerceDiscountRequestInput
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11544,7 +10743,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { subscription_item_id: string } } & {
-              json: ApplyCommerceDiscountRequest
+              json: ApplyCommerceDiscountRequestInput
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11552,7 +10751,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { subscription_item_id: string } } & {
-              json: ApplyCommerceDiscountRequest
+              json: ApplyCommerceDiscountRequestInput
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11560,7 +10759,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { subscription_item_id: string } } & {
-              json: ApplyCommerceDiscountRequest
+              json: ApplyCommerceDiscountRequestInput
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11568,7 +10767,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { subscription_item_id: string } } & {
-              json: ApplyCommerceDiscountRequest
+              json: ApplyCommerceDiscountRequestInput
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11576,7 +10775,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { subscription_item_id: string } } & {
-              json: ApplyCommerceDiscountRequest
+              json: ApplyCommerceDiscountRequestInput
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11584,7 +10783,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { subscription_item_id: string } } & {
-              json: ApplyCommerceDiscountRequest
+              json: ApplyCommerceDiscountRequestInput
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11648,12 +10847,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: Permissions
             outputFormat: 'json'
@@ -11661,12 +10855,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11674,12 +10863,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11687,37 +10871,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: { name: string; key: string; description?: string | undefined } }
+            input: { json: { name: string; key: string; description?: string } }
             output: Permission
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { name: string; key: string; description?: string | undefined } }
+            input: { json: { name: string; key: string; description?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { name: string; key: string; description?: string | undefined } }
+            input: { json: { name: string; key: string; description?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: { name: string; key: string; description?: string | undefined } }
+            input: { json: { name: string; key: string; description?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 402
           }
         | {
-            input: { json: { name: string; key: string; description?: string | undefined } }
+            input: { json: { name: string; key: string; description?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: { name: string; key: string; description?: string | undefined } }
+            input: { json: { name: string; key: string; description?: string } }
             output: ClerkErrors
             outputFormat: 'json'
             status: 422
@@ -11747,11 +10931,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { permission_id: string } } & {
-              json: {
-                name?: string | undefined
-                key?: string | undefined
-                description?: string | undefined
-              }
+              json: { name?: string; key?: string; description?: string }
             }
             output: Permission
             outputFormat: 'json'
@@ -11759,11 +10939,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { permission_id: string } } & {
-              json: {
-                name?: string | undefined
-                key?: string | undefined
-                description?: string | undefined
-              }
+              json: { name?: string; key?: string; description?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11771,11 +10947,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { permission_id: string } } & {
-              json: {
-                name?: string | undefined
-                key?: string | undefined
-                description?: string | undefined
-              }
+              json: { name?: string; key?: string; description?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11783,11 +10955,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { permission_id: string } } & {
-              json: {
-                name?: string | undefined
-                key?: string | undefined
-                description?: string | undefined
-              }
+              json: { name?: string; key?: string; description?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11795,11 +10963,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { permission_id: string } } & {
-              json: {
-                name?: string | undefined
-                key?: string | undefined
-                description?: string | undefined
-              }
+              json: { name?: string; key?: string; description?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11807,11 +10971,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { permission_id: string } } & {
-              json: {
-                name?: string | undefined
-                key?: string | undefined
-                description?: string | undefined
-              }
+              json: { name?: string; key?: string; description?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11848,12 +11008,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: RoleSets
             outputFormat: 'json'
@@ -11861,12 +11016,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11874,12 +11024,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11887,12 +11032,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11900,12 +11040,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              query: {
-                query?: string | undefined
-                order_by?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-              }
+              query: { query?: string; order_by?: string; limit?: unknown; offset?: unknown }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -11916,11 +11051,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                key?: string | undefined
-                description?: (string | null) | undefined
+                key?: string
+                description?: string | null
                 default_role_key: string
                 creator_role_key: string
-                type?: 'initial' | 'custom' | undefined
+                type?: 'initial' | 'custom'
                 roles: string[]
               }
             }
@@ -11932,11 +11067,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                key?: string | undefined
-                description?: (string | null) | undefined
+                key?: string
+                description?: string | null
                 default_role_key: string
                 creator_role_key: string
-                type?: 'initial' | 'custom' | undefined
+                type?: 'initial' | 'custom'
                 roles: string[]
               }
             }
@@ -11948,11 +11083,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                key?: string | undefined
-                description?: (string | null) | undefined
+                key?: string
+                description?: string | null
                 default_role_key: string
                 creator_role_key: string
-                type?: 'initial' | 'custom' | undefined
+                type?: 'initial' | 'custom'
                 roles: string[]
               }
             }
@@ -11964,11 +11099,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                key?: string | undefined
-                description?: (string | null) | undefined
+                key?: string
+                description?: string | null
                 default_role_key: string
                 creator_role_key: string
-                type?: 'initial' | 'custom' | undefined
+                type?: 'initial' | 'custom'
                 roles: string[]
               }
             }
@@ -11980,11 +11115,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                key?: string | undefined
-                description?: (string | null) | undefined
+                key?: string
+                description?: string | null
                 default_role_key: string
                 creator_role_key: string
-                type?: 'initial' | 'custom' | undefined
+                type?: 'initial' | 'custom'
                 roles: string[]
               }
             }
@@ -11996,11 +11131,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                key?: string | undefined
-                description?: (string | null) | undefined
+                key?: string
+                description?: string | null
                 default_role_key: string
                 creator_role_key: string
-                type?: 'initial' | 'custom' | undefined
+                type?: 'initial' | 'custom'
                 roles: string[]
               }
             }
@@ -12012,11 +11147,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                key?: string | undefined
-                description?: (string | null) | undefined
+                key?: string
+                description?: string | null
                 default_role_key: string
                 creator_role_key: string
-                type?: 'initial' | 'custom' | undefined
+                type?: 'initial' | 'custom'
                 roles: string[]
               }
             }
@@ -12056,12 +11191,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { role_set_key_or_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                type?: 'initial' | undefined
-                default_role_key?: (string | null) | undefined
-                creator_role_key?: (string | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                type?: 'initial' | null
+                default_role_key?: string | null
+                creator_role_key?: string | null
               }
             }
             output: RoleSet
@@ -12071,12 +11206,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { role_set_key_or_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                type?: 'initial' | undefined
-                default_role_key?: (string | null) | undefined
-                creator_role_key?: (string | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                type?: 'initial' | null
+                default_role_key?: string | null
+                creator_role_key?: string | null
               }
             }
             output: ClerkErrors
@@ -12086,12 +11221,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { role_set_key_or_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                type?: 'initial' | undefined
-                default_role_key?: (string | null) | undefined
-                creator_role_key?: (string | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                type?: 'initial' | null
+                default_role_key?: string | null
+                creator_role_key?: string | null
               }
             }
             output: ClerkErrors
@@ -12101,12 +11236,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { role_set_key_or_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                type?: 'initial' | undefined
-                default_role_key?: (string | null) | undefined
-                creator_role_key?: (string | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                type?: 'initial' | null
+                default_role_key?: string | null
+                creator_role_key?: string | null
               }
             }
             output: ClerkErrors
@@ -12116,12 +11251,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { role_set_key_or_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                type?: 'initial' | undefined
-                default_role_key?: (string | null) | undefined
-                creator_role_key?: (string | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                type?: 'initial' | null
+                default_role_key?: string | null
+                creator_role_key?: string | null
               }
             }
             output: ClerkErrors
@@ -12131,12 +11266,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { role_set_key_or_id: string } } & {
               json: {
-                name?: (string | null) | undefined
-                key?: (string | null) | undefined
-                description?: (string | null) | undefined
-                type?: 'initial' | undefined
-                default_role_key?: (string | null) | undefined
-                creator_role_key?: (string | null) | undefined
+                name?: string | null
+                key?: string | null
+                description?: string | null
+                type?: 'initial' | null
+                default_role_key?: string | null
+                creator_role_key?: string | null
               }
             }
             output: ClerkErrors
@@ -12149,7 +11284,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: { dest_role_set_key: string; reassignment_mappings?: {} | undefined }
+              json: { dest_role_set_key: string; reassignment_mappings?: ReassignmentMappingsInput }
             }
             output: DeletedObject
             outputFormat: 'json'
@@ -12157,7 +11292,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: { dest_role_set_key: string; reassignment_mappings?: {} | undefined }
+              json: { dest_role_set_key: string; reassignment_mappings?: ReassignmentMappingsInput }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12165,7 +11300,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: { dest_role_set_key: string; reassignment_mappings?: {} | undefined }
+              json: { dest_role_set_key: string; reassignment_mappings?: ReassignmentMappingsInput }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12173,7 +11308,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: { dest_role_set_key: string; reassignment_mappings?: {} | undefined }
+              json: { dest_role_set_key: string; reassignment_mappings?: ReassignmentMappingsInput }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12181,7 +11316,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: { dest_role_set_key: string; reassignment_mappings?: {} | undefined }
+              json: { dest_role_set_key: string; reassignment_mappings?: ReassignmentMappingsInput }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12189,7 +11324,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: { dest_role_set_key: string; reassignment_mappings?: {} | undefined }
+              json: { dest_role_set_key: string; reassignment_mappings?: ReassignmentMappingsInput }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12201,11 +11336,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: {
-                role_keys: string[]
-                default_role_key?: string | undefined
-                creator_role_key?: string | undefined
-              }
+              json: { role_keys: string[]; default_role_key?: string; creator_role_key?: string }
             }
             output: RoleSet
             outputFormat: 'json'
@@ -12213,11 +11344,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: {
-                role_keys: string[]
-                default_role_key?: string | undefined
-                creator_role_key?: string | undefined
-              }
+              json: { role_keys: string[]; default_role_key?: string; creator_role_key?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12225,11 +11352,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: {
-                role_keys: string[]
-                default_role_key?: string | undefined
-                creator_role_key?: string | undefined
-              }
+              json: { role_keys: string[]; default_role_key?: string; creator_role_key?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12237,11 +11360,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: {
-                role_keys: string[]
-                default_role_key?: string | undefined
-                creator_role_key?: string | undefined
-              }
+              json: { role_keys: string[]; default_role_key?: string; creator_role_key?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12249,11 +11368,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: {
-                role_keys: string[]
-                default_role_key?: string | undefined
-                creator_role_key?: string | undefined
-              }
+              json: { role_keys: string[]; default_role_key?: string; creator_role_key?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12261,11 +11376,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { role_set_key_or_id: string } } & {
-              json: {
-                role_keys: string[]
-                default_role_key?: string | undefined
-                creator_role_key?: string | undefined
-              }
+              json: { role_keys: string[]; default_role_key?: string; creator_role_key?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12330,28 +11441,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                starting_after?: string | undefined
-                ending_before?: string | undefined
-                subject?: string | undefined
-                actor?: string | undefined
-                user_id?: string | undefined
-                identifier?: string | undefined
-                trace_id?: string | undefined
-                type?: string | undefined
-                client_id?: string | undefined
-                session_id?: string | undefined
-                impersonator_user_id?: string | undefined
-                ip_address?: string | undefined
-                payload_filter?: { [x: string]: string } | undefined
-                payload_fields?: string | undefined
-                filter_match?: 'all' | 'any' | undefined
-                event_time_after?: bigint | undefined
-                event_time_before?: bigint | undefined
-                end_user_facing_only?: boolean | undefined
-                view?: 'flat' | 'grouped' | undefined
-                group_type?: string[] | undefined
-                status?: string[] | undefined
+                limit?: unknown
+                starting_after?: string
+                ending_before?: string
+                subject?: string
+                actor?: string
+                user_id?: string
+                identifier?: string
+                trace_id?: string
+                type?: string
+                client_id?: string
+                session_id?: string
+                impersonator_user_id?: string
+                ip_address?: string
+                payload_filter?: { [key: string]: string }
+                payload_fields?: string
+                filter_match?: 'all' | 'any'
+                event_time_after?: unknown
+                event_time_before?: unknown
+                end_user_facing_only?: string
+                view?: 'flat' | 'grouped'
+                group_type?: unknown
+                status?: unknown
               }
             }
             output: {
@@ -12376,28 +11487,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                starting_after?: string | undefined
-                ending_before?: string | undefined
-                subject?: string | undefined
-                actor?: string | undefined
-                user_id?: string | undefined
-                identifier?: string | undefined
-                trace_id?: string | undefined
-                type?: string | undefined
-                client_id?: string | undefined
-                session_id?: string | undefined
-                impersonator_user_id?: string | undefined
-                ip_address?: string | undefined
-                payload_filter?: { [x: string]: string } | undefined
-                payload_fields?: string | undefined
-                filter_match?: 'all' | 'any' | undefined
-                event_time_after?: bigint | undefined
-                event_time_before?: bigint | undefined
-                end_user_facing_only?: boolean | undefined
-                view?: 'flat' | 'grouped' | undefined
-                group_type?: string[] | undefined
-                status?: string[] | undefined
+                limit?: unknown
+                starting_after?: string
+                ending_before?: string
+                subject?: string
+                actor?: string
+                user_id?: string
+                identifier?: string
+                trace_id?: string
+                type?: string
+                client_id?: string
+                session_id?: string
+                impersonator_user_id?: string
+                ip_address?: string
+                payload_filter?: { [key: string]: string }
+                payload_fields?: string
+                filter_match?: 'all' | 'any'
+                event_time_after?: unknown
+                event_time_before?: unknown
+                end_user_facing_only?: string
+                view?: 'flat' | 'grouped'
+                group_type?: unknown
+                status?: unknown
               }
             }
             output: ClerkErrors
@@ -12407,28 +11518,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                starting_after?: string | undefined
-                ending_before?: string | undefined
-                subject?: string | undefined
-                actor?: string | undefined
-                user_id?: string | undefined
-                identifier?: string | undefined
-                trace_id?: string | undefined
-                type?: string | undefined
-                client_id?: string | undefined
-                session_id?: string | undefined
-                impersonator_user_id?: string | undefined
-                ip_address?: string | undefined
-                payload_filter?: { [x: string]: string } | undefined
-                payload_fields?: string | undefined
-                filter_match?: 'all' | 'any' | undefined
-                event_time_after?: bigint | undefined
-                event_time_before?: bigint | undefined
-                end_user_facing_only?: boolean | undefined
-                view?: 'flat' | 'grouped' | undefined
-                group_type?: string[] | undefined
-                status?: string[] | undefined
+                limit?: unknown
+                starting_after?: string
+                ending_before?: string
+                subject?: string
+                actor?: string
+                user_id?: string
+                identifier?: string
+                trace_id?: string
+                type?: string
+                client_id?: string
+                session_id?: string
+                impersonator_user_id?: string
+                ip_address?: string
+                payload_filter?: { [key: string]: string }
+                payload_fields?: string
+                filter_match?: 'all' | 'any'
+                event_time_after?: unknown
+                event_time_before?: unknown
+                end_user_facing_only?: string
+                view?: 'flat' | 'grouped'
+                group_type?: unknown
+                status?: unknown
               }
             }
             output: ClerkErrors
@@ -12438,28 +11549,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                starting_after?: string | undefined
-                ending_before?: string | undefined
-                subject?: string | undefined
-                actor?: string | undefined
-                user_id?: string | undefined
-                identifier?: string | undefined
-                trace_id?: string | undefined
-                type?: string | undefined
-                client_id?: string | undefined
-                session_id?: string | undefined
-                impersonator_user_id?: string | undefined
-                ip_address?: string | undefined
-                payload_filter?: { [x: string]: string } | undefined
-                payload_fields?: string | undefined
-                filter_match?: 'all' | 'any' | undefined
-                event_time_after?: bigint | undefined
-                event_time_before?: bigint | undefined
-                end_user_facing_only?: boolean | undefined
-                view?: 'flat' | 'grouped' | undefined
-                group_type?: string[] | undefined
-                status?: string[] | undefined
+                limit?: unknown
+                starting_after?: string
+                ending_before?: string
+                subject?: string
+                actor?: string
+                user_id?: string
+                identifier?: string
+                trace_id?: string
+                type?: string
+                client_id?: string
+                session_id?: string
+                impersonator_user_id?: string
+                ip_address?: string
+                payload_filter?: { [key: string]: string }
+                payload_fields?: string
+                filter_match?: 'all' | 'any'
+                event_time_after?: unknown
+                event_time_before?: unknown
+                end_user_facing_only?: string
+                view?: 'flat' | 'grouped'
+                group_type?: unknown
+                status?: unknown
               }
             }
             output: ClerkErrors
@@ -12469,28 +11580,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                starting_after?: string | undefined
-                ending_before?: string | undefined
-                subject?: string | undefined
-                actor?: string | undefined
-                user_id?: string | undefined
-                identifier?: string | undefined
-                trace_id?: string | undefined
-                type?: string | undefined
-                client_id?: string | undefined
-                session_id?: string | undefined
-                impersonator_user_id?: string | undefined
-                ip_address?: string | undefined
-                payload_filter?: { [x: string]: string } | undefined
-                payload_fields?: string | undefined
-                filter_match?: 'all' | 'any' | undefined
-                event_time_after?: bigint | undefined
-                event_time_before?: bigint | undefined
-                end_user_facing_only?: boolean | undefined
-                view?: 'flat' | 'grouped' | undefined
-                group_type?: string[] | undefined
-                status?: string[] | undefined
+                limit?: unknown
+                starting_after?: string
+                ending_before?: string
+                subject?: string
+                actor?: string
+                user_id?: string
+                identifier?: string
+                trace_id?: string
+                type?: string
+                client_id?: string
+                session_id?: string
+                impersonator_user_id?: string
+                ip_address?: string
+                payload_filter?: { [key: string]: string }
+                payload_fields?: string
+                filter_match?: 'all' | 'any'
+                event_time_after?: unknown
+                event_time_before?: unknown
+                end_user_facing_only?: string
+                view?: 'flat' | 'grouped'
+                group_type?: unknown
+                status?: unknown
               }
             }
             output: ClerkErrors
@@ -12500,28 +11611,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: number | undefined
-                starting_after?: string | undefined
-                ending_before?: string | undefined
-                subject?: string | undefined
-                actor?: string | undefined
-                user_id?: string | undefined
-                identifier?: string | undefined
-                trace_id?: string | undefined
-                type?: string | undefined
-                client_id?: string | undefined
-                session_id?: string | undefined
-                impersonator_user_id?: string | undefined
-                ip_address?: string | undefined
-                payload_filter?: { [x: string]: string } | undefined
-                payload_fields?: string | undefined
-                filter_match?: 'all' | 'any' | undefined
-                event_time_after?: bigint | undefined
-                event_time_before?: bigint | undefined
-                end_user_facing_only?: boolean | undefined
-                view?: 'flat' | 'grouped' | undefined
-                group_type?: string[] | undefined
-                status?: string[] | undefined
+                limit?: unknown
+                starting_after?: string
+                ending_before?: string
+                subject?: string
+                actor?: string
+                user_id?: string
+                identifier?: string
+                trace_id?: string
+                type?: string
+                client_id?: string
+                session_id?: string
+                impersonator_user_id?: string
+                ip_address?: string
+                payload_filter?: { [key: string]: string }
+                payload_fields?: string
+                filter_match?: 'all' | 'any'
+                event_time_after?: unknown
+                event_time_before?: unknown
+                end_user_facing_only?: string
+                view?: 'flat' | 'grouped'
+                group_type?: unknown
+                status?: unknown
               }
             }
             output: ClerkErrors
@@ -12576,11 +11687,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { group_id: string } } & {
-              query: {
-                started_at?: bigint | undefined
-                limit?: number | undefined
-                starting_after?: string | undefined
-              }
+              query: { started_at?: unknown; limit?: unknown; starting_after?: string }
             }
             output: {
               data: (Log | LogGroup)[]
@@ -12603,11 +11710,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              query: {
-                started_at?: bigint | undefined
-                limit?: number | undefined
-                starting_after?: string | undefined
-              }
+              query: { started_at?: unknown; limit?: unknown; starting_after?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12615,11 +11718,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              query: {
-                started_at?: bigint | undefined
-                limit?: number | undefined
-                starting_after?: string | undefined
-              }
+              query: { started_at?: unknown; limit?: unknown; starting_after?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12627,11 +11726,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              query: {
-                started_at?: bigint | undefined
-                limit?: number | undefined
-                starting_after?: string | undefined
-              }
+              query: { started_at?: unknown; limit?: unknown; starting_after?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12639,11 +11734,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              query: {
-                started_at?: bigint | undefined
-                limit?: number | undefined
-                starting_after?: string | undefined
-              }
+              query: { started_at?: unknown; limit?: unknown; starting_after?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12651,11 +11742,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              query: {
-                started_at?: bigint | undefined
-                limit?: number | undefined
-                starting_after?: string | undefined
-              }
+              query: { started_at?: unknown; limit?: unknown; starting_after?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12663,11 +11750,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { group_id: string } } & {
-              query: {
-                started_at?: bigint | undefined
-                limit?: number | undefined
-                starting_after?: string | undefined
-              }
+              query: { started_at?: unknown; limit?: unknown; starting_after?: string }
             }
             output: ClerkErrors
             outputFormat: 'json'
@@ -12714,10 +11797,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                organization_id?: string | undefined
-                it_contact_id?: string | undefined
-                scopes?: string[] | undefined
-                seconds_until_expiration?: number | undefined
+                organization_id?: string
+                it_contact_id?: string
+                scopes?: string[]
+                seconds_until_expiration?: number
               }
             }
             output: {
@@ -12742,10 +11825,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                organization_id?: string | undefined
-                it_contact_id?: string | undefined
-                scopes?: string[] | undefined
-                seconds_until_expiration?: number | undefined
+                organization_id?: string
+                it_contact_id?: string
+                scopes?: string[]
+                seconds_until_expiration?: number
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -12755,10 +11838,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                organization_id?: string | undefined
-                it_contact_id?: string | undefined
-                scopes?: string[] | undefined
-                seconds_until_expiration?: number | undefined
+                organization_id?: string
+                it_contact_id?: string
+                scopes?: string[]
+                seconds_until_expiration?: number
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -12768,10 +11851,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                organization_id?: string | undefined
-                it_contact_id?: string | undefined
-                scopes?: string[] | undefined
-                seconds_until_expiration?: number | undefined
+                organization_id?: string
+                it_contact_id?: string
+                scopes?: string[]
+                seconds_until_expiration?: number
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -12781,10 +11864,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                organization_id?: string | undefined
-                it_contact_id?: string | undefined
-                scopes?: string[] | undefined
-                seconds_until_expiration?: number | undefined
+                organization_id?: string
+                it_contact_id?: string
+                scopes?: string[]
+                seconds_until_expiration?: number
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -12797,7 +11880,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { adminPortalLinkTokenID: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
+              json: { revocation_reason?: string | null }
             }
             output: {
               object: 'admin_portal_link_token'
@@ -12819,7 +11902,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { adminPortalLinkTokenID: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
+              json: { revocation_reason?: string | null }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
@@ -12827,7 +11910,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { adminPortalLinkTokenID: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
+              json: { revocation_reason?: string | null }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
@@ -12835,7 +11918,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { adminPortalLinkTokenID: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
+              json: { revocation_reason?: string | null }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
@@ -12843,7 +11926,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { adminPortalLinkTokenID: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
+              json: { revocation_reason?: string | null }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
@@ -12856,14 +11939,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                type?: string | undefined
+                type?: string
                 name: string
-                description?: (string | null) | undefined
+                description?: string | null
                 subject: string
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                scopes?: string[] | undefined
-                created_by?: (string | null) | undefined
-                seconds_until_expiration?: (number | null) | undefined
+                claims?: any | null
+                scopes?: string[]
+                created_by?: string | null
+                seconds_until_expiration?: number | null
               }
             }
             output: {
@@ -12873,7 +11956,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               subject: string
               name: string
               description?: (string | null) | undefined
-              claims: { [x: string]: unknown } | null
+              claims: any | null
               scopes: string[]
               secret: string
               revoked: boolean
@@ -12891,14 +11974,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                type?: string | undefined
+                type?: string
                 name: string
-                description?: (string | null) | undefined
+                description?: string | null
                 subject: string
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                scopes?: string[] | undefined
-                created_by?: (string | null) | undefined
-                seconds_until_expiration?: (number | null) | undefined
+                claims?: any | null
+                scopes?: string[]
+                created_by?: string | null
+                seconds_until_expiration?: number | null
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -12908,14 +11991,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                type?: string | undefined
+                type?: string
                 name: string
-                description?: (string | null) | undefined
+                description?: string | null
                 subject: string
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                scopes?: string[] | undefined
-                created_by?: (string | null) | undefined
-                seconds_until_expiration?: (number | null) | undefined
+                claims?: any | null
+                scopes?: string[]
+                created_by?: string | null
+                seconds_until_expiration?: number | null
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -12926,12 +12009,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                type?: string | undefined
+                type?: string
                 subject: string
-                include_invalid?: 'true' | 'false' | undefined
-                limit?: number | undefined
-                offset?: (number | null) | undefined
-                query?: string | undefined
+                include_invalid?: 'true' | 'false'
+                limit?: unknown
+                offset?: unknown
+                query?: string
               }
             }
             output: {
@@ -12942,7 +12025,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 subject: string
                 name: string
                 description?: (string | null) | undefined
-                claims: { [x: string]: unknown } | null
+                claims: any | null
                 scopes: string[]
                 revoked: boolean
                 revocation_reason: string | null
@@ -12961,12 +12044,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                type?: string | undefined
+                type?: string
                 subject: string
-                include_invalid?: 'true' | 'false' | undefined
-                limit?: number | undefined
-                offset?: (number | null) | undefined
-                query?: string | undefined
+                include_invalid?: 'true' | 'false'
+                limit?: unknown
+                offset?: unknown
+                query?: string
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -12976,12 +12059,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                type?: string | undefined
+                type?: string
                 subject: string
-                include_invalid?: 'true' | 'false' | undefined
-                limit?: number | undefined
-                offset?: (number | null) | undefined
-                query?: string | undefined
+                include_invalid?: 'true' | 'false'
+                limit?: unknown
+                offset?: unknown
+                query?: string
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -13001,7 +12084,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               subject: string
               name: string
               description?: (string | null) | undefined
-              claims: { [x: string]: unknown } | null
+              claims: any | null
               scopes: string[]
               revoked: boolean
               revocation_reason: string | null
@@ -13031,11 +12114,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { apiKeyID: string } } & {
               json: {
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                scopes?: string[] | undefined
-                description?: (string | null) | undefined
-                subject?: string | undefined
-                seconds_until_expiration?: (number | null) | undefined
+                claims?: any | null
+                scopes?: string[]
+                description?: string | null
+                subject?: string
+                seconds_until_expiration?: number | null
               }
             }
             output: {
@@ -13045,7 +12128,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               subject: string
               name: string
               description?: (string | null) | undefined
-              claims: { [x: string]: unknown } | null
+              claims: any | null
               scopes: string[]
               revoked: boolean
               revocation_reason: string | null
@@ -13062,11 +12145,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { apiKeyID: string } } & {
               json: {
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                scopes?: string[] | undefined
-                description?: (string | null) | undefined
-                subject?: string | undefined
-                seconds_until_expiration?: (number | null) | undefined
+                claims?: any | null
+                scopes?: string[]
+                description?: string | null
+                subject?: string
+                seconds_until_expiration?: number | null
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -13076,11 +12159,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { apiKeyID: string } } & {
               json: {
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                scopes?: string[] | undefined
-                description?: (string | null) | undefined
-                subject?: string | undefined
-                seconds_until_expiration?: (number | null) | undefined
+                claims?: any | null
+                scopes?: string[]
+                description?: string | null
+                subject?: string
+                seconds_until_expiration?: number | null
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -13133,9 +12216,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api_keys/:apiKeyID/revoke': {
       $post:
         | {
-            input: { param: { apiKeyID: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
-            }
+            input: { param: { apiKeyID: string } } & { json: { revocation_reason?: string | null } }
             output: {
               object: 'api_key'
               id: string
@@ -13143,7 +12224,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               subject: string
               name: string
               description?: (string | null) | undefined
-              claims: { [x: string]: unknown } | null
+              claims: any | null
               scopes: string[]
               revoked: boolean
               revocation_reason: string | null
@@ -13158,17 +12239,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { apiKeyID: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
-            }
+            input: { param: { apiKeyID: string } } & { json: { revocation_reason?: string | null } }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { apiKeyID: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
-            }
+            input: { param: { apiKeyID: string } } & { json: { revocation_reason?: string | null } }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
             status: 404
@@ -13186,7 +12263,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               subject: string
               name: string
               description?: (string | null) | undefined
-              claims: { [x: string]: unknown } | null
+              claims: any | null
               scopes: string[]
               revoked: boolean
               revocation_reason: string | null
@@ -13219,17 +12296,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                token_format?: 'opaque' | 'jwt' | undefined
-                seconds_until_expiration?: (number | null) | undefined
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                min_remaining_ttl_seconds?: number | undefined
+                token_format?: 'opaque' | 'jwt'
+                seconds_until_expiration?: number | null
+                claims?: any | null
+                min_remaining_ttl_seconds?: number
               }
             }
             output: {
               object: 'machine_to_machine_token'
               id: string
               subject: string
-              claims?: ({ [x: string]: unknown } | null) | undefined
+              claims?: (any | null) | undefined
               scopes?: string[] | undefined
               token: string
               revoked: boolean
@@ -13246,10 +12323,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                token_format?: 'opaque' | 'jwt' | undefined
-                seconds_until_expiration?: (number | null) | undefined
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                min_remaining_ttl_seconds?: number | undefined
+                token_format?: 'opaque' | 'jwt'
+                seconds_until_expiration?: number | null
+                claims?: any | null
+                min_remaining_ttl_seconds?: number
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -13259,10 +12336,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                token_format?: 'opaque' | 'jwt' | undefined
-                seconds_until_expiration?: (number | null) | undefined
-                claims?: ({ [x: string]: unknown } | null) | undefined
-                min_remaining_ttl_seconds?: number | undefined
+                token_format?: 'opaque' | 'jwt'
+                seconds_until_expiration?: number | null
+                claims?: any | null
+                min_remaining_ttl_seconds?: number
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -13274,10 +12351,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               query: {
                 subject: string
-                revoked?: (boolean | null) | undefined
-                expired?: (boolean | null) | undefined
-                limit?: number | undefined
-                offset?: (number | null) | undefined
+                revoked?: unknown
+                expired?: unknown
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: {
@@ -13285,7 +12362,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 object: 'machine_to_machine_token'
                 id: string
                 subject: string
-                claims?: ({ [x: string]: unknown } | null) | undefined
+                claims?: (any | null) | undefined
                 scopes?: string[] | undefined
                 revoked: boolean
                 revocation_reason: string | null
@@ -13304,10 +12381,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               query: {
                 subject: string
-                revoked?: (boolean | null) | undefined
-                expired?: (boolean | null) | undefined
-                limit?: number | undefined
-                offset?: (number | null) | undefined
+                revoked?: unknown
+                expired?: unknown
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -13318,10 +12395,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               query: {
                 subject: string
-                revoked?: (boolean | null) | undefined
-                expired?: (boolean | null) | undefined
-                limit?: number | undefined
-                offset?: (number | null) | undefined
+                revoked?: unknown
+                expired?: unknown
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -13332,10 +12409,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               query: {
                 subject: string
-                revoked?: (boolean | null) | undefined
-                expired?: (boolean | null) | undefined
-                limit?: number | undefined
-                offset?: (number | null) | undefined
+                revoked?: unknown
+                expired?: unknown
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
@@ -13348,13 +12425,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { m2m_token_id: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
+              json: { revocation_reason?: string | null }
             }
             output: {
               object: 'machine_to_machine_token'
               id: string
               subject: string
-              claims?: ({ [x: string]: unknown } | null) | undefined
+              claims?: (any | null) | undefined
               scopes?: string[] | undefined
               revoked: boolean
               revocation_reason: string | null
@@ -13369,7 +12446,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { m2m_token_id: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
+              json: { revocation_reason?: string | null }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
@@ -13377,7 +12454,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { m2m_token_id: string } } & {
-              json: { revocation_reason?: (string | null) | undefined }
+              json: { revocation_reason?: string | null }
             }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
@@ -13393,7 +12470,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               object: 'machine_to_machine_token'
               id: string
               subject: string
-              claims?: ({ [x: string]: unknown } | null) | undefined
+              claims?: (any | null) | undefined
               scopes?: string[] | undefined
               revoked: boolean
               revocation_reason: string | null
@@ -13423,7 +12500,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/oauth_applications/access_tokens/verify': {
       $post:
         | {
-            input: { json: { access_token?: string | undefined; secret?: string | undefined } }
+            input: { json: { access_token?: string; secret?: string } }
             output:
               | {
                   object: 'clerk_idp_oauth_access_token'
@@ -13451,13 +12528,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { json: { access_token?: string | undefined; secret?: string | undefined } }
+            input: { json: { access_token?: string; secret?: string } }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { access_token?: string | undefined; secret?: string | undefined } }
+            input: { json: { access_token?: string; secret?: string } }
             output: { errors: { message: string; long_message: string; code: string }[] }
             outputFormat: 'json'
             status: 404

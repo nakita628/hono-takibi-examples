@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteWebhookEndpointsWebhookEndpointIdRoute,
   getWebhookEndpointsRoute,
-  getWebhookEndpointsWebhookEndpointIdRoute,
   postWebhookEndpointsRoute,
-  postWebhookEndpointsWebhookEndpointIdRotateSecretRoute,
+  getWebhookEndpointsWebhookEndpointIdRoute,
   postWebhookEndpointsWebhookEndpointIdRoute,
+  deleteWebhookEndpointsWebhookEndpointIdRoute,
+  postWebhookEndpointsWebhookEndpointIdRotateSecretRoute,
   postWebhookEndpointsWebhookEndpointIdTestRoute,
 } from '../routes'
 

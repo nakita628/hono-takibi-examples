@@ -1,12 +1,12 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteOrganizationRolesOrganizationRoleIdPermissionsPermissionIdRoute,
-  deleteOrganizationRolesOrganizationRoleIdRoute,
-  getOrganizationRolesOrganizationRoleIdRoute,
   getOrganizationRolesRoute,
-  patchOrganizationRolesOrganizationRoleIdRoute,
-  postOrganizationRolesOrganizationRoleIdPermissionsPermissionIdRoute,
   postOrganizationRolesRoute,
+  getOrganizationRolesOrganizationRoleIdRoute,
+  patchOrganizationRolesOrganizationRoleIdRoute,
+  deleteOrganizationRolesOrganizationRoleIdRoute,
+  postOrganizationRolesOrganizationRoleIdPermissionsPermissionIdRoute,
+  deleteOrganizationRolesOrganizationRoleIdPermissionsPermissionIdRoute,
 } from '../routes'
 
 export const getOrganizationRolesRouteHandler: RouteHandler<

@@ -1,19 +1,17 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
-    "generated": false,
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
+    "generated": true,
     "config": "848894f1fec97f0a32c4bde3a9dc039f196b4bf209d34cfcf014ce04d5bd98c0",
     "sources": {
       "https://docs.mistral.ai/openapi.yaml": {
-        "etag": "W/\"77edad7d09c181b5a7a8ff11720d72c2-ssl\"",
-        "sha256": "7652f1307b3bc6cb7a10526c28788a430246f641cb9785a9f1b7b0dd912cdfae"
+        "etag": "W/\"7f53a53acb1331db0e8a63a5e1b1300d-ssl\"",
+        "sha256": "acf0efcbee4617601df77fc40185516ed6aae4369ce090034099317d5866b2db"
       }
     },
-    "failed": {
-      "hono-takibi": "0.35.6",
-      "date": "2026-11-24",
-      "error": "Missing $ref pointer \"#/$defs/PromptTokensDetails\". Token \"$defs\" does not exist."
+    "typecheck": {
+      "errors": 0
     }
   }
 }

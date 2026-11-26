@@ -1,19 +1,19 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteServerLicenseRoute,
   getServerAboutRoute,
   getServerApkLinksRoute,
   getServerConfigRoute,
   getServerFeaturesRoute,
+  deleteServerLicenseRoute,
   getServerLicenseRoute,
+  putServerLicenseRoute,
   getServerMediaTypesRoute,
   getServerPingRoute,
   getServerStatisticsRoute,
   getServerStorageRoute,
+  getServerVersionRoute,
   getServerVersionCheckRoute,
   getServerVersionHistoryRoute,
-  getServerVersionRoute,
-  putServerLicenseRoute,
 } from '../routes'
 
 export const getServerAboutRouteHandler: RouteHandler<typeof getServerAboutRoute> = async (c) => {

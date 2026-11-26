@@ -1,15 +1,15 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteVaultsVaultIdCredentialsCredentialIdRoute,
-  deleteVaultsVaultIdRoute,
   getVaultsRoute,
-  getVaultsVaultIdCredentialsCredentialIdRoute,
-  getVaultsVaultIdCredentialsRoute,
-  getVaultsVaultIdRoute,
   postVaultsRoute,
-  postVaultsVaultIdCredentialsCredentialIdRoute,
-  postVaultsVaultIdCredentialsRoute,
+  getVaultsVaultIdRoute,
   postVaultsVaultIdRoute,
+  deleteVaultsVaultIdRoute,
+  getVaultsVaultIdCredentialsRoute,
+  postVaultsVaultIdCredentialsRoute,
+  getVaultsVaultIdCredentialsCredentialIdRoute,
+  postVaultsVaultIdCredentialsCredentialIdRoute,
+  deleteVaultsVaultIdCredentialsCredentialIdRoute,
 } from '../routes'
 
 export const getVaultsRouteHandler: RouteHandler<typeof getVaultsRoute> = async (c) => {

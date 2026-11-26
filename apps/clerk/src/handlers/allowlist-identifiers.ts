@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAllowlistIdentifiersIdentifierIdRoute,
   getAllowlistIdentifiersRoute,
   postAllowlistIdentifiersRoute,
+  deleteAllowlistIdentifiersIdentifierIdRoute,
 } from '../routes'
 
 export const getAllowlistIdentifiersRouteHandler: RouteHandler<

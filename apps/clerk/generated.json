@@ -1,13 +1,13 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
     "generated": true,
     "config": "cb7418d95c4d685a5e4f072ae82adb50361eb54ab9ba2f85472acb5263d5583c",
     "sources": {
       "https://raw.githubusercontent.com/clerk/openapi-specs/main/bapi/2025-04-10.yml": {
-        "etag": "W/\"cc25d9c7a3c3321b0e5da117743cd30e2d1d6d3cfb6ebf705cb91a0d7d90a6d8\"",
-        "sha256": "1a585b304e15765bc5d3839f9357e960e5570f6987afa7fd33e783a252316c1f"
+        "etag": "W/\"e74839ccacd846d34820e117f5fd82fee72e9331b9e9e33f4bb0d84bbf354e69\"",
+        "sha256": "626a761b2d0def07a9f859dcb9d7fcc0d273fc8f1a9756f435570f247bc42330"
       }
     },
     "typecheck": {

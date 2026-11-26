@@ -343,8 +343,6 @@ Create an assistant with a model and instructions.
 |» » *anyOf*|gpt-3.5-turbo-1106|
 |» » *anyOf*|gpt-3.5-turbo-0125|
 |» » *anyOf*|gpt-3.5-turbo-16k-0613|
-|» » » » » type|auto|
-|» » » » » type|static|
 
 > Example responses
 
@@ -984,13 +982,6 @@ Create a thread.
 |» » » *oneOf*|body|object|false|none|
 |» » *anyOf*|body|null|false|none|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » » » » type|auto|
-|» » » » » type|static|
 
 > Example responses
 
@@ -4181,7 +4172,6 @@ temperature: 0
 
 |Parameter|Value|
 |---|---|
-|» » *anyOf*|whisper-1|
 |» response_format|json|
 |» response_format|text|
 |» response_format|srt|
@@ -7424,6 +7414,7 @@ curl https://api.openai.com/v1/conversations \
       "property1": "string",
       "property2": "string"
     },
+    "safety_identifier": "string",
     "items": [
       {
         "role": "user",
@@ -7447,6 +7438,7 @@ Create a conversation.
     "property1": "string",
     "property2": "string"
   },
+  "safety_identifier": "string",
   "items": [
     {
       "role": "user",
@@ -7465,6 +7457,9 @@ Create a conversation.
 |body|body|[CreateConversationBody](#schemacreateconversationbody)|false|none|
 |» metadata|body|[Metadata](#schemametadata) \| null|false|none|
 |» » *anyOf*|body|[Metadata](#schemametadata)|false|Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.<br>        Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.|
+|» » *anyOf*|body|null|false|none|
+|» safety_identifier|body|string \| null|false|none|
+|» » *anyOf*|body|string|false|A stable identifier used for safety monitoring and abuse detection.|
 |» » *anyOf*|body|null|false|none|
 |» items|body|[[InputItem](#schemainputitem)] \| null|false|none|
 |» » *anyOf*|body|[[InputItem](#schemainputitem)]|false|Initial items to include in the conversation context. You may add up to 20 items at a time.|
@@ -17253,6 +17248,7 @@ curl https://api.openai.com/v1/responses/compact \
     "input": "string",
     "previous_response_id": "resp_123",
     "instructions": "string",
+    "safety_identifier": "string",
     "image": {
       "context_compression": "auto"
     },
@@ -17280,6 +17276,7 @@ Learn when and how to compact long-running conversations in the [conversation st
   "input": "string",
   "previous_response_id": "resp_123",
   "instructions": "string",
+  "safety_identifier": "string",
   "image": {
     "context_compression": "auto"
   },
@@ -17309,6 +17306,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 |» » *anyOf*|body|null|false|none|
 |» instructions|body|string \| null|false|none|
 |» » *anyOf*|body|string|false|**Deprecated.** A system (or developer) message inserted into the model's context.<br>When used along with `previous_response_id`, the instructions from a previous response will not be carried over to the next response. This makes it simple to swap out system (or developer) messages in new responses.|
+|» » *anyOf*|body|null|false|none|
+|» safety_identifier|body|string \| null|false|none|
+|» » *anyOf*|body|string|false|A stable identifier used for safety monitoring and abuse detection.|
 |» » *anyOf*|body|null|false|none|
 |» image|body|[ImageOptionsParam](#schemaimageoptionsparam)|false|Request level image options.|
 |» prompt_cache_key|body|string \| null|false|none|
@@ -17344,6 +17344,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 {
   "id": "resp_001",
   "object": "response.compaction",
+  "safety_identifier": "compact-review-example-001",
   "image": {
     "context_compression": "disabled"
   },
@@ -18285,6 +18286,7 @@ curl 'https://api.openai.com/v1/responses/compact?beta=true' \
     "input": "string",
     "previous_response_id": "resp_123",
     "instructions": "string",
+    "safety_identifier": "string",
     "image": {
       "context_compression": "auto"
     },
@@ -18312,6 +18314,7 @@ Learn when and how to compact long-running conversations in the [conversation st
   "input": "string",
   "previous_response_id": "resp_123",
   "instructions": "string",
+  "safety_identifier": "string",
   "image": {
     "context_compression": "auto"
   },
@@ -18342,6 +18345,9 @@ Learn when and how to compact long-running conversations in the [conversation st
 |» » *anyOf*|body|null|false|none|
 |» instructions|body|string \| null|false|none|
 |» » *anyOf*|body|string|false|**Deprecated.** A system (or developer) message inserted into the model's context.<br>When used along with `previous_response_id`, the instructions from a previous response will not be carried over to the next response. This makes it simple to swap out system (or developer) messages in new responses.|
+|» » *anyOf*|body|null|false|none|
+|» safety_identifier|body|string \| null|false|none|
+|» » *anyOf*|body|string|false|A stable identifier used for safety monitoring and abuse detection.|
 |» » *anyOf*|body|null|false|none|
 |» image|body|[BetaImageOptionsParam](#schemabetaimageoptionsparam)|false|Request level image options.|
 |» prompt_cache_key|body|string \| null|false|none|
@@ -18378,6 +18384,7 @@ Learn when and how to compact long-running conversations in the [conversation st
 {
   "id": "resp_001",
   "object": "response.compaction",
+  "safety_identifier": "compact-review-example-001",
   "image": {
     "context_compression": "disabled"
   },
@@ -52199,6 +52206,19 @@ Lists project-owned automations, optionally filtered by target session.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -52248,6 +52268,7 @@ Lists project-owned automations, optionally filtered by target session.
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |501|Not Implemented|Automation listing is not implemented.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
@@ -52608,6 +52629,19 @@ Saves an active automation without invoking it immediately.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -52644,6 +52678,7 @@ Saves an active automation without invoking it immediately.
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -52828,6 +52863,19 @@ Retrieves a project-owned automation.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -52864,6 +52912,7 @@ Retrieves a project-owned automation.
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -53211,6 +53260,19 @@ Updates supplied fields; target and metadata replace the whole field.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -53247,6 +53309,7 @@ Updates supplied fields; target and metadata replace the whole field.
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -53355,6 +53418,19 @@ Deletes the automation and prevents future invocations without deleting its targ
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -53391,6 +53467,7 @@ Deletes the automation and prevents future invocations without deleting its targ
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -53576,6 +53653,19 @@ Pauses future scheduled delivery without stopping an active session.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -53612,6 +53702,7 @@ Pauses future scheduled delivery without stopping an active session.
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -53797,6 +53888,19 @@ Resumes scheduled delivery; one-time automations without a pending invocation re
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -53833,6 +53937,7 @@ Resumes scheduled delivery; one-time automations without a pending invocation re
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -53970,6 +54075,19 @@ Lists delivery records for a project-owned automation.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -54019,6 +54137,7 @@ Lists delivery records for a project-owned automation.
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |501|Not Implemented|This operation is not implemented.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
@@ -54158,6 +54277,19 @@ Queues a manual delivery without changing the saved schedule.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -54194,6 +54326,7 @@ Queues a manual delivery without changing the saved schedule.
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -54314,6 +54447,19 @@ Retrieves a delivery record for a project-owned automation.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -54350,6 +54496,7 @@ Retrieves a delivery record for a project-owned automation.
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -54502,6 +54649,19 @@ Lists OpenAI-hosted environments owned by the authenticated principal. Requires 
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -54538,6 +54698,7 @@ Lists OpenAI-hosted environments owned by the authenticated principal. Requires 
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested environment or referenced resource was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current environment state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded a rate or capacity limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -55006,6 +55167,19 @@ Retrieves an execution environment's connection status and safe installed metada
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -55042,6 +55216,7 @@ Retrieves an execution environment's connection status and safe installed metada
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -55168,6 +55343,19 @@ Lists live files on a connected execution environment with optional directory fi
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -55204,6 +55392,7 @@ Lists live files on a connected execution environment with optional directory fi
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -55381,7 +55570,7 @@ Copies inline bytes or a Files API file into a connected execution environment, 
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
-|429|Too Many Requests|The Files API rate limit for your user has been exceeded.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The Files API rate limit for your user has been exceeded. This status also applies to the endpoint rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -55518,6 +55707,19 @@ Lists subagents in a session, including nested and closed subagents. See [subage
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -55554,6 +55756,7 @@ Lists subagents in a session, including nested and closed subagents. See [subage
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -55691,6 +55894,19 @@ Retrieves a subagent belonging to this session. See [subagent workflows](https:/
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -55727,6 +55943,7 @@ Retrieves a subagent belonging to this session. See [subagent workflows](https:/
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -55862,6 +56079,19 @@ Lists this subagent's own items across all of its turns. See [subagent workflows
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -55898,6 +56128,7 @@ Lists this subagent's own items across all of its turns. See [subagent workflows
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -56048,6 +56279,19 @@ Lists all turns of this subagent, including turns after a resume. See [subagent 
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -56084,6 +56328,7 @@ Lists all turns of this subagent, including turns after a resume. See [subagent 
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -56217,6 +56462,19 @@ Retrieves a turn belonging to this subagent. See [subagent workflows](https://de
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -56253,6 +56511,7 @@ Retrieves a turn belonging to this subagent. See [subagent workflows](https://de
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -56389,6 +56648,19 @@ Lists items belonging to one turn of this subagent. See [subagent workflows](htt
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -56425,6 +56697,7 @@ Lists items belonging to one turn of this subagent. See [subagent workflows](htt
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -56591,6 +56864,19 @@ Lists reusable agents in the current project. See [agent configuration](https://
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -56627,6 +56913,7 @@ Lists reusable agents in the current project. See [agent configuration](https://
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -56902,6 +57189,19 @@ Creates a reusable agent without storing credentials. See [agent configuration](
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -56938,6 +57238,7 @@ Creates a reusable agent without storing credentials. See [agent configuration](
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -57087,6 +57388,19 @@ Retrieves a reusable agent by ID. See [agent configuration](https://developers.o
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -57123,6 +57437,7 @@ Retrieves a reusable agent by ID. See [agent configuration](https://developers.o
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -57399,6 +57714,19 @@ Updates a reusable agent. See [agent configuration](https://developers.openai.co
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -57435,6 +57763,7 @@ Updates a reusable agent. See [agent configuration](https://developers.openai.co
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -57543,6 +57872,19 @@ Deletes a reusable agent. See [agent configuration](https://developers.openai.co
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -57579,6 +57921,7 @@ Deletes a reusable agent. See [agent configuration](https://developers.openai.co
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -57736,6 +58079,19 @@ Lists reusable environment templates without returning confidential values. See 
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -57771,6 +58127,7 @@ Lists reusable environment templates without returning confidential values. See 
 |401|Unauthorized|Authentication or project context was missing.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested environment definition was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -58065,6 +58422,19 @@ Creates reusable environment configuration without returning confidential setup 
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -58100,6 +58470,7 @@ Creates reusable environment configuration without returning confidential setup 
 |401|Unauthorized|Authentication or project context was missing.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested environment definition was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -58240,6 +58611,19 @@ Retrieves reusable environment configuration without returning confidential valu
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -58275,6 +58659,7 @@ Retrieves reusable environment configuration without returning confidential valu
 |401|Unauthorized|Authentication or project context was missing.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested environment definition was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -58583,6 +58968,19 @@ Updates reusable environment configuration without returning confidential values
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -58619,6 +59017,7 @@ Updates reusable environment configuration without returning confidential values
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested environment definition was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current environment state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -58727,6 +59126,19 @@ Deletes reusable environment configuration and all confidential template inputs.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -58763,6 +59175,7 @@ Deletes reusable environment configuration and all confidential template inputs.
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested environment definition was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current environment state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -58975,6 +59388,19 @@ Lists managed agent sessions using ID-based pagination and the requested sort or
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -59011,6 +59437,7 @@ Lists managed agent sessions using ID-based pagination and the requested sort or
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -59411,7 +59838,7 @@ Creates a managed agent session, optionally submits initial input, and returns t
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
-|429|Too Many Requests|The Files API rate limit for your user has been exceeded.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The Files API rate limit for your user has been exceeded. This status also applies to the endpoint rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -59605,6 +60032,19 @@ Retrieves the current state of a managed agent session. See [managing sessions](
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -59641,6 +60081,7 @@ Retrieves the current state of a managed agent session. See [managing sessions](
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -59932,6 +60373,19 @@ Updates session tools, vaults, metadata, model, reasoning effort, service tier, 
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -59968,6 +60422,7 @@ Updates session tools, vaults, metadata, model, reasoning effort, service tier, 
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -60076,6 +60531,19 @@ Removes a managed agent session from the public API and returns a deletion confi
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -60112,6 +60580,7 @@ Removes a managed agent session from the public API and returns a deletion confi
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -60243,6 +60712,19 @@ Lists immutable artifacts published by completed hosted session turns. See [sess
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -60279,6 +60761,7 @@ Lists immutable artifacts published by completed hosted session turns. See [sess
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -60392,6 +60875,19 @@ Retrieves immutable metadata for one durable session artifact. See [session arti
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -60428,6 +60924,7 @@ Retrieves immutable metadata for one durable session artifact. See [session arti
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -60537,6 +61034,19 @@ Deletes an immutable session artifact without deleting its live environment file
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -60573,6 +61083,7 @@ Deletes an immutable session artifact without deleting its live environment file
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -60671,6 +61182,19 @@ Downloads immutable session artifact bytes after the execution environment expir
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -60707,6 +61231,7 @@ Downloads immutable session artifact bytes after the execution environment expir
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -60805,6 +61330,19 @@ Streams live events for an agent session. See [session events](https://developer
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -60841,6 +61379,7 @@ Streams live events for an agent session. See [session events](https://developer
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -60972,6 +61511,19 @@ Submits message, cancellation, tool-result, or computer-use approval-response ev
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -61008,6 +61560,7 @@ Submits message, cancellation, tool-result, or computer-use approval-response ev
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -61142,6 +61695,19 @@ Lists items produced by the session's root agent, including its interactions wit
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -61178,6 +61744,7 @@ Lists items produced by the session's root agent, including its interactions wit
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -61308,6 +61875,19 @@ Lists published root-turn traces as OTLP JSON, ordered by turn creation time and
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -61344,6 +61924,7 @@ Lists published root-turn traces as OTLP JSON, ordered by turn creation time and
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -61493,6 +62074,19 @@ Lists turns by creation time and turn ID. The after cursor is exclusive in the s
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -61529,6 +62123,7 @@ Lists turns by creation time and turn ID. The after cursor is exclusive in the s
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -61661,6 +62256,19 @@ Retrieves a turn's current status, timestamps, usage, and error. Returns 404 if 
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -61697,6 +62305,7 @@ Retrieves a turn's current status, timestamps, usage, and error. Returns 404 if 
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -61832,6 +62441,19 @@ Lists items belonging to one root-agent turn, including its interactions with su
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -61868,6 +62490,7 @@ Lists items belonging to one root-agent turn, including its interactions with su
 |403|Forbidden|The API key lacks the required permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested session or event was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current session state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -62001,6 +62624,19 @@ Lists vaults using ID-based pagination. See [vaults](https://developers.openai.c
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -62037,6 +62673,7 @@ Lists vaults using ID-based pagination. See [vaults](https://developers.openai.c
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -62173,6 +62810,19 @@ Creates a vault for the current project. See [vaults](https://developers.openai.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -62209,6 +62859,7 @@ Creates a vault for the current project. See [vaults](https://developers.openai.
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -62321,6 +62972,19 @@ Retrieves a vault by its ID. See [vaults](https://developers.openai.com/api/docs
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -62357,6 +63021,7 @@ Retrieves a vault by its ID. See [vaults](https://developers.openai.com/api/docs
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -62494,6 +63159,19 @@ Updates the name or metadata of an active vault. Omitted fields remain unchanged
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -62530,6 +63208,7 @@ Updates the name or metadata of an active vault. Omitted fields remain unchanged
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -62638,6 +63317,19 @@ Deletes a vault and all its credentials. See [vaults](https://developers.openai.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -62674,6 +63366,7 @@ Deletes a vault and all its credentials. See [vaults](https://developers.openai.
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -62822,6 +63515,19 @@ Lists a vault's credentials using ID-based pagination without returning secret v
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -62858,6 +63564,7 @@ Lists a vault's credentials using ID-based pagination without returning secret v
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -63044,6 +63751,19 @@ Creates a vault credential. Secret values are write-only and are never returned.
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -63080,6 +63800,7 @@ Creates a vault credential. Secret values are write-only and are never returned.
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -63209,6 +63930,19 @@ Retrieves vault credential metadata without returning secret values. See [vaults
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -63245,6 +63979,7 @@ Retrieves vault credential metadata without returning secret values. See [vaults
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -63395,6 +64130,19 @@ Updates credential metadata or rotates its write-only secret. See [vaults](https
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -63431,6 +64179,7 @@ Updates credential metadata or rotates its write-only secret. See [vaults](https
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -63540,6 +64289,19 @@ Deletes a vault credential. See [vaults](https://developers.openai.com/api/docs/
 }
 ```
 
+> 429 Response
+
+```json
+{
+  "error": {
+    "type": "string",
+    "code": "string",
+    "message": "string",
+    "param": "string"
+  }
+}
+```
+
 > 500 Response
 
 ```json
@@ -63576,6 +64338,7 @@ Deletes a vault credential. See [vaults](https://developers.openai.com/api/docs/
 |403|Forbidden|The API key lacks the required management permission.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |404|Not Found|The requested vault or credential was not found.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |409|Conflict|The request conflicted with the current vault state.|[ErrorResponse-2](#schemaerrorresponse-2)|
+|429|Too Many Requests|The request exceeded this endpoint's rate limit.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |500|Internal Server Error|An internal error occurred.|[ErrorResponse-2](#schemaerrorresponse-2)|
 |503|Service Unavailable|The service is temporarily unavailable.|[ErrorResponse-2](#schemaerrorresponse-2)|
 
@@ -65293,12 +66056,6 @@ Represents an `assistant` that can call the model and use tools.
 |top_p|number \| null|false|none|none|
 |response_format|[AssistantsApiResponseFormatOption](#schemaassistantsapiresponseformatoption) \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|assistant|
-
 <h2 id="tocS_AssistantStreamEvent">AssistantStreamEvent</h2>
 <!-- backwards compatibility -->
 <a id="schemaassistantstreamevent"></a>
@@ -65393,12 +66150,6 @@ integrate the Assistants API with streaming.
 |---|---|---|---|---|
 |type|string|true|none|The type of tool being defined: `code_interpreter`|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|code_interpreter|
-
 <h2 id="tocS_AssistantToolsFileSearch">AssistantToolsFileSearch</h2>
 <!-- backwards compatibility -->
 <a id="schemaassistanttoolsfilesearch"></a>
@@ -65426,12 +66177,6 @@ integrate the Assistants API with streaming.
 |type|string|true|none|The type of tool being defined: `file_search`|
 |file_search|object|false|none|Overrides for the file search tool.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_search|
-
 <h2 id="tocS_AssistantToolsFileSearchTypeOnly">AssistantToolsFileSearchTypeOnly</h2>
 <!-- backwards compatibility -->
 <a id="schemaassistanttoolsfilesearchtypeonly"></a>
@@ -65450,12 +66195,6 @@ integrate the Assistants API with streaming.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |type|string|true|none|The type of tool being defined: `file_search`|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_search|
 
 <h2 id="tocS_AssistantToolsFunction">AssistantToolsFunction</h2>
 <!-- backwards compatibility -->
@@ -65482,12 +66221,6 @@ integrate the Assistants API with streaming.
 |---|---|---|---|---|
 |type|string|true|none|The type of tool being defined: `function`|
 |function|[FunctionObject](#schemafunctionobject)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|function|
 
 <h2 id="tocS_AssistantsApiResponseFormatOption">AssistantsApiResponseFormatOption</h2>
 <!-- backwards compatibility -->
@@ -65516,12 +66249,6 @@ Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the mess
 |*oneOf*|[ResponseFormatText](#schemaresponseformattext)|false|none|Default response format. Used to generate text responses.<br>|
 |*oneOf*|[ResponseFormatJsonObject](#schemaresponseformatjsonobject)|false|none|JSON object response format. An older method of generating JSON responses.<br>Using `json_schema` is recommended for models that support it. Note that the<br>model will not generate JSON without a system or user message instructing it<br>to do so.<br>|
 |*oneOf*|[ResponseFormatJsonSchema](#schemaresponseformatjsonschema)|false|none|JSON Schema response format. Used to generate structured JSON responses.<br>Learn more about [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs).<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|*oneOf*|auto|
 
 <h2 id="tocS_AssistantsApiToolChoiceOption">AssistantsApiToolChoiceOption</h2>
 <!-- backwards compatibility -->
@@ -68139,12 +68866,6 @@ The output of a code interpreter tool call that is a file.
 |type|string|true|none|The type of the code interpreter file output. Always `files`.<br>|
 |files|[object]|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|files|
-
 <h2 id="tocS_CodeInterpreterTextOutput">CodeInterpreterTextOutput</h2>
 <!-- backwards compatibility -->
 <a id="schemacodeinterpretertextoutput"></a>
@@ -68167,12 +68888,6 @@ The output of a code interpreter tool call that is text.
 |---|---|---|---|---|
 |type|string|true|none|The type of the code interpreter text output. Always `logs`.<br>|
 |logs|string|true|none|The logs of the code interpreter tool call.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|logs|
 
 <h2 id="tocS_CodeInterpreterTool">CodeInterpreterTool</h2>
 <!-- backwards compatibility -->
@@ -68200,12 +68915,6 @@ A tool that runs Python code to help generate a response to a prompt.
 |type|string|true|none|The type of the code interpreter tool. Always `code_interpreter`.<br>|
 |container|string \| [AutoCodeInterpreterToolParam](#schemaautocodeinterpretertoolparam)|true|none|The code interpreter container. Can be a container ID or an object that<br>specifies uploaded file IDs to make available to your code, along with an<br>optional `memory_limit` setting.<br>|
 |allowed_callers|[[CallableToolAllowedCaller](#schemacallabletoolallowedcaller)] \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|code_interpreter|
 
 <h2 id="tocS_CodeInterpreterToolCall">CodeInterpreterToolCall</h2>
 <!-- backwards compatibility -->
@@ -68247,7 +68956,6 @@ A tool call to run code.
 
 |Property|Value|
 |---|---|
-|type|code_interpreter_call|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -69019,12 +69727,6 @@ The aggregated costs details of the specific time bucket.
 |api_key_id|string \| null|false|none|none|
 |quantity|number \| null|false|none|none|
 |quantity_unit|string \| null|false|none|The unit of the `quantity` value. If no single supported unit applies to the result, this field is `null`.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.costs.result|
 
 <h2 id="tocS_CreateAssistantRequest">CreateAssistantRequest</h2>
 <!-- backwards compatibility -->
@@ -69907,12 +70609,6 @@ This schema is used to define the shape of the data that will be:
 |item_schema|object|true|none|The json schema for each row in the data source.|
 |include_sample_schema|boolean|false|none|Whether the eval should expect you to populate the sample namespace (ie, by generating responses off of your data source)|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|custom|
-
 <h2 id="tocS_CreateEvalItem">CreateEvalItem</h2>
 <!-- backwards compatibility -->
 <a id="schemacreateevalitem"></a>
@@ -69969,12 +70665,6 @@ A JsonlRunDataSource object with that specifies a JSONL file that matches the ev
 |type|string|true|none|The type of data source. Always `jsonl`.|
 |source|[EvalJsonlFileContentSource](#schemaevaljsonlfilecontentsource) \| [EvalJsonlFileIdSource](#schemaevaljsonlfileidsource)|true|none|Determines what populates the `item` namespace in the data source.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|jsonl|
-
 <h2 id="tocS_CreateEvalLabelModelGrader">CreateEvalLabelModelGrader</h2>
 <!-- backwards compatibility -->
 <a id="schemacreateevallabelmodelgrader"></a>
@@ -70016,12 +70706,6 @@ in the evaluation.
 |labels|[string]|true|none|The labels to classify to each item in the evaluation.|
 |passing_labels|[string]|true|none|The labels that indicate a passing result. Must be a subset of labels.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|label_model|
-
 <h2 id="tocS_CreateEvalLogsDataSourceConfig">CreateEvalLogsDataSourceConfig</h2>
 <!-- backwards compatibility -->
 <a id="schemacreateevallogsdatasourceconfig"></a>
@@ -70045,12 +70729,6 @@ This is usually metadata like `usecase=chatbot` or `prompt-version=v2`, etc.
 |---|---|---|---|---|
 |type|string|true|none|The type of data source. Always `logs`.|
 |metadata|object|false|none|Metadata filters for the logs data source.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|logs|
 
 <h2 id="tocS_CreateEvalRequest">CreateEvalRequest</h2>
 <!-- backwards compatibility -->
@@ -70244,12 +70922,6 @@ Deprecated in favor of LogsDataSourceConfig.
 |---|---|---|---|---|
 |type|string|true|none|The type of data source. Always `stored_completions`.|
 |metadata|object|false|none|Metadata filters for the stored completions data source.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|stored_completions|
 
 <h2 id="tocS_CreateFileRequest">CreateFileRequest</h2>
 <!-- backwards compatibility -->
@@ -71485,12 +72157,6 @@ Represents a diarized transcription response returned by the model, including th
 |segments|[[TranscriptionDiarizedSegment](#schematranscriptiondiarizedsegment)]|true|none|Segments of the transcript annotated with timestamps and speaker labels.|
 |usage|object|false|none|Token or duration usage statistics for the request.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|task|transcribe|
-
 <h2 id="tocS_CreateTranscriptionResponseJson">CreateTranscriptionResponseJson</h2>
 <!-- backwards compatibility -->
 <a id="schemacreatetranscriptionresponsejson"></a>
@@ -72018,12 +72684,6 @@ A call to a custom tool created by the model.
 |input|string|true|none|The input for the custom tool call generated by the model.<br>|
 |async|boolean|false|none|Whether the custom tool call runs asynchronously.<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|custom_tool_call|
-
 <h2 id="tocS_CustomToolCallOutput">CustomToolCallOutput</h2>
 <!-- backwards compatibility -->
 <a id="schemacustomtoolcalloutput"></a>
@@ -72054,12 +72714,6 @@ The output of a custom tool call from your code, being sent back to the model.
 |call_id|string|true|none|The call ID, used to map this custom tool call output to a custom tool call.<br>|
 |caller|[ToolCallCallerParam](#schematoolcallcallerparam) \| null|false|none|none|
 |output|string \| [[FunctionAndCustomToolCallOutput](#schemafunctionandcustomtoolcalloutput)]|true|none|The output from the custom tool call generated by your code.<br>Can be a string or an list of output content.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|custom_tool_call_output|
 
 <h2 id="tocS_CustomToolCallOutputResource">CustomToolCallOutputResource</h2>
 <!-- backwards compatibility -->
@@ -72099,7 +72753,6 @@ The output of a custom tool call from your code, being sent back to the model.
 
 |Property|Value|
 |---|---|
-|type|custom_tool_call_output|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -72148,7 +72801,6 @@ The output of a custom tool call from your code, being sent back to the model.
 
 |Property|Value|
 |---|---|
-|type|custom_tool_call|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -72204,12 +72856,6 @@ A custom tool that processes input using a specified format.
 |id|string|true|none|none|
 |deleted|boolean|true|none|none|
 |object|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|assistant.deleted|
 
 <h2 id="tocS_DeleteCertificateResponse">DeleteCertificateResponse</h2>
 <!-- backwards compatibility -->
@@ -72301,12 +72947,6 @@ A custom tool that processes input using a specified format.
 |deleted|boolean|true|none|none|
 |object|string|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|thread.message.deleted|
-
 <h2 id="tocS_DeleteModelResponse">DeleteModelResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemadeletemodelresponse"></a>
@@ -72352,12 +72992,6 @@ A custom tool that processes input using a specified format.
 |id|string|true|none|none|
 |deleted|boolean|true|none|none|
 |object|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|thread.deleted|
 
 <h2 id="tocS_DeleteVectorStoreFileResponse">DeleteVectorStoreFileResponse</h2>
 <!-- backwards compatibility -->
@@ -72480,13 +73114,6 @@ Occurs when a stream ends.
 |event|string|true|none|none|
 |data|string|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|event|done|
-|data|[DONE]|
-
 <h2 id="tocS_EasyInputMessage">EasyInputMessage</h2>
 <!-- backwards compatibility -->
 <a id="schemaeasyinputmessage"></a>
@@ -72526,7 +73153,6 @@ interactions.
 |role|assistant|
 |role|system|
 |role|developer|
-|type|message|
 
 <h2 id="tocS_EditImageBodyJsonParam">EditImageBodyJsonParam</h2>
 <!-- backwards compatibility -->
@@ -72715,12 +73341,6 @@ Occurs when an [error](https://developers.openai.com/api/docs/guides/error-codes
 |event|string|true|none|none|
 |data|[Error](#schemaerror)|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|event|error|
-
 <h2 id="tocS_ErrorResponse">ErrorResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemaerrorresponse"></a>
@@ -72834,12 +73454,6 @@ Like:
 |created_at|integer(unixtime)|true|none|The Unix timestamp (in seconds) for when the eval was created.|
 |metadata|[Metadata](#schemametadata)|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|eval|
-
 <h2 id="tocS_EvalApiError">EvalApiError</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalapierror"></a>
@@ -72907,12 +73521,6 @@ The response schema defines the shape of the data that will be:
 |type|string|true|none|The type of data source. Always `custom`.|
 |schema|object|true|none|The json schema for the run data source items.<br>Learn how to build JSON schemas [here](https://json-schema.org/).<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|custom|
-
 <h2 id="tocS_EvalGraderLabelModel">EvalGraderLabelModel</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalgraderlabelmodel"></a>
@@ -72952,12 +73560,6 @@ The response schema defines the shape of the data that will be:
 |labels|[string]|true|none|The labels to assign to each item in the evaluation.|
 |passing_labels|[string]|true|none|The labels that indicate a passing result. Must be a subset of labels.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|label_model|
-
 <h2 id="tocS_EvalGraderPython">EvalGraderPython</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalgraderpython"></a>
@@ -72984,12 +73586,6 @@ The response schema defines the shape of the data that will be:
 |source|string|true|none|The source code of the python script.|
 |image_tag|string|false|none|The image tag to use for the python script.|
 |pass_threshold|number|false|none|The threshold for the score.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|python|
 
 <h2 id="tocS_EvalGraderScoreModel">EvalGraderScoreModel</h2>
 <!-- backwards compatibility -->
@@ -73036,12 +73632,6 @@ The response schema defines the shape of the data that will be:
 |range|[number]|false|none|The service requires two numbers for the score range. Defaults to `[0, 1]`.<br>|
 |pass_threshold|number|false|none|The threshold for the score.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|score_model|
-
 <h2 id="tocS_EvalGraderStringCheck">EvalGraderStringCheck</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalgraderstringcheck"></a>
@@ -73073,7 +73663,6 @@ The response schema defines the shape of the data that will be:
 
 |Property|Value|
 |---|---|
-|type|string_check|
 |operation|eq|
 |operation|ne|
 |operation|like|
@@ -73112,7 +73701,6 @@ The response schema defines the shape of the data that will be:
 
 |Property|Value|
 |---|---|
-|type|text_similarity|
 |evaluation_metric|cosine|
 |evaluation_metric|fuzzy_match|
 |evaluation_metric|bleu|
@@ -73162,7 +73750,6 @@ interactions.
 |role|assistant|
 |role|system|
 |role|developer|
-|type|message|
 
 <h2 id="tocS_EvalItemContent">EvalItemContent</h2>
 <!-- backwards compatibility -->
@@ -73246,12 +73833,6 @@ A text output from the model.
 |type|string|true|none|The type of the output text. Always `output_text`.<br>|
 |text|string|true|none|The text output from the model.<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|output_text|
-
 <h2 id="tocS_EvalItemContentText">EvalItemContentText</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalitemcontenttext"></a>
@@ -73290,12 +73871,6 @@ An image input block used within EvalItem content arrays.
 |image_url|string(uri)|true|none|The URL of the image input.<br>|
 |detail|string|false|none|The detail level of the image to be sent to the model. One of `high`, `low`, or `auto`. Defaults to `auto`.<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|input_image|
-
 <h2 id="tocS_EvalJsonlFileContentSource">EvalJsonlFileContentSource</h2>
 <!-- backwards compatibility -->
 <a id="schemaevaljsonlfilecontentsource"></a>
@@ -73322,12 +73897,6 @@ An image input block used within EvalItem content arrays.
 |type|string|true|none|The type of jsonl source. Always `file_content`.|
 |content|[object]|true|none|The content of the jsonl file.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_content|
-
 <h2 id="tocS_EvalJsonlFileIdSource">EvalJsonlFileIdSource</h2>
 <!-- backwards compatibility -->
 <a id="schemaevaljsonlfileidsource"></a>
@@ -73348,12 +73917,6 @@ An image input block used within EvalItem content arrays.
 |---|---|---|---|---|
 |type|string|true|none|The type of jsonl source. Always `file_id`.|
 |id|string|true|none|The identifier of the file.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_id|
 
 <h2 id="tocS_EvalList">EvalList</h2>
 <!-- backwards compatibility -->
@@ -73437,12 +74000,6 @@ An object representing a list of evals.
 |last_id|string|true|none|The identifier of the last eval in the data array.|
 |has_more|boolean|true|none|Indicates whether there are more evals available.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
-
 <h2 id="tocS_EvalLogsDataSourceConfig">EvalLogsDataSourceConfig</h2>
 <!-- backwards compatibility -->
 <a id="schemaevallogsdatasourceconfig"></a>
@@ -73473,12 +74030,6 @@ The schema returned by this data source config is used to defined what variables
 |type|string|true|none|The type of data source. Always `logs`.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |schema|object|true|none|The json schema for the run data source items.<br>Learn how to build JSON schemas [here](https://json-schema.org/).<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|logs|
 
 <h2 id="tocS_EvalResponsesSource">EvalResponsesSource</h2>
 <!-- backwards compatibility -->
@@ -73615,12 +74166,6 @@ A schema representing an evaluation run.
 |metadata|[Metadata](#schemametadata)|true|none|none|
 |error|[EvalApiError](#schemaevalapierror) \| null|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|eval.run|
-
 <h2 id="tocS_EvalRunList">EvalRunList</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalrunlist"></a>
@@ -73704,12 +74249,6 @@ An object representing a list of runs for an evaluation.
 |last_id|string|true|none|The identifier of the last eval run in the data array.|
 |has_more|boolean|true|none|Indicates whether there are more evals available.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
-
 <h2 id="tocS_EvalRunOutputItem">EvalRunOutputItem</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalrunoutputitem"></a>
@@ -73785,12 +74324,6 @@ A schema representing an evaluation run output item.
 |datasource_item|object|true|none|Details of the input data source item.|
 |results|[[EvalRunOutputItemResult](#schemaevalrunoutputitemresult)]|true|none|A list of grader results for this output item.|
 |sample|object|true|none|A sample containing the input and output of the evaluation run.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|eval.run.output_item|
 
 <h2 id="tocS_EvalRunOutputItemList">EvalRunOutputItemList</h2>
 <!-- backwards compatibility -->
@@ -73871,12 +74404,6 @@ An object representing a list of output items for an evaluation run.
 |last_id|string|true|none|The identifier of the last eval run output item in the data array.|
 |has_more|boolean|true|none|Indicates whether there are more eval run output items available.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
-
 <h2 id="tocS_EvalRunOutputItemResult">EvalRunOutputItemResult</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalrunoutputitemresult"></a>
@@ -73934,12 +74461,6 @@ Deprecated in favor of LogsDataSourceConfig.
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |schema|object|true|none|The json schema for the run data source items.<br>Learn how to build JSON schemas [here](https://json-schema.org/).<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|stored_completions|
-
 <h2 id="tocS_EvalStoredCompletionsSource">EvalStoredCompletionsSource</h2>
 <!-- backwards compatibility -->
 <a id="schemaevalstoredcompletionssource"></a>
@@ -73974,12 +74495,6 @@ A StoredCompletionsRunDataSource configuration describing a set of filters
 |created_before|integer \| null|false|none|none|
 |limit|integer \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|stored_completions|
-
 <h2 id="tocS_FileExpirationAfter">FileExpirationAfter</h2>
 <!-- backwards compatibility -->
 <a id="schemafileexpirationafter"></a>
@@ -74002,12 +74517,6 @@ The expiration policy for a file. By default, files with `purpose=batch` expire 
 |---|---|---|---|---|
 |anchor|string|true|none|Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.|
 |seconds|integer(int64)|true|none|The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|anchor|created_at|
 
 <h2 id="tocS_FilePath">FilePath</h2>
 <!-- backwards compatibility -->
@@ -74033,12 +74542,6 @@ A path to a file.
 |type|string|true|none|The type of the file path. Always `file_path`.<br>|
 |file_id|string|true|none|The ID of the file.<br>|
 |index|integer|true|none|The index of the file in the list of files.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_path|
 
 <h2 id="tocS_FileSearchRanker">FileSearchRanker</h2>
 <!-- backwards compatibility -->
@@ -74132,7 +74635,6 @@ The results of a file search tool call. See the
 
 |Property|Value|
 |---|---|
-|type|file_search_call|
 |status|in_progress|
 |status|searching|
 |status|completed|
@@ -75012,12 +75514,6 @@ in the evaluation.
 |labels|[string]|true|none|The labels to assign to each item in the evaluation.|
 |passing_labels|[string]|true|none|The labels that indicate a passing result. Must be a subset of labels.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|label_model|
-
 <h2 id="tocS_GraderMulti">GraderMulti</h2>
 <!-- backwards compatibility -->
 <a id="schemagradermulti"></a>
@@ -75060,12 +75556,6 @@ A MultiGrader object combines the output of multiple graders to produce a single
 |graders|object|true|none|none|
 |calculate_output|string|true|none|A formula to calculate the output based on grader results.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|multi|
-
 <h2 id="tocS_GraderPython">GraderPython</h2>
 <!-- backwards compatibility -->
 <a id="schemagraderpython"></a>
@@ -75092,12 +75582,6 @@ A PythonGrader object that runs a python script on the input.
 |name|string|true|none|The name of the grader.|
 |source|string|true|none|The source code of the python script.|
 |image_tag|string|false|none|The image tag to use for the python script.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|python|
 
 <h2 id="tocS_GraderScoreModel">GraderScoreModel</h2>
 <!-- backwards compatibility -->
@@ -75144,12 +75628,6 @@ A ScoreModelGrader object that uses a model to assign a score to the input.
 |input|[[EvalItem](#schemaevalitem)]|true|none|The input messages evaluated by the grader. Supports text, output text, input image, and input audio content blocks, and may include template strings.<br>|
 |range|[number]|false|none|The service requires two numbers for the score range. Defaults to `[0, 1]`.<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|score_model|
-
 <h2 id="tocS_GraderStringCheck">GraderStringCheck</h2>
 <!-- backwards compatibility -->
 <a id="schemagraderstringcheck"></a>
@@ -75183,7 +75661,6 @@ A StringCheckGrader object that performs a string comparison between input and r
 
 |Property|Value|
 |---|---|
-|type|string_check|
 |operation|eq|
 |operation|ne|
 |operation|like|
@@ -75222,7 +75699,6 @@ A TextSimilarityGrader object which grades text based on similarity metrics.
 
 |Property|Value|
 |---|---|
-|type|text_similarity|
 |evaluation_metric|cosine|
 |evaluation_metric|fuzzy_match|
 |evaluation_metric|bleu|
@@ -75264,12 +75740,6 @@ Summary information about a group returned in role assignment responses.
 |created_at|integer(unixtime)|true|none|Unix timestamp (in seconds) when the group was created.|
 |scim_managed|boolean|true|none|Whether the group is managed through SCIM.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|group|
-
 <h2 id="tocS_GroupDeletedResource">GroupDeletedResource</h2>
 <!-- backwards compatibility -->
 <a id="schemagroupdeletedresource"></a>
@@ -75294,12 +75764,6 @@ Confirmation payload returned after deleting a group.
 |object|string|true|none|Always `group.deleted`.|
 |id|string|true|none|Identifier of the deleted group.|
 |deleted|boolean|true|none|Whether the group was deleted.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|group.deleted|
 
 <h2 id="tocS_GroupListResource">GroupListResource</h2>
 <!-- backwards compatibility -->
@@ -75335,12 +75799,6 @@ Paginated list of organization groups.
 |data|[[GroupResponse](#schemagroupresponse)]|true|none|Groups returned in the current page.|
 |has_more|boolean|true|none|Whether additional groups are available when paginating.|
 |next|string \| null|true|none|Cursor to fetch the next page of results, or `null` if there are no more results.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
 
 <h2 id="tocS_GroupMemberUser">GroupMemberUser</h2>
 <!-- backwards compatibility -->
@@ -75484,12 +75942,6 @@ Role assignment linking a group to a role.
 |group|[Group](#schemagroup)|true|none|Summary information about a group returned in role assignment responses.|
 |role|[Role](#schemarole)|true|none|Details about a role that can be assigned through the public Roles API.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|group.role|
-
 <h2 id="tocS_GroupUser">GroupUser</h2>
 <!-- backwards compatibility -->
 <a id="schemagroupuser"></a>
@@ -75540,12 +75992,6 @@ Confirmation payload returned after adding a user to a group.
 |user_id|string|true|none|Identifier of the user that was added.|
 |group_id|string|true|none|Identifier of the group the user was added to.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|group.user|
-
 <h2 id="tocS_GroupUserDeletedResource">GroupUserDeletedResource</h2>
 <!-- backwards compatibility -->
 <a id="schemagroupuserdeletedresource"></a>
@@ -75568,12 +76014,6 @@ Confirmation payload returned after removing a user from a group.
 |---|---|---|---|---|
 |object|string|true|none|Always `group.user.deleted`.|
 |deleted|boolean|true|none|Whether the group membership was removed.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|group.user.deleted|
 
 <h2 id="tocS_HostedToolPermission">HostedToolPermission</h2>
 <!-- backwards compatibility -->
@@ -75985,7 +76425,6 @@ A tool that generates images using the GPT image models.
 
 |Property|Value|
 |---|---|
-|type|image_generation|
 |complexity|low|
 |complexity|medium|
 |complexity|high|
@@ -78564,7 +79003,7 @@ Startup configuration for a Live media session. Follow the [Live prompting guide
 |input|[input](#schemainput)|false|none|Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and a configured rendered-token limit (8,192 by default).|
 |client|[LiveClientConfigParam](#schemaliveclientconfigparam)|false|none|Startup-only capabilities for an untrusted frontend attached to a unified WebRTC session. Trusted sideband connections are unaffected.|
 |wake_policy|[LiveSpeechWakePolicyParam](#schemalivespeechwakepolicyparam)|false|none|Starts inference when microphone speech is detected.|
-|idle_timeout_s|[idle_timeout_s](#schemaidle_timeout_s)|false|none|Whole seconds of inactivity after which a Live WebRTC session with a speech wake policy pauses inference. The connection and conversation history are retained. Omit to keep inference active after the first wake until the session ends.|
+|idle_timeout_s|[idle_timeout_s](#schemaidle_timeout_s)|false|none|Whole seconds of inactivity after which a Live WebRTC or SIP session with a speech wake policy pauses inference. The connection and conversation history are retained. Omit to keep inference active after the first wake until the session ends.|
 
 <h2 id="tocS_LiveMediaSessionForkParams">LiveMediaSessionForkParams</h2>
 <!-- backwards compatibility -->
@@ -79111,7 +79550,6 @@ A tool call to run a command on the local shell.
 
 |Property|Value|
 |---|---|
-|type|local_shell_call|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -79142,12 +79580,6 @@ The output of a local shell tool call.
 |id|string|true|none|The unique ID of the local shell tool call generated by the model.<br>|
 |output|string|true|none|A JSON string of the output of the local shell tool call.<br>|
 |status|string \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|local_shell_call_output|
 
 <h2 id="tocS_LogProbProperties">LogProbProperties</h2>
 <!-- backwards compatibility -->
@@ -79515,12 +79947,6 @@ References an image [File](https://developers.openai.com/api/reference/resources
 |type|string|true|none|Always `image_file`.|
 |image_file|object|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|image_file|
-
 <h2 id="tocS_MessageContentImageUrlObject">MessageContentImageUrlObject</h2>
 <!-- backwards compatibility -->
 <a id="schemamessagecontentimageurlobject"></a>
@@ -79547,12 +79973,6 @@ References an image URL in the content of a message.
 |type|string|true|none|The type of the content part.|
 |image_url|object|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|image_url|
-
 <h2 id="tocS_MessageContentRefusalObject">MessageContentRefusalObject</h2>
 <!-- backwards compatibility -->
 <a id="schemamessagecontentrefusalobject"></a>
@@ -79575,12 +79995,6 @@ The refusal content generated by the assistant.
 |---|---|---|---|---|
 |type|string|true|none|Always `refusal`.|
 |refusal|string|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|refusal|
 
 <h2 id="tocS_MessageContentTextAnnotationsFileCitationObject">MessageContentTextAnnotationsFileCitationObject</h2>
 <!-- backwards compatibility -->
@@ -79613,12 +80027,6 @@ A citation within the message that points to a specific quote from a specific Fi
 |start_index|integer|true|none|none|
 |end_index|integer|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_citation|
-
 <h2 id="tocS_MessageContentTextAnnotationsFilePathObject">MessageContentTextAnnotationsFilePathObject</h2>
 <!-- backwards compatibility -->
 <a id="schemamessagecontenttextannotationsfilepathobject"></a>
@@ -79649,12 +80057,6 @@ A URL for the file that's generated when the assistant used the `code_interprete
 |file_path|object|true|none|none|
 |start_index|integer|true|none|none|
 |end_index|integer|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_path|
 
 <h2 id="tocS_MessageContentTextObject">MessageContentTextObject</h2>
 <!-- backwards compatibility -->
@@ -79692,12 +80094,6 @@ The text content that is part of a message.
 |type|string|true|none|Always `text`.|
 |text|object|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|text|
-
 <h2 id="tocS_MessageDeltaContentImageFileObject">MessageDeltaContentImageFileObject</h2>
 <!-- backwards compatibility -->
 <a id="schemamessagedeltacontentimagefileobject"></a>
@@ -79725,12 +80121,6 @@ References an image [File](https://developers.openai.com/api/reference/resources
 |index|integer|true|none|The index of the content part in the message.|
 |type|string|true|none|Always `image_file`.|
 |image_file|object|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|image_file|
 
 <h2 id="tocS_MessageDeltaContentImageUrlObject">MessageDeltaContentImageUrlObject</h2>
 <!-- backwards compatibility -->
@@ -79760,12 +80150,6 @@ References an image URL in the content of a message.
 |type|string|true|none|Always `image_url`.|
 |image_url|object|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|image_url|
-
 <h2 id="tocS_MessageDeltaContentRefusalObject">MessageDeltaContentRefusalObject</h2>
 <!-- backwards compatibility -->
 <a id="schemamessagedeltacontentrefusalobject"></a>
@@ -79790,12 +80174,6 @@ The refusal content that is part of a message.
 |index|integer|true|none|The index of the refusal part in the message.|
 |type|string|true|none|Always `refusal`.|
 |refusal|string|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|refusal|
 
 <h2 id="tocS_MessageDeltaContentTextAnnotationsFileCitationObject">MessageDeltaContentTextAnnotationsFileCitationObject</h2>
 <!-- backwards compatibility -->
@@ -79831,12 +80209,6 @@ A citation within the message that points to a specific quote from a specific Fi
 |start_index|integer|false|none|none|
 |end_index|integer|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_citation|
-
 <h2 id="tocS_MessageDeltaContentTextAnnotationsFilePathObject">MessageDeltaContentTextAnnotationsFilePathObject</h2>
 <!-- backwards compatibility -->
 <a id="schemamessagedeltacontenttextannotationsfilepathobject"></a>
@@ -79869,12 +80241,6 @@ A URL for the file that's generated when the assistant used the `code_interprete
 |file_path|object|false|none|none|
 |start_index|integer|false|none|none|
 |end_index|integer|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_path|
 
 <h2 id="tocS_MessageDeltaContentTextObject">MessageDeltaContentTextObject</h2>
 <!-- backwards compatibility -->
@@ -79916,12 +80282,6 @@ The text content that is part of a message.
 |type|string|true|none|Always `text`.|
 |text|object|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|text|
-
 <h2 id="tocS_MessageDeltaObject">MessageDeltaObject</h2>
 <!-- backwards compatibility -->
 <a id="schemamessagedeltaobject"></a>
@@ -79958,12 +80318,6 @@ Represents a message delta i.e. any changed fields on a message during streaming
 |id|string|true|none|The identifier of the message, which can be referenced in API endpoints.|
 |object|string|true|none|The object type, which is always `thread.message.delta`.|
 |delta|object|true|none|The delta containing the fields that have changed on the Message.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|thread.message.delta|
 
 <h2 id="tocS_MessageObject">MessageObject</h2>
 <!-- backwards compatibility -->
@@ -80038,7 +80392,6 @@ Represents a message within a [thread](https://developers.openai.com/api/docs/as
 
 |Property|Value|
 |---|---|
-|object|thread.message|
 |status|in_progress|
 |status|incomplete|
 |status|completed|
@@ -80082,12 +80435,6 @@ The text content that is part of a message.
 |---|---|---|---|---|
 |type|string|true|none|Always `text`.|
 |text|string|true|none|Text content to be sent to the model|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|text|
 
 <h2 id="tocS_MessageStreamEvent">MessageStreamEvent</h2>
 <!-- backwards compatibility -->
@@ -80160,16 +80507,6 @@ The text content that is part of a message.
 |event|string|true|none|none|
 |data|[MessageObject](#schemamessageobject)|true|none|Represents a message within a [thread](https://developers.openai.com/api/docs/assistants/migration).|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|event|thread.message.created|
-|event|thread.message.in_progress|
-|event|thread.message.delta|
-|event|thread.message.completed|
-|event|thread.message.incomplete|
-
 <h2 id="tocS_Metadata">Metadata</h2>
 <!-- backwards compatibility -->
 <a id="schemametadata"></a>
@@ -80188,7 +80525,7 @@ The text content that is part of a message.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anyOf*|object|false|none|Set of 16 key-value pairs that can be attached to an object. This can be<br>useful for storing additional information about the object in a structured<br>format, and querying for objects via API or the dashboard.<br><br>Keys are strings with a maximum length of 64 characters. Values are strings<br>with a maximum length of 512 characters.<br>|
+|*anyOf*|object|false|none|Set of 16 key-value pairs that can be attached to an object. This can be<br>useful for storing additional information about the object in a structured<br>format.<br><br>Keys are strings with a maximum length of 64 characters. Values are strings<br>with a maximum length of 512 characters.<br>|
 |**additionalProperties**|string|false|none|none|
 |*anyOf*|null|false|none|none|
 
@@ -80332,6 +80669,10 @@ The Live model. Required in the session configuration for every transport; do no
 |*anyOf*|gpt-rosalind-research|
 |*anyOf*|gpt-6-rosalind|
 |*anyOf*|gpt-6.2-astra-law|
+|*anyOf*|gpt-6-astra-healthcare|
+|*anyOf*|gpt-6.1-sol-healthcare|
+|*anyOf*|gpt-6.2-astra-healthcare|
+|*anyOf*|gpt-6.2-sol-healthcare|
 
 <h2 id="tocS_ModelIdsShared">ModelIdsShared</h2>
 <!-- backwards compatibility -->
@@ -81421,12 +81762,6 @@ being regenerated.
 |---|---|---|---|---|
 |type|string|true|none|The type of the predicted content you want to provide. This type is<br>currently always `content`.<br>|
 |content|string \| [[ChatCompletionRequestMessageContentPartText](#schemachatcompletionrequestmessagecontentparttext)]|true|none|The content that should be matched when generating a model response.<br>If generated tokens would match this content, the entire model response<br>can be returned much more quickly.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|content|
 
 <h2 id="tocS_Project">Project</h2>
 <!-- backwards compatibility -->
@@ -82709,12 +83044,6 @@ Paginated list of roles available on an organization or project.
 |data|[[Role](#schemarole)]|true|none|Roles returned in the current page.|
 |has_more|boolean|true|none|Whether more roles are available when paginating.|
 |next|string \| null|true|none|Cursor to fetch the next page of results, or `null` when there are no additional roles.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
 
 <h2 id="tocS_PublicUpdateOrganizationRoleBody">PublicUpdateOrganizationRoleBody</h2>
 <!-- backwards compatibility -->
@@ -90849,7 +91178,6 @@ for subsequent turns of a conversation if you are manually
 
 |Property|Value|
 |---|---|
-|type|reasoning|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -95100,12 +95428,6 @@ Details about a role that can be assigned through the public Roles API.
 |resource_type|string|true|none|Resource type the role is bound to (for example `api.organization` or `api.project`).|
 |predefined_role|boolean|true|none|Whether the role is predefined and managed by OpenAI.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|role|
-
 <h2 id="tocS_RoleDeletedResource">RoleDeletedResource</h2>
 <!-- backwards compatibility -->
 <a id="schemaroledeletedresource"></a>
@@ -95130,12 +95452,6 @@ Confirmation payload returned after deleting a role.
 |object|string|true|none|Always `role.deleted`.|
 |id|string|true|none|Identifier of the deleted role.|
 |deleted|boolean|true|none|Whether the role was deleted.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|role.deleted|
 
 <h2 id="tocS_RoleListResource">RoleListResource</h2>
 <!-- backwards compatibility -->
@@ -95185,12 +95501,6 @@ Paginated list of roles assigned to a principal.
 |data|[[AssignedRoleDetails](#schemaassignedroledetails)]|true|none|Role assignments returned in the current page.|
 |has_more|boolean|true|none|Whether additional assignments are available when paginating.|
 |next|string \| null|true|none|Cursor to fetch the next page of results, or `null` when there are no more assignments.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
 
 <h2 id="tocS_RunCompletionUsage">RunCompletionUsage</h2>
 <!-- backwards compatibility -->
@@ -95414,7 +95724,6 @@ Represents an execution run on a [thread](https://developers.openai.com/api/docs
 
 |Property|Value|
 |---|---|
-|object|thread.run|
 |status|queued|
 |status|in_progress|
 |status|requires_action|
@@ -95482,12 +95791,6 @@ Represents a run step delta i.e. any changed fields on a run step during streami
 |object|string|true|none|The object type, which is always `thread.run.step.delta`.|
 |delta|object|true|none|The delta containing the fields that have changed on the run step.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|thread.run.step.delta|
-
 <h2 id="tocS_RunStepDeltaStepDetailsMessageCreationObject">RunStepDeltaStepDetailsMessageCreationObject</h2>
 <!-- backwards compatibility -->
 <a id="schemarunstepdeltastepdetailsmessagecreationobject"></a>
@@ -95512,12 +95815,6 @@ Details of the message creation by the run step.
 |---|---|---|---|---|
 |type|string|true|none|Always `message_creation`.|
 |message_creation|object|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|message_creation|
 
 <h2 id="tocS_RunStepDeltaStepDetailsToolCallsCodeObject">RunStepDeltaStepDetailsToolCallsCodeObject</h2>
 <!-- backwards compatibility -->
@@ -95555,12 +95852,6 @@ Details of the Code Interpreter tool call the run step was involved in.
 |type|string|true|none|The type of tool call. This is always going to be `code_interpreter` for this type of tool call.|
 |code_interpreter|object|false|none|The Code Interpreter tool call definition.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|code_interpreter|
-
 <h2 id="tocS_RunStepDeltaStepDetailsToolCallsCodeOutputImageObject">RunStepDeltaStepDetailsToolCallsCodeOutputImageObject</h2>
 <!-- backwards compatibility -->
 <a id="schemarunstepdeltastepdetailstoolcallscodeoutputimageobject"></a>
@@ -95585,12 +95876,6 @@ Details of the Code Interpreter tool call the run step was involved in.
 |index|integer|true|none|The index of the output in the outputs array.|
 |type|string|true|none|Always `image`.|
 |image|object|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|image|
 
 <h2 id="tocS_RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject">RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject</h2>
 <!-- backwards compatibility -->
@@ -95617,12 +95902,6 @@ Text output from the Code Interpreter tool call as part of a run step.
 |type|string|true|none|Always `logs`.|
 |logs|string|false|none|The text output from the Code Interpreter tool call.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|logs|
-
 <h2 id="tocS_RunStepDeltaStepDetailsToolCallsFileSearchObject">RunStepDeltaStepDetailsToolCallsFileSearchObject</h2>
 <!-- backwards compatibility -->
 <a id="schemarunstepdeltastepdetailstoolcallsfilesearchobject"></a>
@@ -95647,12 +95926,6 @@ Text output from the Code Interpreter tool call as part of a run step.
 |id|string|false|none|The ID of the tool call object.|
 |type|string|true|none|The type of tool call. This is always going to be `file_search` for this type of tool call.|
 |file_search|object|true|none|For now, this is always going to be an empty object.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_search|
 
 <h2 id="tocS_RunStepDeltaStepDetailsToolCallsFunctionObject">RunStepDeltaStepDetailsToolCallsFunctionObject</h2>
 <!-- backwards compatibility -->
@@ -95682,12 +95955,6 @@ Text output from the Code Interpreter tool call as part of a run step.
 |id|string|false|none|The ID of the tool call object.|
 |type|string|true|none|The type of tool call. This is always going to be `function` for this type of tool call.|
 |function|object|false|none|The definition of the function that was called.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|function|
 
 <h2 id="tocS_RunStepDeltaStepDetailsToolCallsObject">RunStepDeltaStepDetailsToolCallsObject</h2>
 <!-- backwards compatibility -->
@@ -95728,12 +95995,6 @@ Details of the tool call.
 |type|string|true|none|Always `tool_calls`.|
 |tool_calls|[[RunStepDeltaStepDetailsToolCallsCodeObject](#schemarunstepdeltastepdetailstoolcallscodeobject) \| [RunStepDeltaStepDetailsToolCallsFileSearchObject](#schemarunstepdeltastepdetailstoolcallsfilesearchobject) \| [RunStepDeltaStepDetailsToolCallsFunctionObject](#schemarunstepdeltastepdetailstoolcallsfunctionobject)]|false|none|An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `file_search`, or `function`.<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|tool_calls|
-
 <h2 id="tocS_RunStepDetailsMessageCreationObject">RunStepDetailsMessageCreationObject</h2>
 <!-- backwards compatibility -->
 <a id="schemarunstepdetailsmessagecreationobject"></a>
@@ -95758,12 +96019,6 @@ Details of the message creation by the run step.
 |---|---|---|---|---|
 |type|string|true|none|Always `message_creation`.|
 |message_creation|object|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|message_creation|
 
 <h2 id="tocS_RunStepDetailsToolCallsCodeObject">RunStepDetailsToolCallsCodeObject</h2>
 <!-- backwards compatibility -->
@@ -95798,12 +96053,6 @@ Details of the Code Interpreter tool call the run step was involved in.
 |type|string|true|none|The type of tool call. This is always going to be `code_interpreter` for this type of tool call.|
 |code_interpreter|object|true|none|The Code Interpreter tool call definition.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|code_interpreter|
-
 <h2 id="tocS_RunStepDetailsToolCallsCodeOutputImageObject">RunStepDetailsToolCallsCodeOutputImageObject</h2>
 <!-- backwards compatibility -->
 <a id="schemarunstepdetailstoolcallscodeoutputimageobject"></a>
@@ -95827,12 +96076,6 @@ Details of the Code Interpreter tool call the run step was involved in.
 |type|string|true|none|Always `image`.|
 |image|object|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|image|
-
 <h2 id="tocS_RunStepDetailsToolCallsCodeOutputLogsObject">RunStepDetailsToolCallsCodeOutputLogsObject</h2>
 <!-- backwards compatibility -->
 <a id="schemarunstepdetailstoolcallscodeoutputlogsobject"></a>
@@ -95855,12 +96098,6 @@ Text output from the Code Interpreter tool call as part of a run step.
 |---|---|---|---|---|
 |type|string|true|none|Always `logs`.|
 |logs|string|true|none|The text output from the Code Interpreter tool call.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|logs|
 
 <h2 id="tocS_RunStepDetailsToolCallsFileSearchObject">RunStepDetailsToolCallsFileSearchObject</h2>
 <!-- backwards compatibility -->
@@ -95902,12 +96139,6 @@ Text output from the Code Interpreter tool call as part of a run step.
 |id|string|true|none|The ID of the tool call object.|
 |type|string|true|none|The type of tool call. This is always going to be `file_search` for this type of tool call.|
 |file_search|object|true|none|For now, this is always going to be an empty object.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_search|
 
 <h2 id="tocS_RunStepDetailsToolCallsFileSearchRankingOptionsObject">RunStepDetailsToolCallsFileSearchRankingOptionsObject</h2>
 <!-- backwards compatibility -->
@@ -95998,12 +96229,6 @@ A result instance of the file search.
 |type|string|true|none|The type of tool call. This is always going to be `function` for this type of tool call.|
 |function|object|true|none|The definition of the function that was called.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|function|
-
 <h2 id="tocS_RunStepDetailsToolCallsObject">RunStepDetailsToolCallsObject</h2>
 <!-- backwards compatibility -->
 <a id="schemarunstepdetailstoolcallsobject"></a>
@@ -96040,12 +96265,6 @@ Details of the tool call.
 |---|---|---|---|---|
 |type|string|true|none|Always `tool_calls`.|
 |tool_calls|[[RunStepDetailsToolCallsCodeObject](#schemarunstepdetailstoolcallscodeobject) \| [RunStepDetailsToolCallsFileSearchObject](#schemarunstepdetailstoolcallsfilesearchobject) \| [RunStepDetailsToolCallsFunctionObject](#schemarunstepdetailstoolcallsfunctionobject)]|true|none|An array of tool calls the run step was involved in. These can be associated with one of three types of tools: `code_interpreter`, `file_search`, or `function`.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|tool_calls|
 
 <h2 id="tocS_RunStepObject">RunStepObject</h2>
 <!-- backwards compatibility -->
@@ -96117,7 +96336,6 @@ Represents a step in execution of a run.
 
 |Property|Value|
 |---|---|
-|object|thread.run.step|
 |type|message_creation|
 |type|tool_calls|
 |status|in_progress|
@@ -96197,18 +96415,6 @@ Represents a step in execution of a run.
 |*oneOf*|object|false|none|Occurs when a [run step](https://developers.openai.com/api/docs/assistants/migration) expires.|
 |event|string|true|none|none|
 |data|[RunStepObject](#schemarunstepobject)|true|none|Represents a step in execution of a run.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|event|thread.run.step.created|
-|event|thread.run.step.in_progress|
-|event|thread.run.step.delta|
-|event|thread.run.step.completed|
-|event|thread.run.step.failed|
-|event|thread.run.step.cancelled|
-|event|thread.run.step.expired|
 
 <h2 id="tocS_RunStreamEvent">RunStreamEvent</h2>
 <!-- backwards compatibility -->
@@ -96316,21 +96522,6 @@ Represents a step in execution of a run.
 |event|string|true|none|none|
 |data|[RunObject](#schemarunobject)|true|none|Represents an execution run on a [thread](https://developers.openai.com/api/docs/assistants/migration).|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|event|thread.run.created|
-|event|thread.run.queued|
-|event|thread.run.in_progress|
-|event|thread.run.requires_action|
-|event|thread.run.completed|
-|event|thread.run.incomplete|
-|event|thread.run.failed|
-|event|thread.run.cancelling|
-|event|thread.run.cancelled|
-|event|thread.run.expired|
-
 <h2 id="tocS_RunToolCallObject">RunToolCallObject</h2>
 <!-- backwards compatibility -->
 <a id="schemaruntoolcallobject"></a>
@@ -96358,12 +96549,6 @@ Tool call objects
 |id|string|true|none|The ID of the tool call. This ID must be referenced when you submit the tool outputs in using the [Submit tool outputs to run](https://developers.openai.com/api/docs/assistants/migration) endpoint.|
 |type|string|true|none|The type of tool call the output is required for. For now, this is always `function`.|
 |function|object|true|none|The function definition.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|function|
 
 <h2 id="tocS_ServiceTier">ServiceTier</h2>
 <!-- backwards compatibility -->
@@ -96687,12 +96872,6 @@ Learn more about [Structured Outputs](https://developers.openai.com/api/docs/gui
 |schema|[ResponseFormatJsonSchemaSchema](#schemaresponseformatjsonschemaschema)|true|none|The schema for the response format, described as a JSON Schema object.<br>Learn how to build JSON schemas [here](https://json-schema.org/).<br>|
 |strict|boolean \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|json_schema|
-
 <h2 id="tocS_ThreadObject">ThreadObject</h2>
 <!-- backwards compatibility -->
 <a id="schemathreadobject"></a>
@@ -96733,12 +96912,6 @@ Represents a thread that contains [messages](https://developers.openai.com/api/d
 |created_at|integer(unixtime)|true|none|The Unix timestamp (in seconds) for when the thread was created.|
 |tool_resources|object \| null|true|none|none|
 |metadata|[Metadata](#schemametadata)|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|thread|
 
 <h2 id="tocS_ThreadStreamEvent">ThreadStreamEvent</h2>
 <!-- backwards compatibility -->
@@ -96781,12 +96954,6 @@ Represents a thread that contains [messages](https://developers.openai.com/api/d
 |enabled|boolean|false|none|Whether to enable input audio transcription.|
 |event|string|true|none|none|
 |data|[ThreadObject](#schemathreadobject)|true|none|Represents a thread that contains [messages](https://developers.openai.com/api/docs/assistants/migration).|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|event|thread.created|
 
 <h2 id="tocS_ToggleCertificatesRequest">ToggleCertificatesRequest</h2>
 <!-- backwards compatibility -->
@@ -96892,7 +97059,6 @@ Constrains the tools available to the model to a pre-defined set.
 
 |Property|Value|
 |---|---|
-|type|allowed_tools|
 |mode|auto|
 |mode|required|
 
@@ -96919,12 +97085,6 @@ Use this option to force the model to call a specific custom tool.
 |type|string|true|none|For custom tool calling, the type is always `custom`.|
 |name|string|true|none|The name of the custom tool to call.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|custom|
-
 <h2 id="tocS_ToolChoiceFunction">ToolChoiceFunction</h2>
 <!-- backwards compatibility -->
 <a id="schematoolchoicefunction"></a>
@@ -96947,12 +97107,6 @@ Use this option to force the model to call a specific function.
 |---|---|---|---|---|
 |type|string|true|none|For function calling, the type is always `function`.|
 |name|string|true|none|The name of the function to call.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|function|
 
 <h2 id="tocS_ToolChoiceMCP">ToolChoiceMCP</h2>
 <!-- backwards compatibility -->
@@ -96978,12 +97132,6 @@ Use this option to force the model to call a specific tool on a remote MCP serve
 |type|string|true|none|For MCP tools, the type is always `mcp`.|
 |server_label|string|true|none|The label of the MCP server to use.<br>|
 |name|string \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|mcp|
 
 <h2 id="tocS_ToolChoiceOptions">ToolChoiceOptions</h2>
 <!-- backwards compatibility -->
@@ -97212,12 +97360,6 @@ Emitted when there is an additional text delta. This is also the first event emi
 |logprobs|[object]|false|none|The log probabilities of the delta. Only included if you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `include[]` parameter set to `logprobs`.<br>|
 |segment_id|string|false|none|Identifier of the diarized segment that this delta belongs to. Only present when using `gpt-4o-transcribe-diarize`.<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|transcript.text.delta|
-
 <h2 id="tocS_TranscriptTextDoneEvent">TranscriptTextDoneEvent</h2>
 <!-- backwards compatibility -->
 <a id="schematranscripttextdoneevent"></a>
@@ -97268,12 +97410,6 @@ Emitted when the transcription is complete. Contains the complete transcription 
 |logprobs|[object]|false|none|The log probabilities of the individual tokens in the transcription. Only included if you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `include[]` parameter set to `logprobs`.<br>|
 |usage|[TranscriptTextUsageTokens](#schematranscripttextusagetokens)|false|none|Usage statistics for models billed by token usage.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|transcript.text.done|
-
 <h2 id="tocS_TranscriptTextSegmentEvent">TranscriptTextSegmentEvent</h2>
 <!-- backwards compatibility -->
 <a id="schematranscripttextsegmentevent"></a>
@@ -97305,12 +97441,6 @@ Emitted when a diarized transcription returns a completed segment with speaker i
 |text|string|true|none|Transcript text for this segment.|
 |speaker|string|true|none|Speaker label for this segment.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|transcript.text.segment|
-
 <h2 id="tocS_TranscriptTextUsageDuration">TranscriptTextUsageDuration</h2>
 <!-- backwards compatibility -->
 <a id="schematranscripttextusageduration"></a>
@@ -97333,12 +97463,6 @@ Usage statistics for models billed by audio input duration.
 |---|---|---|---|---|
 |type|string|true|none|The type of the usage object. Always `duration` for this variant.|
 |seconds|number(double)|true|none|Duration of the input audio in seconds.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|duration|
 
 <h2 id="tocS_TranscriptTextUsageTokens">TranscriptTextUsageTokens</h2>
 <!-- backwards compatibility -->
@@ -97371,12 +97495,6 @@ Usage statistics for models billed by token usage.
 |input_token_details|object|false|none|Details about the input tokens billed for this request.|
 |output_tokens|integer|true|none|Number of output tokens generated.|
 |total_tokens|integer|true|none|Total number of tokens used (input + output).|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|tokens|
 
 <h2 id="tocS_TranscriptionChunkingStrategy">TranscriptionChunkingStrategy</h2>
 <!-- backwards compatibility -->
@@ -97431,12 +97549,6 @@ A segment of diarized transcript text with speaker metadata.
 |end|number(double)|true|none|End timestamp of the segment in seconds.|
 |text|string|true|none|Transcript text for this segment.|
 |speaker|string|true|none|Speaker label for this segment. When known speakers are provided, the label matches `known_speaker_names[]`. Otherwise speakers are labeled sequentially using capital letters (`A`, `B`, ...).<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|transcript.text.segment|
 
 <h2 id="tocS_TranscriptionInclude">TranscriptionInclude</h2>
 <!-- backwards compatibility -->
@@ -97882,12 +97994,6 @@ The aggregated audio speeches usage details of the specific time bucket.
 |api_key_id|string \| null|false|none|none|
 |model|string \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.audio_speeches.result|
-
 <h2 id="tocS_UsageAudioTranscriptionsResult">UsageAudioTranscriptionsResult</h2>
 <!-- backwards compatibility -->
 <a id="schemausageaudiotranscriptionsresult"></a>
@@ -97921,12 +98027,6 @@ The aggregated audio transcriptions usage details of the specific time bucket.
 |api_key_id|string \| null|false|none|none|
 |model|string \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.audio_transcriptions.result|
-
 <h2 id="tocS_UsageCodeInterpreterSessionsResult">UsageCodeInterpreterSessionsResult</h2>
 <!-- backwards compatibility -->
 <a id="schemausagecodeinterpretersessionsresult"></a>
@@ -97951,12 +98051,6 @@ The aggregated code interpreter sessions usage details of the specific time buck
 |object|string|true|none|none|
 |num_sessions|integer|true|none|The number of code interpreter sessions.|
 |project_id|string \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.code_interpreter_sessions.result|
 
 <h2 id="tocS_UsageCompletionsResult">UsageCompletionsResult</h2>
 <!-- backwards compatibility -->
@@ -98027,12 +98121,6 @@ The aggregated completions usage details of the specific time bucket.
 |batch|boolean \| null|false|none|none|
 |service_tier|string \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.completions.result|
-
 <h2 id="tocS_UsageEmbeddingsResult">UsageEmbeddingsResult</h2>
 <!-- backwards compatibility -->
 <a id="schemausageembeddingsresult"></a>
@@ -98066,12 +98154,6 @@ The aggregated embeddings usage details of the specific time bucket.
 |api_key_id|string \| null|false|none|none|
 |model|string \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.embeddings.result|
-
 <h2 id="tocS_UsageFileSearchCallsResult">UsageFileSearchCallsResult</h2>
 <!-- backwards compatibility -->
 <a id="schemausagefilesearchcallsresult"></a>
@@ -98102,12 +98184,6 @@ The aggregated file search calls usage details of the specific time bucket.
 |user_id|string \| null|false|none|none|
 |api_key_id|string \| null|false|none|none|
 |vector_store_id|string \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.file_searches.result|
 
 <h2 id="tocS_UsageImagesResult">UsageImagesResult</h2>
 <!-- backwards compatibility -->
@@ -98146,12 +98222,6 @@ The aggregated images usage details of the specific time bucket.
 |api_key_id|string \| null|false|none|none|
 |model|string \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.images.result|
-
 <h2 id="tocS_UsageModerationsResult">UsageModerationsResult</h2>
 <!-- backwards compatibility -->
 <a id="schemausagemoderationsresult"></a>
@@ -98184,12 +98254,6 @@ The aggregated moderations usage details of the specific time bucket.
 |user_id|string \| null|false|none|none|
 |api_key_id|string \| null|false|none|none|
 |model|string \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.moderations.result|
 
 <h2 id="tocS_UsageResponse">UsageResponse</h2>
 <!-- backwards compatibility -->
@@ -98251,12 +98315,6 @@ The aggregated moderations usage details of the specific time bucket.
 |has_more|boolean|true|none|none|
 |next_page|string \| null|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|page|
-
 <h2 id="tocS_UsageTimeBucket">UsageTimeBucket</h2>
 <!-- backwards compatibility -->
 <a id="schemausagetimebucket"></a>
@@ -98310,12 +98368,6 @@ The aggregated moderations usage details of the specific time bucket.
 |end_time|integer|true|none|none|
 |results|[[UsageCompletionsResult](#schemausagecompletionsresult) \| [UsageEmbeddingsResult](#schemausageembeddingsresult) \| [UsageModerationsResult](#schemausagemoderationsresult) \| [UsageImagesResult](#schemausageimagesresult) \| [UsageAudioSpeechesResult](#schemausageaudiospeechesresult) \| [UsageAudioTranscriptionsResult](#schemausageaudiotranscriptionsresult) \| [UsageVectorStoresResult](#schemausagevectorstoresresult) \| [UsageCodeInterpreterSessionsResult](#schemausagecodeinterpretersessionsresult) \| [UsageFileSearchCallsResult](#schemausagefilesearchcallsresult) \| [UsageWebSearchCallsResult](#schemausagewebsearchcallsresult) \| [CostsResult](#schemacostsresult)]|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|bucket|
-
 <h2 id="tocS_UsageVectorStoresResult">UsageVectorStoresResult</h2>
 <!-- backwards compatibility -->
 <a id="schemausagevectorstoresresult"></a>
@@ -98340,12 +98392,6 @@ The aggregated vector stores usage details of the specific time bucket.
 |object|string|true|none|none|
 |usage_bytes|integer|true|none|The vector stores usage in bytes.|
 |project_id|string \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.vector_stores.result|
 
 <h2 id="tocS_UsageWebSearchCallsResult">UsageWebSearchCallsResult</h2>
 <!-- backwards compatibility -->
@@ -98383,12 +98429,6 @@ The aggregated web search calls usage details of the specific time bucket.
 |api_key_id|string \| null|false|none|none|
 |model|string \| null|false|none|none|
 |context_level|string \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.usage.web_searches.result|
 
 <h2 id="tocS_User">User</h2>
 <!-- backwards compatibility -->
@@ -98459,12 +98499,6 @@ Represents an individual `user` within an organization.
 |developer_persona|string \| null|false|none|The developer persona metadata for the user.|
 |projects|object \| null|false|none|Projects associated with the user, if included.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.user|
-
 <h2 id="tocS_UserDeleteResponse">UserDeleteResponse</h2>
 <!-- backwards compatibility -->
 <a id="schemauserdeleteresponse"></a>
@@ -98487,12 +98521,6 @@ Represents an individual `user` within an organization.
 |object|string|true|none|none|
 |id|string|true|none|none|
 |deleted|boolean|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|organization.user.deleted|
 
 <h2 id="tocS_UserListResource">UserListResource</h2>
 <!-- backwards compatibility -->
@@ -98526,12 +98554,6 @@ Paginated list of user objects returned when inspecting group membership.
 |data|[[GroupUser](#schemagroupuser)]|true|none|Users in the current page.|
 |has_more|boolean|true|none|Whether more users are available when paginating.|
 |next|string \| null|true|none|Cursor to fetch the next page of results, or `null` when no further users are available.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
 
 <h2 id="tocS_UserListResponse">UserListResponse</h2>
 <!-- backwards compatibility -->
@@ -98596,12 +98618,6 @@ Paginated list of user objects returned when inspecting group membership.
 |first_id|string \| null|false|none|none|
 |last_id|string \| null|false|none|none|
 |has_more|boolean|true|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
 
 <h2 id="tocS_UserRoleAssignment">UserRoleAssignment</h2>
 <!-- backwards compatibility -->
@@ -98672,12 +98688,6 @@ Role assignment linking a user to a role.
 |object|string|true|none|Always `user.role`.|
 |user|[User](#schemauser)|true|none|Represents an individual `user` within an organization.|
 |role|[Role](#schemarole)|true|none|Details about a role that can be assigned through the public Roles API.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|user.role|
 
 <h2 id="tocS_UserRoleUpdateRequest">UserRoleUpdateRequest</h2>
 <!-- backwards compatibility -->
@@ -99217,12 +99227,6 @@ A vector store is a collection of processed files can be used by the `file_searc
 |object|string|true|none|none|
 |deleted|boolean|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|audio.voice_consent|
-
 <h2 id="tocS_VoiceConsentListResource">VoiceConsentListResource</h2>
 <!-- backwards compatibility -->
 <a id="schemavoiceconsentlistresource"></a>
@@ -99258,12 +99262,6 @@ A vector store is a collection of processed files can be used by the `file_searc
 |last_id|string \| null|false|none|none|
 |has_more|boolean|true|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|list|
-
 <h2 id="tocS_VoiceConsentResource">VoiceConsentResource</h2>
 <!-- backwards compatibility -->
 <a id="schemavoiceconsentresource"></a>
@@ -99293,12 +99291,6 @@ A consent recording used to authorize creation of a custom voice.
 |language|string|true|none|The BCP 47 language tag for the consent phrase (for example, `en-US`).|
 |created_at|integer(unixtime)|true|none|The Unix timestamp (in seconds) for when the consent recording was created.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|audio.voice_consent|
-
 <h2 id="tocS_VoiceDeletedResource">VoiceDeletedResource</h2>
 <!-- backwards compatibility -->
 <a id="schemavoicedeletedresource"></a>
@@ -99321,12 +99313,6 @@ A consent recording used to authorize creation of a custom voice.
 |id|string|true|none|The voice identifier.|
 |object|string|true|none|The object type, which is always `audio.voice.deleted`.|
 |deleted|boolean|true|none|Whether the voice was deleted.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|object|audio.voice.deleted|
 
 <h2 id="tocS_VoiceIdsOrCustomVoice">VoiceIdsOrCustomVoice</h2>
 <!-- backwards compatibility -->
@@ -99417,7 +99403,6 @@ A custom voice that can be used for audio output. Voices created from text promp
 
 |Property|Value|
 |---|---|
-|object|audio.voice|
 |type|audio_sample|
 |type|prompt|
 
@@ -108409,7 +108394,7 @@ Starts inference when microphone speech is detected.
 5
 ```
 
-Whole seconds of inactivity after which a Live WebRTC session with a speech wake policy pauses inference. The connection and conversation history are retained. Omit to keep inference active after the first wake until the session ends.
+Whole seconds of inactivity after which a Live WebRTC or SIP session with a speech wake policy pauses inference. The connection and conversation history are retained. Omit to keep inference active after the first wake until the session ends.
 
 <h2 id="tocS_session">session</h2>
 <!-- backwards compatibility -->
@@ -110047,6 +110032,7 @@ A streaming event that indicated shell call output was completed.
     "property1": "string",
     "property2": "string"
   },
+  "safety_identifier": "string",
   "items": [
     {
       "role": "user",
@@ -110063,6 +110049,7 @@ A streaming event that indicated shell call output was completed.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |metadata|[Metadata](#schemametadata) \| null|false|none|none|
+|safety_identifier|string \| null|false|none|none|
 |items|[[InputItem](#schemainputitem)] \| null|false|none|none|
 
 <h2 id="tocS_UpdateConversationBody">UpdateConversationBody</h2>
@@ -113401,6 +113388,7 @@ Parameters for remixing an existing generated video.
   "input": "string",
   "previous_response_id": "resp_123",
   "instructions": "string",
+  "safety_identifier": "string",
   "image": {
     "context_compression": "auto"
   },
@@ -113422,6 +113410,7 @@ Parameters for remixing an existing generated video.
 |input|string \| [[InputItem](#schemainputitem)] \| null|false|none|none|
 |previous_response_id|string \| null|false|none|none|
 |instructions|string \| null|false|none|none|
+|safety_identifier|string \| null|false|none|none|
 |image|[ImageOptionsParam](#schemaimageoptionsparam)|false|none|Request level image options.|
 |prompt_cache_key|string \| null|false|none|none|
 |prompt_cache_retention|[PromptCacheRetentionEnum](#schemapromptcacheretentionenum) \| null|false|none|none|
@@ -113501,6 +113490,7 @@ An item representing a message, tool call, tool output, reasoning, or other resp
 {
   "id": "resp_001",
   "object": "response.compaction",
+  "safety_identifier": "compact-review-example-001",
   "image": {
     "context_compression": "disabled"
   },
@@ -113558,8 +113548,10 @@ An item representing a message, tool call, tool output, reasoning, or other resp
 |image|[ResolvedImageOptions](#schemaresolvedimageoptions)|false|none|none|
 |id|string|true|none|The unique identifier for the compacted response.|
 |object|string|true|none|The object type. Always `response.compaction`.|
+|safety_identifier|string \| null|false|none|none|
 |output|[[ItemField](#schemaitemfield)]|true|none|The compacted list of output items.|
 |created_at|integer(unixtime)|true|none|Unix timestamp (in seconds) when the compacted conversation was created.|
+|service_tier|string|false|none|The service tier used for compaction, when reported.|
 |usage|[ResponseUsage](#schemaresponseusage)|true|none|Token accounting for the compaction pass, including cached, reasoning, and total tokens.|
 
 #### Enumerated Values
@@ -119498,7 +119490,7 @@ Agent configuration for a session. Omitted fields inherit from `agent_id` when s
 |instructions|string \| null|false|none|Additional instructions appended to the agent's default base instructions. Omit to leave unchanged.|
 |multi_agent|[MultiAgentConfigCurrentParam](#schemamultiagentconfigcurrentparam) \| null|false|none|Configuration for creating and coordinating subagents.|
 |compaction|[CompactionParam](#schemacompactionparam) \| null|false|none|Context compaction settings. Omit to keep the current settings. A supplied object replaces the settings; null or an empty object uses blocking compaction.|
-|tools|[[AgentToolConfigParam](#schemaagenttoolconfigparam)]|false|none|Tools available to the agent. Omit to inherit, or pass null to clear them. The resolved tool list must fit within 3 MiB (3,145,728 bytes) of compact UTF-8 JSON.|
+|tools|[[AgentToolConfigParam](#schemaagenttoolconfigparam)]|false|none|Tools available to the agent. Omit to inherit, or pass null to clear them. The resolved tool list must fit within 8 MiB (8,388,608 bytes) of compact UTF-8 JSON.|
 
 <h2 id="tocS_EnvironmentParamNone">EnvironmentParamNone</h2>
 <!-- backwards compatibility -->
@@ -135233,12 +135225,6 @@ Use this option to force the model to call a specific custom tool.
 |type|string|true|none|For custom tool calling, the type is always `custom`.|
 |name|string|true|none|The name of the custom tool to call.|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|custom|
-
 <h2 id="tocS_BetaToolChoiceMCP">BetaToolChoiceMCP</h2>
 <!-- backwards compatibility -->
 <a id="schemabetatoolchoicemcp"></a>
@@ -135264,12 +135250,6 @@ Use this option to force the model to call a specific tool on a remote MCP serve
 |server_label|string|true|none|The label of the MCP server to use.<br>|
 |name|string \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|mcp|
-
 <h2 id="tocS_BetaToolChoiceFunction">BetaToolChoiceFunction</h2>
 <!-- backwards compatibility -->
 <a id="schemabetatoolchoicefunction"></a>
@@ -135292,12 +135272,6 @@ Use this option to force the model to call a specific function.
 |---|---|---|---|---|
 |type|string|true|none|For function calling, the type is always `function`.|
 |name|string|true|none|The name of the function to call.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|function|
 
 <h2 id="tocS_BetaToolChoiceTypes">BetaToolChoiceTypes</h2>
 <!-- backwards compatibility -->
@@ -135365,7 +135339,6 @@ Constrains the tools available to the model to a pre-defined set.
 
 |Property|Value|
 |---|---|
-|type|allowed_tools|
 |mode|auto|
 |mode|required|
 
@@ -135694,12 +135667,6 @@ Learn more about [Structured Outputs](https://developers.openai.com/api/docs/gui
 |name|string|true|none|The name of the response format. Must be a-z, A-Z, 0-9, or contain<br>underscores and dashes, with a maximum length of 64.<br>|
 |schema|[BetaResponseFormatJsonSchemaSchema](#schemabetaresponseformatjsonschemaschema)|true|none|The schema for the response format, described as a JSON Schema object.<br>Learn how to build JSON schemas [here](https://json-schema.org/).<br>|
 |strict|boolean \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|json_schema|
 
 <h2 id="tocS_BetaResponseFormatJsonSchemaSchema">BetaResponseFormatJsonSchemaSchema</h2>
 <!-- backwards compatibility -->
@@ -136656,7 +136623,6 @@ A tool that generates images using the GPT image models.
 
 |Property|Value|
 |---|---|
-|type|image_generation|
 |complexity|low|
 |complexity|medium|
 |complexity|high|
@@ -136810,12 +136776,6 @@ A tool that runs Python code to help generate a response to a prompt.
 |type|string|true|none|The type of the code interpreter tool. Always `code_interpreter`.<br>|
 |container|string \| [BetaAutoCodeInterpreterToolParam](#schemabetaautocodeinterpretertoolparam)|true|none|The code interpreter container. Can be a container ID or an object that<br>specifies uploaded file IDs to make available to your code, along with an<br>optional `memory_limit` setting.<br>|
 |allowed_callers|[[BetaCallableToolAllowedCaller](#schemabetacallabletoolallowedcaller)] \| null|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|code_interpreter|
 
 <h2 id="tocS_BetaAutoCodeInterpreterToolParam">BetaAutoCodeInterpreterToolParam</h2>
 <!-- backwards compatibility -->
@@ -137658,12 +137618,6 @@ A call to a custom tool created by the model.
 |input|string|true|none|The input for the custom tool call generated by the model.<br>|
 |async|boolean|false|none|Whether the custom tool call runs asynchronously.<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|custom_tool_call|
-
 <h2 id="tocS_BetaToolCallCaller">BetaToolCallCaller</h2>
 <!-- backwards compatibility -->
 <a id="schemabetatoolcallcaller"></a>
@@ -137791,12 +137745,6 @@ The output of a custom tool call from your code, being sent back to the model.
 |call_id|string|true|none|The call ID, used to map this custom tool call output to a custom tool call.<br>|
 |caller|[BetaToolCallCallerParam](#schemabetatoolcallcallerparam) \| null|false|none|none|
 |output|string \| [[BetaFunctionAndCustomToolCallOutput](#schemabetafunctionandcustomtoolcalloutput)]|true|none|The output from the custom tool call generated by your code.<br>Can be a string or an list of output content.<br>|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|custom_tool_call_output|
 
 <h2 id="tocS_BetaFunctionAndCustomToolCallOutput">BetaFunctionAndCustomToolCallOutput</h2>
 <!-- backwards compatibility -->
@@ -138904,12 +138852,6 @@ The output of a local shell tool call.
 |output|string|true|none|A JSON string of the output of the local shell tool call.<br>|
 |status|string \| null|false|none|none|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|local_shell_call_output|
-
 <h2 id="tocS_BetaLocalShellToolCall">BetaLocalShellToolCall</h2>
 <!-- backwards compatibility -->
 <a id="schemabetalocalshelltoolcall"></a>
@@ -138959,7 +138901,6 @@ A tool call to run a command on the local shell.
 
 |Property|Value|
 |---|---|
-|type|local_shell_call|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -139050,7 +138991,6 @@ A tool call to run code.
 
 |Property|Value|
 |---|---|
-|type|code_interpreter_call|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -139388,7 +139328,6 @@ for subsequent turns of a conversation if you are manually
 
 |Property|Value|
 |---|---|
-|type|reasoning|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -141161,7 +141100,6 @@ The results of a file search tool call. See the
 
 |Property|Value|
 |---|---|
-|type|file_search_call|
 |status|in_progress|
 |status|searching|
 |status|completed|
@@ -141528,12 +141466,6 @@ A path to a file.
 |file_id|string|true|none|The ID of the file.<br>|
 |index|integer|true|none|The index of the file in the list of files.<br>|
 
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|type|file_path|
-
 <h2 id="tocS_BetaContainerFileCitationBody">BetaContainerFileCitationBody</h2>
 <!-- backwards compatibility -->
 <a id="schemabetacontainerfilecitationbody"></a>
@@ -141780,7 +141712,6 @@ interactions.
 |role|assistant|
 |role|system|
 |role|developer|
-|type|message|
 
 <h2 id="tocS_BetaCompactResponseMethodPublicBody">BetaCompactResponseMethodPublicBody</h2>
 <!-- backwards compatibility -->
@@ -141795,6 +141726,7 @@ interactions.
   "input": "string",
   "previous_response_id": "resp_123",
   "instructions": "string",
+  "safety_identifier": "string",
   "image": {
     "context_compression": "auto"
   },
@@ -141816,6 +141748,7 @@ interactions.
 |input|string \| [[BetaInputItem](#schemabetainputitem)] \| null|false|none|none|
 |previous_response_id|string \| null|false|none|none|
 |instructions|string \| null|false|none|none|
+|safety_identifier|string \| null|false|none|none|
 |image|[BetaImageOptionsParam](#schemabetaimageoptionsparam)|false|none|Request level image options.|
 |prompt_cache_key|string \| null|false|none|none|
 |prompt_cache_retention|[BetaPromptCacheRetentionEnum](#schemabetapromptcacheretentionenum) \| null|false|none|none|
@@ -142003,6 +141936,10 @@ Model ID used to generate the response, like `gpt-6.2-astra`. OpenAI offers a wi
 |*anyOf*|gpt-rosalind-research|
 |*anyOf*|gpt-6-rosalind|
 |*anyOf*|gpt-6.2-astra-law|
+|*anyOf*|gpt-6-astra-healthcare|
+|*anyOf*|gpt-6.1-sol-healthcare|
+|*anyOf*|gpt-6.2-astra-healthcare|
+|*anyOf*|gpt-6.2-sol-healthcare|
 
 <h2 id="tocS_BetaModelIdsShared">BetaModelIdsShared</h2>
 <!-- backwards compatibility -->
@@ -142418,7 +142355,6 @@ Content item used to generate a response.
 
 |Property|Value|
 |---|---|
-|type|custom_tool_call_output|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -142482,7 +142418,6 @@ Content item used to generate a response.
 
 |Property|Value|
 |---|---|
-|type|custom_tool_call|
 |status|in_progress|
 |status|completed|
 |status|incomplete|
@@ -144013,6 +143948,7 @@ The output of a computer tool call.
 {
   "id": "resp_001",
   "object": "response.compaction",
+  "safety_identifier": "compact-review-example-001",
   "image": {
     "context_compression": "disabled"
   },
@@ -144070,8 +144006,10 @@ The output of a computer tool call.
 |image|[BetaResolvedImageOptions](#schemabetaresolvedimageoptions)|false|none|none|
 |id|string|true|none|The unique identifier for the compacted response.|
 |object|string|true|none|The object type. Always `response.compaction`.|
+|safety_identifier|string \| null|false|none|none|
 |output|[[BetaItemField](#schemabetaitemfield)]|true|none|The compacted list of output items.|
 |created_at|integer(unixtime)|true|none|Unix timestamp (in seconds) when the compacted conversation was created.|
+|service_tier|string|false|none|The service tier used for compaction, when reported.|
 |usage|[BetaResponseUsage](#schemabetaresponseusage)|true|none|Token accounting for the compaction pass, including cached, reasoning, and total tokens.|
 
 #### Enumerated Values
@@ -145677,7 +145615,7 @@ We support the following categories of tools:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|*anyOf*|object|false|none|Set of 16 key-value pairs that can be attached to an object. This can be<br>useful for storing additional information about the object in a structured<br>format, and querying for objects via API or the dashboard.<br><br>Keys are strings with a maximum length of 64 characters. Values are strings<br>with a maximum length of 512 characters.<br>|
+|*anyOf*|object|false|none|Set of 16 key-value pairs that can be attached to an object. This can be<br>useful for storing additional information about the object in a structured<br>format.<br><br>Keys are strings with a maximum length of 64 characters. Values are strings<br>with a maximum length of 512 characters.<br>|
 |**additionalProperties**|string|false|none|none|
 |*anyOf*|null|false|none|none|
 

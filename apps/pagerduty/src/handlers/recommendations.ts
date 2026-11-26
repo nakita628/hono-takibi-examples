@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteRecommendationsEventOrchestrationsServicesServiceIdAcceptedRulesRuleIdRoute,
   getRecommendationsEventOrchestrationsRulesRoute,
-  postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdAcceptRoute,
   postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdDismissRoute,
+  postRecommendationsEventOrchestrationsServicesServiceIdRulesRecommendationIdAcceptRoute,
+  deleteRecommendationsEventOrchestrationsServicesServiceIdAcceptedRulesRuleIdRoute,
 } from '../routes'
 
 export const getRecommendationsEventOrchestrationsRulesRouteHandler: RouteHandler<

@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteEscalationPoliciesIdRoute,
-  getEscalationPoliciesIdAuditRecordsRoute,
-  getEscalationPoliciesIdRoute,
   getEscalationPoliciesRoute,
   postEscalationPoliciesRoute,
+  getEscalationPoliciesIdRoute,
+  deleteEscalationPoliciesIdRoute,
   putEscalationPoliciesIdRoute,
+  getEscalationPoliciesIdAuditRecordsRoute,
 } from '../routes'
 
 export const getEscalationPoliciesRouteHandler: RouteHandler<

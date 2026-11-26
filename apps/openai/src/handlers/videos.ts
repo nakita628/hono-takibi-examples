@@ -1,14 +1,14 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteVideosVideoIdRoute,
-  getVideosCharactersCharacterIdRoute,
+  postVideosRoute,
   getVideosRoute,
-  getVideosVideoIdContentRoute,
-  getVideosVideoIdRoute,
   postVideosCharactersRoute,
+  getVideosCharactersCharacterIdRoute,
   postVideosEditsRoute,
   postVideosExtensionsRoute,
-  postVideosRoute,
+  getVideosVideoIdRoute,
+  deleteVideosVideoIdRoute,
+  getVideosVideoIdContentRoute,
   postVideosVideoIdRemixRoute,
 } from '../routes'
 

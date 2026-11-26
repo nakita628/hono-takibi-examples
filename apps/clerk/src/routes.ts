@@ -3153,6 +3153,56 @@ const UserSchema = z
   })
   .openapi('User')
 
+const UserCursorPageSchema = z
+  .object({
+    data: z.array(UserSchema),
+    cursor: z
+      .object({
+        starting_after: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              'Cursor to fetch the next page of results. Pass it back as `starting_after` on the next request. Null on the last page.',
+          }),
+        ending_before: z
+          .string()
+          .nullable()
+          .openapi({
+            description:
+              'Cursor to fetch the previous page of results. Pass it back as `ending_before` on the next request. Null on the first page.',
+          }),
+        has_next_page: z
+          .boolean()
+          .openapi({
+            description: 'Whether more results can be fetched using the `starting_after` cursor.',
+          }),
+        remaining_count_exact: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'The number of users from the start of this page onward, this page included. Present when `remaining_count` was `exact`, or was a number and there are fewer users than it.',
+          }),
+        remaining_count_at_least: z
+          .int()
+          .exactOptional()
+          .openapi({
+            description:
+              'A lower bound on the number of users from the start of this page onward, this page included. Present when `remaining_count` was a number and the count stopped at it.',
+          }),
+      })
+      .openapi({
+        description: 'Cursor information for pagination.',
+        required: ['starting_after', 'ending_before', 'has_next_page'],
+      }),
+  })
+  .openapi({
+    description: 'A page of users from `GET /v1/users` with `pagination=cursor`.',
+    required: ['data', 'cursor'],
+  })
+  .openapi('UserCursorPage')
+
 const PasswordHasherSchema = z
   .string()
   .openapi({
@@ -7333,7 +7383,7 @@ const TooManyRequestsResponse = {
 
 const UserListOrCursorPageResponse = {
   description: 'Success',
-  content: { 'application/json': { schema: z.xor([z.array(UserSchema)]) } },
+  content: { 'application/json': { schema: z.xor([z.array(UserSchema), UserCursorPageSchema]) } },
 }
 
 const FeatureNotEnabledResponse = {
@@ -10217,6 +10267,22 @@ export const getUsersRoute = createRoute({
             required: false,
           },
         }),
+      metadata: z
+        .preprocess(
+          (val) => (val === undefined || Array.isArray(val) ? val : [val]),
+          z.array(z.string()).max(10),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'metadata',
+            in: 'query',
+            required: false,
+            schema: { type: 'array', maxItems: 10, items: { type: 'string' } },
+            description:
+              'Returns users matching every one of the given metadata filters. Repeat it once per filter; each value\nis a JSON object with these fields:\n\n- `scope` (required): `public`, `private` or `unsafe`, the metadata to match against.\n- `key` (required): a dot-separated path into the metadata, e.g. `settings.theme`. Escape a\n  literal dot in a key as `\\.`.\n- `match` (required): `exists` matches users holding the key, whether it holds a value or nested\n  keys. `equals` matches the whole value, case-insensitively.\n- `value`: required for `equals`; not allowed for `exists`.\n- `negate`: `true` inverts the filter. With `exists` it returns the users who do not hold the\n  key. With `equals` it returns the users who hold the key with a different value.\n\nOther fields are rejected.\n\nWith `metadata`, `offset` plus `limit` cannot exceed 1000, and `starting_after` is not accepted.\n`GET /v1/users/count` does not accept `metadata`.\n\nResults are eventually consistent. A user created, updated or deleted a short time ago may not\nyet be reflected in which users are returned or in their order. To read a user right after\nwriting it, fetch it by ID.',
+          },
+        }),
       limit: LimitParameterParamsSchema,
       offset: OffsetParameterParamsSchema,
       starting_after: z
@@ -10230,6 +10296,45 @@ export const getUsersRoute = createRoute({
               'A cursor for pagination: the `id` of the last user on the previous page. Returns the users that follow it.\n\n**Requires ordering by `created_at`** — that is, `order_by` omitted, or set to `created_at`, `+created_at`\nor `-created_at`. Any other `order_by` value is rejected with a 422: the other orderings sort by a value\nthat is neither unique per user nor immutable, so a cursor over them would skip or repeat users.\n\nCannot be combined with a non-zero `offset`, which is also a 422. Keep every other parameter identical\nacross requests, and stop when a page returns fewer than `limit` users.',
             required: false,
             schema: { type: 'string' },
+          },
+        }),
+      pagination: z
+        .enum(['offset', 'cursor'])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'pagination',
+            in: 'query',
+            required: false,
+            schema: { type: 'string', enum: ['offset', 'cursor'] },
+            description:
+              '`cursor` pages by cursor, with any `order_by` and any filter, including `metadata`. The response is\nthen an object in place of the array of users: `data` holds the users, and `cursor` is\n`{"starting_after": <string or null>, "ending_before": <string or null>, "has_next_page": <boolean>}`.\nPass its `starting_after` back as `starting_after` for the next page, or its `ending_before` back\nas `ending_before` for the previous one, keeping every other parameter identical. Stop when\n`has_next_page` is `false`; `ending_before` is null on the first page. In this mode\n`starting_after` is that cursor, not a user ID; a cursor from a different `order_by` is rejected\nwith a 422, as is a non-zero `offset`.\n\nResults in this mode are eventually consistent. A user created, updated or deleted a short time\nago may not yet be reflected in which users are returned, in their order, or in any count. To\nread a user right after writing it, fetch it by ID.\n\nWithout this parameter the list pages by offset, and `starting_after` takes a user ID.\n`offset` pages the same way, except that it does not accept `starting_after`.',
+          },
+        }),
+      ending_before: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'ending_before',
+            in: 'query',
+            required: false,
+            schema: { type: 'string' },
+            description:
+              'With `pagination=cursor`, the `cursor.ending_before` of a previous response. Returns the page\nbefore it, in the same order. Cannot be combined with `starting_after`, and a cursor from a\ndifferent `order_by` is rejected with a 422. A previous page can hold fewer than `limit` users\neven when more precede it.',
+          },
+        }),
+      remaining_count: z
+        .enum(['100', '1000', '10000', 'exact'])
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'remaining_count',
+            in: 'query',
+            required: false,
+            schema: { type: 'string', enum: ['100', '1000', '10000', 'exact'] },
+            description:
+              "With `pagination=cursor`, also counts the users from the start of this page onward, this page\nincluded. On the first page that is every user the request matches.\n\nA number counts up to that many. The response's `cursor` then carries one of two\nfields: `remaining_count_exact` when there are fewer users than the number given, and otherwise\n`remaining_count_at_least`, set to that number. Larger numbers make the request slower.\n\n`exact` counts them all, with no ceiling, and the `cursor` carries `remaining_count_exact`. The\ncount takes longer the more users match, and a request whose count does not finish in time is\nrejected with a 422 `users_exact_count_timed_out`; retry it with a number, or without this\nparameter.\n\nThe count is computed separately from the page and is subject to the same delay. Treat it as a\nclose estimate: it can differ slightly from the number of users that paging through the results\nreturns.",
           },
         }),
       order_by: z
@@ -11101,6 +11206,14 @@ export const patchUsersUserIdRoute = createRoute({
                 .openapi({
                   description:
                     'Set to `true` to sign out the user from all their active sessions once their password is updated. This parameter can only be used when providing a `password`.',
+                }),
+              reset_client_trust: z
+                .boolean()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'When set to `true`, also clears Device Trust for the user on every client, whether or not the instance has Device Trust enabled.\nThe next sign-in by this user on any client counts as a new device: it can require a Device Trust challenge and trigger the new device email.\nThis parameter can only be used when providing a `password` and setting `sign_out_of_other_sessions` to `true`, otherwise a 422 is returned and the user is not updated.',
                 }),
               totp_secret: z
                 .string()

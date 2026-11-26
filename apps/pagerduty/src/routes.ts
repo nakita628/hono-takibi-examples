@@ -2677,8 +2677,8 @@ const OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5Schema = z
 
 type OrchestrationGlobalType = z.infer<typeof OrchestrationGlobalAllOf0Schema> & {
   orchestration_path?: {
-    type?: unknown
-    parent?: { id?: unknown; type?: 'event_orchestration_reference' }
+    type?: any
+    parent?: { id?: any; type?: 'event_orchestration_reference' }
     sets?: unknown
     catch_all?: {
       actions?: z.infer<
@@ -2695,8 +2695,8 @@ type OrchestrationGlobalType = z.infer<typeof OrchestrationGlobalAllOf0Schema> &
 
 type OrchestrationRouterType = z.infer<typeof OrchestrationGlobalAllOf0Schema> & {
   orchestration_path?: {
-    type?: unknown
-    parent?: { id?: unknown; type?: 'event_orchestration_reference' }
+    type?: any
+    parent?: { id?: any; type?: 'event_orchestration_reference' }
     sets?: unknown
     catch_all?: { actions?: { route_to?: string } }
   }
@@ -2704,8 +2704,8 @@ type OrchestrationRouterType = z.infer<typeof OrchestrationGlobalAllOf0Schema> &
 
 type OrchestrationUnroutedType = z.infer<typeof OrchestrationGlobalAllOf0Schema> & {
   orchestration_path?: {
-    type?: unknown
-    parent?: { id?: unknown; type?: 'event_orchestration_reference' }
+    type?: any
+    parent?: { id?: any; type?: 'event_orchestration_reference' }
     sets?: unknown
     catch_all?: {
       actions?: z.infer<typeof OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema>
@@ -2775,8 +2775,8 @@ type ServiceOrchestrationType = z.infer<typeof OrchestrationGlobalAllOf0Schema> 
     migrated_status?: 'completed'
     migrated_via?: 'API' | 'UI'
   } & {
-    type?: unknown
-    parent?: { id?: unknown; type?: 'service_reference' }
+    type?: any
+    parent?: { id?: any; type?: 'service_reference' }
     sets?: unknown
     catch_all?: {
       actions?: z.infer<
@@ -17271,15 +17271,15 @@ const HeaderContentTypeParamsSchema = z
 
 const HeaderAuthorizationParamsSchema = z
   .string()
-  .regex(/^(Token token=[A-Za-z0-9]+|Bearer [A-Za-z0-9]+)$/)
+  .regex(/^Bearer [A-Za-z0-9\-._~+\/]+=*$/)
   .openapi({
     param: {
       name: 'Authorization',
       in: 'header',
       required: true,
       description:
-        'Should contain the API key or OAuth token to authorize the request. Format: `Token token=<token>` or `Bearer <token>`',
-      schema: { type: 'string', pattern: '^(Token token=[A-Za-z0-9]+|Bearer [A-Za-z0-9]+)$' },
+        'Should contain the OAuth access token to authorize the request. Format: `Bearer <token>`. MCP clients normally obtain and attach this automatically via OAuth discovery.',
+      schema: { type: 'string', pattern: '^Bearer [A-Za-z0-9\\-._~+/]+=*$' },
     },
   })
 

@@ -6,7 +6,7 @@ the repository's (`strict`, `exactOptionalPropertyTypes`, `noUncheckedIndexedAcc
 no CI: `scripts/typecheck.sh` records each result in the app's `generated.json`, and `scripts/typecheck.mjs write`
 writes this file from them.
 
-Generated with hono-takibi 0.35.12 (16), 0.35.6 (17), 0.33.7 (1996); each app's `generated.json` has the version of each document. 2029 documents: 1999 with no errors, 25 with errors, 5 not checked.
+Generated with hono-takibi 0.35.13 (14), 0.35.12 (16), 0.35.6 (17), 0.33.7 (1985); each app's `generated.json` has the version of each document. 2032 documents: 2001 with no errors, 26 with errors, 5 not checked.
 
 ## Errors
 
@@ -22,6 +22,7 @@ Generated with hono-takibi 0.35.12 (16), 0.35.6 (17), 0.33.7 (1996); each app's 
 | [keycloak](../apps/keycloak) | 12 | `hooks/*` | TS2769 ×12 | [#511](https://github.com/nakita628/hono-takibi/issues/511) |
 | [algolia](../apps/algolia) | 4 | `index.ts`, `hooks/*`, `client.ts` | TS2589 ×4 | deep types (TS2589) |
 | [apis-guru-misc](../apps/apis-guru-misc) · maif-otoroshi | 4 | `hooks/*` | TS2769 ×4 | [#511](https://github.com/nakita628/hono-takibi/issues/511) |
+| [binance-spot](../apps/binance-spot) | 4 | `hooks/*` | TS2769 ×4 | [#511](https://github.com/nakita628/hono-takibi/issues/511) |
 | [e2b](../apps/e2b) | 4 | `hooks/*` | TS2769 ×4 | [#511](https://github.com/nakita628/hono-takibi/issues/511) |
 | [inngest](../apps/inngest) | 4 | `hooks/*` | TS2769 ×4 | spec: a response object is used as a schema (`$ref: '#/components/responses/Webhook'`) |
 | [line](../apps/line) · messaging-api | 4 | `hooks/*` | TS2769 ×4 | [#511](https://github.com/nakita628/hono-takibi/issues/511) |
@@ -51,6 +52,7 @@ Generated with hono-takibi 0.35.12 (16), 0.35.6 (17), 0.33.7 (1996); each app's 
 ## No errors
 
 - [ably](../apps/ably): platform
+- [activepieces](../apps/activepieces)
 - [adyen](../apps/adyen)
 - [adyen-services](../apps/adyen-services): A2APaymentsService-v1, AccountService-v6, BalanceControlService-v2, BalancePlatformAccountingNotification-v3, BalancePlatformAcsNotification-v1, BalancePlatformBalanceNotification-v1, BalancePlatformConfigurationNotification-v2, BalancePlatformDisputeNotification-v1, BalancePlatformGrantNotification-v1, BalancePlatformManagedRiskNotification-v1, BalancePlatformNegativeBalanceCompensationWarningNotification-v1, BalancePlatformPaymentNotification-v1, BalancePlatformRelayedAuthorisationNotification-v4, BalancePlatformReportNotification-v1, BalancePlatformService-v2, BalancePlatformTransactionNotification-v4, BalancePlatformTransferNotification-v4, BinLookupService-v54, CapitalService-v1, CheckoutService-v72, CloudDeviceService-v1, DataProtectionService-v1, DisputeService-v30, DocumentCollectorService-v1, ForeignExchangeService-v1, ForwardApiNotification-v1, FundService-v6, HopService-v6, LegalEntityService-v4, ManagementNotificationService-v3, ManagementService-v3, MarketPayNotificationService-v6, NotificationConfigurationService-v6, OpenBankingService-v1, PaymentService-v68, PaymentsAppService-v1, PayoutService-v68, RaiseDisputesService-v4, RecurringService-v68, SessionAuthenticationService-v1, SessionService-v68, SoftPOSConfigurationService-v3, StoredValueService-v46, TerminalAPI-v1, TestCardService-v1, TfmAPIService-v1, TokenizationNotification-v1, TransactionService-v4, TransferService-v4, Webhooks-v1
 - [airbyte](../apps/airbyte)
@@ -192,6 +194,7 @@ Generated with hono-takibi 0.35.12 (16), 0.35.6 (17), 0.33.7 (1996); each app's 
 - [microsoft-ccf](../apps/microsoft-ccf): app, gov, node
 - [microsoft-mcp-gateway](../apps/microsoft-mcp-gateway)
 - [misp](../apps/misp)
+- [mistral](../apps/mistral)
 - [modern-treasury](../apps/modern-treasury)
 - [mollie](../apps/mollie)
 - [mongodb-atlas](../apps/mongodb-atlas)

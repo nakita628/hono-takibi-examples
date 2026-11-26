@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getTicketTypesRoute,
-  getTicketTypesTicketTypeIdRoute,
-  postTicketTypesRoute,
   postTicketTypesTicketTypeIdAttributesRoute,
   putTicketTypesTicketTypeIdAttributesAttributeIdRoute,
+  getTicketTypesRoute,
+  postTicketTypesRoute,
+  getTicketTypesTicketTypeIdRoute,
   putTicketTypesTicketTypeIdRoute,
 } from '../routes'
 

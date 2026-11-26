@@ -4,7 +4,7 @@ type PredicateType = {
   attribute?: string
   type?: string
   comparison?: string
-  value?: unknown
+  value?: any
   predicates?: PredicateType[]
 }
 
@@ -22199,6 +22199,29 @@ export const getAdminsActivityLogsRoute = createRoute({
         },
       },
     },
+    403: {
+      description:
+        'Forbidden. Returned when the access token acts as a teammate who lacks the permission to access all teammates and team details.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Teammate lacks permission': {
+              value: {
+                type: 'error.list',
+                request_id: '52609d5a-89ae-4a95-aaae-c25f81ac8806',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message: 'Teammate lacks permission to access all teammates and team details',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
   },
 })
 
@@ -22361,6 +22384,29 @@ export const postAdminsActivityLogsSearchRoute = createRoute({
                 request_id: 'a3e5b8e2-1234-5678-9abc-def012345678',
                 errors: [
                   { code: 'token_unauthorized', message: 'Not authorized to access resource' },
+                ],
+              },
+            },
+          },
+        },
+      },
+    },
+    403: {
+      description:
+        'Forbidden. Returned when the access token acts as a teammate who lacks the permission to access all teammates and team details.',
+      content: {
+        'application/json': {
+          schema: ErrorSchema,
+          examples: {
+            'Teammate lacks permission': {
+              value: {
+                type: 'error.list',
+                request_id: '52609d5a-89ae-4a95-aaae-c25f81ac8806',
+                errors: [
+                  {
+                    code: 'action_forbidden',
+                    message: 'Teammate lacks permission to access all teammates and team details',
+                  },
                 ],
               },
             },

@@ -7536,20 +7536,22 @@ export function useImmutableGetApiPublicUnstableTopics<TError = unknown>(
   }
 }
 
-export function getGetApiPublicUnstableTopicsTopicIdKey(
-  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>,
+export function getGetApiPublicUnstableTopicsTopicStableIdKey(
+  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>,
 ) {
-  return ['api', '/api/public/unstable/topics/:topicId', args] as const
+  return ['api', '/api/public/unstable/topics/:topicStableId', args] as const
 }
 
-export function useGetApiPublicUnstableTopicsTopicId<TError = unknown>(
-  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>,
+export function useGetApiPublicUnstableTopicsTopicStableId<TError = unknown>(
+  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
+            >
           >
         >
       >,
@@ -7563,7 +7565,7 @@ export function useGetApiPublicUnstableTopicsTopicId<TError = unknown>(
   const swrKey =
     enabled !== false
       ? customKey === undefined
-        ? getGetApiPublicUnstableTopicsTopicIdKey(args)
+        ? getGetApiPublicUnstableTopicsTopicStableIdKey(args)
         : customKey
       : null
   return {
@@ -7572,7 +7574,9 @@ export function useGetApiPublicUnstableTopicsTopicId<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
+            >
           >
         >
       >,
@@ -7580,20 +7584,24 @@ export function useGetApiPublicUnstableTopicsTopicId<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api.public.unstable.topics[':topicId'].$get(args, clientOptions)),
+        parseResponse(
+          client.api.public.unstable.topics[':topicStableId'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
-export function useImmutableGetApiPublicUnstableTopicsTopicId<TError = unknown>(
-  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>,
+export function useImmutableGetApiPublicUnstableTopicsTopicStableId<TError = unknown>(
+  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
+            >
           >
         >
       >,
@@ -7607,7 +7615,7 @@ export function useImmutableGetApiPublicUnstableTopicsTopicId<TError = unknown>(
   const swrKey =
     enabled !== false
       ? customKey === undefined
-        ? getGetApiPublicUnstableTopicsTopicIdKey(args)
+        ? getGetApiPublicUnstableTopicsTopicStableIdKey(args)
         : customKey
       : null
   return {
@@ -7616,7 +7624,9 @@ export function useImmutableGetApiPublicUnstableTopicsTopicId<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
+            >
           >
         >
       >,
@@ -7624,7 +7634,9 @@ export function useImmutableGetApiPublicUnstableTopicsTopicId<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api.public.unstable.topics[':topicId'].$get(args, clientOptions)),
+        parseResponse(
+          client.api.public.unstable.topics[':topicStableId'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }

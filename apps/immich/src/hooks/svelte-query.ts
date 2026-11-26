@@ -6066,6 +6066,107 @@ export function createPostAuthChangePassword<TError = DefaultError, TOnMutateRes
   }, queryClient)
 }
 
+export function getPostAuthCodeMutationKey() {
+  return ['auth', '/auth/code', 'POST'] as const
+}
+
+export function getPostAuthCodeMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: ClientRequestOptions,
+) {
+  return mutationOptions<
+    Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.auth.code.$post>>>>>,
+    TError,
+    InferRequestType<typeof client.auth.code.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAuthCodeMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.auth.code.$post>) {
+      return parseResponse(client.auth.code.$post(args, options))
+    },
+  })
+}
+
+export function createPostAuthCode<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.auth.code.$post>>>>
+        >,
+        TError,
+        InferRequestType<typeof client.auth.code.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAuthCodeMutationOptions<TError, TOnMutateResult>(clientOptions)
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
+export function getPostAuthExchangeMutationKey() {
+  return ['auth', '/auth/exchange', 'POST'] as const
+}
+
+export function getPostAuthExchangeMutationOptions<
+  TError = DefaultError,
+  TOnMutateResult = unknown,
+>(options?: ClientRequestOptions) {
+  return mutationOptions<
+    Awaited<
+      ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.auth.exchange.$post>>>>
+    >,
+    TError,
+    InferRequestType<typeof client.auth.exchange.$post>,
+    TOnMutateResult
+  >({
+    mutationKey: getPostAuthExchangeMutationKey(),
+    async mutationFn(args: InferRequestType<typeof client.auth.exchange.$post>) {
+      return parseResponse(client.auth.exchange.$post(args, options))
+    },
+  })
+}
+
+export function createPostAuthExchange<TError = DefaultError, TOnMutateResult = unknown>(
+  options?: () => {
+    mutation?: Omit<
+      CreateMutationOptions<
+        Awaited<
+          ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.auth.exchange.$post>>>>
+        >,
+        TError,
+        InferRequestType<typeof client.auth.exchange.$post>,
+        TOnMutateResult
+      >,
+      'mutationFn'
+    >
+    options?: ClientRequestOptions
+  },
+  queryClient?: () => QueryClient,
+) {
+  return createMutation(() => {
+    const { mutation, options: clientOptions } = options?.() ?? {}
+    const mutationDefaults = getPostAuthExchangeMutationOptions<TError, TOnMutateResult>(
+      clientOptions,
+    )
+    return {
+      ...mutation,
+      ...mutationDefaults,
+      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
+    }
+  }, queryClient)
+}
+
 export function getPostAuthLoginMutationKey() {
   return ['auth', '/auth/login', 'POST'] as const
 }
@@ -9840,62 +9941,6 @@ export function createPutPartnersId<TError = DefaultError, TOnMutateResult = unk
   return createMutation(() => {
     const { mutation, options: clientOptions } = options?.() ?? {}
     const mutationDefaults = getPutPartnersIdMutationOptions<TError, TOnMutateResult>(clientOptions)
-    return {
-      ...mutation,
-      ...mutationDefaults,
-      mutationKey: mutation?.mutationKey ?? mutationDefaults.mutationKey,
-    }
-  }, queryClient)
-}
-
-export function getPostPartnersIdMutationKey() {
-  return ['partners', '/partners/:id', 'POST'] as const
-}
-
-export function getPostPartnersIdMutationOptions<TError = DefaultError, TOnMutateResult = unknown>(
-  options?: ClientRequestOptions,
-) {
-  return mutationOptions<
-    Awaited<
-      ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.partners)[':id']['$post']>>>
-      >
-    >,
-    TError,
-    InferRequestType<(typeof client.partners)[':id']['$post']>,
-    TOnMutateResult
-  >({
-    mutationKey: getPostPartnersIdMutationKey(),
-    async mutationFn(args: InferRequestType<(typeof client.partners)[':id']['$post']>) {
-      return parseResponse(client.partners[':id'].$post(args, options))
-    },
-  })
-}
-
-export function createPostPartnersId<TError = DefaultError, TOnMutateResult = unknown>(
-  options?: () => {
-    mutation?: Omit<
-      CreateMutationOptions<
-        Awaited<
-          ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client.partners)[':id']['$post']>>>
-          >
-        >,
-        TError,
-        InferRequestType<(typeof client.partners)[':id']['$post']>,
-        TOnMutateResult
-      >,
-      'mutationFn'
-    >
-    options?: ClientRequestOptions
-  },
-  queryClient?: () => QueryClient,
-) {
-  return createMutation(() => {
-    const { mutation, options: clientOptions } = options?.() ?? {}
-    const mutationDefaults = getPostPartnersIdMutationOptions<TError, TOnMutateResult>(
-      clientOptions,
-    )
     return {
       ...mutation,
       ...mutationDefaults,

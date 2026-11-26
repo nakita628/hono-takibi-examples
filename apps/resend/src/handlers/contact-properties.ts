@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteContactPropertiesIdRoute,
-  getContactPropertiesIdRoute,
-  getContactPropertiesRoute,
-  patchContactPropertiesIdRoute,
   postContactPropertiesRoute,
+  getContactPropertiesRoute,
+  getContactPropertiesIdRoute,
+  patchContactPropertiesIdRoute,
+  deleteContactPropertiesIdRoute,
 } from '../routes'
 
 export const postContactPropertiesRouteHandler: RouteHandler<

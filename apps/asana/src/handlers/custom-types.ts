@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getCustomTypesCustomTypeGidRoute, getCustomTypesRoute } from '../routes'
+import type { getCustomTypesRoute, getCustomTypesCustomTypeGidRoute } from '../routes'
 
 export const getCustomTypesRouteHandler: RouteHandler<typeof getCustomTypesRoute> = async (c) => {
   throw new Error('Not implemented')

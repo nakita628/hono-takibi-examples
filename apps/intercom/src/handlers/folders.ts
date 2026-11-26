@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteFoldersIdRoute,
-  getFoldersIdRoute,
   getFoldersRoute,
   postFoldersRoute,
+  getFoldersIdRoute,
   putFoldersIdRoute,
+  deleteFoldersIdRoute,
 } from '../routes'
 
 export const getFoldersRouteHandler: RouteHandler<typeof getFoldersRoute> = async (c) => {

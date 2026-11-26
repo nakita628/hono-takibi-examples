@@ -1,9 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deletePartnersIdRoute,
   getPartnersRoute,
-  postPartnersIdRoute,
   postPartnersRoute,
+  deletePartnersIdRoute,
   putPartnersIdRoute,
 } from '../routes'
 
@@ -18,10 +17,6 @@ export const postPartnersRouteHandler: RouteHandler<typeof postPartnersRoute> = 
 export const deletePartnersIdRouteHandler: RouteHandler<typeof deletePartnersIdRoute> = async (
   c,
 ) => {
-  throw new Error('Not implemented')
-}
-
-export const postPartnersIdRouteHandler: RouteHandler<typeof postPartnersIdRoute> = async (c) => {
   throw new Error('Not implemented')
 }
 

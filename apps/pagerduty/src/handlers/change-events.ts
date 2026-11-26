@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getChangeEventsIdRoute,
   getChangeEventsRoute,
   postChangeEventsRoute,
+  getChangeEventsIdRoute,
   putChangeEventsIdRoute,
 } from '../routes'
 

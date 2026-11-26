@@ -1,0 +1,19 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
+    "generated": false,
+    "config": "e2c12456b1583daddcf07c5b0d34aab41ae8e5a1c97c1c7971d0c70c5a07caec",
+    "sources": {
+      "https://raw.githubusercontent.com/apache/gravitino/main/docs/open-api/openapi.yaml": {
+        "etag": "W/\"1440c5875783d8c1274206e9607ce82ef6f94e1f519229a9f3432df148658fc8\"",
+        "sha256": "6480e1f37e6da6a417595f63c7dc4be66af6cc1a7cb624bc87f927033a52c1cb"
+      }
+    },
+    "failed": {
+      "hono-takibi": "0.35.13",
+      "date": "2026-11-26",
+      "error": "Error parsing https://raw.githubusercontent.com/apache/gravitino/main/docs/open-api/openapi.yaml: deficient indentation (447:11)"
+    }
+  }
+}

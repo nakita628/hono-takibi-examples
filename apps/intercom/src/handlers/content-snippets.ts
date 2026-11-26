@@ -1,12 +1,12 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteContentSnippetsContentSnippetIdTagsIdRoute,
-  deleteContentSnippetsIdRoute,
-  getContentSnippetsIdRoute,
   getContentSnippetsRoute,
-  postContentSnippetsContentSnippetIdTagsRoute,
   postContentSnippetsRoute,
+  getContentSnippetsIdRoute,
   putContentSnippetsIdRoute,
+  deleteContentSnippetsIdRoute,
+  postContentSnippetsContentSnippetIdTagsRoute,
+  deleteContentSnippetsContentSnippetIdTagsIdRoute,
 } from '../routes'
 
 export const getContentSnippetsRouteHandler: RouteHandler<typeof getContentSnippetsRoute> = async (

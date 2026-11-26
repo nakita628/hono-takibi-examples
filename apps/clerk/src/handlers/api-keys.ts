@@ -1,12 +1,12 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteApiKeysApiKeyIDRoute,
-  getApiKeysApiKeyIDRoute,
-  getApiKeysApiKeyIDSecretRoute,
-  getApiKeysRoute,
-  patchApiKeysApiKeyIDRoute,
-  postApiKeysApiKeyIDRevokeRoute,
   postApiKeysRoute,
+  getApiKeysRoute,
+  getApiKeysApiKeyIDRoute,
+  patchApiKeysApiKeyIDRoute,
+  deleteApiKeysApiKeyIDRoute,
+  getApiKeysApiKeyIDSecretRoute,
+  postApiKeysApiKeyIDRevokeRoute,
   postApiKeysVerifyRoute,
 } from '../routes'
 

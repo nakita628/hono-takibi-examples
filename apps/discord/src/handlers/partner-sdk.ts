@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  postPartnerSdkProvisionalAccountsUnmergeBotRoute,
-  postPartnerSdkProvisionalAccountsUnmergeRoute,
-  postPartnerSdkTokenBotRoute,
-  postPartnerSdkTokenRoute,
   putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRoute,
+  postPartnerSdkProvisionalAccountsUnmergeRoute,
+  postPartnerSdkProvisionalAccountsUnmergeBotRoute,
+  postPartnerSdkTokenRoute,
+  postPartnerSdkTokenBotRoute,
 } from '../routes'
 
 export const putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRouteHandler: RouteHandler<

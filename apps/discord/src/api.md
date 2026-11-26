@@ -525,7 +525,7 @@ curl https://discord.com/api/v10/applications/@me \
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|body|body|[ApplicationFormPartial](#schemaapplicationformpartial)|true|none|
+|body|body|[ApplicationUpdateFormPartial](#schemaapplicationupdateformpartial)|true|none|
 |» description|body|object \| null|false|none|
 |» » default|body|string|true|none|
 |» » localizations|body|object \| null|false|none|
@@ -1293,7 +1293,7 @@ curl https://discord.com/api/v10/applications/string \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |application_id|path|[SnowflakeType](#schemasnowflaketype)|true|none|
-|body|body|[ApplicationFormPartial](#schemaapplicationformpartial)|true|none|
+|body|body|[ApplicationUpdateFormPartial](#schemaapplicationupdateformpartial)|true|none|
 |» description|body|object \| null|false|none|
 |» » default|body|string|true|none|
 |» » localizations|body|object \| null|false|none|
@@ -95494,106 +95494,6 @@ BotToken
 |*oneOf*|integer|false|none|inherit guild content filter setting|
 |*oneOf*|integer|false|none|interactions will always be scanned|
 
-<h2 id="tocS_ApplicationFormPartial">ApplicationFormPartial</h2>
-<!-- backwards compatibility -->
-<a id="schemaapplicationformpartial"></a>
-<a id="schema_ApplicationFormPartial"></a>
-<a id="tocSapplicationformpartial"></a>
-<a id="tocsapplicationformpartial"></a>
-
-```json
-{
-  "description": {
-    "default": "string",
-    "localizations": {
-      "property1": "string",
-      "property2": "string"
-    }
-  },
-  "icon": "string",
-  "cover_image": "string",
-  "team_id": "string",
-  "flags": 0,
-  "interactions_endpoint_url": "http://example.com",
-  "explicit_content_filter": 0,
-  "max_participants": -1,
-  "type": 4,
-  "tags": [
-    "string"
-  ],
-  "custom_install_url": "http://example.com",
-  "install_params": {
-    "scopes": [
-      "applications.commands"
-    ],
-    "permissions": 0
-  },
-  "role_connections_verification_url": "http://example.com",
-  "integration_types_config": {
-    "property1": {
-      "oauth2_install_params": {
-        "scopes": [
-          "applications.commands"
-        ],
-        "permissions": 0
-      }
-    },
-    "property2": {
-      "oauth2_install_params": {
-        "scopes": [
-          "applications.commands"
-        ],
-        "permissions": 0
-      }
-    }
-  },
-  "event_webhooks_status": 1,
-  "event_webhooks_url": "http://example.com",
-  "event_webhooks_types": [
-    "APPLICATION_AUTHORIZED"
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|description|object \| null|false|none|none|
-|icon|string \| null|false|none|none|
-|cover_image|string \| null|false|none|none|
-|team_id|null \| [SnowflakeType](#schemasnowflaketype)|false|none|none|
-|flags|integer \| null|false|none|none|
-|interactions_endpoint_url|string \| null(uri)|false|none|none|
-|explicit_content_filter|null \| [ApplicationExplicitContentFilterTypes](#schemaapplicationexplicitcontentfiltertypes)|false|none|none|
-|max_participants|integer \| null(int32)|false|none|none|
-|type|null \| [ApplicationTypes](#schemaapplicationtypes)|false|none|none|
-|tags|[string]|false|none|none|
-|custom_install_url|string \| null(uri)|false|none|none|
-|install_params|null \| [ApplicationOAuth2InstallParams](#schemaapplicationoauth2installparams)|false|none|none|
-|role_connections_verification_url|string \| null(uri)|false|none|none|
-|integration_types_config|object \| null|false|none|none|
-|event_webhooks_status|null \| integer(int32)|false|none|none|
-|event_webhooks_url|string \| null(uri)|false|none|Event webhooks URL for the app to receive webhook events|
-|event_webhooks_types|[string]|false|none|none|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|event_webhooks_types|APPLICATION_AUTHORIZED|
-|event_webhooks_types|APPLICATION_DEAUTHORIZED|
-|event_webhooks_types|ENTITLEMENT_CREATE|
-|event_webhooks_types|ENTITLEMENT_DELETE|
-|event_webhooks_types|ENTITLEMENT_UPDATE|
-|event_webhooks_types|GAME_DIRECT_MESSAGE_CREATE|
-|event_webhooks_types|GAME_DIRECT_MESSAGE_DELETE|
-|event_webhooks_types|GAME_DIRECT_MESSAGE_UPDATE|
-|event_webhooks_types|LOBBY_MESSAGE_CREATE|
-|event_webhooks_types|LOBBY_MESSAGE_DELETE|
-|event_webhooks_types|LOBBY_MESSAGE_UPDATE|
-|event_webhooks_types|QUEST_USER_ENROLLMENT|
-
 <h2 id="tocS_ApplicationIdentityProviderAuthType">ApplicationIdentityProviderAuthType</h2>
 <!-- backwards compatibility -->
 <a id="schemaapplicationidentityproviderauthtype"></a>
@@ -96022,6 +95922,106 @@ BotToken
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*oneOf*|integer|false|none|none|
+
+<h2 id="tocS_ApplicationUpdateFormPartial">ApplicationUpdateFormPartial</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationupdateformpartial"></a>
+<a id="schema_ApplicationUpdateFormPartial"></a>
+<a id="tocSapplicationupdateformpartial"></a>
+<a id="tocsapplicationupdateformpartial"></a>
+
+```json
+{
+  "description": {
+    "default": "string",
+    "localizations": {
+      "property1": "string",
+      "property2": "string"
+    }
+  },
+  "icon": "string",
+  "cover_image": "string",
+  "team_id": "string",
+  "flags": 0,
+  "interactions_endpoint_url": "http://example.com",
+  "explicit_content_filter": 0,
+  "max_participants": -1,
+  "type": 4,
+  "tags": [
+    "string"
+  ],
+  "custom_install_url": "http://example.com",
+  "install_params": {
+    "scopes": [
+      "applications.commands"
+    ],
+    "permissions": 0
+  },
+  "role_connections_verification_url": "http://example.com",
+  "integration_types_config": {
+    "property1": {
+      "oauth2_install_params": {
+        "scopes": [
+          "applications.commands"
+        ],
+        "permissions": 0
+      }
+    },
+    "property2": {
+      "oauth2_install_params": {
+        "scopes": [
+          "applications.commands"
+        ],
+        "permissions": 0
+      }
+    }
+  },
+  "event_webhooks_status": 1,
+  "event_webhooks_url": "http://example.com",
+  "event_webhooks_types": [
+    "APPLICATION_AUTHORIZED"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|object \| null|false|none|none|
+|icon|string \| null|false|none|none|
+|cover_image|string \| null|false|none|none|
+|team_id|null \| [SnowflakeType](#schemasnowflaketype)|false|none|none|
+|flags|integer \| null|false|none|none|
+|interactions_endpoint_url|string \| null(uri)|false|none|none|
+|explicit_content_filter|null \| [ApplicationExplicitContentFilterTypes](#schemaapplicationexplicitcontentfiltertypes)|false|none|none|
+|max_participants|integer \| null(int32)|false|none|none|
+|type|null \| [ApplicationTypes](#schemaapplicationtypes)|false|none|none|
+|tags|[string]|false|none|none|
+|custom_install_url|string \| null(uri)|false|none|none|
+|install_params|null \| [ApplicationOAuth2InstallParams](#schemaapplicationoauth2installparams)|false|none|none|
+|role_connections_verification_url|string \| null(uri)|false|none|none|
+|integration_types_config|object \| null|false|none|none|
+|event_webhooks_status|null \| integer(int32)|false|none|none|
+|event_webhooks_url|string \| null(uri)|false|none|Event webhooks URL for the app to receive webhook events|
+|event_webhooks_types|[string]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|event_webhooks_types|APPLICATION_AUTHORIZED|
+|event_webhooks_types|APPLICATION_DEAUTHORIZED|
+|event_webhooks_types|ENTITLEMENT_CREATE|
+|event_webhooks_types|ENTITLEMENT_DELETE|
+|event_webhooks_types|ENTITLEMENT_UPDATE|
+|event_webhooks_types|GAME_DIRECT_MESSAGE_CREATE|
+|event_webhooks_types|GAME_DIRECT_MESSAGE_DELETE|
+|event_webhooks_types|GAME_DIRECT_MESSAGE_UPDATE|
+|event_webhooks_types|LOBBY_MESSAGE_CREATE|
+|event_webhooks_types|LOBBY_MESSAGE_DELETE|
+|event_webhooks_types|LOBBY_MESSAGE_UPDATE|
+|event_webhooks_types|QUEST_USER_ENROLLMENT|
 
 <h2 id="tocS_ApplicationUserRoleConnectionResponse">ApplicationUserRoleConnectionResponse</h2>
 <!-- backwards compatibility -->

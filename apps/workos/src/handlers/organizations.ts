@@ -1,39 +1,44 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteOrganizationsIdRoute,
-  deleteOrganizationsOrganizationIdConnectedAccountsSlugRoute,
-  deleteOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsOmIdRoute,
-  deleteOrganizationsOrganizationIdGroupsGroupIdRoute,
-  deleteOrganizationsOrganizationIdItContactsContactIdRoute,
+  getOrganizationsRoute,
+  postOrganizationsRoute,
   getOrganizationsExternalIdExternalIdRoute,
+  getOrganizationsIdRoute,
+  putOrganizationsIdRoute,
+  deleteOrganizationsIdRoute,
   getOrganizationsIdAuditLogConfigurationRoute,
   getOrganizationsIdAuditLogsRetentionRoute,
-  getOrganizationsIdRoute,
+  putOrganizationsIdAuditLogsRetentionRoute,
   getOrganizationsOrganizationIdApiKeysRoute,
+  postOrganizationsOrganizationIdApiKeysRoute,
+  getOrganizationsOrganizationIdDataIntegrationConfigurationsRoute,
+  putOrganizationsOrganizationIdDataIntegrationConfigurationsSlugRoute,
+  getOrganizationsOrganizationIdFeatureFlagsRoute,
+  postOrganizationsOrganizationIdGroupsRoute,
+  getOrganizationsOrganizationIdGroupsRoute,
+  getOrganizationsOrganizationIdGroupsGroupIdRoute,
+  patchOrganizationsOrganizationIdGroupsGroupIdRoute,
+  deleteOrganizationsOrganizationIdGroupsGroupIdRoute,
+  postOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+  getOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+  patchOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+  deleteOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsOmIdRoute,
   getOrganizationsOrganizationIdAuthorizedApplicationsRoute,
   getOrganizationsOrganizationIdConnectedAccountsSlugRoute,
-  getOrganizationsOrganizationIdDataIntegrationConfigurationsRoute,
-  getOrganizationsOrganizationIdDataProvidersRoute,
-  getOrganizationsOrganizationIdFeatureFlagsRoute,
-  getOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
-  getOrganizationsOrganizationIdGroupsGroupIdRoute,
-  getOrganizationsOrganizationIdGroupsRoute,
-  getOrganizationsOrganizationIdItContactsRoute,
-  getOrganizationsRoute,
-  patchOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
-  patchOrganizationsOrganizationIdGroupsGroupIdRoute,
-  postOrganizationsOrganizationIdApiKeysRoute,
+  deleteOrganizationsOrganizationIdConnectedAccountsSlugRoute,
   postOrganizationsOrganizationIdConnectedAccountsSlugRoute,
-  postOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
-  postOrganizationsOrganizationIdGroupsRoute,
+  putOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+  getOrganizationsOrganizationIdDataProvidersRoute,
+  getOrganizationsOrganizationIdIssuerTrustsRoute,
+  postOrganizationsOrganizationIdIssuerTrustsRoute,
+  getOrganizationsOrganizationIdIssuerTrustsIdRoute,
+  patchOrganizationsOrganizationIdIssuerTrustsIdRoute,
+  deleteOrganizationsOrganizationIdIssuerTrustsIdRoute,
+  getOrganizationsOrganizationIdItContactsRoute,
+  postOrganizationsOrganizationIdItContactsRoute,
+  deleteOrganizationsOrganizationIdItContactsContactIdRoute,
   postOrganizationsOrganizationIdItContactsContactIdInviteRoute,
   postOrganizationsOrganizationIdItContactsContactIdRevokeRoute,
-  postOrganizationsOrganizationIdItContactsRoute,
-  postOrganizationsRoute,
-  putOrganizationsIdAuditLogsRetentionRoute,
-  putOrganizationsIdRoute,
-  putOrganizationsOrganizationIdConnectedAccountsSlugRoute,
-  putOrganizationsOrganizationIdDataIntegrationConfigurationsSlugRoute,
 } from '../routes'
 
 export const getOrganizationsRouteHandler: RouteHandler<typeof getOrganizationsRoute> = async (
@@ -206,6 +211,36 @@ export const putOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler: Ro
 
 export const getOrganizationsOrganizationIdDataProvidersRouteHandler: RouteHandler<
   typeof getOrganizationsOrganizationIdDataProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdIssuerTrustsRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdIssuerTrustsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrganizationIdIssuerTrustsRouteHandler: RouteHandler<
+  typeof postOrganizationsOrganizationIdIssuerTrustsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdIssuerTrustsIdRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdIssuerTrustsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOrganizationsOrganizationIdIssuerTrustsIdRouteHandler: RouteHandler<
+  typeof patchOrganizationsOrganizationIdIssuerTrustsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrganizationsOrganizationIdIssuerTrustsIdRouteHandler: RouteHandler<
+  typeof deleteOrganizationsOrganizationIdIssuerTrustsIdRoute
 > = async (c) => {
   throw new Error('Not implemented')
 }

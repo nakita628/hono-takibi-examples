@@ -1516,6 +1516,61 @@ export async function getOrganizationsOrganizationIdDataProviders(
   )
 }
 
+export async function getOrganizationsOrganizationIdIssuerTrusts(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(
+    client.organizations[':organization_id'].issuer_trusts.$get(args, options),
+  )
+}
+
+export async function postOrganizationsOrganizationIdIssuerTrusts(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts']['$post']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(
+    client.organizations[':organization_id'].issuer_trusts.$post(args, options),
+  )
+}
+
+export async function getOrganizationsOrganizationIdIssuerTrustsId(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(
+    client.organizations[':organization_id'].issuer_trusts[':id'].$get(args, options),
+  )
+}
+
+export async function deleteOrganizationsOrganizationIdIssuerTrustsId(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(
+    client.organizations[':organization_id'].issuer_trusts[':id'].$delete(args, options),
+  )
+}
+
+export async function patchOrganizationsOrganizationIdIssuerTrustsId(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(
+    client.organizations[':organization_id'].issuer_trusts[':id'].$patch(args, options),
+  )
+}
+
 export async function getOrganizationsOrganizationIdItContacts(
   args: InferRequestType<(typeof client.organizations)[':organization_id']['it_contacts']['$get']>,
   options?: ClientRequestOptions,
@@ -1607,6 +1662,13 @@ export async function putRadarAttemptsId(
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(client.radar.attempts[':id'].$put(args, options))
+}
+
+export async function getRadarDetectionsId(
+  args: InferRequestType<(typeof client.radar.detections)[':id']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(client.radar.detections[':id'].$get(args, options))
 }
 
 export async function postRadarListsTypeAction(
@@ -1718,6 +1780,13 @@ export async function postUserManagementCorsOrigins(
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(client.user_management.cors_origins.$post(args, options))
+}
+
+export async function deleteUserManagementCorsOriginsId(
+  args: InferRequestType<(typeof client.user_management.cors_origins)[':id']['$delete']>,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(client.user_management.cors_origins[':id'].$delete(args, options))
 }
 
 export async function getUserManagementEmailVerificationId(
@@ -1969,6 +2038,17 @@ export async function getUserManagementUsersExternalIdExternalId(
 ) {
   return await parseResponse(
     client.user_management.users.external_id[':external_id'].$get(args, options),
+  )
+}
+
+export async function getUserManagementUsersIdentitiesProviderIdpId(
+  args: InferRequestType<
+    (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+  >,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(
+    client.user_management.users.identities[':provider'][':idp_id'].$get(args, options),
   )
 }
 
@@ -2317,6 +2397,13 @@ export async function postWebhookEndpoints(
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(client.webhook_endpoints.$post(args, options))
+}
+
+export async function getWebhookEndpointsId(
+  args: InferRequestType<(typeof client.webhook_endpoints)[':id']['$get']>,
+  options?: ClientRequestOptions,
+) {
+  return await parseResponse(client.webhook_endpoints[':id'].$get(args, options))
 }
 
 export async function deleteWebhookEndpointsId(

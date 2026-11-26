@@ -1,18 +1,18 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAlbumsIdAssetsRoute,
-  deleteAlbumsIdRoute,
-  deleteAlbumsIdUserUserIdRoute,
-  getAlbumsIdMapMarkersRoute,
-  getAlbumsIdRoute,
   getAlbumsRoute,
-  getAlbumsStatisticsRoute,
-  patchAlbumsIdRoute,
   postAlbumsRoute,
   putAlbumsAssetsRoute,
+  getAlbumsStatisticsRoute,
+  deleteAlbumsIdRoute,
+  getAlbumsIdRoute,
+  patchAlbumsIdRoute,
+  deleteAlbumsIdAssetsRoute,
   putAlbumsIdAssetsRoute,
-  putAlbumsIdUsersRoute,
+  getAlbumsIdMapMarkersRoute,
+  deleteAlbumsIdUserUserIdRoute,
   putAlbumsIdUserUserIdRoute,
+  putAlbumsIdUsersRoute,
 } from '../routes'
 
 export const getAlbumsRouteHandler: RouteHandler<typeof getAlbumsRoute> = async (c) => {

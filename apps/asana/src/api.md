@@ -52565,7 +52565,8 @@ Marks a set of tasks as dependencies of this task, if they are not already depen
 |task_gid|path|string|true|The task to operate on.|
 |opt_pretty|query|boolean|false|Provides “pretty” output.<br>Provides the response in a “pretty” format. In the case of JSON this means doing proper line breaking and indentation to make it readable. This will take extra time and increase the response size so it is advisable only to use this during debugging.|
 |body|body|object|true|The list of tasks to set as dependencies.|
-|» data|body|[ModifyDependenciesRequest](#schemamodifydependenciesrequest)|false|none|
+|» data|body|object|false|none|
+|» » dependencies|body|[string]|false|An array of task gids that a task depends on.|
 
 > Example responses
 
@@ -53189,7 +53190,8 @@ Marks a set of tasks as dependents of this task, if they are not already depende
 |task_gid|path|string|true|The task to operate on.|
 |opt_pretty|query|boolean|false|Provides “pretty” output.<br>Provides the response in a “pretty” format. In the case of JSON this means doing proper line breaking and indentation to make it readable. This will take extra time and increase the response size so it is advisable only to use this during debugging.|
 |body|body|object|true|The list of tasks to add as dependents.|
-|» data|body|[ModifyDependentsRequest](#schemamodifydependentsrequest)|false|A set of dependent tasks.|
+|» data|body|object|false|none|
+|» » dependents|body|[string]|false|An array of task gids that are dependents of the given task.|
 
 > Example responses
 
@@ -69468,6 +69470,17 @@ A generic Asana Resource, containing a globally unique identifier.
 |completion_state|string \| null|false|none|The completion state the custom type status option corresponds to, all custom types must have one ‘Incomplete’ and ‘Complete’ status option.|
 |enabled|boolean \| null|false|none|Whether or not the custom type status option is a selectable value for the custom type.|
 |color|string \| null|false|none|The color associated with the custom type status option. Defaults to ‘none’.|
+
+<h2 id="tocS_DependencyTypeRequest">DependencyTypeRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemadependencytyperequest"></a>
+<a id="schema_DependencyTypeRequest"></a>
+<a id="tocSdependencytyperequest"></a>
+<a id="tocsdependencytyperequest"></a>
+
+```json
+{}
+```
 
 <h2 id="tocS_EffectiveTaskMembership">EffectiveTaskMembership</h2>
 <!-- backwards compatibility -->

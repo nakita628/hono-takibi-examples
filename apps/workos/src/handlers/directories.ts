@@ -1,12 +1,12 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteDirectoriesIdRoute,
-  getDirectoriesDirectoryIdGroupsGroupIdRoute,
+  getDirectoriesRoute,
   getDirectoriesDirectoryIdGroupsRoute,
+  getDirectoriesDirectoryIdGroupsGroupIdRoute,
   getDirectoriesDirectoryIdUsersRoute,
   getDirectoriesDirectoryIdUsersUserIdRoute,
   getDirectoriesIdRoute,
-  getDirectoriesRoute,
+  deleteDirectoriesIdRoute,
   postDirectoriesIdSyncRoute,
 } from '../routes'
 

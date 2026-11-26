@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteSamlConnectionsSamlConnectionIdRoute,
   getSamlConnectionsRoute,
+  postSamlConnectionsRoute,
   getSamlConnectionsSamlConnectionIdRoute,
   patchSamlConnectionsSamlConnectionIdRoute,
-  postSamlConnectionsRoute,
+  deleteSamlConnectionsSamlConnectionIdRoute,
 } from '../routes'
 
 export const getSamlConnectionsRouteHandler: RouteHandler<typeof getSamlConnectionsRoute> = async (

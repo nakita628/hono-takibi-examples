@@ -1,7 +1,7 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getPortfolioMembershipsPortfolioMembershipGidRoute,
   getPortfolioMembershipsRoute,
+  getPortfolioMembershipsPortfolioMembershipGidRoute,
 } from '../routes'
 
 export const getPortfolioMembershipsRouteHandler: RouteHandler<

@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteSessionConfigurationsRoute,
   getSessionConfigurationsRoute,
   putSessionConfigurationsRoute,
+  deleteSessionConfigurationsRoute,
 } from '../routes'
 
 export const getSessionConfigurationsRouteHandler: RouteHandler<

@@ -10864,41 +10864,41 @@ export function useSuspenseApiPublicUnstableTopics<
   )
 }
 
-export function getApiPublicUnstableTopicsTopicIdQueryKey(
-  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>,
+export function getApiPublicUnstableTopicsTopicStableIdQueryKey(
+  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>,
 ) {
-  return ['api', '/api/public/unstable/topics/:topicId', args] as const
+  return ['api', '/api/public/unstable/topics/:topicStableId', args] as const
 }
 
-export function getApiPublicUnstableTopicsTopicIdQueryOptions<
+export function getApiPublicUnstableTopicsTopicStableIdQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+        Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>,
+  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+          Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>>
         >
       >
     >,
     TError,
     TData,
-    ReturnType<typeof getApiPublicUnstableTopicsTopicIdQueryKey>
+    ReturnType<typeof getApiPublicUnstableTopicsTopicStableIdQueryKey>
   >({
-    queryKey: getApiPublicUnstableTopicsTopicIdQueryKey(args),
+    queryKey: getApiPublicUnstableTopicsTopicStableIdQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.api.public.unstable.topics[':topicId'].$get(args, {
+        client.api.public.unstable.topics[':topicStableId'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -10907,30 +10907,32 @@ export function getApiPublicUnstableTopicsTopicIdQueryOptions<
   })
 }
 
-export function useApiPublicUnstableTopicsTopicId<
+export function useApiPublicUnstableTopicsTopicStableId<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+        Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>,
+  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+              Awaited<
+                ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
+              >
             >
           >
         >,
         TError,
         TData,
-        ReturnType<typeof getApiPublicUnstableTopicsTopicIdQueryKey>
+        ReturnType<typeof getApiPublicUnstableTopicsTopicStableIdQueryKey>
       >,
       'queryKey' | 'queryFn'
     >
@@ -10941,37 +10943,39 @@ export function useApiPublicUnstableTopicsTopicId<
   const { query: queryOptions, options: clientOptions } = options ?? {}
   return useQuery(
     {
-      ...getApiPublicUnstableTopicsTopicIdQueryOptions<TData, TError>(args, clientOptions),
+      ...getApiPublicUnstableTopicsTopicStableIdQueryOptions<TData, TError>(args, clientOptions),
       ...queryOptions,
     },
     queryClient,
   )
 }
 
-export function useSuspenseApiPublicUnstableTopicsTopicId<
+export function useSuspenseApiPublicUnstableTopicsTopicStableId<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+        Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>,
+  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+              Awaited<
+                ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
+              >
             >
           >
         >,
         TError,
         TData,
-        ReturnType<typeof getApiPublicUnstableTopicsTopicIdQueryKey>
+        ReturnType<typeof getApiPublicUnstableTopicsTopicStableIdQueryKey>
       >,
       'queryKey' | 'queryFn'
     >
@@ -10982,7 +10986,7 @@ export function useSuspenseApiPublicUnstableTopicsTopicId<
   const { query: queryOptions, options: clientOptions } = options ?? {}
   return useSuspenseQuery(
     {
-      ...getApiPublicUnstableTopicsTopicIdQueryOptions<TData, TError>(args, clientOptions),
+      ...getApiPublicUnstableTopicsTopicStableIdQueryOptions<TData, TError>(args, clientOptions),
       ...queryOptions,
     },
     queryClient,

@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getSystemConfigDefaultsRoute,
   getSystemConfigRoute,
-  getSystemConfigStorageTemplateOptionsRoute,
   putSystemConfigRoute,
+  getSystemConfigDefaultsRoute,
+  getSystemConfigStorageTemplateOptionsRoute,
 } from '../routes'
 
 export const getSystemConfigRouteHandler: RouteHandler<typeof getSystemConfigRoute> = async (c) => {

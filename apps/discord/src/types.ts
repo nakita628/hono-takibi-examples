@@ -1,10 +1,7 @@
 type SnowflakeType = string
 type ApplicationTypes = 4
 type Int53Type = bigint
-type UserAvatarDecorationResponse = {
-  asset: string
-  sku_id: ({ [x: string]: unknown } | null) | SnowflakeType
-}
+type UserAvatarDecorationResponse = { asset: string; sku_id: null | SnowflakeType }
 type NameplatePalette =
   | 'crimson'
   | 'berry'
@@ -19,16 +16,14 @@ type NameplatePalette =
   | 'white'
   | 'black'
 type UserNameplateResponse = {
-  sku_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  sku_id: null | SnowflakeType
   asset: string
   label: string
   palette: NameplatePalette
 }
-type UserCollectiblesResponse = {
-  nameplate: ({ [x: string]: unknown } | null) | UserNameplateResponse
-}
+type UserCollectiblesResponse = { nameplate: null | UserNameplateResponse }
 type UserPrimaryGuildResponse = {
-  identity_guild_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  identity_guild_id: null | SnowflakeType
   identity_enabled: boolean | null
   tag: string | null
   badge: string | null
@@ -45,34 +40,9 @@ type UserResponse = {
   banner?: (string | null) | undefined
   accent_color?: (number | null) | undefined
   global_name: string | null
-  avatar_decoration_data?:
-    | ({ [x: string]: unknown } | null)
-    | UserAvatarDecorationResponse
-    | undefined
-  collectibles?: ({ [x: string]: unknown } | null) | UserCollectiblesResponse | undefined
-  primary_guild: ({ [x: string]: unknown } | null) | UserPrimaryGuildResponse
-}
-type ApplicationOAuth2InstallParamsResponse = { scopes: {}[]; permissions: string }
-type ApplicationIntegrationTypeConfigurationResponse = {
-  oauth2_install_params?: ApplicationOAuth2InstallParamsResponse | undefined
-}
-type ApplicationEventWebhooksStatus = 1 | 2 | 3
-type ApplicationExplicitContentFilterTypes = 0 | 1
-type TeamMembershipStates = 1 | 2
-type TeamMemberRoles = 'admin' | 'developer' | 'read_only'
-type TeamMemberResponse = {
-  user: UserResponse
-  team_id: SnowflakeType
-  membership_state: TeamMembershipStates
-  role: TeamMemberRoles
-  permissions: string[]
-}
-type TeamResponse = {
-  id: SnowflakeType
-  icon: string | null
-  name: string
-  owner_user_id: SnowflakeType
-  members: TeamMemberResponse[]
+  avatar_decoration_data?: (null | UserAvatarDecorationResponse) | undefined
+  collectibles?: (null | UserCollectiblesResponse) | undefined
+  primary_guild: null | UserPrimaryGuildResponse
 }
 type OAuth2Scopes =
   | 'identify'
@@ -109,12 +79,114 @@ type OAuth2Scopes =
   | 'dm_channels.read'
   | 'role_connections.write'
   | 'openid'
+type ApplicationOAuth2InstallParamsResponse = { scopes: OAuth2Scopes[]; permissions: string }
+type ApplicationIntegrationTypeConfigurationResponse = {
+  oauth2_install_params?: ApplicationOAuth2InstallParamsResponse | undefined
+}
+type ApplicationEventWebhooksStatus = 1 | 2 | 3
+type ActionTypes =
+  | 'TYPING_START'
+  | 'INVITE_CREATE'
+  | 'INVITE_DELETE'
+  | 'WEBHOOKS_UPDATE'
+  | 'CHANNEL_CREATE'
+  | 'VOICE_CHANNEL_STATUS_UPDATE'
+  | 'CHANNEL_UPDATE'
+  | 'CHANNEL_DELETE'
+  | 'CHANNEL_PINS_UPDATE'
+  | 'THREAD_CREATE'
+  | 'THREAD_UPDATE'
+  | 'THREAD_DELETE'
+  | 'THREAD_LIST_SYNC'
+  | 'THREAD_MEMBER_UPDATE'
+  | 'THREAD_MEMBERS_UPDATE'
+  | 'GUILD_CREATE'
+  | 'GUILD_UPDATE'
+  | 'GUILD_DELETE'
+  | 'GUILD_EMOJIS_UPDATE'
+  | 'GUILD_STICKERS_UPDATE'
+  | 'GUILD_INTEGRATIONS_UPDATE'
+  | 'GUILD_MEMBER_ADD'
+  | 'GUILD_MEMBER_UPDATE'
+  | 'GUILD_MEMBER_REMOVE'
+  | 'GUILD_BAN_ADD'
+  | 'GUILD_BAN_REMOVE'
+  | 'GUILD_ROLE_CREATE'
+  | 'GUILD_ROLE_UPDATE'
+  | 'GUILD_ROLE_DELETE'
+  | 'GUILD_MEMBERS_CHUNK'
+  | 'MESSAGE_CREATE'
+  | 'MESSAGE_UPDATE'
+  | 'MESSAGE_DELETE'
+  | 'MESSAGE_DELETE_BULK'
+  | 'MESSAGE_REACTION_ADD'
+  | 'MESSAGE_REACTION_REMOVE'
+  | 'MESSAGE_REACTION_REMOVE_ALL'
+  | 'MESSAGE_REACTION_REMOVE_EMOJI'
+  | 'USER_UPDATE'
+  | 'ENTITLEMENT_CREATE'
+  | 'ENTITLEMENT_UPDATE'
+  | 'ENTITLEMENT_DELETE'
+  | 'READY'
+  | 'RESUMED'
+  | 'PRESENCE_UPDATE'
+  | 'VOICE_STATE_UPDATE'
+  | 'VOICE_SERVER_UPDATE'
+  | 'LOBBY_MESSAGE_CREATE'
+  | 'LOBBY_MESSAGE_UPDATE'
+  | 'LOBBY_MESSAGE_DELETE'
+  | 'GAME_DIRECT_MESSAGE_CREATE'
+  | 'GAME_DIRECT_MESSAGE_DELETE'
+  | 'GAME_DIRECT_MESSAGE_UPDATE'
+  | 'INTERACTION_CREATE'
+  | 'INTEGRATION_CREATE'
+  | 'INTEGRATION_UPDATE'
+  | 'INTEGRATION_DELETE'
+  | 'APPLICATION_COMMAND_PERMISSIONS_UPDATE'
+  | 'APPLICATION_AUTHORIZED'
+  | 'APPLICATION_DEAUTHORIZED'
+  | 'STAGE_INSTANCE_CREATE'
+  | 'STAGE_INSTANCE_UPDATE'
+  | 'STAGE_INSTANCE_DELETE'
+  | 'GUILD_AUDIT_LOG_ENTRY_CREATE'
+  | 'GUILD_SCHEDULED_EVENT_CREATE'
+  | 'GUILD_SCHEDULED_EVENT_UPDATE'
+  | 'GUILD_SCHEDULED_EVENT_DELETE'
+  | 'GUILD_SCHEDULED_EVENT_USER_ADD'
+  | 'GUILD_SCHEDULED_EVENT_USER_REMOVE'
+  | 'AUTO_MODERATION_RULE_CREATE'
+  | 'AUTO_MODERATION_RULE_UPDATE'
+  | 'AUTO_MODERATION_RULE_DELETE'
+  | 'AUTO_MODERATION_ACTION_EXECUTION'
+  | 'GUILD_SOUNDBOARD_SOUNDS_UPDATE'
+  | 'GUILD_SOUNDBOARD_SOUND_CREATE'
+  | 'GUILD_SOUNDBOARD_SOUND_UPDATE'
+  | 'GUILD_SOUNDBOARD_SOUND_DELETE'
+  | 'QUEST_USER_ENROLLMENT'
+  | 'RATE_LIMITED'
+type ApplicationExplicitContentFilterTypes = 0 | 1
+type TeamMembershipStates = 1 | 2
+type TeamMemberRoles = 'admin' | 'developer' | 'read_only'
+type TeamMemberResponse = {
+  user: UserResponse
+  team_id: SnowflakeType
+  membership_state: TeamMembershipStates
+  role: TeamMemberRoles
+  permissions: string[]
+}
+type TeamResponse = {
+  id: SnowflakeType
+  icon: string | null
+  name: string
+  owner_user_id: SnowflakeType
+  members: TeamMemberResponse[]
+}
 type PrivateApplicationResponse = {
   id: SnowflakeType
   name: string
   icon: string | null
   description: string
-  type: ({ [x: string]: unknown } | null) | ApplicationTypes
+  type: null | ApplicationTypes
   cover_image?: string | undefined
   primary_sku_id?: SnowflakeType | undefined
   flags: number
@@ -132,7 +204,7 @@ type PrivateApplicationResponse = {
   custom_install_url?: string | undefined
   install_params?: ApplicationOAuth2InstallParamsResponse | undefined
   integration_types_config?:
-    | { [x: string]: ApplicationIntegrationTypeConfigurationResponse }
+    | { [key: string]: ApplicationIntegrationTypeConfigurationResponse }
     | undefined
   verify_key: string
   max_participants?: (number | null) | undefined
@@ -146,61 +218,175 @@ type PrivateApplicationResponse = {
   approximate_user_authorization_count: number
   event_webhooks_url?: (string | null) | undefined
   event_webhooks_status?: ApplicationEventWebhooksStatus | undefined
-  event_webhooks_types?: {}[] | undefined
+  event_webhooks_types?: ActionTypes[] | undefined
   explicit_content_filter: ApplicationExplicitContentFilterTypes
-  team: ({ [x: string]: unknown } | null) | TeamResponse
+  team: null | TeamResponse
   eligible_oauth2_scopes: OAuth2Scopes[]
 }
-type RatelimitedResponse = { code: number; message: string; retry_after: number; global: boolean }
 type Error = { code: number; message: string }
+type RatelimitedResponse = Error & { retry_after: number; global: boolean }
 type InnerErrors = { _errors: Error[] }
-type ErrorDetails = { [x: string]: ErrorDetails } | InnerErrors
-type ErrorResponse = { code: number; message: string; errors?: ErrorDetails | undefined }
-type ApplicationOAuth2InstallParams = {
-  scopes?: ({}[] | null) | undefined
-  permissions?: (number | null) | undefined
+type ErrorDetails = { [key: string]: ErrorDetails } | InnerErrors
+type ErrorResponse = Error & { errors?: ErrorDetails | undefined }
+type SnowflakeTypeInput = string
+type ApplicationExplicitContentFilterTypesInput = 0 | 1
+type ApplicationTypesInput = 4
+type OAuth2ScopesInput =
+  | 'identify'
+  | 'email'
+  | 'connections'
+  | 'guilds'
+  | 'guilds.join'
+  | 'guilds.members.read'
+  | 'gdm.join'
+  | 'bot'
+  | 'rpc'
+  | 'rpc.notifications.read'
+  | 'rpc.voice.read'
+  | 'rpc.voice.write'
+  | 'rpc.video.read'
+  | 'rpc.video.write'
+  | 'rpc.screenshare.read'
+  | 'rpc.screenshare.write'
+  | 'rpc.activities.write'
+  | 'webhook.incoming'
+  | 'messages.read'
+  | 'applications.builds.upload'
+  | 'applications.builds.read'
+  | 'applications.commands'
+  | 'applications.commands.permissions.update'
+  | 'applications.commands.update'
+  | 'applications.store.update'
+  | 'applications.entitlements'
+  | 'activities.read'
+  | 'activities.write'
+  | 'activities.invites.write'
+  | 'relationships.read'
+  | 'voice'
+  | 'dm_channels.read'
+  | 'role_connections.write'
+  | 'openid'
+type ApplicationOAuth2InstallParamsInput = {
+  scopes?: OAuth2ScopesInput[] | null
+  permissions?: number | null
 }
-type ApplicationIntegrationTypeConfiguration = {
-  oauth2_install_params?:
-    | ({ [x: string]: unknown } | null)
-    | ApplicationOAuth2InstallParams
-    | undefined
+type ApplicationIntegrationTypeConfigurationInput = {
+  oauth2_install_params?: null | ApplicationOAuth2InstallParamsInput
 }
-type ApplicationFormPartial = {
-  description?:
-    | ({ default: string; localizations?: ({ [x: string]: string } | null) | undefined } | null)
-    | undefined
-  icon?: (string | null) | undefined
-  cover_image?: (string | null) | undefined
-  team_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  flags?: (number | null) | undefined
-  interactions_endpoint_url?: (string | null) | undefined
-  explicit_content_filter?:
-    | ({ [x: string]: unknown } | null)
-    | ApplicationExplicitContentFilterTypes
-    | undefined
-  max_participants?: (number | null) | undefined
-  type?: ({ [x: string]: unknown } | null) | ApplicationTypes | undefined
-  tags?: (string[] | null) | undefined
-  custom_install_url?: (string | null) | undefined
-  install_params?: ({ [x: string]: unknown } | null) | ApplicationOAuth2InstallParams | undefined
-  role_connections_verification_url?: (string | null) | undefined
-  integration_types_config?:
-    | ({
-        [x: string]: ({ [x: string]: unknown } | null) | ApplicationIntegrationTypeConfiguration
-      } | null)
-    | undefined
-  event_webhooks_status?: ({ [x: string]: unknown } | null) | {} | undefined
-  event_webhooks_url?: (string | null) | undefined
-  event_webhooks_types?: ({}[] | null) | undefined
+type ApplicationEventWebhooksStatusInput = 1 | 2 | 3
+type ActionTypesInput =
+  | 'TYPING_START'
+  | 'INVITE_CREATE'
+  | 'INVITE_DELETE'
+  | 'WEBHOOKS_UPDATE'
+  | 'CHANNEL_CREATE'
+  | 'VOICE_CHANNEL_STATUS_UPDATE'
+  | 'CHANNEL_UPDATE'
+  | 'CHANNEL_DELETE'
+  | 'CHANNEL_PINS_UPDATE'
+  | 'THREAD_CREATE'
+  | 'THREAD_UPDATE'
+  | 'THREAD_DELETE'
+  | 'THREAD_LIST_SYNC'
+  | 'THREAD_MEMBER_UPDATE'
+  | 'THREAD_MEMBERS_UPDATE'
+  | 'GUILD_CREATE'
+  | 'GUILD_UPDATE'
+  | 'GUILD_DELETE'
+  | 'GUILD_EMOJIS_UPDATE'
+  | 'GUILD_STICKERS_UPDATE'
+  | 'GUILD_INTEGRATIONS_UPDATE'
+  | 'GUILD_MEMBER_ADD'
+  | 'GUILD_MEMBER_UPDATE'
+  | 'GUILD_MEMBER_REMOVE'
+  | 'GUILD_BAN_ADD'
+  | 'GUILD_BAN_REMOVE'
+  | 'GUILD_ROLE_CREATE'
+  | 'GUILD_ROLE_UPDATE'
+  | 'GUILD_ROLE_DELETE'
+  | 'GUILD_MEMBERS_CHUNK'
+  | 'MESSAGE_CREATE'
+  | 'MESSAGE_UPDATE'
+  | 'MESSAGE_DELETE'
+  | 'MESSAGE_DELETE_BULK'
+  | 'MESSAGE_REACTION_ADD'
+  | 'MESSAGE_REACTION_REMOVE'
+  | 'MESSAGE_REACTION_REMOVE_ALL'
+  | 'MESSAGE_REACTION_REMOVE_EMOJI'
+  | 'USER_UPDATE'
+  | 'ENTITLEMENT_CREATE'
+  | 'ENTITLEMENT_UPDATE'
+  | 'ENTITLEMENT_DELETE'
+  | 'READY'
+  | 'RESUMED'
+  | 'PRESENCE_UPDATE'
+  | 'VOICE_STATE_UPDATE'
+  | 'VOICE_SERVER_UPDATE'
+  | 'LOBBY_MESSAGE_CREATE'
+  | 'LOBBY_MESSAGE_UPDATE'
+  | 'LOBBY_MESSAGE_DELETE'
+  | 'GAME_DIRECT_MESSAGE_CREATE'
+  | 'GAME_DIRECT_MESSAGE_DELETE'
+  | 'GAME_DIRECT_MESSAGE_UPDATE'
+  | 'INTERACTION_CREATE'
+  | 'INTEGRATION_CREATE'
+  | 'INTEGRATION_UPDATE'
+  | 'INTEGRATION_DELETE'
+  | 'APPLICATION_COMMAND_PERMISSIONS_UPDATE'
+  | 'APPLICATION_AUTHORIZED'
+  | 'APPLICATION_DEAUTHORIZED'
+  | 'STAGE_INSTANCE_CREATE'
+  | 'STAGE_INSTANCE_UPDATE'
+  | 'STAGE_INSTANCE_DELETE'
+  | 'GUILD_AUDIT_LOG_ENTRY_CREATE'
+  | 'GUILD_SCHEDULED_EVENT_CREATE'
+  | 'GUILD_SCHEDULED_EVENT_UPDATE'
+  | 'GUILD_SCHEDULED_EVENT_DELETE'
+  | 'GUILD_SCHEDULED_EVENT_USER_ADD'
+  | 'GUILD_SCHEDULED_EVENT_USER_REMOVE'
+  | 'AUTO_MODERATION_RULE_CREATE'
+  | 'AUTO_MODERATION_RULE_UPDATE'
+  | 'AUTO_MODERATION_RULE_DELETE'
+  | 'AUTO_MODERATION_ACTION_EXECUTION'
+  | 'GUILD_SOUNDBOARD_SOUNDS_UPDATE'
+  | 'GUILD_SOUNDBOARD_SOUND_CREATE'
+  | 'GUILD_SOUNDBOARD_SOUND_UPDATE'
+  | 'GUILD_SOUNDBOARD_SOUND_DELETE'
+  | 'QUEST_USER_ENROLLMENT'
+  | 'RATE_LIMITED'
+type ApplicationUpdateFormPartialInput = {
+  description?: { default: string; localizations?: { [key: string]: string } | null } | null
+  icon?: string | null
+  cover_image?: string | null
+  team_id?: null | SnowflakeTypeInput
+  flags?: number | null
+  interactions_endpoint_url?: string | null
+  explicit_content_filter?: null | ApplicationExplicitContentFilterTypesInput
+  max_participants?: number | null
+  type?: null | ApplicationTypesInput
+  tags?: string[] | null
+  custom_install_url?: string | null
+  install_params?: null | ApplicationOAuth2InstallParamsInput
+  role_connections_verification_url?: string | null
+  integration_types_config?: {
+    [key: string]: null | ApplicationIntegrationTypeConfigurationInput
+  } | null
+  event_webhooks_status?: null | ApplicationEventWebhooksStatusInput
+  event_webhooks_url?: string | null
+  event_webhooks_types?: ActionTypesInput[] | null
 }
+type EmbeddedActivityLocationKind = 'gc' | 'pc' | 'party'
 type GuildChannelLocation = {
   id: string
-  kind: {}
+  kind: EmbeddedActivityLocationKind
   channel_id: SnowflakeType
   guild_id: SnowflakeType
 }
-type PrivateChannelLocation = { id: string; kind: {}; channel_id: SnowflakeType }
+type PrivateChannelLocation = {
+  id: string
+  kind: EmbeddedActivityLocationKind
+  channel_id: SnowflakeType
+}
 type EmbeddedActivityInstance = {
   application_id: SnowflakeType
   instance_id: string
@@ -213,7 +399,7 @@ type ApplicationResponse = {
   name: string
   icon: string | null
   description: string
-  type: ({ [x: string]: unknown } | null) | ApplicationTypes
+  type: null | ApplicationTypes
   cover_image?: string | undefined
   primary_sku_id?: SnowflakeType | undefined
   flags: number
@@ -231,7 +417,7 @@ type ApplicationResponse = {
   custom_install_url?: string | undefined
   install_params?: ApplicationOAuth2InstallParamsResponse | undefined
   integration_types_config?:
-    | { [x: string]: ApplicationIntegrationTypeConfigurationResponse }
+    | { [key: string]: ApplicationIntegrationTypeConfigurationResponse }
     | undefined
   verify_key: string
   max_participants?: (number | null) | undefined
@@ -262,53 +448,54 @@ type ActivitiesAttachmentResponse = { attachment: AttachmentResponse }
 type ApplicationCommandType = 1 | 2 | 3 | 4
 type InteractionContextType = 0 | 1 | 2
 type ApplicationIntegrationType = 0 | 1
+type ApplicationCommandOptionType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
 type ApplicationCommandAttachmentOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
   file_types?: string[] | undefined
 }
 type ApplicationCommandBooleanOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
 }
 type ChannelTypes = 1 | 3 | 0 | 2 | 4 | 5 | 10 | 11 | 12 | 13 | 14 | 15
 type ApplicationCommandChannelOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
   channel_types?: ChannelTypes[] | undefined
 }
 type ApplicationCommandOptionIntegerChoiceResponse = {
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   value: Int53Type
 }
 type ApplicationCommandIntegerOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
   autocomplete?: boolean | undefined
   choices?: ApplicationCommandOptionIntegerChoiceResponse[] | undefined
@@ -316,29 +503,29 @@ type ApplicationCommandIntegerOptionResponse = {
   max_value?: Int53Type | undefined
 }
 type ApplicationCommandMentionableOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
 }
 type ApplicationCommandOptionNumberChoiceResponse = {
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   value: number
 }
 type ApplicationCommandNumberOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
   autocomplete?: boolean | undefined
   choices?: ApplicationCommandOptionNumberChoiceResponse[] | undefined
@@ -346,29 +533,29 @@ type ApplicationCommandNumberOptionResponse = {
   max_value?: number | undefined
 }
 type ApplicationCommandRoleOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
 }
 type ApplicationCommandOptionStringChoiceResponse = {
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   value: string
 }
 type ApplicationCommandStringOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
   autocomplete?: boolean | undefined
   choices?: ApplicationCommandOptionStringChoiceResponse[] | undefined
@@ -376,23 +563,23 @@ type ApplicationCommandStringOptionResponse = {
   max_length?: number | undefined
 }
 type ApplicationCommandUserOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
 }
 type ApplicationCommandSubcommandOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
   options?:
     | (
@@ -409,13 +596,13 @@ type ApplicationCommandSubcommandOptionResponse = {
     | undefined
 }
 type ApplicationCommandSubcommandGroupOptionResponse = {
-  type: {}
+  type: ApplicationCommandOptionType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   required?: boolean | undefined
   options?: ApplicationCommandSubcommandOptionResponse[] | undefined
 }
@@ -428,10 +615,10 @@ type ApplicationCommandResponse = {
   type: ApplicationCommandType
   name: string
   name_localized?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
   description_localized?: string | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
   guild_id?: SnowflakeType | undefined
   dm_permission?: boolean | undefined
   contexts?: (InteractionContextType[] | null) | undefined
@@ -454,229 +641,224 @@ type ApplicationCommandResponse = {
   nsfw?: boolean | undefined
   handler?: ApplicationCommandHandler | undefined
 }
-type ApplicationCommandAttachmentOption = {
-  type: {}
+type ApplicationCommandOptionTypeInput = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11
+type ApplicationCommandAttachmentOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
-  file_types?: (string[] | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
+  file_types?: string[] | null
 }
-type ApplicationCommandBooleanOption = {
-  type: {}
+type ApplicationCommandBooleanOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
 }
-type ApplicationCommandChannelOption = {
-  type: {}
+type ChannelTypesInput = 1 | 3 | 0 | 2 | 4 | 5 | 10 | 11 | 12 | 13 | 14 | 15
+type ApplicationCommandChannelOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
-  channel_types?: (ChannelTypes[] | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
+  channel_types?: ChannelTypesInput[] | null
 }
-type ApplicationCommandOptionIntegerChoice = {
+type Int53TypeInput = bigint
+type ApplicationCommandOptionIntegerChoiceInput = {
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
-  value: Int53Type
+  name_localizations?: { [key: string]: string } | null
+  value: Int53TypeInput
 }
-type ApplicationCommandIntegerOption = {
-  type: {}
+type ApplicationCommandIntegerOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
-  autocomplete?: (boolean | null) | undefined
-  choices?: (ApplicationCommandOptionIntegerChoice[] | null) | undefined
-  min_value?: ({ [x: string]: unknown } | null) | Int53Type | undefined
-  max_value?: ({ [x: string]: unknown } | null) | Int53Type | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
+  autocomplete?: boolean | null
+  choices?: ApplicationCommandOptionIntegerChoiceInput[] | null
+  min_value?: null | Int53TypeInput
+  max_value?: null | Int53TypeInput
 }
-type ApplicationCommandMentionableOption = {
-  type: {}
+type ApplicationCommandMentionableOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
 }
-type ApplicationCommandOptionNumberChoice = {
+type ApplicationCommandOptionNumberChoiceInput = {
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   value: number
 }
-type ApplicationCommandNumberOption = {
-  type: {}
+type ApplicationCommandNumberOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
-  autocomplete?: (boolean | null) | undefined
-  choices?: (ApplicationCommandOptionNumberChoice[] | null) | undefined
-  min_value?: (number | null) | undefined
-  max_value?: (number | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
+  autocomplete?: boolean | null
+  choices?: ApplicationCommandOptionNumberChoiceInput[] | null
+  min_value?: number | null
+  max_value?: number | null
 }
-type ApplicationCommandRoleOption = {
-  type: {}
+type ApplicationCommandRoleOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
 }
-type ApplicationCommandOptionStringChoice = {
+type ApplicationCommandOptionStringChoiceInput = {
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   value: string
 }
-type ApplicationCommandStringOption = {
-  type: {}
+type ApplicationCommandStringOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
-  autocomplete?: (boolean | null) | undefined
-  min_length?: (number | null) | undefined
-  max_length?: (number | null) | undefined
-  choices?: (ApplicationCommandOptionStringChoice[] | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
+  autocomplete?: boolean | null
+  min_length?: number | null
+  max_length?: number | null
+  choices?: ApplicationCommandOptionStringChoiceInput[] | null
 }
-type ApplicationCommandUserOption = {
-  type: {}
+type ApplicationCommandUserOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
 }
-type ApplicationCommandSubcommandOption = {
-  type: {}
+type ApplicationCommandSubcommandOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
   options?:
     | (
-        | (
-            | ApplicationCommandAttachmentOption
-            | ApplicationCommandBooleanOption
-            | ApplicationCommandChannelOption
-            | ApplicationCommandIntegerOption
-            | ApplicationCommandMentionableOption
-            | ApplicationCommandNumberOption
-            | ApplicationCommandRoleOption
-            | ApplicationCommandStringOption
-            | ApplicationCommandUserOption
-          )[]
-        | null
-      )
-    | undefined
+        | ApplicationCommandAttachmentOptionInput
+        | ApplicationCommandBooleanOptionInput
+        | ApplicationCommandChannelOptionInput
+        | ApplicationCommandIntegerOptionInput
+        | ApplicationCommandMentionableOptionInput
+        | ApplicationCommandNumberOptionInput
+        | ApplicationCommandRoleOptionInput
+        | ApplicationCommandStringOptionInput
+        | ApplicationCommandUserOptionInput
+      )[]
+    | null
 }
-type ApplicationCommandSubcommandGroupOption = {
-  type: {}
+type ApplicationCommandSubcommandGroupOptionInput = {
+  type: ApplicationCommandOptionTypeInput
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
-  required?: (boolean | null) | undefined
-  options?: (ApplicationCommandSubcommandOption[] | null) | undefined
+  description_localizations?: { [key: string]: string } | null
+  required?: boolean | null
+  options?: ApplicationCommandSubcommandOptionInput[] | null
 }
-type ApplicationCommandUpdateRequest = {
+type InteractionContextTypeInput = 0 | 1 | 2
+type ApplicationIntegrationTypeInput = 0 | 1
+type ApplicationCommandHandlerInput = 1 | 2
+type ApplicationCommandTypeInput = 1 | 2 | 3 | 4
+type ApplicationCommandUpdateRequestInput = {
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
-  description?: (string | null) | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
+  description?: string | null
+  description_localizations?: { [key: string]: string } | null
   options?:
     | (
-        | (
-            | ApplicationCommandAttachmentOption
-            | ApplicationCommandBooleanOption
-            | ApplicationCommandChannelOption
-            | ApplicationCommandIntegerOption
-            | ApplicationCommandMentionableOption
-            | ApplicationCommandNumberOption
-            | ApplicationCommandRoleOption
-            | ApplicationCommandStringOption
-            | ApplicationCommandSubcommandGroupOption
-            | ApplicationCommandSubcommandOption
-            | ApplicationCommandUserOption
-          )[]
-        | null
-      )
-    | undefined
-  default_member_permissions?: (number | null) | undefined
-  dm_permission?: (boolean | null) | undefined
-  contexts?: (InteractionContextType[] | null) | undefined
-  integration_types?: (ApplicationIntegrationType[] | null) | undefined
-  handler?: ({ [x: string]: unknown } | null) | ApplicationCommandHandler | undefined
-  type?: ({ [x: string]: unknown } | null) | ApplicationCommandType | undefined
-  id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+        | ApplicationCommandAttachmentOptionInput
+        | ApplicationCommandBooleanOptionInput
+        | ApplicationCommandChannelOptionInput
+        | ApplicationCommandIntegerOptionInput
+        | ApplicationCommandMentionableOptionInput
+        | ApplicationCommandNumberOptionInput
+        | ApplicationCommandRoleOptionInput
+        | ApplicationCommandStringOptionInput
+        | ApplicationCommandSubcommandGroupOptionInput
+        | ApplicationCommandSubcommandOptionInput
+        | ApplicationCommandUserOptionInput
+      )[]
+    | null
+  default_member_permissions?: number | null
+  dm_permission?: boolean | null
+  contexts?: InteractionContextTypeInput[] | null
+  integration_types?: ApplicationIntegrationTypeInput[] | null
+  handler?: null | ApplicationCommandHandlerInput
+  type?: null | ApplicationCommandTypeInput
+  id?: null | SnowflakeTypeInput
 }
-type ApplicationCommandCreateRequest = {
+type ApplicationCommandCreateRequestInput = {
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
-  description?: (string | null) | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: { [key: string]: string } | null
+  description?: string | null
+  description_localizations?: { [key: string]: string } | null
   options?:
     | (
-        | (
-            | ApplicationCommandAttachmentOption
-            | ApplicationCommandBooleanOption
-            | ApplicationCommandChannelOption
-            | ApplicationCommandIntegerOption
-            | ApplicationCommandMentionableOption
-            | ApplicationCommandNumberOption
-            | ApplicationCommandRoleOption
-            | ApplicationCommandStringOption
-            | ApplicationCommandSubcommandGroupOption
-            | ApplicationCommandSubcommandOption
-            | ApplicationCommandUserOption
-          )[]
-        | null
-      )
-    | undefined
-  default_member_permissions?: (number | null) | undefined
-  dm_permission?: (boolean | null) | undefined
-  contexts?: (InteractionContextType[] | null) | undefined
-  integration_types?: (ApplicationIntegrationType[] | null) | undefined
-  handler?: ({ [x: string]: unknown } | null) | ApplicationCommandHandler | undefined
-  type?: ({ [x: string]: unknown } | null) | ApplicationCommandType | undefined
+        | ApplicationCommandAttachmentOptionInput
+        | ApplicationCommandBooleanOptionInput
+        | ApplicationCommandChannelOptionInput
+        | ApplicationCommandIntegerOptionInput
+        | ApplicationCommandMentionableOptionInput
+        | ApplicationCommandNumberOptionInput
+        | ApplicationCommandRoleOptionInput
+        | ApplicationCommandStringOptionInput
+        | ApplicationCommandSubcommandGroupOptionInput
+        | ApplicationCommandSubcommandOptionInput
+        | ApplicationCommandUserOptionInput
+      )[]
+    | null
+  default_member_permissions?: number | null
+  dm_permission?: boolean | null
+  contexts?: InteractionContextTypeInput[] | null
+  integration_types?: ApplicationIntegrationTypeInput[] | null
+  handler?: null | ApplicationCommandHandlerInput
+  type?: null | ApplicationCommandTypeInput
 }
-type ApplicationCommandPatchRequestPartial = {
-  name?: string | undefined
-  name_localizations?: ({ [x: string]: string } | null) | undefined
-  description?: (string | null) | undefined
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+type ApplicationCommandPatchRequestPartialInput = {
+  name?: string
+  name_localizations?: { [key: string]: string } | null
+  description?: string | null
+  description_localizations?: { [key: string]: string } | null
   options?:
     | (
-        | (
-            | ApplicationCommandAttachmentOption
-            | ApplicationCommandBooleanOption
-            | ApplicationCommandChannelOption
-            | ApplicationCommandIntegerOption
-            | ApplicationCommandMentionableOption
-            | ApplicationCommandNumberOption
-            | ApplicationCommandRoleOption
-            | ApplicationCommandStringOption
-            | ApplicationCommandSubcommandGroupOption
-            | ApplicationCommandSubcommandOption
-            | ApplicationCommandUserOption
-          )[]
-        | null
-      )
-    | undefined
-  default_member_permissions?: (number | null) | undefined
-  dm_permission?: (boolean | null) | undefined
-  contexts?: (InteractionContextType[] | null) | undefined
-  integration_types?: (ApplicationIntegrationType[] | null) | undefined
-  handler?: ({ [x: string]: unknown } | null) | ApplicationCommandHandler | undefined
+        | ApplicationCommandAttachmentOptionInput
+        | ApplicationCommandBooleanOptionInput
+        | ApplicationCommandChannelOptionInput
+        | ApplicationCommandIntegerOptionInput
+        | ApplicationCommandMentionableOptionInput
+        | ApplicationCommandNumberOptionInput
+        | ApplicationCommandRoleOptionInput
+        | ApplicationCommandStringOptionInput
+        | ApplicationCommandSubcommandGroupOptionInput
+        | ApplicationCommandSubcommandOptionInput
+        | ApplicationCommandUserOptionInput
+      )[]
+    | null
+  default_member_permissions?: number | null
+  dm_permission?: boolean | null
+  contexts?: InteractionContextTypeInput[] | null
+  integration_types?: ApplicationIntegrationTypeInput[] | null
+  handler?: null | ApplicationCommandHandlerInput
 }
 type EmojiResponse = {
   id: SnowflakeType
@@ -696,25 +878,22 @@ type EntitlementResponse = {
   sku_id: SnowflakeType
   application_id: SnowflakeType
   user_id: SnowflakeType
-  guild_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  guild_id?: (null | SnowflakeType) | undefined
   deleted: boolean
   starts_at: string | null
   ends_at: string | null
   type: EntitlementTypes
   fulfilled_at?: (string | null) | undefined
-  fulfillment_status?:
-    | ({ [x: string]: unknown } | null)
-    | EntitlementTenantFulfillmentStatusResponse
-    | undefined
+  fulfillment_status?: (null | EntitlementTenantFulfillmentStatusResponse) | undefined
   consumed?: boolean | undefined
-  gifter_user_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  gifter_user_id?: (null | SnowflakeType) | undefined
+  parent_id?: (null | SnowflakeType) | undefined
 }
-type EntitlementOwnerTypes = 1 | 2
-type CreateEntitlementRequestData = {
-  sku_id: SnowflakeType
-  owner_id: SnowflakeType
-  owner_type: EntitlementOwnerTypes
+type EntitlementOwnerTypesInput = 1 | 2
+type CreateEntitlementRequestDataInput = {
+  sku_id: SnowflakeTypeInput
+  owner_id: SnowflakeTypeInput
+  owner_type: EntitlementOwnerTypesInput
 }
 type ApplicationCommandPermissionType = 1 | 2 | 3
 type CommandPermissionResponse = {
@@ -728,9 +907,10 @@ type CommandPermissionsResponse = {
   guild_id: SnowflakeType
   permissions: CommandPermissionResponse[]
 }
-type ApplicationCommandPermission = {
-  id: SnowflakeType
-  type: ApplicationCommandPermissionType
+type ApplicationCommandPermissionTypeInput = 1 | 2 | 3
+type ApplicationCommandPermissionInput = {
+  id: SnowflakeTypeInput
+  type: ApplicationCommandPermissionTypeInput
   permission: boolean
 }
 type MetadataItemTypes = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
@@ -738,17 +918,18 @@ type ApplicationRoleConnectionsMetadataItemResponse = {
   type: MetadataItemTypes
   key: string
   name: string
-  name_localizations?: ({ [x: string]: string } | null) | undefined
+  name_localizations?: ({ [key: string]: string } | null) | undefined
   description: string
-  description_localizations?: ({ [x: string]: string } | null) | undefined
+  description_localizations?: ({ [key: string]: string } | null) | undefined
 }
-type ApplicationRoleConnectionsMetadataItemRequest = {
-  type: MetadataItemTypes
+type MetadataItemTypesInput = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+type ApplicationRoleConnectionsMetadataItemRequestInput = {
+  type: MetadataItemTypesInput
   key: string
   name: string
-  name_localizations?: ({ [x: string]: string | null } | null) | undefined
+  name_localizations?: { [key: string]: string | null } | null
   description: string
-  description_localizations?: ({ [x: string]: string | null } | null) | undefined
+  description_localizations?: { [key: string]: string | null } | null
 }
 type VideoQualityModes = 1 | 2
 type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080
@@ -763,25 +944,22 @@ type ForumTagResponse = {
   id: SnowflakeType
   name: string
   moderated: boolean
-  emoji_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  emoji_id: null | SnowflakeType
   emoji_name: string | null
 }
-type DefaultReactionEmojiResponse = {
-  emoji_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  emoji_name: string | null
-}
+type DefaultReactionEmojiResponse = { emoji_id: null | SnowflakeType; emoji_name: string | null }
 type ThreadSortOrder = 0 | 1
 type ForumLayout = 0 | 1 | 2
 type ThreadSearchTagSetting = 'match_all' | 'match_some'
 type GuildChannelResponse = {
   id: SnowflakeType
-  type: {}
-  last_message_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  type: ChannelTypes
+  last_message_id?: (null | SnowflakeType) | undefined
   flags: number
   last_pin_timestamp?: (string | null) | undefined
   guild_id: SnowflakeType
   name: string
-  parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  parent_id?: (null | SnowflakeType) | undefined
   rate_limit_per_user?: number | undefined
   bitrate?: number | undefined
   user_limit?: number | undefined
@@ -795,26 +973,23 @@ type GuildChannelResponse = {
   permission_overwrites?: ChannelPermissionOverwriteResponse[] | undefined
   nsfw?: boolean | undefined
   available_tags?: ForumTagResponse[] | undefined
-  default_reaction_emoji?:
-    | ({ [x: string]: unknown } | null)
-    | DefaultReactionEmojiResponse
-    | undefined
-  default_sort_order?: ({ [x: string]: unknown } | null) | ThreadSortOrder | undefined
+  default_reaction_emoji?: (null | DefaultReactionEmojiResponse) | undefined
+  default_sort_order?: (null | ThreadSortOrder) | undefined
   default_forum_layout?: ForumLayout | undefined
-  default_tag_setting?: ({ [x: string]: unknown } | null) | ThreadSearchTagSetting | undefined
+  default_tag_setting?: (null | ThreadSearchTagSetting) | undefined
 }
 type PrivateChannelResponse = {
   id: SnowflakeType
-  type: {}
-  last_message_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  type: ChannelTypes
+  last_message_id?: (null | SnowflakeType) | undefined
   flags: number
   last_pin_timestamp?: (string | null) | undefined
   recipients: UserResponse[]
 }
 type PrivateGroupChannelResponse = {
   id: SnowflakeType
-  type: {}
-  last_message_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  type: ChannelTypes
+  last_message_id?: (null | SnowflakeType) | undefined
   flags: number
   last_pin_timestamp?: (string | null) | undefined
   recipients: UserResponse[]
@@ -834,10 +1009,7 @@ type ThreadMetadataResponse = {
 }
 type GuildMemberResponse = {
   avatar: string | null
-  avatar_decoration_data?:
-    | ({ [x: string]: unknown } | null)
-    | UserAvatarDecorationResponse
-    | undefined
+  avatar_decoration_data?: (null | UserAvatarDecorationResponse) | undefined
   banner: string | null
   communication_disabled_until: string | null
   flags: number
@@ -846,7 +1018,7 @@ type GuildMemberResponse = {
   pending: boolean
   premium_since: string | null
   roles: SnowflakeType[]
-  collectibles?: ({ [x: string]: unknown } | null) | UserCollectiblesResponse | undefined
+  collectibles?: (null | UserCollectiblesResponse) | undefined
   user: UserResponse
   mute: boolean
   deaf: boolean
@@ -860,13 +1032,13 @@ type ThreadMemberResponse = {
 }
 type ThreadResponse = {
   id: SnowflakeType
-  type: {}
-  last_message_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  type: ChannelTypes
+  last_message_id?: (null | SnowflakeType) | undefined
   flags: number
   last_pin_timestamp?: (string | null) | undefined
   guild_id: SnowflakeType
   name: string
-  parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  parent_id?: (null | SnowflakeType) | undefined
   rate_limit_per_user?: number | undefined
   bitrate?: number | undefined
   user_limit?: number | undefined
@@ -881,71 +1053,69 @@ type ThreadResponse = {
   applied_tags?: SnowflakeType[] | undefined
   member?: ThreadMemberResponse | undefined
 }
-type UpdateDMRequestPartial = { name?: (string | null) | undefined }
-type UpdateGroupDMRequestPartial = {
-  name?: (string | null) | undefined
-  icon?: (string | null) | undefined
+type UpdateDMRequestPartialInput = { name?: string | null }
+type UpdateGroupDMRequestPartialInput = { name?: string | null; icon?: string | null }
+type ChannelPermissionOverwritesInput = 0 | 1
+type ChannelPermissionOverwriteRequestInput = {
+  id: SnowflakeTypeInput
+  type?: null | ChannelPermissionOverwritesInput
+  allow?: number | null
+  deny?: number | null
 }
-type ChannelPermissionOverwriteRequest = {
-  id: SnowflakeType
-  type?: ({ [x: string]: unknown } | null) | ChannelPermissionOverwrites | undefined
-  allow?: (number | null) | undefined
-  deny?: (number | null) | undefined
+type VideoQualityModesInput = 1 | 2
+type ThreadAutoArchiveDurationInput = 60 | 1440 | 4320 | 10080
+type UpdateDefaultReactionEmojiRequestInput = {
+  emoji_id?: null | SnowflakeTypeInput
+  emoji_name?: string | null
 }
-type UpdateDefaultReactionEmojiRequest = {
-  emoji_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  emoji_name?: (string | null) | undefined
-}
-type UpdateThreadTagRequest = {
+type ThreadSortOrderInput = 0 | 1
+type ForumLayoutInput = 0 | 1 | 2
+type ThreadSearchTagSettingInput = 'match_all' | 'match_some'
+type UpdateThreadTagRequestInput = {
   name: string
-  emoji_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  emoji_name?: (string | null) | undefined
-  moderated?: (boolean | null) | undefined
-  id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  emoji_id?: null | SnowflakeTypeInput
+  emoji_name?: string | null
+  moderated?: boolean | null
+  id?: null | SnowflakeTypeInput
 }
-type UpdateGuildChannelRequestPartial = {
-  type?: ({ [x: string]: unknown } | null) | {} | undefined
-  name?: string | undefined
-  position?: (number | null) | undefined
-  topic?: (string | null) | undefined
-  bitrate?: (number | null) | undefined
-  user_limit?: (number | null) | undefined
-  nsfw?: (boolean | null) | undefined
-  rate_limit_per_user?: (number | null) | undefined
-  parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  permission_overwrites?: (ChannelPermissionOverwriteRequest[] | null) | undefined
-  rtc_region?: (string | null) | undefined
-  video_quality_mode?: ({ [x: string]: unknown } | null) | VideoQualityModes | undefined
-  default_auto_archive_duration?:
-    | ({ [x: string]: unknown } | null)
-    | ThreadAutoArchiveDuration
-    | undefined
-  default_reaction_emoji?:
-    | ({ [x: string]: unknown } | null)
-    | UpdateDefaultReactionEmojiRequest
-    | undefined
-  default_thread_rate_limit_per_user?: (number | null) | undefined
-  default_sort_order?: ({ [x: string]: unknown } | null) | ThreadSortOrder | undefined
-  default_forum_layout?: ({ [x: string]: unknown } | null) | ForumLayout | undefined
-  default_tag_setting?: ({ [x: string]: unknown } | null) | ThreadSearchTagSetting | undefined
-  flags?: (number | null) | undefined
-  available_tags?: (UpdateThreadTagRequest[] | null) | undefined
+type UpdateGuildChannelRequestPartialInput = {
+  type?: null | ChannelTypesInput
+  name?: string
+  position?: number | null
+  topic?: string | null
+  bitrate?: number | null
+  user_limit?: number | null
+  nsfw?: boolean | null
+  rate_limit_per_user?: number | null
+  parent_id?: null | SnowflakeTypeInput
+  permission_overwrites?: ChannelPermissionOverwriteRequestInput[] | null
+  rtc_region?: string | null
+  video_quality_mode?: null | VideoQualityModesInput
+  default_auto_archive_duration?: null | ThreadAutoArchiveDurationInput
+  default_reaction_emoji?: null | UpdateDefaultReactionEmojiRequestInput
+  default_thread_rate_limit_per_user?: number | null
+  default_sort_order?: null | ThreadSortOrderInput
+  default_forum_layout?: null | ForumLayoutInput
+  default_tag_setting?: null | ThreadSearchTagSettingInput
+  flags?: number | null
+  available_tags?: UpdateThreadTagRequestInput[] | null
 }
-type UpdateThreadRequestPartial = {
-  name?: (string | null) | undefined
-  archived?: (boolean | null) | undefined
-  locked?: (boolean | null) | undefined
-  invitable?: (boolean | null) | undefined
-  auto_archive_duration?: ({ [x: string]: unknown } | null) | ThreadAutoArchiveDuration | undefined
-  rate_limit_per_user?: (number | null) | undefined
-  flags?: (number | null) | undefined
-  applied_tags?: (SnowflakeType[] | null) | undefined
-  bitrate?: (number | null) | undefined
-  user_limit?: (number | null) | undefined
-  rtc_region?: (string | null) | undefined
-  video_quality_mode?: ({ [x: string]: unknown } | null) | VideoQualityModes | undefined
+type UpdateThreadRequestPartialInput = {
+  name?: string | null
+  archived?: boolean | null
+  locked?: boolean | null
+  invitable?: boolean | null
+  auto_archive_duration?: null | ThreadAutoArchiveDurationInput
+  rate_limit_per_user?: number | null
+  flags?: number | null
+  applied_tags?: SnowflakeTypeInput[] | null
+  bitrate?: number | null
+  user_limit?: number | null
+  rtc_region?: string | null
+  video_quality_mode?: null | VideoQualityModesInput
 }
 type ChannelFollowerResponse = { channel_id: SnowflakeType; webhook_id: SnowflakeType }
+type InviteTypes = 0 | 1 | 2
 type InviteChannelRecipientResponse = { id: SnowflakeType; username: string; avatar: string | null }
 type InviteChannelResponse = {
   id: SnowflakeType
@@ -956,21 +1126,21 @@ type InviteChannelResponse = {
   recipients?: InviteChannelRecipientResponse[] | undefined
 }
 type FriendInviteResponse = {
-  type: {}
+  type: InviteTypes
   code: string
   inviter?: UserResponse | undefined
   max_age?: number | undefined
   created_at?: string | undefined
   expires_at: string | null
   friends_count?: number | undefined
-  channel: ({ [x: string]: unknown } | null) | InviteChannelResponse
+  channel: null | InviteChannelResponse
   is_contact?: boolean | undefined
   uses?: number | undefined
   max_uses?: number | undefined
   flags?: number | undefined
 }
 type GroupDMInviteResponse = {
-  type: {}
+  type: InviteTypes
   code: string
   inviter?: UserResponse | undefined
   max_age?: number | undefined
@@ -1019,9 +1189,9 @@ type InviteGuildResponse = {
   description: string | null
   icon: string | null
   features: GuildFeatures[]
-  verification_level: ({ [x: string]: unknown } | null) | VerificationLevels
+  verification_level: null | VerificationLevels
   vanity_url_code: string | null
-  nsfw_level: ({ [x: string]: unknown } | null) | GuildNSFWContentLevel
+  nsfw_level: null | GuildNSFWContentLevel
   nsfw: boolean | null
   premium_subscription_count: number
 }
@@ -1031,7 +1201,7 @@ type InviteApplicationResponse = {
   name: string
   icon: string | null
   description: string
-  type: ({ [x: string]: unknown } | null) | ApplicationTypes
+  type: null | ApplicationTypes
   cover_image?: string | undefined
   primary_sku_id?: SnowflakeType | undefined
   flags: number
@@ -1049,7 +1219,7 @@ type InviteApplicationResponse = {
   custom_install_url?: string | undefined
   install_params?: ApplicationOAuth2InstallParamsResponse | undefined
   integration_types_config?:
-    | { [x: string]: ApplicationIntegrationTypeConfigurationResponse }
+    | { [key: string]: ApplicationIntegrationTypeConfigurationResponse }
     | undefined
   verify_key: string
   max_participants?: (number | null) | undefined
@@ -1077,7 +1247,7 @@ type GuildScheduledEventPrivacyLevels = 2
 type GuildScheduledEventUserResponses = 0 | 1
 type ScheduledEventUserResponse = {
   guild_scheduled_event_id: SnowflakeType
-  guild_scheduled_event_exception_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  guild_scheduled_event_exception_id?: (null | SnowflakeType) | undefined
   user_id: SnowflakeType
   user?: UserResponse | undefined
   member?: GuildMemberResponse | undefined
@@ -1095,19 +1265,19 @@ type ScheduledEventResponse = {
   guild_id: SnowflakeType
   name: string
   description: string | null
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  creator_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  channel_id: null | SnowflakeType
+  creator_id: null | SnowflakeType
   creator?: UserResponse | undefined
   image: string | null
   scheduled_start_time: string
   scheduled_end_time: string | null
   status: GuildScheduledEventStatuses
   entity_type: GuildScheduledEventEntityTypes
-  entity_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  recurrence_rule: ({ [x: string]: unknown } | null) | RecurrenceRuleResponse
+  entity_id: null | SnowflakeType
+  recurrence_rule: null | RecurrenceRuleResponse
   user_count?: number | undefined
   privacy_level: GuildScheduledEventPrivacyLevels
-  user_rsvp?: ({ [x: string]: unknown } | null) | ScheduledEventUserResponse | undefined
+  user_rsvp?: (null | ScheduledEventUserResponse) | undefined
   guild_scheduled_event_exceptions: GuildScheduledEventExceptionResponse[]
 }
 type GuildRoleColorsResponse = {
@@ -1126,7 +1296,7 @@ type InviteGuildRoleResponse = {
   permissions?: string | undefined
 }
 type GuildInviteResponse = {
-  type: {}
+  type: InviteTypes
   code: string
   inviter?: UserResponse | undefined
   max_age?: number | undefined
@@ -1151,17 +1321,18 @@ type GuildInviteResponse = {
   is_nickname_changeable?: boolean | undefined
   roles?: (InviteGuildRoleResponse[] | null) | undefined
 }
-type CreateGroupDMInviteRequest = { max_age?: (number | null) | undefined }
-type CreateGuildInviteRequest = {
-  max_age?: (number | null) | undefined
-  temporary?: (boolean | null) | undefined
-  max_uses?: (number | null) | undefined
-  unique?: (boolean | null) | undefined
-  target_user_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  target_application_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  target_type?: ({ [x: string]: unknown } | null) | {} | undefined
-  role_ids?: string | SnowflakeType[] | ({ [x: string]: unknown } | null) | undefined
-  target_user_ids?: string | SnowflakeType[] | ({ [x: string]: unknown } | null) | undefined
+type CreateGroupDMInviteRequestInput = { max_age?: number | null }
+type InviteTargetTypesInput = 1 | 2 | 3
+type CreateGuildInviteRequestInput = {
+  max_age?: number | null
+  temporary?: boolean | null
+  max_uses?: number | null
+  unique?: boolean | null
+  target_user_id?: null | SnowflakeTypeInput
+  target_application_id?: null | SnowflakeTypeInput
+  target_type?: null | InviteTargetTypesInput
+  role_ids?: string | SnowflakeTypeInput[] | null
+  target_user_ids?: string | SnowflakeTypeInput[] | null
 }
 type MessageType =
   | 0
@@ -1264,6 +1435,27 @@ type MessageEmbedFooterResponse = {
   icon_url?: string | undefined
   proxy_icon_url?: string | undefined
 }
+type MessageComponentTypes =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 17
+  | 18
+  | 19
+  | 21
+  | 22
+  | 23
 type ButtonStyleTypes = 1 | 2 | 3 | 4 | 5 | 6
 type ComponentEmojiResponse = {
   id?: SnowflakeType | undefined
@@ -1271,7 +1463,7 @@ type ComponentEmojiResponse = {
   animated?: boolean | undefined
 }
 type ButtonComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   custom_id?: string | undefined
   style: ButtonStyleTypes
@@ -1281,9 +1473,13 @@ type ButtonComponentResponse = {
   url?: (string | null) | undefined
   sku_id?: SnowflakeType | undefined
 }
-type ChannelSelectDefaultValueResponse = { type: {}; id: SnowflakeType }
+type SnowflakeSelectDefaultValueTypes = 'user' | 'role' | 'channel'
+type ChannelSelectDefaultValueResponse = {
+  type: SnowflakeSelectDefaultValueTypes
+  id: SnowflakeType
+}
 type ChannelSelectComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   custom_id: string
   placeholder?: string | undefined
@@ -1293,10 +1489,10 @@ type ChannelSelectComponentResponse = {
   channel_types?: ChannelTypes[] | undefined
   default_values?: ChannelSelectDefaultValueResponse[] | undefined
 }
-type RoleSelectDefaultValueResponse = { type: {}; id: SnowflakeType }
-type UserSelectDefaultValueResponse = { type: {}; id: SnowflakeType }
+type RoleSelectDefaultValueResponse = { type: SnowflakeSelectDefaultValueTypes; id: SnowflakeType }
+type UserSelectDefaultValueResponse = { type: SnowflakeSelectDefaultValueTypes; id: SnowflakeType }
 type MentionableSelectComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   custom_id: string
   placeholder?: string | undefined
@@ -1306,7 +1502,7 @@ type MentionableSelectComponentResponse = {
   default_values?: (RoleSelectDefaultValueResponse | UserSelectDefaultValueResponse)[] | undefined
 }
 type RoleSelectComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   custom_id: string
   placeholder?: string | undefined
@@ -1323,7 +1519,7 @@ type StringSelectOptionResponse = {
   default?: boolean | undefined
 }
 type StringSelectComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   custom_id: string
   placeholder?: string | undefined
@@ -1334,7 +1530,7 @@ type StringSelectComponentResponse = {
 }
 type TextInputStyleTypes = 1 | 2
 type TextInputComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   custom_id: string
   style: TextInputStyleTypes
@@ -1346,7 +1542,7 @@ type TextInputComponentResponse = {
   max_length: number | null
 }
 type UserSelectComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   custom_id: string
   placeholder?: string | undefined
@@ -1356,7 +1552,7 @@ type UserSelectComponentResponse = {
   default_values?: UserSelectDefaultValueResponse[] | undefined
 }
 type ActionRowComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   components: (
     | ButtonComponentResponse
@@ -1383,7 +1579,7 @@ type UnfurledMediaResponse = {
   attachment_id?: SnowflakeType | undefined
 }
 type FileComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   file: UnfurledMediaResponse
   name: string | null
@@ -1395,30 +1591,34 @@ type MediaGalleryItemResponse = {
   description: string | null
   spoiler: boolean
 }
-type MediaGalleryComponentResponse = { type: {}; id: number; items: MediaGalleryItemResponse[] }
-type TextDisplayComponentResponse = { type: {}; id: number; content: string }
+type MediaGalleryComponentResponse = {
+  type: MessageComponentTypes
+  id: number
+  items: MediaGalleryItemResponse[]
+}
+type TextDisplayComponentResponse = { type: MessageComponentTypes; id: number; content: string }
 type ThumbnailComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   media: UnfurledMediaResponse
   description: string | null
   spoiler: boolean
 }
 type SectionComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   components: TextDisplayComponentResponse[]
   accessory: ButtonComponentResponse | ThumbnailComponentResponse
 }
 type MessageComponentSeparatorSpacingSize = 1 | 2
 type SeparatorComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   spacing: MessageComponentSeparatorSpacingSize
   divider: boolean
 }
 type ContainerComponentResponse = {
-  type: {}
+  type: MessageComponentTypes
   id: number
   accent_color: number | null
   components: (
@@ -1449,13 +1649,14 @@ type MessageEmbedResponse = {
   flags?: (number | null) | undefined
   components?: ContainerComponentResponse[] | undefined
 }
+type StickerTypes = 1 | 2
 type StickerFormatTypes = 1 | 2 | 3 | 4
 type GuildStickerResponse = {
   id: SnowflakeType
   name: string
   tags: string
-  type: {}
-  format_type: ({ [x: string]: unknown } | null) | StickerFormatTypes
+  type: StickerTypes
+  format_type: null | StickerFormatTypes
   description: string | null
   available: boolean
   guild_id: SnowflakeType
@@ -1465,8 +1666,8 @@ type StandardStickerResponse = {
   id: SnowflakeType
   name: string
   tags: string
-  type: {}
-  format_type: ({ [x: string]: unknown } | null) | StickerFormatTypes
+  type: StickerTypes
+  format_type: null | StickerFormatTypes
   description: string | null
   pack_id: SnowflakeType
   sort_value: number
@@ -1487,7 +1688,7 @@ type BasicApplicationResponseWithBot = {
   name: string
   icon: string | null
   description: string
-  type: ({ [x: string]: unknown } | null) | ApplicationTypes
+  type: null | ApplicationTypes
   cover_image?: string | undefined
   primary_sku_id?: SnowflakeType | undefined
   flags: number
@@ -1529,10 +1730,7 @@ type PurchaseNotificationResponse = {
 }
 type BasicGuildMemberResponse = {
   avatar: string | null
-  avatar_decoration_data?:
-    | ({ [x: string]: unknown } | null)
-    | UserAvatarDecorationResponse
-    | undefined
+  avatar_decoration_data?: (null | UserAvatarDecorationResponse) | undefined
   banner: string | null
   communication_disabled_until: string | null
   flags: number
@@ -1541,15 +1739,15 @@ type BasicGuildMemberResponse = {
   pending: boolean
   premium_since: string | null
   roles: SnowflakeType[]
-  collectibles?: ({ [x: string]: unknown } | null) | UserCollectiblesResponse | undefined
+  collectibles?: (null | UserCollectiblesResponse) | undefined
 }
 type GuildRoleTagsResponse = {
-  premium_subscriber?: ({ [x: string]: unknown } | null) | undefined
+  premium_subscriber?: null | undefined
   bot_id?: SnowflakeType | undefined
   integration_id?: SnowflakeType | undefined
   subscription_listing_id?: SnowflakeType | undefined
-  available_for_purchase?: ({ [x: string]: unknown } | null) | undefined
-  guild_connections?: ({ [x: string]: unknown } | null) | undefined
+  available_for_purchase?: null | undefined
+  guild_connections?: null | undefined
 }
 type GuildRoleResponse = {
   id: SnowflakeType
@@ -1567,21 +1765,21 @@ type GuildRoleResponse = {
   flags: number
 }
 type ResolvedObjectsResponse = {
-  users?: ({ [x: string]: UserResponse } | null) | undefined
-  members?: ({ [x: string]: BasicGuildMemberResponse } | null) | undefined
+  users?: ({ [key: string]: UserResponse } | null) | undefined
+  members?: ({ [key: string]: BasicGuildMemberResponse } | null) | undefined
   channels?:
     | ({
-        [x: string]:
+        [key: string]:
           | GuildChannelResponse
           | PrivateChannelResponse
           | PrivateGroupChannelResponse
           | ThreadResponse
       } | null)
     | undefined
-  roles?: ({ [x: string]: GuildRoleResponse } | null) | undefined
+  roles?: ({ [key: string]: GuildRoleResponse } | null) | undefined
 }
 type MessageReactionEmojiResponse = {
-  id: ({ [x: string]: unknown } | null) | SnowflakeType
+  id: null | SnowflakeType
   name: string | null
   animated?: boolean | undefined
 }
@@ -1610,26 +1808,26 @@ type CustomClientThemeResponse = {
 }
 type ApplicationCommandInteractionMetadataResponse = {
   id: SnowflakeType
-  type: {}
+  type: InteractionTypes
   user?: UserResponse | undefined
-  authorizing_integration_owners: { [x: string]: SnowflakeType }
+  authorizing_integration_owners: { [key: string]: SnowflakeType }
   original_response_message_id?: SnowflakeType | undefined
   target_user?: UserResponse | undefined
   target_message_id?: SnowflakeType | undefined
 }
 type MessageComponentInteractionMetadataResponse = {
   id: SnowflakeType
-  type: {}
+  type: InteractionTypes
   user?: UserResponse | undefined
-  authorizing_integration_owners: { [x: string]: SnowflakeType }
+  authorizing_integration_owners: { [key: string]: SnowflakeType }
   original_response_message_id?: SnowflakeType | undefined
   interacted_message_id: SnowflakeType
 }
 type ModalSubmitInteractionMetadataResponse = {
   id: SnowflakeType
-  type: {}
+  type: InteractionTypes
   user?: UserResponse | undefined
-  authorizing_integration_owners: { [x: string]: SnowflakeType }
+  authorizing_integration_owners: { [key: string]: SnowflakeType }
   original_response_message_id?: SnowflakeType | undefined
   triggering_interaction_metadata:
     | ApplicationCommandInteractionMetadataResponse
@@ -1700,7 +1898,7 @@ type BasicMessageResponse = {
   application?: BasicApplicationResponseWithBot | undefined
   application_id?: SnowflakeType | undefined
   interaction?: MessageInteractionResponse | undefined
-  nonce?: bigint | string | undefined
+  nonce?: (bigint | string) | undefined
   webhook_id?: SnowflakeType | undefined
   message_reference?: MessageReferenceResponse | undefined
   thread?: ThreadResponse | undefined
@@ -1712,9 +1910,11 @@ type BasicMessageResponse = {
   poll?: PollResponse | undefined
   shared_client_theme?: CustomClientThemeResponse | undefined
   interaction_metadata?:
-    | ApplicationCommandInteractionMetadataResponse
-    | MessageComponentInteractionMetadataResponse
-    | ModalSubmitInteractionMetadataResponse
+    | (
+        | ApplicationCommandInteractionMetadataResponse
+        | MessageComponentInteractionMetadataResponse
+        | ModalSubmitInteractionMetadataResponse
+      )
     | undefined
   message_snapshots?: MessageSnapshotResponse[] | undefined
   lobby_member?: MessageLobbyMemberResponse | undefined
@@ -1752,7 +1952,7 @@ type MessageResponse = {
   application?: BasicApplicationResponseWithBot | undefined
   application_id?: SnowflakeType | undefined
   interaction?: MessageInteractionResponse | undefined
-  nonce?: bigint | string | undefined
+  nonce?: (bigint | string) | undefined
   webhook_id?: SnowflakeType | undefined
   message_reference?: MessageReferenceResponse | undefined
   thread?: ThreadResponse | undefined
@@ -1764,395 +1964,401 @@ type MessageResponse = {
   poll?: PollResponse | undefined
   shared_client_theme?: CustomClientThemeResponse | undefined
   interaction_metadata?:
-    | ApplicationCommandInteractionMetadataResponse
-    | MessageComponentInteractionMetadataResponse
-    | ModalSubmitInteractionMetadataResponse
+    | (
+        | ApplicationCommandInteractionMetadataResponse
+        | MessageComponentInteractionMetadataResponse
+        | ModalSubmitInteractionMetadataResponse
+      )
     | undefined
   message_snapshots?: MessageSnapshotResponse[] | undefined
   lobby_member?: MessageLobbyMemberResponse | undefined
   actor?: UserResponse | undefined
   reactions?: MessageReactionResponse[] | undefined
-  referenced_message?: ({ [x: string]: unknown } | null) | BasicMessageResponse | undefined
+  referenced_message?: (null | BasicMessageResponse) | undefined
 }
-type RichEmbedAuthor = {
-  name?: (string | null) | undefined
-  url?: (string | null) | undefined
-  icon_url?: (string | null) | undefined
+type RichEmbedAuthorInput = { name?: string | null; url?: string | null; icon_url?: string | null }
+type RichEmbedImageInput = {
+  url?: string | null
+  width?: number | null
+  height?: number | null
+  placeholder?: string | null
+  placeholder_version?: number | null
+  is_animated?: boolean | null
+  description?: string | null
 }
-type RichEmbedImage = {
-  url?: (string | null) | undefined
-  width?: (number | null) | undefined
-  height?: (number | null) | undefined
-  placeholder?: (string | null) | undefined
-  placeholder_version?: (number | null) | undefined
-  is_animated?: (boolean | null) | undefined
-  description?: (string | null) | undefined
+type RichEmbedThumbnailInput = {
+  url?: string | null
+  width?: number | null
+  height?: number | null
+  placeholder?: string | null
+  placeholder_version?: number | null
+  is_animated?: boolean | null
+  description?: string | null
 }
-type RichEmbedThumbnail = {
-  url?: (string | null) | undefined
-  width?: (number | null) | undefined
-  height?: (number | null) | undefined
-  placeholder?: (string | null) | undefined
-  placeholder_version?: (number | null) | undefined
-  is_animated?: (boolean | null) | undefined
-  description?: (string | null) | undefined
+type RichEmbedFooterInput = { text?: string | null; icon_url?: string | null }
+type RichEmbedFieldInput = { name: string; value: string; inline?: boolean | null }
+type RichEmbedProviderInput = { name?: string | null; url?: string | null }
+type RichEmbedVideoInput = {
+  url?: string | null
+  width?: number | null
+  height?: number | null
+  placeholder?: string | null
+  placeholder_version?: number | null
+  is_animated?: boolean | null
+  description?: string | null
 }
-type RichEmbedFooter = {
-  text?: (string | null) | undefined
-  icon_url?: (string | null) | undefined
+type RichEmbedAudioInput = { url?: string | null; description?: string | null }
+type RichEmbedInput = {
+  type?: string | null
+  url?: string | null
+  title?: string | null
+  color?: number | null
+  timestamp?: string | null
+  description?: string | null
+  author?: null | RichEmbedAuthorInput
+  image?: null | RichEmbedImageInput
+  thumbnail?: null | RichEmbedThumbnailInput
+  footer?: null | RichEmbedFooterInput
+  fields?: RichEmbedFieldInput[] | null
+  provider?: null | RichEmbedProviderInput
+  video?: null | RichEmbedVideoInput
+  audio?: null | RichEmbedAudioInput
 }
-type RichEmbedField = { name: string; value: string; inline?: (boolean | null) | undefined }
-type RichEmbedProvider = { name?: (string | null) | undefined; url?: (string | null) | undefined }
-type RichEmbedVideo = {
-  url?: (string | null) | undefined
-  width?: (number | null) | undefined
-  height?: (number | null) | undefined
-  placeholder?: (string | null) | undefined
-  placeholder_version?: (number | null) | undefined
-  is_animated?: (boolean | null) | undefined
-  description?: (string | null) | undefined
+type AllowedMentionTypesInput = 'users' | 'roles' | 'everyone'
+type MessageAllowedMentionsRequestInput = {
+  parse?: (null | AllowedMentionTypesInput)[] | null
+  users?: (null | SnowflakeTypeInput)[] | null
+  roles?: (null | SnowflakeTypeInput)[] | null
+  replied_user?: boolean | null
 }
-type RichEmbedAudio = {
-  url?: (string | null) | undefined
-  description?: (string | null) | undefined
+type MessageComponentTypesInput =
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 17
+  | 18
+  | 19
+  | 21
+  | 22
+  | 23
+type ButtonStyleTypesInput = 1 | 2 | 3 | 4 | 5 | 6
+type ComponentEmojiForRequestInput = { id?: null | SnowflakeTypeInput; name: string }
+type ButtonComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
+  custom_id?: string | null
+  style: ButtonStyleTypesInput
+  label?: string | null
+  disabled?: boolean | null
+  url?: string | null
+  sku_id?: null | SnowflakeTypeInput
+  emoji?: null | ComponentEmojiForRequestInput
 }
-type RichEmbed = {
-  type?: (string | null) | undefined
-  url?: (string | null) | undefined
-  title?: (string | null) | undefined
-  color?: (number | null) | undefined
-  timestamp?: (string | null) | undefined
-  description?: (string | null) | undefined
-  author?: ({ [x: string]: unknown } | null) | RichEmbedAuthor | undefined
-  image?: ({ [x: string]: unknown } | null) | RichEmbedImage | undefined
-  thumbnail?: ({ [x: string]: unknown } | null) | RichEmbedThumbnail | undefined
-  footer?: ({ [x: string]: unknown } | null) | RichEmbedFooter | undefined
-  fields?: (RichEmbedField[] | null) | undefined
-  provider?: ({ [x: string]: unknown } | null) | RichEmbedProvider | undefined
-  video?: ({ [x: string]: unknown } | null) | RichEmbedVideo | undefined
-  audio?: ({ [x: string]: unknown } | null) | RichEmbedAudio | undefined
+type SnowflakeSelectDefaultValueTypesInput = 'user' | 'role' | 'channel'
+type ChannelSelectDefaultValueInput = {
+  type: SnowflakeSelectDefaultValueTypesInput
+  id: SnowflakeTypeInput
 }
-type AllowedMentionTypes = 'users' | 'roles' | 'everyone'
-type MessageAllowedMentionsRequest = {
-  parse?: ((({ [x: string]: unknown } | null) | AllowedMentionTypes)[] | null) | undefined
-  users?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-  roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-  replied_user?: (boolean | null) | undefined
-}
-type ComponentEmojiForRequest = {
-  id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  name: string
-}
-type ButtonComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
-  custom_id?: (string | null) | undefined
-  style: ButtonStyleTypes
-  label?: (string | null) | undefined
-  disabled?: (boolean | null) | undefined
-  url?: (string | null) | undefined
-  sku_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  emoji?: ({ [x: string]: unknown } | null) | ComponentEmojiForRequest | undefined
-}
-type ChannelSelectDefaultValue = { type: {}; id: SnowflakeType }
-type ChannelSelectComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type ChannelSelectComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  default_values?: (ChannelSelectDefaultValue[] | null) | undefined
-  channel_types?: (ChannelTypes[] | null) | undefined
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  default_values?: ChannelSelectDefaultValueInput[] | null
+  channel_types?: ChannelTypesInput[] | null
 }
-type RoleSelectDefaultValue = { type: {}; id: SnowflakeType }
-type UserSelectDefaultValue = { type: {}; id: SnowflakeType }
-type MentionableSelectComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type RoleSelectDefaultValueInput = {
+  type: SnowflakeSelectDefaultValueTypesInput
+  id: SnowflakeTypeInput
+}
+type UserSelectDefaultValueInput = {
+  type: SnowflakeSelectDefaultValueTypesInput
+  id: SnowflakeTypeInput
+}
+type MentionableSelectComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  default_values?: ((RoleSelectDefaultValue | UserSelectDefaultValue)[] | null) | undefined
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  default_values?: (RoleSelectDefaultValueInput | UserSelectDefaultValueInput)[] | null
 }
-type RoleSelectComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type RoleSelectComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  default_values?: (RoleSelectDefaultValue[] | null) | undefined
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  default_values?: RoleSelectDefaultValueInput[] | null
 }
-type StringSelectOptionForRequest = {
+type StringSelectOptionForRequestInput = {
   label: string
   value: string
-  description?: (string | null) | undefined
-  default?: (boolean | null) | undefined
-  emoji?: ({ [x: string]: unknown } | null) | ComponentEmojiForRequest | undefined
+  description?: string | null
+  default?: boolean | null
+  emoji?: null | ComponentEmojiForRequestInput
 }
-type StringSelectComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type StringSelectComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  options: StringSelectOptionForRequest[]
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  options: StringSelectOptionForRequestInput[]
 }
-type UserSelectComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type UserSelectComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  default_values?: (UserSelectDefaultValue[] | null) | undefined
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  default_values?: UserSelectDefaultValueInput[] | null
 }
-type ActionRowComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type ActionRowComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   components: (
-    | ButtonComponentForMessageRequest
-    | ChannelSelectComponentForMessageRequest
-    | MentionableSelectComponentForMessageRequest
-    | RoleSelectComponentForMessageRequest
-    | StringSelectComponentForMessageRequest
-    | UserSelectComponentForMessageRequest
+    | ButtonComponentForMessageRequestInput
+    | ChannelSelectComponentForMessageRequestInput
+    | MentionableSelectComponentForMessageRequestInput
+    | RoleSelectComponentForMessageRequestInput
+    | StringSelectComponentForMessageRequestInput
+    | UserSelectComponentForMessageRequestInput
   )[]
 }
-type UnfurledMediaRequestWithAttachmentReferenceRequired = { url: string }
-type FileComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
-  spoiler?: (boolean | null) | undefined
-  file: UnfurledMediaRequestWithAttachmentReferenceRequired
+type UnfurledMediaRequestWithAttachmentReferenceRequiredInput = { url: string }
+type FileComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
+  spoiler?: boolean | null
+  file: UnfurledMediaRequestWithAttachmentReferenceRequiredInput
 }
-type UnfurledMediaRequest = { url: string }
-type MediaGalleryItemForMessageRequest = {
-  description?: (string | null) | undefined
-  spoiler?: (boolean | null) | undefined
-  media: UnfurledMediaRequest
+type UnfurledMediaRequestInput = { url: string }
+type MediaGalleryItemForMessageRequestInput = {
+  description?: string | null
+  spoiler?: boolean | null
+  media: UnfurledMediaRequestInput
 }
-type MediaGalleryComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
-  items: MediaGalleryItemForMessageRequest[]
+type MediaGalleryComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
+  items: MediaGalleryItemForMessageRequestInput[]
 }
-type TextDisplayComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type TextDisplayComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   content: string
 }
-type ThumbnailComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
-  description?: (string | null) | undefined
-  spoiler?: (boolean | null) | undefined
-  media: UnfurledMediaRequest
+type ThumbnailComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
+  description?: string | null
+  spoiler?: boolean | null
+  media: UnfurledMediaRequestInput
 }
-type SectionComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
-  components: TextDisplayComponentForMessageRequest[]
-  accessory: ButtonComponentForMessageRequest | ThumbnailComponentForMessageRequest
+type SectionComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
+  components: TextDisplayComponentForMessageRequestInput[]
+  accessory: ButtonComponentForMessageRequestInput | ThumbnailComponentForMessageRequestInput
 }
-type SeparatorComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
-  spacing?: ({ [x: string]: unknown } | null) | MessageComponentSeparatorSpacingSize | undefined
-  divider?: (boolean | null) | undefined
+type MessageComponentSeparatorSpacingSizeInput = 1 | 2
+type SeparatorComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
+  spacing?: null | MessageComponentSeparatorSpacingSizeInput
+  divider?: boolean | null
 }
-type ContainerComponentForMessageRequest = {
-  type: {}
-  id?: (number | null) | undefined
-  accent_color?: (number | null) | undefined
+type ContainerComponentForMessageRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
+  accent_color?: number | null
   components: (
-    | ActionRowComponentForMessageRequest
-    | FileComponentForMessageRequest
-    | MediaGalleryComponentForMessageRequest
-    | SectionComponentForMessageRequest
-    | SeparatorComponentForMessageRequest
-    | TextDisplayComponentForMessageRequest
+    | ActionRowComponentForMessageRequestInput
+    | FileComponentForMessageRequestInput
+    | MediaGalleryComponentForMessageRequestInput
+    | SectionComponentForMessageRequestInput
+    | SeparatorComponentForMessageRequestInput
+    | TextDisplayComponentForMessageRequestInput
   )[]
-  spoiler?: (boolean | null) | undefined
+  spoiler?: boolean | null
 }
-type MessageAttachmentRequest = {
-  id: SnowflakeType
-  filename?: (string | null) | undefined
-  description?: (string | null) | undefined
-  duration_secs?: (number | null) | undefined
-  waveform?: (string | null) | undefined
-  title?: (string | null) | undefined
-  is_spoiler?: (boolean | null) | undefined
+type MessageAttachmentRequestInput = {
+  id: SnowflakeTypeInput
+  filename?: string | null
+  description?: string | null
+  duration_secs?: number | null
+  waveform?: string | null
+  title?: string | null
+  is_spoiler?: boolean | null
 }
-type PollEmoji = {
-  id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  name?: (string | null) | undefined
-  animated?: (boolean | null) | undefined
+type PollEmojiInput = {
+  id?: null | SnowflakeTypeInput
+  name?: string | null
+  animated?: boolean | null
 }
-type PollMedia = {
-  text?: (string | null) | undefined
-  emoji?: ({ [x: string]: unknown } | null) | PollEmoji | undefined
+type PollMediaInput = { text?: string | null; emoji?: null | PollEmojiInput }
+type PollEmojiCreateRequestInput = {
+  id?: null | SnowflakeTypeInput
+  name?: string | null
+  animated?: boolean | null
 }
-type PollEmojiCreateRequest = {
-  id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  name?: (string | null) | undefined
-  animated?: (boolean | null) | undefined
+type PollMediaCreateRequestInput = {
+  text?: string | null
+  emoji?: null | PollEmojiCreateRequestInput
 }
-type PollMediaCreateRequest = {
-  text?: (string | null) | undefined
-  emoji?: ({ [x: string]: unknown } | null) | PollEmojiCreateRequest | undefined
+type PollAnswerCreateRequestInput = { poll_media: PollMediaCreateRequestInput }
+type PollLayoutTypesInput = 1
+type PollCreateRequestInput = {
+  question: PollMediaInput
+  answers: PollAnswerCreateRequestInput[]
+  allow_multiselect?: boolean | null
+  layout_type?: null | PollLayoutTypesInput
+  duration?: number | null
 }
-type PollAnswerCreateRequest = { poll_media: PollMediaCreateRequest }
-type PollCreateRequest = {
-  question: PollMedia
-  answers: PollAnswerCreateRequest[]
-  allow_multiselect?: (boolean | null) | undefined
-  layout_type?: ({ [x: string]: unknown } | null) | PollLayoutTypes | undefined
-  duration?: (number | null) | undefined
-}
-type CustomClientThemeShareRequest = {
+type MessageShareCustomUserThemeBaseThemeInput = 0 | 1 | 2 | 3 | 4
+type CustomClientThemeShareRequestInput = {
   colors: string[]
   gradient_angle: number
   base_mix: number
-  base_theme?: ({ [x: string]: unknown } | null) | MessageShareCustomUserThemeBaseTheme | undefined
+  base_theme?: null | MessageShareCustomUserThemeBaseThemeInput
 }
-type MessageReferenceRequest = {
-  guild_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  message_id: SnowflakeType
-  fail_if_not_exists?: (boolean | null) | undefined
-  type?: ({ [x: string]: unknown } | null) | MessageReferenceType | undefined
+type MessageReferenceTypeInput = 0
+type MessageReferenceRequestInput = {
+  guild_id?: null | SnowflakeTypeInput
+  channel_id?: null | SnowflakeTypeInput
+  message_id: SnowflakeTypeInput
+  fail_if_not_exists?: boolean | null
+  type?: null | MessageReferenceTypeInput
 }
-type MessageCreateRequest = {
-  content?: (string | null) | undefined
-  embeds?: (RichEmbed[] | null) | undefined
-  allowed_mentions?: ({ [x: string]: unknown } | null) | MessageAllowedMentionsRequest | undefined
-  sticker_ids?: (SnowflakeType[] | null) | undefined
+type MessageCreateRequestInput = {
+  content?: string | null
+  embeds?: RichEmbedInput[] | null
+  allowed_mentions?: null | MessageAllowedMentionsRequestInput
+  sticker_ids?: SnowflakeTypeInput[] | null
   components?:
     | (
-        | (
-            | ActionRowComponentForMessageRequest
-            | ContainerComponentForMessageRequest
-            | FileComponentForMessageRequest
-            | MediaGalleryComponentForMessageRequest
-            | SectionComponentForMessageRequest
-            | SeparatorComponentForMessageRequest
-            | TextDisplayComponentForMessageRequest
-          )[]
-        | null
-      )
-    | undefined
-  flags?: (number | null) | undefined
-  attachments?: (MessageAttachmentRequest[] | null) | undefined
-  poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-  shared_client_theme?:
-    | ({ [x: string]: unknown } | null)
-    | CustomClientThemeShareRequest
-    | undefined
-  message_reference?: ({ [x: string]: unknown } | null) | MessageReferenceRequest | undefined
-  nonce?: bigint | string | ({ [x: string]: unknown } | null) | undefined
-  enforce_nonce?: (boolean | null) | undefined
-  tts?: (boolean | null) | undefined
+        | ActionRowComponentForMessageRequestInput
+        | ContainerComponentForMessageRequestInput
+        | FileComponentForMessageRequestInput
+        | MediaGalleryComponentForMessageRequestInput
+        | SectionComponentForMessageRequestInput
+        | SeparatorComponentForMessageRequestInput
+        | TextDisplayComponentForMessageRequestInput
+      )[]
+    | null
+  flags?: number | null
+  attachments?: MessageAttachmentRequestInput[] | null
+  poll?: null | PollCreateRequestInput
+  shared_client_theme?: null | CustomClientThemeShareRequestInput
+  message_reference?: null | MessageReferenceRequestInput
+  nonce?: bigint | string | null
+  enforce_nonce?: boolean | null
+  tts?: boolean | null
 }
 type PinnedMessageResponse = { pinned_at: string; message: MessageResponse }
 type PinnedMessagesResponse = { items: PinnedMessageResponse[]; has_more: boolean }
-type MessageEditRequestPartial = {
-  content?: (string | null) | undefined
-  embeds?: (RichEmbed[] | null) | undefined
-  flags?: (number | null) | undefined
-  allowed_mentions?: ({ [x: string]: unknown } | null) | MessageAllowedMentionsRequest | undefined
-  sticker_ids?: (SnowflakeType[] | null) | undefined
+type MessageEditRequestPartialInput = {
+  content?: string | null
+  embeds?: RichEmbedInput[] | null
+  flags?: number | null
+  allowed_mentions?: null | MessageAllowedMentionsRequestInput
+  sticker_ids?: SnowflakeTypeInput[] | null
   components?:
     | (
-        | (
-            | ActionRowComponentForMessageRequest
-            | ContainerComponentForMessageRequest
-            | FileComponentForMessageRequest
-            | MediaGalleryComponentForMessageRequest
-            | SectionComponentForMessageRequest
-            | SeparatorComponentForMessageRequest
-            | TextDisplayComponentForMessageRequest
-          )[]
-        | null
-      )
-    | undefined
-  attachments?: (MessageAttachmentRequest[] | null) | undefined
+        | ActionRowComponentForMessageRequestInput
+        | ContainerComponentForMessageRequestInput
+        | FileComponentForMessageRequestInput
+        | MediaGalleryComponentForMessageRequestInput
+        | SectionComponentForMessageRequestInput
+        | SeparatorComponentForMessageRequestInput
+        | TextDisplayComponentForMessageRequestInput
+      )[]
+    | null
+  attachments?: MessageAttachmentRequestInput[] | null
 }
-type ReactionTypes = 0 | 1
-type CreateTextThreadWithMessageRequest = {
+type CreateTextThreadWithMessageRequestInput = {
   name: string
-  auto_archive_duration?: ({ [x: string]: unknown } | null) | ThreadAutoArchiveDuration | undefined
-  rate_limit_per_user?: (number | null) | undefined
+  auto_archive_duration?: null | ThreadAutoArchiveDurationInput
+  rate_limit_per_user?: number | null
 }
 type PermissionsResponse = { permissions: string }
 type PollAnswerDetailsResponse = { users: UserResponse[] }
-type SoundboardSoundSendRequest = {
-  sound_id: SnowflakeType
-  source_guild_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+type SoundboardSoundSendRequestInput = {
+  sound_id: SnowflakeTypeInput
+  source_guild_id?: null | SnowflakeTypeInput
 }
-type BaseCreateMessageCreateRequest = {
-  content?: (string | null) | undefined
-  embeds?: (RichEmbed[] | null) | undefined
-  allowed_mentions?: ({ [x: string]: unknown } | null) | MessageAllowedMentionsRequest | undefined
-  sticker_ids?: (SnowflakeType[] | null) | undefined
+type BaseCreateMessageCreateRequestInput = {
+  content?: string | null
+  embeds?: RichEmbedInput[] | null
+  allowed_mentions?: null | MessageAllowedMentionsRequestInput
+  sticker_ids?: SnowflakeTypeInput[] | null
   components?:
     | (
-        | (
-            | ActionRowComponentForMessageRequest
-            | ContainerComponentForMessageRequest
-            | FileComponentForMessageRequest
-            | MediaGalleryComponentForMessageRequest
-            | SectionComponentForMessageRequest
-            | SeparatorComponentForMessageRequest
-            | TextDisplayComponentForMessageRequest
-          )[]
-        | null
-      )
-    | undefined
-  flags?: (number | null) | undefined
-  attachments?: (MessageAttachmentRequest[] | null) | undefined
-  poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-  shared_client_theme?:
-    | ({ [x: string]: unknown } | null)
-    | CustomClientThemeShareRequest
-    | undefined
+        | ActionRowComponentForMessageRequestInput
+        | ContainerComponentForMessageRequestInput
+        | FileComponentForMessageRequestInput
+        | MediaGalleryComponentForMessageRequestInput
+        | SectionComponentForMessageRequestInput
+        | SeparatorComponentForMessageRequestInput
+        | TextDisplayComponentForMessageRequestInput
+      )[]
+    | null
+  flags?: number | null
+  attachments?: MessageAttachmentRequestInput[] | null
+  poll?: null | PollCreateRequestInput
+  shared_client_theme?: null | CustomClientThemeShareRequestInput
 }
-type CreateForumThreadRequest = {
+type CreateForumThreadRequestInput = {
   name: string
-  auto_archive_duration?: ({ [x: string]: unknown } | null) | ThreadAutoArchiveDuration | undefined
-  rate_limit_per_user?: (number | null) | undefined
-  applied_tags?: (SnowflakeType[] | null) | undefined
-  message: BaseCreateMessageCreateRequest
+  auto_archive_duration?: null | ThreadAutoArchiveDurationInput
+  rate_limit_per_user?: number | null
+  applied_tags?: SnowflakeTypeInput[] | null
+  message: BaseCreateMessageCreateRequestInput
 }
-type CreateTextThreadWithoutMessageRequest = {
+type CreateTextThreadWithoutMessageRequestInput = {
   name: string
-  auto_archive_duration?: ({ [x: string]: unknown } | null) | ThreadAutoArchiveDuration | undefined
-  rate_limit_per_user?: (number | null) | undefined
-  type?: ({ [x: string]: unknown } | null) | {} | undefined
-  invitable?: (boolean | null) | undefined
+  auto_archive_duration?: null | ThreadAutoArchiveDurationInput
+  rate_limit_per_user?: number | null
+  type?: null | ChannelTypesInput
+  invitable?: boolean | null
 }
 type CreatedThreadResponse = {
   id: SnowflakeType
-  type: {}
-  last_message_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  type: ChannelTypes
+  last_message_id?: (null | SnowflakeType) | undefined
   flags: number
   last_pin_timestamp?: (string | null) | undefined
   guild_id: SnowflakeType
   name: string
-  parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  parent_id?: (null | SnowflakeType) | undefined
   rate_limit_per_user?: number | undefined
   bitrate?: number | undefined
   user_limit?: number | undefined
@@ -2173,8 +2379,8 @@ type ThreadsResponse = {
   has_more: boolean
   first_messages?: MessageResponse[] | undefined
 }
-type ThreadSortingMode = 'relevance' | 'creation_time' | 'last_message_time' | 'archive_time'
-type SortingOrder = 'asc' | 'desc'
+type ThreadSortingModeInput = 'relevance' | 'creation_time' | 'last_message_time' | 'archive_time'
+type SortingOrderInput = 'asc' | 'desc'
 type ThreadSearchResponse = {
   threads: ThreadResponse[]
   members: ThreadMemberResponse[]
@@ -2188,39 +2394,40 @@ type SearchIndexNotReadyResponse = {
   documents_indexed: number
   retry_after: number
 }
-type TypingIndicatorResponse = { [x: string]: unknown }
+type TypingIndicatorResponse = { [key: string]: unknown }
+type WebhookTypes = 1 | 2 | 3
 type ApplicationIncomingWebhookResponse = {
-  application_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  application_id: null | SnowflakeType
   avatar: string | null
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  guild_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  channel_id: null | SnowflakeType
+  guild_id?: (null | SnowflakeType) | undefined
   id: SnowflakeType
   name: string
-  type: {}
+  type: WebhookTypes
   user?: UserResponse | undefined
 }
 type WebhookSourceGuildResponse = { id: SnowflakeType; icon: string | null; name: string }
 type WebhookSourceChannelResponse = { id: SnowflakeType; name: string }
 type ChannelFollowerWebhookResponse = {
-  application_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  application_id: null | SnowflakeType
   avatar: string | null
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  guild_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  channel_id: null | SnowflakeType
+  guild_id?: (null | SnowflakeType) | undefined
   id: SnowflakeType
   name: string
-  type: {}
+  type: WebhookTypes
   user?: UserResponse | undefined
   source_guild?: WebhookSourceGuildResponse | undefined
   source_channel?: WebhookSourceChannelResponse | undefined
 }
 type GuildIncomingWebhookResponse = {
-  application_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  application_id: null | SnowflakeType
   avatar: string | null
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  guild_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  channel_id: null | SnowflakeType
+  guild_id?: (null | SnowflakeType) | undefined
   id: SnowflakeType
   name: string
-  type: {}
+  type: WebhookTypes
   user?: UserResponse | undefined
   token?: string | undefined
   url?: string | undefined
@@ -2285,7 +2492,7 @@ type GuildTemplateRoleResponse = {
   name: string
   permissions: string
   color: number
-  colors: ({ [x: string]: unknown } | null) | GuildTemplateRoleColorsResponse
+  colors: null | GuildTemplateRoleColorsResponse
   hoist: boolean
   mentionable: boolean
   icon: string | null
@@ -2294,13 +2501,13 @@ type GuildTemplateRoleResponse = {
 type GuildTemplateChannelTags = {
   id: number | null
   name: string
-  emoji_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  emoji_id: null | SnowflakeType
   emoji_name: string | null
   moderated: boolean | null
 }
 type GuildTemplateChannelResponse = {
   id: number | null
-  type: {}
+  type: ChannelTypes
   name: string | null
   position: number | null
   topic: string | null
@@ -2308,16 +2515,16 @@ type GuildTemplateChannelResponse = {
   user_limit: number
   nsfw: boolean
   rate_limit_per_user: number
-  parent_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  default_auto_archive_duration: ({ [x: string]: unknown } | null) | ThreadAutoArchiveDuration
+  parent_id: null | SnowflakeType
+  default_auto_archive_duration: null | ThreadAutoArchiveDuration
   permission_overwrites: ChannelPermissionOverwriteResponse[]
   available_tags: GuildTemplateChannelTags[] | null
   template: string
-  default_reaction_emoji: ({ [x: string]: unknown } | null) | DefaultReactionEmojiResponse
+  default_reaction_emoji: null | DefaultReactionEmojiResponse
   default_thread_rate_limit_per_user: number | null
-  default_sort_order: ({ [x: string]: unknown } | null) | ThreadSortOrder
-  default_forum_layout: ({ [x: string]: unknown } | null) | ForumLayout
-  default_tag_setting: ({ [x: string]: unknown } | null) | ThreadSearchTagSetting
+  default_sort_order: null | ThreadSortOrder
+  default_forum_layout: null | ForumLayout
+  default_tag_setting: null | ThreadSearchTagSetting
   theme_color: number | null
 }
 type GuildTemplateSnapshotResponse = {
@@ -2328,9 +2535,9 @@ type GuildTemplateSnapshotResponse = {
   default_message_notifications: UserNotificationSettings
   explicit_content_filter: GuildExplicitContentFilterTypes
   preferred_locale: AvailableLocalesEnum
-  afk_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  afk_channel_id: null | SnowflakeType
   afk_timeout: AfkTimeouts
-  system_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  system_channel_id: null | SnowflakeType
   system_channel_flags: number
   roles: GuildTemplateRoleResponse[]
   channels: GuildTemplateChannelResponse[]
@@ -2341,7 +2548,7 @@ type GuildTemplateResponse = {
   description: string | null
   usage_count: number
   creator_id: SnowflakeType
-  creator: ({ [x: string]: unknown } | null) | UserResponse
+  creator: null | UserResponse
   created_at: string
   updated_at: string
   source_guild_id: SnowflakeType
@@ -2365,14 +2572,14 @@ type GuildWithCountsResponse = {
   features: GuildFeatures[]
   banner: string | null
   owner_id: SnowflakeType
-  application_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  application_id: null | SnowflakeType
   region: string
-  afk_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  afk_channel_id: null | SnowflakeType
   afk_timeout: AfkTimeouts
-  system_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  system_channel_id: null | SnowflakeType
   system_channel_flags: number
   widget_enabled: boolean
-  widget_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  widget_channel_id: null | SnowflakeType
   verification_level: VerificationLevels
   roles: GuildRoleResponse[]
   default_message_notifications: UserNotificationSettings
@@ -2386,47 +2593,80 @@ type GuildWithCountsResponse = {
   premium_tier: PremiumGuildTiers
   premium_subscription_count: number
   preferred_locale: AvailableLocalesEnum
-  rules_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  safety_alerts_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  public_updates_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  rules_channel_id: null | SnowflakeType
+  safety_alerts_channel_id: null | SnowflakeType
+  public_updates_channel_id: null | SnowflakeType
   premium_progress_bar_enabled: boolean
   premium_progress_bar_enabled_user_updated_at?: (string | null) | undefined
   nsfw: boolean
   nsfw_level: GuildNSFWContentLevel
   emojis: EmojiResponse[]
   stickers: GuildStickerResponse[]
-  incidents_data: ({ [x: string]: unknown } | null) | GuildIncidentsDataResponse
+  incidents_data: null | GuildIncidentsDataResponse
   approximate_member_count?: (number | null) | undefined
   approximate_presence_count?: (number | null) | undefined
 }
-type GuildPatchRequestPartial = {
-  name?: string | undefined
-  description?: (string | null) | undefined
-  region?: (string | null) | undefined
-  icon?: (string | null) | undefined
-  verification_level?: ({ [x: string]: unknown } | null) | VerificationLevels | undefined
-  default_message_notifications?:
-    | ({ [x: string]: unknown } | null)
-    | UserNotificationSettings
-    | undefined
-  explicit_content_filter?:
-    | ({ [x: string]: unknown } | null)
-    | GuildExplicitContentFilterTypes
-    | undefined
-  preferred_locale?: ({ [x: string]: unknown } | null) | AvailableLocalesEnum | undefined
-  afk_timeout?: ({ [x: string]: unknown } | null) | AfkTimeouts | undefined
-  afk_channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  system_channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  splash?: (string | null) | undefined
-  banner?: (string | null) | undefined
-  system_channel_flags?: (number | null) | undefined
-  features?: ((string | null)[] | null) | undefined
-  discovery_splash?: (string | null) | undefined
-  home_header?: (string | null) | undefined
-  rules_channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  safety_alerts_channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  public_updates_channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  premium_progress_bar_enabled?: (boolean | null) | undefined
+type VerificationLevelsInput = 0 | 1 | 2 | 3 | 4
+type UserNotificationSettingsInput = 0 | 1
+type GuildExplicitContentFilterTypesInput = 0 | 1 | 2
+type AvailableLocalesEnumInput =
+  | 'ar'
+  | 'bg'
+  | 'cs'
+  | 'da'
+  | 'de'
+  | 'el'
+  | 'en-GB'
+  | 'en-US'
+  | 'es-419'
+  | 'es-ES'
+  | 'fi'
+  | 'fr'
+  | 'he'
+  | 'hi'
+  | 'hr'
+  | 'hu'
+  | 'id'
+  | 'it'
+  | 'ja'
+  | 'ko'
+  | 'lt'
+  | 'nl'
+  | 'no'
+  | 'pl'
+  | 'pt-BR'
+  | 'ro'
+  | 'ru'
+  | 'sv-SE'
+  | 'th'
+  | 'tr'
+  | 'uk'
+  | 'vi'
+  | 'zh-CN'
+  | 'zh-TW'
+type AfkTimeoutsInput = 60 | 300 | 900 | 1800 | 3600
+type GuildPatchRequestPartialInput = {
+  name?: string
+  description?: string | null
+  region?: string | null
+  icon?: string | null
+  verification_level?: null | VerificationLevelsInput
+  default_message_notifications?: null | UserNotificationSettingsInput
+  explicit_content_filter?: null | GuildExplicitContentFilterTypesInput
+  preferred_locale?: null | AvailableLocalesEnumInput
+  afk_timeout?: null | AfkTimeoutsInput
+  afk_channel_id?: null | SnowflakeTypeInput
+  system_channel_id?: null | SnowflakeTypeInput
+  splash?: string | null
+  banner?: string | null
+  system_channel_flags?: number | null
+  features?: (string | null)[] | null
+  discovery_splash?: string | null
+  home_header?: string | null
+  rules_channel_id?: null | SnowflakeTypeInput
+  safety_alerts_channel_id?: null | SnowflakeTypeInput
+  public_updates_channel_id?: null | SnowflakeTypeInput
+  premium_progress_bar_enabled?: boolean | null
 }
 type GuildResponse = {
   id: SnowflakeType
@@ -2439,14 +2679,14 @@ type GuildResponse = {
   features: GuildFeatures[]
   banner: string | null
   owner_id: SnowflakeType
-  application_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  application_id: null | SnowflakeType
   region: string
-  afk_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  afk_channel_id: null | SnowflakeType
   afk_timeout: AfkTimeouts
-  system_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  system_channel_id: null | SnowflakeType
   system_channel_flags: number
   widget_enabled: boolean
-  widget_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  widget_channel_id: null | SnowflakeType
   verification_level: VerificationLevels
   roles: GuildRoleResponse[]
   default_message_notifications: UserNotificationSettings
@@ -2460,16 +2700,16 @@ type GuildResponse = {
   premium_tier: PremiumGuildTiers
   premium_subscription_count: number
   preferred_locale: AvailableLocalesEnum
-  rules_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  safety_alerts_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  public_updates_channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  rules_channel_id: null | SnowflakeType
+  safety_alerts_channel_id: null | SnowflakeType
+  public_updates_channel_id: null | SnowflakeType
   premium_progress_bar_enabled: boolean
   premium_progress_bar_enabled_user_updated_at?: (string | null) | undefined
   nsfw: boolean
   nsfw_level: GuildNSFWContentLevel
   emojis: EmojiResponse[]
   stickers: GuildStickerResponse[]
-  incidents_data: ({ [x: string]: unknown } | null) | GuildIncidentsDataResponse
+  incidents_data: null | GuildIncidentsDataResponse
 }
 type AuditLogActionTypes =
   | 1
@@ -2552,35 +2792,36 @@ type AuditLogActionTypes =
   | 211
 type AuditLogObjectChangeResponse = {
   key: string | null
-  new_value?: { [x: string]: unknown } | undefined
-  old_value?: { [x: string]: unknown } | undefined
+  new_value?: any | undefined
+  old_value?: any | undefined
 }
 type AuditLogEntryResponse = {
   id: SnowflakeType
   action_type: AuditLogActionTypes
-  user_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  target_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  user_id: null | SnowflakeType
+  target_id: null | SnowflakeType
   changes?: AuditLogObjectChangeResponse[] | undefined
-  options?: { [x: string]: string } | undefined
+  options?: { [key: string]: string } | undefined
   reason?: string | undefined
 }
+type IntegrationTypes = 'discord' | 'twitch' | 'youtube' | 'guild_subscription'
 type AccountResponse = { id: string; name: string | null }
 type PartialDiscordIntegrationResponse = {
   id: SnowflakeType
-  type: {}
+  type: IntegrationTypes
   name: string | null
   account: AccountResponse
   application_id: SnowflakeType
 }
 type PartialExternalConnectionIntegrationResponse = {
   id: SnowflakeType
-  type: {}
+  type: IntegrationTypes
   name: string | null
   account: AccountResponse
 }
 type PartialGuildSubscriptionIntegrationResponse = {
   id: SnowflakeType
-  type: {}
+  type: IntegrationTypes
   name: string | null
   account: AccountResponse
 }
@@ -2590,78 +2831,89 @@ type ExternalScheduledEventResponse = {
   guild_id: SnowflakeType
   name: string
   description: string | null
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  creator_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  channel_id: null | SnowflakeType
+  creator_id: null | SnowflakeType
   creator?: UserResponse | undefined
   image: string | null
   scheduled_start_time: string
   scheduled_end_time: string | null
   status: GuildScheduledEventStatuses
-  entity_type: {}
-  entity_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  recurrence_rule: ({ [x: string]: unknown } | null) | RecurrenceRuleResponse
+  entity_type: GuildScheduledEventEntityTypes
+  entity_id: null | SnowflakeType
+  recurrence_rule: null | RecurrenceRuleResponse
   user_count?: number | undefined
   privacy_level: GuildScheduledEventPrivacyLevels
-  user_rsvp?: ({ [x: string]: unknown } | null) | ScheduledEventUserResponse | undefined
+  user_rsvp?: (null | ScheduledEventUserResponse) | undefined
   guild_scheduled_event_exceptions: GuildScheduledEventExceptionResponse[]
   entity_metadata: EntityMetadataExternalResponse
 }
-type EntityMetadataStageInstanceResponse = { [x: string]: unknown }
+type EntityMetadataStageInstanceResponse = { [key: string]: unknown }
 type StageScheduledEventResponse = {
   id: SnowflakeType
   guild_id: SnowflakeType
   name: string
   description: string | null
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  creator_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  channel_id: null | SnowflakeType
+  creator_id: null | SnowflakeType
   creator?: UserResponse | undefined
   image: string | null
   scheduled_start_time: string
   scheduled_end_time: string | null
   status: GuildScheduledEventStatuses
-  entity_type: {}
-  entity_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  recurrence_rule: ({ [x: string]: unknown } | null) | RecurrenceRuleResponse
+  entity_type: GuildScheduledEventEntityTypes
+  entity_id: null | SnowflakeType
+  recurrence_rule: null | RecurrenceRuleResponse
   user_count?: number | undefined
   privacy_level: GuildScheduledEventPrivacyLevels
-  user_rsvp?: ({ [x: string]: unknown } | null) | ScheduledEventUserResponse | undefined
+  user_rsvp?: (null | ScheduledEventUserResponse) | undefined
   guild_scheduled_event_exceptions: GuildScheduledEventExceptionResponse[]
-  entity_metadata: ({ [x: string]: unknown } | null) | EntityMetadataStageInstanceResponse
+  entity_metadata: null | EntityMetadataStageInstanceResponse
 }
-type EntityMetadataVoiceResponse = { [x: string]: unknown }
+type EntityMetadataVoiceResponse = { [key: string]: unknown }
 type VoiceScheduledEventResponse = {
   id: SnowflakeType
   guild_id: SnowflakeType
   name: string
   description: string | null
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  creator_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  channel_id: null | SnowflakeType
+  creator_id: null | SnowflakeType
   creator?: UserResponse | undefined
   image: string | null
   scheduled_start_time: string
   scheduled_end_time: string | null
   status: GuildScheduledEventStatuses
-  entity_type: {}
-  entity_id: ({ [x: string]: unknown } | null) | SnowflakeType
-  recurrence_rule: ({ [x: string]: unknown } | null) | RecurrenceRuleResponse
+  entity_type: GuildScheduledEventEntityTypes
+  entity_id: null | SnowflakeType
+  recurrence_rule: null | RecurrenceRuleResponse
   user_count?: number | undefined
   privacy_level: GuildScheduledEventPrivacyLevels
-  user_rsvp?: ({ [x: string]: unknown } | null) | ScheduledEventUserResponse | undefined
+  user_rsvp?: (null | ScheduledEventUserResponse) | undefined
   guild_scheduled_event_exceptions: GuildScheduledEventExceptionResponse[]
-  entity_metadata: ({ [x: string]: unknown } | null) | EntityMetadataVoiceResponse
+  entity_metadata: null | EntityMetadataVoiceResponse
 }
 type AutomodEventType = 1 | 2
+type AutomodActionType = 1 | 2 | 3 | 4
 type BlockMessageActionMetadataResponse = { custom_message?: string | undefined }
-type BlockMessageActionResponse = { type: {}; metadata: BlockMessageActionMetadataResponse }
+type BlockMessageActionResponse = {
+  type: AutomodActionType
+  metadata: BlockMessageActionMetadataResponse
+}
 type FlagToChannelActionMetadataResponse = { channel_id: SnowflakeType }
-type FlagToChannelActionResponse = { type: {}; metadata: FlagToChannelActionMetadataResponse }
-type QuarantineUserActionMetadataResponse = { [x: string]: unknown }
-type QuarantineUserActionResponse = { type: {}; metadata: QuarantineUserActionMetadataResponse }
+type FlagToChannelActionResponse = {
+  type: AutomodActionType
+  metadata: FlagToChannelActionMetadataResponse
+}
+type QuarantineUserActionMetadataResponse = { [key: string]: unknown }
+type QuarantineUserActionResponse = {
+  type: AutomodActionType
+  metadata: QuarantineUserActionMetadataResponse
+}
 type UserCommunicationDisabledActionMetadataResponse = { duration_seconds: number }
 type UserCommunicationDisabledActionResponse = {
-  type: {}
+  type: AutomodActionType
   metadata: UserCommunicationDisabledActionMetadataResponse
 }
+type AutomodTriggerType = 1 | 3 | 4 | 5 | 6
 type AutomodKeywordPresetType = 1 | 2 | 3
 type DefaultKeywordListTriggerMetadataResponse = {
   allow_list: string[]
@@ -2679,7 +2931,7 @@ type DefaultKeywordRuleResponse = {
     | QuarantineUserActionResponse
     | UserCommunicationDisabledActionResponse
   )[]
-  trigger_type: {}
+  trigger_type: AutomodTriggerType
   enabled: boolean
   exempt_roles: SnowflakeType[]
   exempt_channels: SnowflakeType[]
@@ -2702,13 +2954,13 @@ type KeywordRuleResponse = {
     | QuarantineUserActionResponse
     | UserCommunicationDisabledActionResponse
   )[]
-  trigger_type: {}
+  trigger_type: AutomodTriggerType
   enabled: boolean
   exempt_roles: SnowflakeType[]
   exempt_channels: SnowflakeType[]
   trigger_metadata: KeywordTriggerMetadataResponse
 }
-type MLSpamTriggerMetadataResponse = { [x: string]: unknown }
+type MLSpamTriggerMetadataResponse = { [key: string]: unknown }
 type MLSpamRuleResponse = {
   id: SnowflakeType
   guild_id: SnowflakeType
@@ -2721,7 +2973,7 @@ type MLSpamRuleResponse = {
     | QuarantineUserActionResponse
     | UserCommunicationDisabledActionResponse
   )[]
-  trigger_type: {}
+  trigger_type: AutomodTriggerType
   enabled: boolean
   exempt_roles: SnowflakeType[]
   exempt_channels: SnowflakeType[]
@@ -2743,7 +2995,7 @@ type MentionSpamRuleResponse = {
     | QuarantineUserActionResponse
     | UserCommunicationDisabledActionResponse
   )[]
-  trigger_type: {}
+  trigger_type: AutomodTriggerType
   enabled: boolean
   exempt_roles: SnowflakeType[]
   exempt_channels: SnowflakeType[]
@@ -2766,7 +3018,7 @@ type UserProfileRuleResponse = {
     | QuarantineUserActionResponse
     | UserCommunicationDisabledActionResponse
   )[]
-  trigger_type: {}
+  trigger_type: AutomodTriggerType
   enabled: boolean
   exempt_roles: SnowflakeType[]
   exempt_channels: SnowflakeType[]
@@ -2798,301 +3050,270 @@ type GuildAuditLogResponse = {
     | MLSpamRuleResponse
     | MentionSpamRuleResponse
     | UserProfileRuleResponse
-    | ({ [x: string]: unknown } | null)
+    | null
   )[]
 }
-type BlockMessageActionMetadata = { custom_message?: (string | null) | undefined }
-type BlockMessageAction = {
-  type: {}
-  metadata?: ({ [x: string]: unknown } | null) | BlockMessageActionMetadata | undefined
+type AutomodEventTypeInput = 1 | 2
+type AutomodActionTypeInput = 1 | 2 | 3 | 4
+type BlockMessageActionMetadataInput = { custom_message?: string | null }
+type BlockMessageActionInput = {
+  type: AutomodActionTypeInput
+  metadata?: null | BlockMessageActionMetadataInput
 }
-type FlagToChannelActionMetadata = { channel_id: SnowflakeType }
-type FlagToChannelAction = { type: {}; metadata: FlagToChannelActionMetadata }
-type QuarantineUserActionMetadata = { [x: string]: unknown }
-type QuarantineUserAction = {
-  type: {}
-  metadata?: ({ [x: string]: unknown } | null) | QuarantineUserActionMetadata | undefined
+type FlagToChannelActionMetadataInput = { channel_id: SnowflakeTypeInput }
+type FlagToChannelActionInput = {
+  type: AutomodActionTypeInput
+  metadata: FlagToChannelActionMetadataInput
 }
-type UserCommunicationDisabledActionMetadata = { duration_seconds?: (number | null) | undefined }
-type UserCommunicationDisabledAction = {
-  type: {}
-  metadata: UserCommunicationDisabledActionMetadata
+type QuarantineUserActionMetadataInput = { [key: string]: unknown }
+type QuarantineUserActionInput = {
+  type: AutomodActionTypeInput
+  metadata?: null | QuarantineUserActionMetadataInput
 }
-type DefaultKeywordListTriggerMetadata = {
-  allow_list?: (string[] | null) | undefined
-  presets?: (AutomodKeywordPresetType[] | null) | undefined
+type UserCommunicationDisabledActionMetadataInput = { duration_seconds?: number | null }
+type UserCommunicationDisabledActionInput = {
+  type: AutomodActionTypeInput
+  metadata: UserCommunicationDisabledActionMetadataInput
 }
-type DefaultKeywordListUpsertRequest = {
+type AutomodTriggerTypeInput = 1 | 3 | 4 | 5 | 6
+type AutomodKeywordPresetTypeInput = 1 | 2 | 3
+type DefaultKeywordListTriggerMetadataInput = {
+  allow_list?: string[] | null
+  presets?: AutomodKeywordPresetTypeInput[] | null
+}
+type DefaultKeywordListUpsertRequestInput = {
   name: string
-  event_type: AutomodEventType
+  event_type: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type: {}
-  trigger_metadata: DefaultKeywordListTriggerMetadata
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type: AutomodTriggerTypeInput
+  trigger_metadata: DefaultKeywordListTriggerMetadataInput
 }
-type KeywordTriggerMetadata = {
-  keyword_filter?: (string[] | null) | undefined
-  regex_patterns?: (string[] | null) | undefined
-  allow_list?: (string[] | null) | undefined
+type KeywordTriggerMetadataInput = {
+  keyword_filter?: string[] | null
+  regex_patterns?: string[] | null
+  allow_list?: string[] | null
 }
-type KeywordUpsertRequest = {
+type KeywordUpsertRequestInput = {
   name: string
-  event_type: AutomodEventType
+  event_type: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type: {}
-  trigger_metadata?: ({ [x: string]: unknown } | null) | KeywordTriggerMetadata | undefined
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type: AutomodTriggerTypeInput
+  trigger_metadata?: null | KeywordTriggerMetadataInput
 }
-type MLSpamTriggerMetadata = { [x: string]: unknown }
-type MLSpamUpsertRequest = {
+type MLSpamTriggerMetadataInput = { [key: string]: unknown }
+type MLSpamUpsertRequestInput = {
   name: string
-  event_type: AutomodEventType
+  event_type: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type: {}
-  trigger_metadata?: ({ [x: string]: unknown } | null) | MLSpamTriggerMetadata | undefined
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type: AutomodTriggerTypeInput
+  trigger_metadata?: null | MLSpamTriggerMetadataInput
 }
-type MentionSpamTriggerMetadata = {
-  mention_total_limit?: (number | null) | undefined
-  mention_raid_protection_enabled?: (boolean | null) | undefined
+type MentionSpamTriggerMetadataInput = {
+  mention_total_limit?: number | null
+  mention_raid_protection_enabled?: boolean | null
 }
-type MentionSpamUpsertRequest = {
+type MentionSpamUpsertRequestInput = {
   name: string
-  event_type: AutomodEventType
+  event_type: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type: {}
-  trigger_metadata?: ({ [x: string]: unknown } | null) | MentionSpamTriggerMetadata | undefined
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type: AutomodTriggerTypeInput
+  trigger_metadata?: null | MentionSpamTriggerMetadataInput
 }
-type UserProfileMetadata = {
-  keyword_filter?: (string[] | null) | undefined
-  regex_patterns?: (string[] | null) | undefined
-  allow_list?: (string[] | null) | undefined
+type UserProfileMetadataInput = {
+  keyword_filter?: string[] | null
+  regex_patterns?: string[] | null
+  allow_list?: string[] | null
 }
-type UserProfileUpsertRequest = {
+type UserProfileUpsertRequestInput = {
   name: string
-  event_type: AutomodEventType
+  event_type: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type: {}
-  trigger_metadata: UserProfileMetadata
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type: AutomodTriggerTypeInput
+  trigger_metadata: UserProfileMetadataInput
 }
-type DefaultKeywordListUpsertRequestPartial = {
-  name?: string | undefined
-  event_type?: AutomodEventType | undefined
+type DefaultKeywordListUpsertRequestPartialInput = {
+  name?: string
+  event_type?: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type?: {} | undefined
-  trigger_metadata?: DefaultKeywordListTriggerMetadata | undefined
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type?: AutomodTriggerTypeInput
+  trigger_metadata?: DefaultKeywordListTriggerMetadataInput
 }
-type KeywordUpsertRequestPartial = {
-  name?: string | undefined
-  event_type?: AutomodEventType | undefined
+type KeywordUpsertRequestPartialInput = {
+  name?: string
+  event_type?: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type?: {} | undefined
-  trigger_metadata?: ({ [x: string]: unknown } | null) | KeywordTriggerMetadata | undefined
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type?: AutomodTriggerTypeInput
+  trigger_metadata?: null | KeywordTriggerMetadataInput
 }
-type MLSpamUpsertRequestPartial = {
-  name?: string | undefined
-  event_type?: AutomodEventType | undefined
+type MLSpamUpsertRequestPartialInput = {
+  name?: string
+  event_type?: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type?: {} | undefined
-  trigger_metadata?: ({ [x: string]: unknown } | null) | MLSpamTriggerMetadata | undefined
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type?: AutomodTriggerTypeInput
+  trigger_metadata?: null | MLSpamTriggerMetadataInput
 }
-type MentionSpamUpsertRequestPartial = {
-  name?: string | undefined
-  event_type?: AutomodEventType | undefined
+type MentionSpamUpsertRequestPartialInput = {
+  name?: string
+  event_type?: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type?: {} | undefined
-  trigger_metadata?: ({ [x: string]: unknown } | null) | MentionSpamTriggerMetadata | undefined
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type?: AutomodTriggerTypeInput
+  trigger_metadata?: null | MentionSpamTriggerMetadataInput
 }
-type UserProfileUpsertRequestPartial = {
-  name?: string | undefined
-  event_type?: AutomodEventType | undefined
+type UserProfileUpsertRequestPartialInput = {
+  name?: string
+  event_type?: AutomodEventTypeInput
   actions?:
     | (
-        | (
-            | BlockMessageAction
-            | FlagToChannelAction
-            | QuarantineUserAction
-            | UserCommunicationDisabledAction
-          )[]
-        | null
-      )
-    | undefined
-  enabled?: (boolean | null) | undefined
-  exempt_roles?: (SnowflakeType[] | null) | undefined
-  exempt_channels?: (SnowflakeType[] | null) | undefined
-  trigger_type?: {} | undefined
-  trigger_metadata?: UserProfileMetadata | undefined
+        | BlockMessageActionInput
+        | FlagToChannelActionInput
+        | QuarantineUserActionInput
+        | UserCommunicationDisabledActionInput
+      )[]
+    | null
+  enabled?: boolean | null
+  exempt_roles?: SnowflakeTypeInput[] | null
+  exempt_channels?: SnowflakeTypeInput[] | null
+  trigger_type?: AutomodTriggerTypeInput
+  trigger_metadata?: UserProfileMetadataInput
 }
 type GuildBanResponse = { user: UserResponse; reason: string | null }
-type BanUserFromGuildRequest = {
-  delete_message_seconds?: (number | null) | undefined
-  delete_message_days?: (number | null) | undefined
+type BanUserFromGuildRequestInput = {
+  delete_message_seconds?: number | null
+  delete_message_days?: number | null
 }
-type UnbanUserFromGuildRequest = { [x: string]: unknown }
-type BulkBanUsersRequest = {
-  user_ids: SnowflakeType[]
-  delete_message_seconds?: (number | null) | undefined
+type UnbanUserFromGuildRequestInput = { [key: string]: unknown }
+type BulkBanUsersRequestInput = {
+  user_ids: SnowflakeTypeInput[]
+  delete_message_seconds?: number | null
 }
 type BulkBanUsersResponse = { banned_users: SnowflakeType[]; failed_users: SnowflakeType[] }
-type CreateOrUpdateThreadTagRequest = {
+type CreateOrUpdateThreadTagRequestInput = {
   name: string
-  emoji_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  emoji_name?: (string | null) | undefined
-  moderated?: (boolean | null) | undefined
+  emoji_id?: null | SnowflakeTypeInput
+  emoji_name?: string | null
+  moderated?: boolean | null
 }
-type CreateGuildChannelRequest = {
-  type?: ({ [x: string]: unknown } | null) | {} | undefined
+type CreateGuildChannelRequestInput = {
+  type?: null | ChannelTypesInput
   name: string
-  position?: (number | null) | undefined
-  topic?: (string | null) | undefined
-  bitrate?: (number | null) | undefined
-  user_limit?: (number | null) | undefined
-  nsfw?: (boolean | null) | undefined
-  rate_limit_per_user?: (number | null) | undefined
-  parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  permission_overwrites?: (ChannelPermissionOverwriteRequest[] | null) | undefined
-  rtc_region?: (string | null) | undefined
-  video_quality_mode?: ({ [x: string]: unknown } | null) | VideoQualityModes | undefined
-  default_auto_archive_duration?:
-    | ({ [x: string]: unknown } | null)
-    | ThreadAutoArchiveDuration
-    | undefined
-  default_reaction_emoji?:
-    | ({ [x: string]: unknown } | null)
-    | UpdateDefaultReactionEmojiRequest
-    | undefined
-  default_thread_rate_limit_per_user?: (number | null) | undefined
-  default_sort_order?: ({ [x: string]: unknown } | null) | ThreadSortOrder | undefined
-  default_forum_layout?: ({ [x: string]: unknown } | null) | ForumLayout | undefined
-  default_tag_setting?: ({ [x: string]: unknown } | null) | ThreadSearchTagSetting | undefined
-  available_tags?:
-    | ((({ [x: string]: unknown } | null) | CreateOrUpdateThreadTagRequest)[] | null)
-    | undefined
+  position?: number | null
+  topic?: string | null
+  bitrate?: number | null
+  user_limit?: number | null
+  nsfw?: boolean | null
+  rate_limit_per_user?: number | null
+  parent_id?: null | SnowflakeTypeInput
+  permission_overwrites?: ChannelPermissionOverwriteRequestInput[] | null
+  rtc_region?: string | null
+  video_quality_mode?: null | VideoQualityModesInput
+  default_auto_archive_duration?: null | ThreadAutoArchiveDurationInput
+  default_reaction_emoji?: null | UpdateDefaultReactionEmojiRequestInput
+  default_thread_rate_limit_per_user?: number | null
+  default_sort_order?: null | ThreadSortOrderInput
+  default_forum_layout?: null | ForumLayoutInput
+  default_tag_setting?: null | ThreadSearchTagSettingInput
+  available_tags?: (null | CreateOrUpdateThreadTagRequestInput)[] | null
 }
-type GuildIncidentActionsRequest = {
-  invites_disabled_until?: (string | null) | undefined
-  dms_disabled_until?: (string | null) | undefined
+type GuildIncidentActionsRequestInput = {
+  invites_disabled_until?: string | null
+  dms_disabled_until?: string | null
 }
 type IntegrationApplicationResponse = {
   id: SnowflakeType
   name: string
   icon: string | null
   description: string
-  type: ({ [x: string]: unknown } | null) | ApplicationTypes
+  type: null | ApplicationTypes
   cover_image?: string | undefined
   primary_sku_id?: SnowflakeType | undefined
   flags: number
@@ -3100,19 +3321,19 @@ type IntegrationApplicationResponse = {
   bot?: UserResponse | undefined
 }
 type DiscordIntegrationResponse = {
-  type: {}
+  type: IntegrationTypes
   name: string | null
   account: AccountResponse
   enabled: boolean
   id: SnowflakeType
   application: IntegrationApplicationResponse
-  scopes: {}[]
+  scopes: OAuth2Scopes[]
   user?: UserResponse | undefined
 }
 type IntegrationExpireBehaviorTypes = 0 | 1
 type IntegrationExpireGracePeriodTypes = 1 | 3 | 7 | 14 | 30
 type ExternalConnectionIntegrationResponse = {
-  type: {}
+  type: IntegrationTypes
   name: string | null
   account: AccountResponse
   enabled: boolean
@@ -3123,12 +3344,12 @@ type ExternalConnectionIntegrationResponse = {
   expire_grace_period?: IntegrationExpireGracePeriodTypes | undefined
   subscriber_count?: number | undefined
   synced_at?: string | undefined
-  role_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+  role_id?: (null | SnowflakeType) | undefined
   syncing?: boolean | undefined
   enable_emoticons?: boolean | undefined
 }
 type GuildSubscriptionIntegrationResponse = {
-  type: {}
+  type: IntegrationTypes
   name: string | null
   account: AccountResponse
   enabled: boolean
@@ -3136,10 +3357,7 @@ type GuildSubscriptionIntegrationResponse = {
 }
 type PrivateGuildMemberResponse = {
   avatar: string | null
-  avatar_decoration_data?:
-    | ({ [x: string]: unknown } | null)
-    | UserAvatarDecorationResponse
-    | undefined
+  avatar_decoration_data?: (null | UserAvatarDecorationResponse) | undefined
   banner: string | null
   communication_disabled_until: string | null
   flags: number
@@ -3148,42 +3366,21 @@ type PrivateGuildMemberResponse = {
   pending: boolean
   premium_since: string | null
   roles: SnowflakeType[]
-  collectibles?: ({ [x: string]: unknown } | null) | UserCollectiblesResponse | undefined
+  collectibles?: (null | UserCollectiblesResponse) | undefined
   user: UserResponse
   mute: boolean
   deaf: boolean
   permissions?: string | undefined
 }
-type BotAddGuildMemberRequest = {
-  nick?: (string | null) | undefined
-  roles?: (SnowflakeType[] | null) | undefined
-  mute?: (boolean | null) | undefined
-  deaf?: (boolean | null) | undefined
+type BotAddGuildMemberRequestInput = {
+  nick?: string | null
+  roles?: SnowflakeTypeInput[] | null
+  mute?: boolean | null
+  deaf?: boolean | null
   access_token: string
-  flags?: (number | null) | undefined
+  flags?: number | null
 }
-type SortingMode = 'relevance' | 'timestamp'
-type AuthorType = 'user' | 'bot' | 'webhook' | '-user' | '-bot' | '-webhook'
-type HasOption =
-  | 'link'
-  | 'embed'
-  | 'file'
-  | 'image'
-  | 'video'
-  | 'sound'
-  | 'sticker'
-  | 'poll'
-  | 'snapshot'
-  | '-link'
-  | '-embed'
-  | '-file'
-  | '-image'
-  | '-video'
-  | '-sound'
-  | '-sticker'
-  | '-poll'
-  | '-snapshot'
-type SearchableEmbedType = 'image' | 'video' | 'gif' | 'sound' | 'article'
+type SortingModeInput = 'relevance' | 'timestamp'
 type SearchMessageResponse = {
   type: MessageType
   content: string
@@ -3216,7 +3413,7 @@ type SearchMessageResponse = {
   application?: BasicApplicationResponseWithBot | undefined
   application_id?: SnowflakeType | undefined
   interaction?: MessageInteractionResponse | undefined
-  nonce?: bigint | string | undefined
+  nonce?: (bigint | string) | undefined
   webhook_id?: SnowflakeType | undefined
   message_reference?: MessageReferenceResponse | undefined
   thread?: ThreadResponse | undefined
@@ -3228,15 +3425,17 @@ type SearchMessageResponse = {
   poll?: PollResponse | undefined
   shared_client_theme?: CustomClientThemeResponse | undefined
   interaction_metadata?:
-    | ApplicationCommandInteractionMetadataResponse
-    | MessageComponentInteractionMetadataResponse
-    | ModalSubmitInteractionMetadataResponse
+    | (
+        | ApplicationCommandInteractionMetadataResponse
+        | MessageComponentInteractionMetadataResponse
+        | ModalSubmitInteractionMetadataResponse
+      )
     | undefined
   message_snapshots?: MessageSnapshotResponse[] | undefined
   lobby_member?: MessageLobbyMemberResponse | undefined
   actor?: UserResponse | undefined
   reactions?: MessageReactionResponse[] | undefined
-  referenced_message?: ({ [x: string]: unknown } | null) | BasicMessageResponse | undefined
+  referenced_message?: (null | BasicMessageResponse) | undefined
   hit: boolean
   restriction_count?: number | undefined
   author_restriction_count?: number | undefined
@@ -3253,11 +3452,7 @@ type GuildSearchResponse = {
 }
 type WelcomeMessageResponse = { author_ids: SnowflakeType[]; message: string }
 type NewMemberActionType = 0 | 1
-type SettingsEmojiResponse = {
-  id: ({ [x: string]: unknown } | null) | SnowflakeType
-  name: string | null
-  animated: boolean
-}
+type SettingsEmojiResponse = { id: null | SnowflakeType; name: string | null; animated: boolean }
 type NewMemberActionResponse = {
   channel_id: SnowflakeType
   action_type: NewMemberActionType
@@ -3306,30 +3501,32 @@ type UserGuildOnboardingResponse = {
   enabled: boolean
   mode: GuildOnboardingMode
 }
-type OnboardingPromptOptionRequest = {
-  id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+type OnboardingPromptOptionRequestInput = {
+  id?: null | SnowflakeTypeInput
   title: string
-  description?: (string | null) | undefined
-  emoji_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  emoji_name?: (string | null) | undefined
-  emoji_animated?: (boolean | null) | undefined
-  role_ids?: (SnowflakeType[] | null) | undefined
-  channel_ids?: (SnowflakeType[] | null) | undefined
+  description?: string | null
+  emoji_id?: null | SnowflakeTypeInput
+  emoji_name?: string | null
+  emoji_animated?: boolean | null
+  role_ids?: SnowflakeTypeInput[] | null
+  channel_ids?: SnowflakeTypeInput[] | null
 }
-type UpdateOnboardingPromptRequest = {
+type OnboardingPromptTypeInput = 0 | 1
+type UpdateOnboardingPromptRequestInput = {
   title: string
-  options: OnboardingPromptOptionRequest[]
-  single_select?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  in_onboarding?: (boolean | null) | undefined
-  type?: ({ [x: string]: unknown } | null) | OnboardingPromptType | undefined
-  id: SnowflakeType
+  options: OnboardingPromptOptionRequestInput[]
+  single_select?: boolean | null
+  required?: boolean | null
+  in_onboarding?: boolean | null
+  type?: null | OnboardingPromptTypeInput
+  id: SnowflakeTypeInput
 }
-type UpdateGuildOnboardingRequest = {
-  prompts?: (UpdateOnboardingPromptRequest[] | null) | undefined
-  enabled?: (boolean | null) | undefined
-  default_channel_ids?: (SnowflakeType[] | null) | undefined
-  mode?: ({ [x: string]: unknown } | null) | GuildOnboardingMode | undefined
+type GuildOnboardingModeInput = 0 | 1
+type UpdateGuildOnboardingRequestInput = {
+  prompts?: UpdateOnboardingPromptRequestInput[] | null
+  enabled?: boolean | null
+  default_channel_ids?: SnowflakeTypeInput[] | null
+  mode?: null | GuildOnboardingModeInput
 }
 type GuildOnboardingResponse = {
   guild_id: SnowflakeType
@@ -3353,10 +3550,10 @@ type GuildPreviewResponse = {
   stickers: GuildStickerResponse[]
 }
 type GuildPruneResponse = { pruned: number | null }
-type PruneGuildRequest = {
-  days?: (number | null) | undefined
-  compute_prune_count?: (boolean | null) | undefined
-  include_roles?: string | SnowflakeType[] | ({ [x: string]: unknown } | null) | undefined
+type PruneGuildRequestInput = {
+  days?: number | null
+  compute_prune_count?: boolean | null
+  include_roles?: string | SnowflakeTypeInput[] | null
 }
 type VoiceRegionResponse = {
   id: string
@@ -3366,8 +3563,9 @@ type VoiceRegionResponse = {
   optimal: boolean
 }
 type GuildJoinRequestApplicationStatus = 'STARTED' | 'SUBMITTED' | 'REJECTED' | 'APPROVED'
+type GuildMemberVerificationFormFieldType = 'TERMS' | 'TEXT_INPUT' | 'PARAGRAPH' | 'MULTIPLE_CHOICE'
 type MultipleChoiceFormFieldResponse = {
-  field_type: {}
+  field_type: GuildMemberVerificationFormFieldType
   label?: string | undefined
   description?: string | undefined
   required?: boolean | undefined
@@ -3375,7 +3573,7 @@ type MultipleChoiceFormFieldResponse = {
   response?: number | undefined
 }
 type ParagraphFormFieldResponse = {
-  field_type: {}
+  field_type: GuildMemberVerificationFormFieldType
   label?: string | undefined
   description?: string | undefined
   required?: boolean | undefined
@@ -3383,7 +3581,7 @@ type ParagraphFormFieldResponse = {
   response?: string | undefined
 }
 type TermsFormFieldResponse = {
-  field_type: {}
+  field_type: GuildMemberVerificationFormFieldType
   label?: string | undefined
   description?: string | undefined
   required?: boolean | undefined
@@ -3391,7 +3589,7 @@ type TermsFormFieldResponse = {
   response?: boolean | undefined
 }
 type TextInputFormFieldResponse = {
-  field_type: {}
+  field_type: GuildMemberVerificationFormFieldType
   label?: string | undefined
   description?: string | undefined
   required?: boolean | undefined
@@ -3402,11 +3600,11 @@ type GuildJoinRequestResponse = {
   id: SnowflakeType
   created_at: string
   reviewed_at: string | null
-  application_status: ({ [x: string]: unknown } | null) | GuildJoinRequestApplicationStatus
+  application_status: null | GuildJoinRequestApplicationStatus
   rejection_reason: string | null
   guild_id: SnowflakeType
   user_id: SnowflakeType
-  user?: ({ [x: string]: unknown } | null) | UserResponse | undefined
+  user?: (null | UserResponse) | undefined
   form_responses?:
     | (
         | (
@@ -3418,181 +3616,185 @@ type GuildJoinRequestResponse = {
         | null
       )
     | undefined
-  actioned_by_user?: ({ [x: string]: unknown } | null) | UserResponse | undefined
+  actioned_by_user?: (null | UserResponse) | undefined
 }
 type GuildJoinRequestsListResponse = {
   total?: number | undefined
   guild_join_requests?: GuildJoinRequestResponse[] | undefined
 }
-type RoleColors = {
-  primary_color?: (number | null) | undefined
-  secondary_color?: (number | null) | undefined
-  tertiary_color?: (number | null) | undefined
+type GuildJoinRequestApplicationStatusInput = 'STARTED' | 'SUBMITTED' | 'REJECTED' | 'APPROVED'
+type RoleColorsInput = {
+  primary_color?: number | null
+  secondary_color?: number | null
+  tertiary_color?: number | null
 }
-type CreateRoleRequest = {
-  name?: (string | null) | undefined
-  permissions?: (number | null) | undefined
-  color?: (number | null) | undefined
-  colors?: ({ [x: string]: unknown } | null) | RoleColors | undefined
-  hoist?: (boolean | null) | undefined
-  mentionable?: (boolean | null) | undefined
-  icon?: (string | null) | undefined
-  unicode_emoji?: (string | null) | undefined
+type CreateRoleRequestInput = {
+  name?: string | null
+  permissions?: number | null
+  color?: number | null
+  colors?: null | RoleColorsInput
+  hoist?: boolean | null
+  mentionable?: boolean | null
+  icon?: string | null
+  unicode_emoji?: string | null
 }
-type UpdateRolePositionsRequest = {
-  id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  position?: (number | null) | undefined
+type UpdateRolePositionsRequestInput = { id?: null | SnowflakeTypeInput; position?: number | null }
+type UpdateRoleRequestPartialInput = {
+  name?: string | null
+  permissions?: number | null
+  color?: number | null
+  colors?: null | RoleColorsInput
+  hoist?: boolean | null
+  mentionable?: boolean | null
+  icon?: string | null
+  unicode_emoji?: string | null
 }
-type UpdateRoleRequestPartial = {
-  name?: (string | null) | undefined
-  permissions?: (number | null) | undefined
-  color?: (number | null) | undefined
-  colors?: ({ [x: string]: unknown } | null) | RoleColors | undefined
-  hoist?: (boolean | null) | undefined
-  mentionable?: (boolean | null) | undefined
-  icon?: (string | null) | undefined
-  unicode_emoji?: (string | null) | undefined
-}
-type ByNWeekday = { n: number; day: RecurrenceRuleWeekdays }
-type RecurrenceRule = {
+type GuildScheduledEventPrivacyLevelsInput = 2
+type GuildScheduledEventEntityTypesInput = 0 | 1 | 2 | 3
+type RecurrenceRuleFrequenciesInput = 3 | 2 | 1 | 0
+type RecurrenceRuleWeekdaysInput = 0 | 1 | 2 | 3 | 4 | 5 | 6
+type ByNWeekdayInput = { n: number; day: RecurrenceRuleWeekdaysInput }
+type RecurrenceRuleMonthsInput = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
+type RecurrenceRuleInput = {
   start: string
-  end?: (string | null) | undefined
-  frequency: RecurrenceRuleFrequencies
-  interval?: (number | null) | undefined
-  by_weekday?: (RecurrenceRuleWeekdays[] | null) | undefined
-  by_n_weekday?: (ByNWeekday[] | null) | undefined
-  by_month?: (RecurrenceRuleMonths[] | null) | undefined
-  by_month_day?: (number[] | null) | undefined
-  by_year_day?: (number[] | null) | undefined
-  count?: (number | null) | undefined
+  end?: string | null
+  frequency: RecurrenceRuleFrequenciesInput
+  interval?: number | null
+  by_weekday?: RecurrenceRuleWeekdaysInput[] | null
+  by_n_weekday?: ByNWeekdayInput[] | null
+  by_month?: RecurrenceRuleMonthsInput[] | null
+  by_month_day?: number[] | null
+  by_year_day?: number[] | null
+  count?: number | null
 }
-type EntityMetadataExternal = { location: string }
-type ExternalScheduledEventCreateRequest = {
+type EntityMetadataExternalInput = { location: string }
+type ExternalScheduledEventCreateRequestInput = {
   name: string
-  description?: (string | null) | undefined
-  image?: (string | null) | undefined
+  description?: string | null
+  image?: string | null
   scheduled_start_time: string
-  scheduled_end_time?: (string | null) | undefined
-  privacy_level: GuildScheduledEventPrivacyLevels
-  entity_type: {}
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  recurrence_rule?: ({ [x: string]: unknown } | null) | RecurrenceRule | undefined
-  entity_metadata: EntityMetadataExternal
+  scheduled_end_time?: string | null
+  privacy_level: GuildScheduledEventPrivacyLevelsInput
+  entity_type: GuildScheduledEventEntityTypesInput
+  channel_id?: null | SnowflakeTypeInput
+  recurrence_rule?: null | RecurrenceRuleInput
+  entity_metadata: EntityMetadataExternalInput
 }
-type EntityMetadataStageInstance = { [x: string]: unknown }
-type StageScheduledEventCreateRequest = {
+type EntityMetadataStageInstanceInput = { [key: string]: unknown }
+type StageScheduledEventCreateRequestInput = {
   name: string
-  description?: (string | null) | undefined
-  image?: (string | null) | undefined
+  description?: string | null
+  image?: string | null
   scheduled_start_time: string
-  scheduled_end_time?: (string | null) | undefined
-  privacy_level: GuildScheduledEventPrivacyLevels
-  entity_type: {}
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  recurrence_rule?: ({ [x: string]: unknown } | null) | RecurrenceRule | undefined
-  entity_metadata?: ({ [x: string]: unknown } | null) | EntityMetadataStageInstance | undefined
+  scheduled_end_time?: string | null
+  privacy_level: GuildScheduledEventPrivacyLevelsInput
+  entity_type: GuildScheduledEventEntityTypesInput
+  channel_id?: null | SnowflakeTypeInput
+  recurrence_rule?: null | RecurrenceRuleInput
+  entity_metadata?: null | EntityMetadataStageInstanceInput
 }
-type EntityMetadataVoice = { [x: string]: unknown }
-type VoiceScheduledEventCreateRequest = {
+type EntityMetadataVoiceInput = { [key: string]: unknown }
+type VoiceScheduledEventCreateRequestInput = {
   name: string
-  description?: (string | null) | undefined
-  image?: (string | null) | undefined
+  description?: string | null
+  image?: string | null
   scheduled_start_time: string
-  scheduled_end_time?: (string | null) | undefined
-  privacy_level: GuildScheduledEventPrivacyLevels
-  entity_type: {}
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  recurrence_rule?: ({ [x: string]: unknown } | null) | RecurrenceRule | undefined
-  entity_metadata?: ({ [x: string]: unknown } | null) | EntityMetadataVoice | undefined
+  scheduled_end_time?: string | null
+  privacy_level: GuildScheduledEventPrivacyLevelsInput
+  entity_type: GuildScheduledEventEntityTypesInput
+  channel_id?: null | SnowflakeTypeInput
+  recurrence_rule?: null | RecurrenceRuleInput
+  entity_metadata?: null | EntityMetadataVoiceInput
 }
-type ExternalScheduledEventPatchRequestPartial = {
-  status?: ({ [x: string]: unknown } | null) | GuildScheduledEventStatuses | undefined
-  name?: string | undefined
-  description?: (string | null) | undefined
-  image?: (string | null) | undefined
-  scheduled_start_time?: string | undefined
-  scheduled_end_time?: (string | null) | undefined
-  entity_type?: ({ [x: string]: unknown } | null) | {} | undefined
-  privacy_level?: GuildScheduledEventPrivacyLevels | undefined
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  recurrence_rule?: ({ [x: string]: unknown } | null) | RecurrenceRule | undefined
-  entity_metadata?: EntityMetadataExternal | undefined
+type GuildScheduledEventStatusesInput = 1 | 2 | 3 | 4
+type ExternalScheduledEventPatchRequestPartialInput = {
+  status?: null | GuildScheduledEventStatusesInput
+  name?: string
+  description?: string | null
+  image?: string | null
+  scheduled_start_time?: string
+  scheduled_end_time?: string | null
+  entity_type?: null | GuildScheduledEventEntityTypesInput
+  privacy_level?: GuildScheduledEventPrivacyLevelsInput
+  channel_id?: null | SnowflakeTypeInput
+  recurrence_rule?: null | RecurrenceRuleInput
+  entity_metadata?: EntityMetadataExternalInput
 }
-type StageScheduledEventPatchRequestPartial = {
-  status?: ({ [x: string]: unknown } | null) | GuildScheduledEventStatuses | undefined
-  name?: string | undefined
-  description?: (string | null) | undefined
-  image?: (string | null) | undefined
-  scheduled_start_time?: string | undefined
-  scheduled_end_time?: (string | null) | undefined
-  entity_type?: ({ [x: string]: unknown } | null) | {} | undefined
-  privacy_level?: GuildScheduledEventPrivacyLevels | undefined
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  recurrence_rule?: ({ [x: string]: unknown } | null) | RecurrenceRule | undefined
-  entity_metadata?: ({ [x: string]: unknown } | null) | EntityMetadataStageInstance | undefined
+type StageScheduledEventPatchRequestPartialInput = {
+  status?: null | GuildScheduledEventStatusesInput
+  name?: string
+  description?: string | null
+  image?: string | null
+  scheduled_start_time?: string
+  scheduled_end_time?: string | null
+  entity_type?: null | GuildScheduledEventEntityTypesInput
+  privacy_level?: GuildScheduledEventPrivacyLevelsInput
+  channel_id?: null | SnowflakeTypeInput
+  recurrence_rule?: null | RecurrenceRuleInput
+  entity_metadata?: null | EntityMetadataStageInstanceInput
 }
-type VoiceScheduledEventPatchRequestPartial = {
-  status?: ({ [x: string]: unknown } | null) | GuildScheduledEventStatuses | undefined
-  name?: string | undefined
-  description?: (string | null) | undefined
-  image?: (string | null) | undefined
-  scheduled_start_time?: string | undefined
-  scheduled_end_time?: (string | null) | undefined
-  entity_type?: ({ [x: string]: unknown } | null) | {} | undefined
-  privacy_level?: GuildScheduledEventPrivacyLevels | undefined
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  recurrence_rule?: ({ [x: string]: unknown } | null) | RecurrenceRule | undefined
-  entity_metadata?: ({ [x: string]: unknown } | null) | EntityMetadataVoice | undefined
+type VoiceScheduledEventPatchRequestPartialInput = {
+  status?: null | GuildScheduledEventStatusesInput
+  name?: string
+  description?: string | null
+  image?: string | null
+  scheduled_start_time?: string
+  scheduled_end_time?: string | null
+  entity_type?: null | GuildScheduledEventEntityTypesInput
+  privacy_level?: GuildScheduledEventPrivacyLevelsInput
+  channel_id?: null | SnowflakeTypeInput
+  recurrence_rule?: null | RecurrenceRuleInput
+  entity_metadata?: null | EntityMetadataVoiceInput
 }
-type GuildScheduledEventExceptionCreateRequest = {
-  scheduled_start_time?: (string | null) | undefined
-  scheduled_end_time?: (string | null) | undefined
+type GuildScheduledEventExceptionCreateRequestInput = {
+  scheduled_start_time?: string | null
+  scheduled_end_time?: string | null
   original_scheduled_start_time: string
-  is_canceled?: (boolean | null) | undefined
+  is_canceled?: boolean | null
 }
-type GuildScheduledEventExceptionPatchRequestPartial = {
-  scheduled_start_time?: (string | null) | undefined
-  scheduled_end_time?: (string | null) | undefined
-  is_canceled?: (boolean | null) | undefined
+type GuildScheduledEventExceptionPatchRequestPartialInput = {
+  scheduled_start_time?: string | null
+  scheduled_end_time?: string | null
+  is_canceled?: boolean | null
 }
 type ScheduledEventUserCountResponse = {
   guild_scheduled_event_count: number
-  guild_scheduled_event_exception_counts: { [x: string]: number }
+  guild_scheduled_event_exception_counts: { [key: string]: number }
 }
 type SoundboardSoundResponse = {
   name: string
   sound_id: SnowflakeType
   volume: number
-  emoji_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  emoji_id: null | SnowflakeType
   emoji_name: string | null
   guild_id?: SnowflakeType | undefined
   available: boolean
   user?: UserResponse | undefined
 }
 type ListGuildSoundboardSoundsResponse = { items: SoundboardSoundResponse[] }
-type SoundboardCreateRequest = {
+type SoundboardCreateRequestInput = {
   name: string
-  volume?: (number | null) | undefined
-  emoji_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  emoji_name?: (string | null) | undefined
+  volume?: number | null
+  emoji_id?: null | SnowflakeTypeInput
+  emoji_name?: string | null
   sound: string
 }
-type SoundboardPatchRequestPartial = {
-  name?: string | undefined
-  volume?: (number | null) | undefined
-  emoji_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  emoji_name?: (string | null) | undefined
+type SoundboardPatchRequestPartialInput = {
+  name?: string
+  volume?: number | null
+  emoji_id?: null | SnowflakeTypeInput
+  emoji_name?: string | null
 }
 type VanityURLErrorResponse = { message: string; code: number }
 type VanityURLResponse = {
   code: string | null
   uses: number
-  error?: ({ [x: string]: unknown } | null) | VanityURLErrorResponse | undefined
+  error?: (null | VanityURLErrorResponse) | undefined
 }
 type VoiceStateResponse = {
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  channel_id: null | SnowflakeType
   deaf: boolean
-  guild_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  guild_id: null | SnowflakeType
   member?: GuildMemberResponse | undefined
   mute: boolean
   request_to_speak_timestamp: string | null
@@ -3604,40 +3806,37 @@ type VoiceStateResponse = {
   session_id: string
   user_id: SnowflakeType
 }
-type UpdateSelfVoiceStateRequestPartial = {
-  request_to_speak_timestamp?: (string | null) | undefined
-  suppress?: (boolean | null) | undefined
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+type UpdateSelfVoiceStateRequestPartialInput = {
+  request_to_speak_timestamp?: string | null
+  suppress?: boolean | null
+  channel_id?: null | SnowflakeTypeInput
 }
-type UpdateVoiceStateRequestPartial = {
-  suppress?: (boolean | null) | undefined
-  channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+type UpdateVoiceStateRequestPartialInput = {
+  suppress?: boolean | null
+  channel_id?: null | SnowflakeTypeInput
 }
 type GuildWelcomeScreenChannelResponse = {
   channel_id: SnowflakeType
   description: string
-  emoji_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  emoji_id: null | SnowflakeType
   emoji_name: string | null
 }
 type GuildWelcomeScreenResponse = {
   description: string | null
   welcome_channels: GuildWelcomeScreenChannelResponse[]
 }
-type GuildWelcomeChannel = {
-  channel_id: SnowflakeType
+type GuildWelcomeChannelInput = {
+  channel_id: SnowflakeTypeInput
   description: string
-  emoji_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  emoji_name?: (string | null) | undefined
+  emoji_id?: null | SnowflakeTypeInput
+  emoji_name?: string | null
 }
-type WelcomeScreenPatchRequestPartial = {
-  description?: (string | null) | undefined
-  welcome_channels?: (GuildWelcomeChannel[] | null) | undefined
-  enabled?: (boolean | null) | undefined
+type WelcomeScreenPatchRequestPartialInput = {
+  description?: string | null
+  welcome_channels?: GuildWelcomeChannelInput[] | null
+  enabled?: boolean | null
 }
-type WidgetSettingsResponse = {
-  enabled: boolean
-  channel_id: ({ [x: string]: unknown } | null) | SnowflakeType
-}
+type WidgetSettingsResponse = { enabled: boolean; channel_id: null | SnowflakeType }
 type WidgetChannel = { id: SnowflakeType; name: string; position: number }
 type WidgetUserDiscriminator = '0000'
 type WidgetActivity = { name: string }
@@ -3645,7 +3844,7 @@ type WidgetMember = {
   id: string
   username: string
   discriminator: WidgetUserDiscriminator
-  avatar: { [x: string]: unknown } | null
+  avatar: null
   status: string
   avatar_url: string
   activity?: WidgetActivity | undefined
@@ -3664,243 +3863,233 @@ type WidgetResponse = {
   members: WidgetMember[]
   presence_count: number
 }
-type WidgetImageStyles = 'shield' | 'banner1' | 'banner2' | 'banner3' | 'banner4'
-type InteractionApplicationCommandAutocompleteCallbackIntegerData = {
-  choices?:
-    | ((({ [x: string]: unknown } | null) | ApplicationCommandOptionIntegerChoice)[] | null)
-    | undefined
+type WidgetImageStylesInput = 'shield' | 'banner1' | 'banner2' | 'banner3' | 'banner4'
+type InteractionCallbackTypesInput = 1 | 4 | 5 | 6 | 7 | 8 | 9 | 12 | 13
+type InteractionApplicationCommandAutocompleteCallbackIntegerDataInput = {
+  choices?: (null | ApplicationCommandOptionIntegerChoiceInput)[] | null
 }
-type InteractionApplicationCommandAutocompleteCallbackNumberData = {
-  choices?:
-    | ((({ [x: string]: unknown } | null) | ApplicationCommandOptionNumberChoice)[] | null)
-    | undefined
+type InteractionApplicationCommandAutocompleteCallbackNumberDataInput = {
+  choices?: (null | ApplicationCommandOptionNumberChoiceInput)[] | null
 }
-type InteractionApplicationCommandAutocompleteCallbackStringData = {
-  choices?:
-    | ((({ [x: string]: unknown } | null) | ApplicationCommandOptionStringChoice)[] | null)
-    | undefined
+type InteractionApplicationCommandAutocompleteCallbackStringDataInput = {
+  choices?: (null | ApplicationCommandOptionStringChoiceInput)[] | null
 }
-type ApplicationCommandAutocompleteCallbackRequest = {
-  type: {}
+type ApplicationCommandAutocompleteCallbackRequestInput = {
+  type: InteractionCallbackTypesInput
   data:
-    | InteractionApplicationCommandAutocompleteCallbackIntegerData
-    | InteractionApplicationCommandAutocompleteCallbackNumberData
-    | InteractionApplicationCommandAutocompleteCallbackStringData
+    | InteractionApplicationCommandAutocompleteCallbackIntegerDataInput
+    | InteractionApplicationCommandAutocompleteCallbackNumberDataInput
+    | InteractionApplicationCommandAutocompleteCallbackStringDataInput
 }
-type IncomingWebhookInteractionRequest = {
-  content?: (string | null) | undefined
-  embeds?: (RichEmbed[] | null) | undefined
-  allowed_mentions?: ({ [x: string]: unknown } | null) | MessageAllowedMentionsRequest | undefined
+type IncomingWebhookInteractionRequestInput = {
+  content?: string | null
+  embeds?: RichEmbedInput[] | null
+  allowed_mentions?: null | MessageAllowedMentionsRequestInput
   components?:
     | (
-        | (
-            | ActionRowComponentForMessageRequest
-            | ContainerComponentForMessageRequest
-            | FileComponentForMessageRequest
-            | MediaGalleryComponentForMessageRequest
-            | SectionComponentForMessageRequest
-            | SeparatorComponentForMessageRequest
-            | TextDisplayComponentForMessageRequest
-          )[]
-        | null
-      )
-    | undefined
-  attachments?: (MessageAttachmentRequest[] | null) | undefined
-  poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-  tts?: (boolean | null) | undefined
-  flags?: (number | null) | undefined
+        | ActionRowComponentForMessageRequestInput
+        | ContainerComponentForMessageRequestInput
+        | FileComponentForMessageRequestInput
+        | MediaGalleryComponentForMessageRequestInput
+        | SectionComponentForMessageRequestInput
+        | SeparatorComponentForMessageRequestInput
+        | TextDisplayComponentForMessageRequestInput
+      )[]
+    | null
+  attachments?: MessageAttachmentRequestInput[] | null
+  poll?: null | PollCreateRequestInput
+  tts?: boolean | null
+  flags?: number | null
 }
-type CreateMessageInteractionCallbackRequest = {
-  type: {}
-  data?: ({ [x: string]: unknown } | null) | IncomingWebhookInteractionRequest | undefined
+type CreateMessageInteractionCallbackRequestInput = {
+  type: InteractionCallbackTypesInput
+  data?: null | IncomingWebhookInteractionRequestInput
 }
-type LaunchActivityInteractionCallbackRequest = { type: {} }
-type TextInputComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type LaunchActivityInteractionCallbackRequestInput = { type: InteractionCallbackTypesInput }
+type TextInputStyleTypesInput = 1 | 2
+type TextInputComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  style: TextInputStyleTypes
-  label?: (string | null) | undefined
-  value?: (string | null) | undefined
-  placeholder?: (string | null) | undefined
-  required?: (boolean | null) | undefined
-  min_length?: (number | null) | undefined
-  max_length?: (number | null) | undefined
+  style: TextInputStyleTypesInput
+  label?: string | null
+  value?: string | null
+  placeholder?: string | null
+  required?: boolean | null
+  min_length?: number | null
+  max_length?: number | null
 }
-type ActionRowComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
-  components: TextInputComponentForModalRequest[]
+type ActionRowComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
+  components: TextInputComponentForModalRequestInput[]
 }
-type ChannelSelectComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type ChannelSelectComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  default_values?: (ChannelSelectDefaultValue[] | null) | undefined
-  channel_types?: (ChannelTypes[] | null) | undefined
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  default_values?: ChannelSelectDefaultValueInput[] | null
+  channel_types?: ChannelTypesInput[] | null
 }
-type CheckboxComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type CheckboxComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  default?: (boolean | null) | undefined
+  default?: boolean | null
 }
-type CheckboxGroupOptionForRequest = {
+type CheckboxGroupOptionForRequestInput = {
   label: string
   value: string
-  description?: (string | null) | undefined
-  default?: (boolean | null) | undefined
+  description?: string | null
+  default?: boolean | null
 }
-type CheckboxGroupComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type CheckboxGroupComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  required?: (boolean | null) | undefined
-  options: CheckboxGroupOptionForRequest[]
+  min_values?: number | null
+  max_values?: number | null
+  required?: boolean | null
+  options: CheckboxGroupOptionForRequestInput[]
 }
-type FileUploadComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type FileUploadComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  required?: (boolean | null) | undefined
-  file_types?: (string[] | null) | undefined
+  min_values?: number | null
+  max_values?: number | null
+  required?: boolean | null
+  file_types?: string[] | null
 }
-type MentionableSelectComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type MentionableSelectComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  default_values?: ((RoleSelectDefaultValue | UserSelectDefaultValue)[] | null) | undefined
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  default_values?: (RoleSelectDefaultValueInput | UserSelectDefaultValueInput)[] | null
 }
-type RadioGroupOptionForRequest = {
+type RadioGroupOptionForRequestInput = {
   label: string
   value: string
-  description?: (string | null) | undefined
-  default?: (boolean | null) | undefined
+  description?: string | null
+  default?: boolean | null
 }
-type RadioGroupComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type RadioGroupComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  required?: (boolean | null) | undefined
-  options: RadioGroupOptionForRequest[]
+  required?: boolean | null
+  options: RadioGroupOptionForRequestInput[]
 }
-type RoleSelectComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type RoleSelectComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  default_values?: (RoleSelectDefaultValue[] | null) | undefined
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  default_values?: RoleSelectDefaultValueInput[] | null
 }
-type StringSelectComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type StringSelectComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  options: StringSelectOptionForRequest[]
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  options: StringSelectOptionForRequestInput[]
 }
-type UserSelectComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type UserSelectComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   custom_id: string
-  placeholder?: (string | null) | undefined
-  min_values?: (number | null) | undefined
-  max_values?: (number | null) | undefined
-  disabled?: (boolean | null) | undefined
-  required?: (boolean | null) | undefined
-  default_values?: (UserSelectDefaultValue[] | null) | undefined
+  placeholder?: string | null
+  min_values?: number | null
+  max_values?: number | null
+  disabled?: boolean | null
+  required?: boolean | null
+  default_values?: UserSelectDefaultValueInput[] | null
 }
-type LabelComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type LabelComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   label: string
-  description?: (string | null) | undefined
+  description?: string | null
   component:
-    | ChannelSelectComponentForModalRequest
-    | CheckboxComponentForModalRequest
-    | CheckboxGroupComponentForModalRequest
-    | FileUploadComponentForModalRequest
-    | MentionableSelectComponentForModalRequest
-    | RadioGroupComponentForModalRequest
-    | RoleSelectComponentForModalRequest
-    | StringSelectComponentForModalRequest
-    | TextInputComponentForModalRequest
-    | UserSelectComponentForModalRequest
+    | ChannelSelectComponentForModalRequestInput
+    | CheckboxComponentForModalRequestInput
+    | CheckboxGroupComponentForModalRequestInput
+    | FileUploadComponentForModalRequestInput
+    | MentionableSelectComponentForModalRequestInput
+    | RadioGroupComponentForModalRequestInput
+    | RoleSelectComponentForModalRequestInput
+    | StringSelectComponentForModalRequestInput
+    | TextInputComponentForModalRequestInput
+    | UserSelectComponentForModalRequestInput
 }
-type TextDisplayComponentForModalRequest = {
-  type: {}
-  id?: (number | null) | undefined
+type TextDisplayComponentForModalRequestInput = {
+  type: MessageComponentTypesInput
+  id?: number | null
   content: string
 }
-type ModalInteractionCallbackRequestData = {
+type ModalInteractionCallbackRequestDataInput = {
   custom_id: string
   title: string
   components: (
-    | ActionRowComponentForModalRequest
-    | LabelComponentForModalRequest
-    | TextDisplayComponentForModalRequest
+    | ActionRowComponentForModalRequestInput
+    | LabelComponentForModalRequestInput
+    | TextDisplayComponentForModalRequestInput
   )[]
 }
-type ModalInteractionCallbackRequest = { type: {}; data: ModalInteractionCallbackRequestData }
-type PongInteractionCallbackRequest = { type: {} }
-type SKUIneligibilityReason = 0 | 1 | 2
-type SocialLayerSKUPurchaseEligibilityCallbackData = {
+type ModalInteractionCallbackRequestInput = {
+  type: InteractionCallbackTypesInput
+  data: ModalInteractionCallbackRequestDataInput
+}
+type PongInteractionCallbackRequestInput = { type: InteractionCallbackTypesInput }
+type SKUIneligibilityReasonInput = 0 | 1 | 2
+type SocialLayerSKUPurchaseEligibilityCallbackDataInput = {
   eligible: boolean
-  ineligible_reason?: ({ [x: string]: unknown } | null) | SKUIneligibilityReason | undefined
-  ineligible_reason_description?: (string | null) | undefined
+  ineligible_reason?: null | SKUIneligibilityReasonInput
+  ineligible_reason_description?: string | null
 }
-type SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest = {
-  type: {}
-  data: SocialLayerSKUPurchaseEligibilityCallbackData
+type SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput = {
+  type: InteractionCallbackTypesInput
+  data: SocialLayerSKUPurchaseEligibilityCallbackDataInput
 }
-type IncomingWebhookUpdateForInteractionCallbackRequestPartial = {
-  content?: (string | null) | undefined
-  embeds?: (RichEmbed[] | null) | undefined
-  allowed_mentions?: ({ [x: string]: unknown } | null) | MessageAllowedMentionsRequest | undefined
+type IncomingWebhookUpdateForInteractionCallbackRequestPartialInput = {
+  content?: string | null
+  embeds?: RichEmbedInput[] | null
+  allowed_mentions?: null | MessageAllowedMentionsRequestInput
   components?:
     | (
-        | (
-            | ActionRowComponentForMessageRequest
-            | ContainerComponentForMessageRequest
-            | FileComponentForMessageRequest
-            | MediaGalleryComponentForMessageRequest
-            | SectionComponentForMessageRequest
-            | SeparatorComponentForMessageRequest
-            | TextDisplayComponentForMessageRequest
-          )[]
-        | null
-      )
-    | undefined
-  attachments?: (MessageAttachmentRequest[] | null) | undefined
-  flags?: (number | null) | undefined
+        | ActionRowComponentForMessageRequestInput
+        | ContainerComponentForMessageRequestInput
+        | FileComponentForMessageRequestInput
+        | MediaGalleryComponentForMessageRequestInput
+        | SectionComponentForMessageRequestInput
+        | SeparatorComponentForMessageRequestInput
+        | TextDisplayComponentForMessageRequestInput
+      )[]
+    | null
+  attachments?: MessageAttachmentRequestInput[] | null
+  flags?: number | null
 }
-type UpdateMessageInteractionCallbackRequest = {
-  type: {}
-  data?:
-    | ({ [x: string]: unknown } | null)
-    | IncomingWebhookUpdateForInteractionCallbackRequestPartial
-    | undefined
+type UpdateMessageInteractionCallbackRequestInput = {
+  type: InteractionCallbackTypesInput
+  data?: null | IncomingWebhookUpdateForInteractionCallbackRequestPartialInput
 }
 type InteractionResponse = {
   id: SnowflakeType
@@ -3912,19 +4101,28 @@ type InteractionResponse = {
   channel_id?: SnowflakeType | undefined
   guild_id?: SnowflakeType | undefined
 }
-type CreateMessageInteractionCallbackResponse = { type: {}; message: MessageResponse }
+type InteractionCallbackTypes = 1 | 4 | 5 | 6 | 7 | 8 | 9 | 12 | 13
+type CreateMessageInteractionCallbackResponse = {
+  type: InteractionCallbackTypes
+  message: MessageResponse
+}
 type ActivityInstanceCallbackResponse = { id: string }
 type LaunchActivityInteractionCallbackResponse = {
-  type: {}
+  type: InteractionCallbackTypes
   activity_instance: ActivityInstanceCallbackResponse
 }
-type UpdateMessageInteractionCallbackResponse = { type: {}; message: MessageResponse }
+type UpdateMessageInteractionCallbackResponse = {
+  type: InteractionCallbackTypes
+  message: MessageResponse
+}
 type InteractionCallbackResponse = {
   interaction: InteractionResponse
   resource?:
-    | CreateMessageInteractionCallbackResponse
-    | LaunchActivityInteractionCallbackResponse
-    | UpdateMessageInteractionCallbackResponse
+    | (
+        | CreateMessageInteractionCallbackResponse
+        | LaunchActivityInteractionCallbackResponse
+        | UpdateMessageInteractionCallbackResponse
+      )
     | undefined
 }
 type TargetUsersJobStatusTypes = 0 | 1 | 2 | 3
@@ -3938,32 +4136,32 @@ type TargetUsersJobStatusResponse = {
 }
 type LobbyMemberResponse = {
   id: SnowflakeType
-  metadata: { [x: string]: string } | null
+  metadata: { [key: string]: string } | null
   flags: number
   additional_name?: string | undefined
 }
 type LobbyResponse = {
   id: SnowflakeType
   application_id: SnowflakeType
-  metadata: { [x: string]: string } | null
+  metadata: { [key: string]: string } | null
   members: LobbyMemberResponse[]
   linked_channel?: GuildChannelResponse | undefined
   flags: UInt32Type
   override_event_webhooks_url?: (string | null) | undefined
 }
-type LobbyMemberRequest = {
-  id: SnowflakeType
-  metadata?: ({ [x: string]: string } | null) | undefined
-  flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-  additional_name?: (string | null) | undefined
+type LobbyMemberRequestInput = {
+  id: SnowflakeTypeInput
+  metadata?: { [key: string]: string } | null
+  flags?: null | 1
+  additional_name?: string | null
 }
 type LobbyGuildInviteResponse = { code: string }
-type BulkLobbyMemberRequest = {
-  id: SnowflakeType
-  metadata?: ({ [x: string]: string } | null) | undefined
-  flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-  additional_name?: (string | null) | undefined
-  remove_member?: (boolean | null) | undefined
+type BulkLobbyMemberRequestInput = {
+  id: SnowflakeTypeInput
+  metadata?: { [key: string]: string } | null
+  flags?: null | 1
+  additional_name?: string | null
+  remove_member?: boolean | null
 }
 type LobbyMessageResponse = {
   id: SnowflakeType
@@ -3973,41 +4171,35 @@ type LobbyMessageResponse = {
   channel_id: SnowflakeType
   author: UserResponse
   lobby_member?: MessageLobbyMemberResponse | undefined
-  metadata?: { [x: string]: string } | undefined
-  moderation_metadata?: { [x: string]: string } | undefined
+  metadata?: { [key: string]: string } | undefined
+  moderation_metadata?: { [key: string]: string } | undefined
   flags: number
   application_id?: SnowflakeType | undefined
 }
-type SDKMessageRequest = {
-  content?: (string | null) | undefined
-  embeds?: (RichEmbed[] | null) | undefined
-  allowed_mentions?: ({ [x: string]: unknown } | null) | MessageAllowedMentionsRequest | undefined
-  sticker_ids?: (SnowflakeType[] | null) | undefined
+type SDKMessageRequestInput = {
+  content?: string | null
+  embeds?: RichEmbedInput[] | null
+  allowed_mentions?: null | MessageAllowedMentionsRequestInput
+  sticker_ids?: SnowflakeTypeInput[] | null
   components?:
     | (
-        | (
-            | ActionRowComponentForMessageRequest
-            | ContainerComponentForMessageRequest
-            | FileComponentForMessageRequest
-            | MediaGalleryComponentForMessageRequest
-            | SectionComponentForMessageRequest
-            | SeparatorComponentForMessageRequest
-            | TextDisplayComponentForMessageRequest
-          )[]
-        | null
-      )
-    | undefined
-  flags?: (number | null) | undefined
-  attachments?: (MessageAttachmentRequest[] | null) | undefined
-  poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-  shared_client_theme?:
-    | ({ [x: string]: unknown } | null)
-    | CustomClientThemeShareRequest
-    | undefined
-  message_reference?: ({ [x: string]: unknown } | null) | MessageReferenceRequest | undefined
-  nonce?: bigint | string | ({ [x: string]: unknown } | null) | undefined
-  enforce_nonce?: (boolean | null) | undefined
-  tts?: (boolean | null) | undefined
+        | ActionRowComponentForMessageRequestInput
+        | ContainerComponentForMessageRequestInput
+        | FileComponentForMessageRequestInput
+        | MediaGalleryComponentForMessageRequestInput
+        | SectionComponentForMessageRequestInput
+        | SeparatorComponentForMessageRequestInput
+        | TextDisplayComponentForMessageRequestInput
+      )[]
+    | null
+  flags?: number | null
+  attachments?: MessageAttachmentRequestInput[] | null
+  poll?: null | PollCreateRequestInput
+  shared_client_theme?: null | CustomClientThemeShareRequestInput
+  message_reference?: null | MessageReferenceRequestInput
+  nonce?: bigint | string | null
+  enforce_nonce?: boolean | null
+  tts?: boolean | null
 }
 type OAuth2GetAuthorizationResponse = {
   application: ApplicationResponse
@@ -4026,7 +4218,7 @@ type OAuth2GetOpenIDConnectUserInfoResponse = {
   picture?: string | undefined
   locale?: string | undefined
 }
-type ApplicationIdentityProviderAuthType =
+type ApplicationIdentityProviderAuthTypeInput =
   | 'OIDC'
   | 'EPIC_ONLINE_SERVICES_ACCESS_TOKEN'
   | 'EPIC_ONLINE_SERVICES_ID_TOKEN'
@@ -4058,6 +4250,7 @@ type SubscriptionResponse = {
   canceled_at: string | null
   country?: (string | null) | undefined
 }
+type StageInstancesPrivacyLevelsInput = 1 | 2
 type StageInstancesPrivacyLevels = 1 | 2
 type StageInstanceResponse = {
   guild_id: SnowflakeType
@@ -4066,7 +4259,7 @@ type StageInstanceResponse = {
   privacy_level: StageInstancesPrivacyLevels
   id: SnowflakeType
   discoverable_disabled: boolean
-  guild_scheduled_event_id: ({ [x: string]: unknown } | null) | SnowflakeType
+  guild_scheduled_event_id: null | SnowflakeType
 }
 type StickerPackResponse = {
   id: SnowflakeType
@@ -4091,37 +4284,34 @@ type UserPIIResponse = {
   banner?: (string | null) | undefined
   accent_color?: (number | null) | undefined
   global_name: string | null
-  avatar_decoration_data?:
-    | ({ [x: string]: unknown } | null)
-    | UserAvatarDecorationResponse
-    | undefined
-  collectibles?: ({ [x: string]: unknown } | null) | UserCollectiblesResponse | undefined
-  primary_guild?: ({ [x: string]: unknown } | null) | UserPrimaryGuildResponse | undefined
+  avatar_decoration_data?: (null | UserAvatarDecorationResponse) | undefined
+  collectibles?: (null | UserCollectiblesResponse) | undefined
+  primary_guild?: (null | UserPrimaryGuildResponse) | undefined
   mfa_enabled: boolean
   locale: AvailableLocalesEnum
   premium_type?: PremiumTypes | undefined
   email?: (string | null) | undefined
   verified?: boolean | undefined
 }
-type BotAccountPatchRequest = {
+type BotAccountPatchRequestInput = {
   username: string
-  avatar?: (string | null) | undefined
-  banner?: (string | null) | undefined
+  avatar?: string | null
+  banner?: string | null
 }
 type ApplicationUserRoleConnectionResponse = {
   platform_name?: string | undefined
   platform_username?: (string | null) | undefined
-  metadata?: { [x: string]: string } | undefined
+  metadata?: { [key: string]: string } | undefined
 }
-type UpdateApplicationUserRoleConnectionRequest = {
-  platform_name?: (string | null) | undefined
-  platform_username?: (string | null) | undefined
-  metadata?: ({ [x: string]: string } | null) | undefined
+type UpdateApplicationUserRoleConnectionRequestInput = {
+  platform_name?: string | null
+  platform_username?: string | null
+  metadata?: { [key: string]: string } | null
 }
-type CreatePrivateChannelRequest = {
-  recipient_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-  access_tokens?: (string[] | null) | undefined
-  nicks?: ({ [x: string]: string | null } | null) | undefined
+type CreatePrivateChannelRequestInput = {
+  recipient_id?: null | SnowflakeTypeInput
+  access_tokens?: string[] | null
+  nicks?: { [key: string]: string | null } | null
 }
 type ConnectedAccountProviders =
   | 'battlenet'
@@ -4149,7 +4339,6 @@ type ConnectedAccountProviders =
   | 'xbox'
   | 'youtube'
   | 'domain'
-type IntegrationTypes = 'discord' | 'twitch' | 'youtube' | 'guild_subscription'
 type ConnectedAccountGuildResponse = { id: SnowflakeType; name: string; icon: string | null }
 type ConnectedAccountIntegrationResponse = {
   id: string
@@ -4181,160 +4370,156 @@ type MyGuildResponse = {
   approximate_member_count?: (number | null) | undefined
   approximate_presence_count?: (number | null) | undefined
 }
-type IncomingWebhookRequestPartial = {
-  content?: (string | null) | undefined
-  embeds?: (RichEmbed[] | null) | undefined
-  allowed_mentions?: ({ [x: string]: unknown } | null) | MessageAllowedMentionsRequest | undefined
+type IncomingWebhookRequestPartialInput = {
+  content?: string | null
+  embeds?: RichEmbedInput[] | null
+  allowed_mentions?: null | MessageAllowedMentionsRequestInput
   components?:
     | (
-        | (
-            | ActionRowComponentForMessageRequest
-            | ContainerComponentForMessageRequest
-            | FileComponentForMessageRequest
-            | MediaGalleryComponentForMessageRequest
-            | SectionComponentForMessageRequest
-            | SeparatorComponentForMessageRequest
-            | TextDisplayComponentForMessageRequest
-          )[]
-        | null
-      )
-    | undefined
-  attachments?: (MessageAttachmentRequest[] | null) | undefined
-  poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-  tts?: (boolean | null) | undefined
-  flags?: (number | null) | undefined
-  username?: (string | null) | undefined
-  avatar_url?: (string | null) | undefined
-  thread_name?: (string | null) | undefined
-  applied_tags?: (SnowflakeType[] | null) | undefined
+        | ActionRowComponentForMessageRequestInput
+        | ContainerComponentForMessageRequestInput
+        | FileComponentForMessageRequestInput
+        | MediaGalleryComponentForMessageRequestInput
+        | SectionComponentForMessageRequestInput
+        | SeparatorComponentForMessageRequestInput
+        | TextDisplayComponentForMessageRequestInput
+      )[]
+    | null
+  attachments?: MessageAttachmentRequestInput[] | null
+  poll?: null | PollCreateRequestInput
+  tts?: boolean | null
+  flags?: number | null
+  username?: string | null
+  avatar_url?: string | null
+  thread_name?: string | null
+  applied_tags?: SnowflakeTypeInput[] | null
 }
-type IncomingWebhookUpdateRequestPartial = {
-  content?: (string | null) | undefined
-  embeds?: (RichEmbed[] | null) | undefined
-  allowed_mentions?: ({ [x: string]: unknown } | null) | MessageAllowedMentionsRequest | undefined
+type IncomingWebhookUpdateRequestPartialInput = {
+  content?: string | null
+  embeds?: RichEmbedInput[] | null
+  allowed_mentions?: null | MessageAllowedMentionsRequestInput
   components?:
     | (
-        | (
-            | ActionRowComponentForMessageRequest
-            | ContainerComponentForMessageRequest
-            | FileComponentForMessageRequest
-            | MediaGalleryComponentForMessageRequest
-            | SectionComponentForMessageRequest
-            | SeparatorComponentForMessageRequest
-            | TextDisplayComponentForMessageRequest
-          )[]
-        | null
-      )
-    | undefined
-  attachments?: (MessageAttachmentRequest[] | null) | undefined
-  poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-  flags?: (number | null) | undefined
+        | ActionRowComponentForMessageRequestInput
+        | ContainerComponentForMessageRequestInput
+        | FileComponentForMessageRequestInput
+        | MediaGalleryComponentForMessageRequestInput
+        | SectionComponentForMessageRequestInput
+        | SeparatorComponentForMessageRequestInput
+        | TextDisplayComponentForMessageRequestInput
+      )[]
+    | null
+  attachments?: MessageAttachmentRequestInput[] | null
+  poll?: null | PollCreateRequestInput
+  flags?: number | null
 }
-type GithubUser = { id: number; login: string; html_url: string; avatar_url: string }
-type GithubComment = {
+type GithubUserInput = { id: number; login: string; html_url: string; avatar_url: string }
+type GithubCommentInput = {
   id: number
   html_url: string
-  user: GithubUser
-  commit_id?: (string | null) | undefined
+  user: GithubUserInput
+  commit_id?: string | null
   body: string
 }
-type GithubIssue = {
+type GithubIssueInput = {
   id: number
   number: number
   html_url: string
-  user: GithubUser
+  user: GithubUserInput
   title: string
-  body?: (string | null) | undefined
-  pull_request?: { [x: string]: unknown } | undefined
+  body?: string | null
+  pull_request?: any
 }
-type GithubRepository = { id: number; html_url: string; name: string; full_name: string }
-type GithubRelease = { id: number; tag_name: string; html_url: string; author: GithubUser }
-type GithubAuthor = { username?: (string | null) | undefined; name: string }
-type GithubCommit = { id: string; url: string; message: string; author: GithubAuthor }
-type GithubReview = {
-  user: GithubUser
-  body?: (string | null) | undefined
+type GithubRepositoryInput = { id: number; html_url: string; name: string; full_name: string }
+type GithubReleaseInput = {
+  id: number
+  tag_name: string
+  html_url: string
+  author: GithubUserInput
+}
+type GithubAuthorInput = { username?: string | null; name: string }
+type GithubCommitInput = { id: string; url: string; message: string; author: GithubAuthorInput }
+type GithubReviewInput = {
+  user: GithubUserInput
+  body?: string | null
   html_url: string
   state: string
 }
-type GithubCheckPullRequest = { number: number }
-type GithubCheckApp = { name: string }
-type GithubCheckSuite = {
-  conclusion?: (string | null) | undefined
-  head_branch?: (string | null) | undefined
+type GithubCheckPullRequestInput = { number: number }
+type GithubCheckAppInput = { name: string }
+type GithubCheckSuiteInput = {
+  conclusion?: string | null
+  head_branch?: string | null
   head_sha: string
-  pull_requests?: (GithubCheckPullRequest[] | null) | undefined
-  app: GithubCheckApp
+  pull_requests?: GithubCheckPullRequestInput[] | null
+  app: GithubCheckAppInput
 }
-type GithubCheckRunOutput = {
-  title?: (string | null) | undefined
-  summary?: (string | null) | undefined
-}
-type GithubCheckRun = {
-  conclusion?: (string | null) | undefined
+type GithubCheckRunOutputInput = { title?: string | null; summary?: string | null }
+type GithubCheckRunInput = {
+  conclusion?: string | null
   name: string
   html_url: string
-  check_suite: GithubCheckSuite
-  details_url?: (string | null) | undefined
-  output?: ({ [x: string]: unknown } | null) | GithubCheckRunOutput | undefined
-  pull_requests?: (GithubCheckPullRequest[] | null) | undefined
+  check_suite: GithubCheckSuiteInput
+  details_url?: string | null
+  output?: null | GithubCheckRunOutputInput
+  pull_requests?: GithubCheckPullRequestInput[] | null
 }
-type GithubDiscussion = {
+type GithubDiscussionInput = {
   title: string
   number: number
   html_url: string
-  answer_html_url?: (string | null) | undefined
-  body?: (string | null) | undefined
-  user: GithubUser
+  answer_html_url?: string | null
+  body?: string | null
+  user: GithubUserInput
 }
-type GithubWebhook = {
-  action?: (string | null) | undefined
-  ref?: (string | null) | undefined
-  ref_type?: (string | null) | undefined
-  comment?: ({ [x: string]: unknown } | null) | GithubComment | undefined
-  issue?: ({ [x: string]: unknown } | null) | GithubIssue | undefined
-  pull_request?: ({ [x: string]: unknown } | null) | GithubIssue | undefined
-  repository?: ({ [x: string]: unknown } | null) | GithubRepository | undefined
-  forkee?: ({ [x: string]: unknown } | null) | GithubRepository | undefined
-  sender: GithubUser
-  member?: ({ [x: string]: unknown } | null) | GithubUser | undefined
-  release?: ({ [x: string]: unknown } | null) | GithubRelease | undefined
-  head_commit?: ({ [x: string]: unknown } | null) | GithubCommit | undefined
-  commits?: (GithubCommit[] | null) | undefined
-  forced?: (boolean | null) | undefined
-  compare?: (string | null) | undefined
-  review?: ({ [x: string]: unknown } | null) | GithubReview | undefined
-  check_run?: ({ [x: string]: unknown } | null) | GithubCheckRun | undefined
-  check_suite?: ({ [x: string]: unknown } | null) | GithubCheckSuite | undefined
-  discussion?: ({ [x: string]: unknown } | null) | GithubDiscussion | undefined
-  answer?: ({ [x: string]: unknown } | null) | GithubComment | undefined
+type GithubWebhookInput = {
+  action?: string | null
+  ref?: string | null
+  ref_type?: string | null
+  comment?: null | GithubCommentInput
+  issue?: null | GithubIssueInput
+  pull_request?: null | GithubIssueInput
+  repository?: null | GithubRepositoryInput
+  forkee?: null | GithubRepositoryInput
+  sender: GithubUserInput
+  member?: null | GithubUserInput
+  release?: null | GithubReleaseInput
+  head_commit?: null | GithubCommitInput
+  commits?: GithubCommitInput[] | null
+  forced?: boolean | null
+  compare?: string | null
+  review?: null | GithubReviewInput
+  check_run?: null | GithubCheckRunInput
+  check_suite?: null | GithubCheckSuiteInput
+  discussion?: null | GithubDiscussionInput
+  answer?: null | GithubCommentInput
 }
-type WebhookSlackEmbedField = {
-  name?: (string | null) | undefined
-  value?: (string | null) | undefined
-  inline?: (boolean | null) | undefined
+type WebhookSlackEmbedFieldInput = {
+  name?: string | null
+  value?: string | null
+  inline?: boolean | null
 }
-type WebhookSlackEmbed = {
-  title?: (string | null) | undefined
-  title_link?: (string | null) | undefined
-  text?: (string | null) | undefined
-  color?: (string | null) | undefined
-  ts?: (number | null) | undefined
-  pretext?: (string | null) | undefined
-  footer?: (string | null) | undefined
-  footer_icon?: (string | null) | undefined
-  author_name?: (string | null) | undefined
-  author_link?: (string | null) | undefined
-  author_icon?: (string | null) | undefined
-  image_url?: (string | null) | undefined
-  thumb_url?: (string | null) | undefined
-  fields?: (WebhookSlackEmbedField[] | null) | undefined
+type WebhookSlackEmbedInput = {
+  title?: string | null
+  title_link?: string | null
+  text?: string | null
+  color?: string | null
+  ts?: number | null
+  pretext?: string | null
+  footer?: string | null
+  footer_icon?: string | null
+  author_name?: string | null
+  author_link?: string | null
+  author_icon?: string | null
+  image_url?: string | null
+  thumb_url?: string | null
+  fields?: WebhookSlackEmbedFieldInput[] | null
 }
-type SlackWebhook = {
-  text?: (string | null) | undefined
-  username?: (string | null) | undefined
-  icon_url?: (string | null) | undefined
-  attachments?: (WebhookSlackEmbed[] | null) | undefined
+type SlackWebhookInput = {
+  text?: string | null
+  username?: string | null
+  icon_url?: string | null
+  attachments?: WebhookSlackEmbedInput[] | null
 }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
@@ -4346,19 +4531,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 400 }
       $patch:
         | {
-            input: { json: ApplicationFormPartial }
+            input: { json: ApplicationUpdateFormPartialInput }
             output: PrivateApplicationResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: ApplicationFormPartial }
+            input: { json: ApplicationUpdateFormPartialInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { json: ApplicationFormPartial }
+            input: { json: ApplicationUpdateFormPartialInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4368,38 +4553,44 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: PrivateApplicationResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { application_id: SnowflakeType } } & { json: ApplicationFormPartial }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationUpdateFormPartialInput
+            }
             output: PrivateApplicationResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & { json: ApplicationFormPartial }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationUpdateFormPartialInput
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & { json: ApplicationFormPartial }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationUpdateFormPartialInput
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4409,19 +4600,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/activity-instances/:instance_id': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType; instance_id: string } }
+            input: { param: { application_id: SnowflakeTypeInput; instance_id: string } }
             output: EmbeddedActivityInstance
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; instance_id: string } }
+            input: { param: { application_id: SnowflakeTypeInput; instance_id: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; instance_id: string } }
+            input: { param: { application_id: SnowflakeTypeInput; instance_id: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4431,19 +4622,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/attachment': {
       $post:
         | {
-            input: { param: { application_id: SnowflakeType } } & { form: { file: string } }
+            input: { param: { application_id: SnowflakeTypeInput } } & { form: { file: string } }
             output: ActivitiesAttachmentResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & { form: { file: string } }
+            input: { param: { application_id: SnowflakeTypeInput } } & { form: { file: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & { form: { file: string } }
+            input: { param: { application_id: SnowflakeTypeInput } } & { form: { file: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4453,24 +4644,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/commands': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              query: { with_localizations?: boolean | undefined }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              query: { with_localizations?: string }
             }
             output: ApplicationCommandResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              query: { with_localizations?: boolean | undefined }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              query: { with_localizations?: string }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              query: { with_localizations?: boolean | undefined }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              query: { with_localizations?: string }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -4478,24 +4669,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationCommandUpdateRequest[] | null
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationCommandUpdateRequestInput[] | null
             }
             output: ApplicationCommandResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationCommandUpdateRequest[] | null
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationCommandUpdateRequestInput[] | null
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationCommandUpdateRequest[] | null
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationCommandUpdateRequestInput[] | null
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -4503,32 +4694,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationCommandCreateRequest
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationCommandCreateRequestInput
             }
             output: ApplicationCommandResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationCommandCreateRequest
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationCommandCreateRequestInput
             }
             output: ApplicationCommandResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationCommandCreateRequest
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationCommandCreateRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationCommandCreateRequest
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationCommandCreateRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -4539,63 +4730,63 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/commands/:command_id': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput } }
             output: ApplicationCommandResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } } & {
-              json: ApplicationCommandPatchRequestPartial
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandPatchRequestPartialInput }
             output: ApplicationCommandResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } } & {
-              json: ApplicationCommandPatchRequestPartial
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandPatchRequestPartialInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; command_id: SnowflakeType } } & {
-              json: ApplicationCommandPatchRequestPartial
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; command_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandPatchRequestPartialInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4605,26 +4796,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/emojis': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: ListApplicationEmojisResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
+            input: { param: { application_id: SnowflakeTypeInput } } & {
               json: { name: string; image: string }
             }
             output: EmojiResponse
@@ -4632,7 +4823,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
+            input: { param: { application_id: SnowflakeTypeInput } } & {
               json: { name: string; image: string }
             }
             output: RatelimitedResponse
@@ -4640,7 +4831,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
+            input: { param: { application_id: SnowflakeTypeInput } } & {
               json: { name: string; image: string }
             }
             output: ErrorResponse
@@ -4652,63 +4843,63 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/emojis/:emoji_id': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: EmojiResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } } & {
-              json: { name?: string | undefined }
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput }
+            } & { json: { name?: string } }
             output: EmojiResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } } & {
-              json: { name?: string | undefined }
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput }
+            } & { json: { name?: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; emoji_id: SnowflakeType } } & {
-              json: { name?: string | undefined }
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput }
+            } & { json: { name?: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4718,17 +4909,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/entitlements': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
+            input: { param: { application_id: SnowflakeTypeInput } } & {
               query: {
-                user_id?: SnowflakeType | undefined
-                sku_ids?: string | (({ [x: string]: unknown } | null) | SnowflakeType)[] | undefined
-                guild_id?: SnowflakeType | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                exclude_ended?: boolean | undefined
-                exclude_deleted?: boolean | undefined
-                only_active?: boolean | undefined
+                user_id?: SnowflakeTypeInput
+                sku_ids?: string | (null | SnowflakeTypeInput)[]
+                guild_id?: SnowflakeTypeInput
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                exclude_ended?: string
+                exclude_deleted?: string
+                only_active?: string
               }
             }
             output: EntitlementResponse[]
@@ -4736,17 +4927,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
+            input: { param: { application_id: SnowflakeTypeInput } } & {
               query: {
-                user_id?: SnowflakeType | undefined
-                sku_ids?: string | (({ [x: string]: unknown } | null) | SnowflakeType)[] | undefined
-                guild_id?: SnowflakeType | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                exclude_ended?: boolean | undefined
-                exclude_deleted?: boolean | undefined
-                only_active?: boolean | undefined
+                user_id?: SnowflakeTypeInput
+                sku_ids?: string | (null | SnowflakeTypeInput)[]
+                guild_id?: SnowflakeTypeInput
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                exclude_ended?: string
+                exclude_deleted?: string
+                only_active?: string
               }
             }
             output: RatelimitedResponse
@@ -4754,17 +4945,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
+            input: { param: { application_id: SnowflakeTypeInput } } & {
               query: {
-                user_id?: SnowflakeType | undefined
-                sku_ids?: string | (({ [x: string]: unknown } | null) | SnowflakeType)[] | undefined
-                guild_id?: SnowflakeType | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                exclude_ended?: boolean | undefined
-                exclude_deleted?: boolean | undefined
-                only_active?: boolean | undefined
+                user_id?: SnowflakeTypeInput
+                sku_ids?: string | (null | SnowflakeTypeInput)[]
+                guild_id?: SnowflakeTypeInput
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                exclude_ended?: string
+                exclude_deleted?: string
+                only_active?: string
               }
             }
             output: ErrorResponse
@@ -4773,24 +4964,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: CreateEntitlementRequestData
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: CreateEntitlementRequestDataInput
             }
             output: EntitlementResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: CreateEntitlementRequestData
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: CreateEntitlementRequestDataInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: CreateEntitlementRequestData
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: CreateEntitlementRequestDataInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -4801,38 +4992,50 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/entitlements/:entitlement_id': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: EntitlementResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4842,19 +5045,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/entitlements/:entitlement_id/consume': {
       $post:
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; entitlement_id: SnowflakeType } }
+            input: {
+              param: { application_id: SnowflakeTypeInput; entitlement_id: SnowflakeTypeInput }
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4864,83 +5073,83 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/guilds/:guild_id/commands': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              query: { with_localizations?: boolean | undefined }
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { query: { with_localizations?: string } }
             output: ApplicationCommandResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              query: { with_localizations?: boolean | undefined }
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { query: { with_localizations?: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              query: { with_localizations?: boolean | undefined }
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { query: { with_localizations?: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $put:
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              json: ApplicationCommandUpdateRequest[] | null
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandUpdateRequestInput[] | null }
             output: ApplicationCommandResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              json: ApplicationCommandUpdateRequest[] | null
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandUpdateRequestInput[] | null }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              json: ApplicationCommandUpdateRequest[] | null
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandUpdateRequestInput[] | null }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              json: ApplicationCommandCreateRequest
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandCreateRequestInput }
             output: ApplicationCommandResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              json: ApplicationCommandCreateRequest
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandCreateRequestInput }
             output: ApplicationCommandResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              json: ApplicationCommandCreateRequest
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandCreateRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } } & {
-              json: ApplicationCommandCreateRequest
-            }
+            input: {
+              param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput }
+            } & { json: ApplicationCommandCreateRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4950,19 +5159,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/guilds/:guild_id/commands/permissions': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput } }
             output: CommandPermissionsResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType; guild_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput; guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -4974,9 +5183,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: ApplicationCommandResponse
@@ -4986,9 +5195,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -4998,9 +5207,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -5011,9 +5220,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: {}
@@ -5023,9 +5232,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -5035,9 +5244,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -5048,11 +5257,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
-            } & { json: ApplicationCommandPatchRequestPartial }
+            } & { json: ApplicationCommandPatchRequestPartialInput }
             output: ApplicationCommandResponse
             outputFormat: 'json'
             status: 200
@@ -5060,11 +5269,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
-            } & { json: ApplicationCommandPatchRequestPartial }
+            } & { json: ApplicationCommandPatchRequestPartialInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
@@ -5072,11 +5281,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
-            } & { json: ApplicationCommandPatchRequestPartial }
+            } & { json: ApplicationCommandPatchRequestPartialInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -5088,9 +5297,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: CommandPermissionsResponse
@@ -5100,9 +5309,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -5112,9 +5321,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -5125,11 +5334,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
-            } & { json: { permissions?: (ApplicationCommandPermission[] | null) | undefined } }
+            } & { json: { permissions?: ApplicationCommandPermissionInput[] | null } }
             output: CommandPermissionsResponse
             outputFormat: 'json'
             status: 200
@@ -5137,11 +5346,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
-            } & { json: { permissions?: (ApplicationCommandPermission[] | null) | undefined } }
+            } & { json: { permissions?: ApplicationCommandPermissionInput[] | null } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
@@ -5149,11 +5358,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                application_id: SnowflakeType
-                guild_id: SnowflakeType
-                command_id: SnowflakeType
+                application_id: SnowflakeTypeInput
+                guild_id: SnowflakeTypeInput
+                command_id: SnowflakeTypeInput
               }
-            } & { json: { permissions?: (ApplicationCommandPermission[] | null) | undefined } }
+            } & { json: { permissions?: ApplicationCommandPermissionInput[] | null } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -5163,43 +5372,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/applications/:application_id/role-connections/metadata': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: ApplicationRoleConnectionsMetadataItemResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $put:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationRoleConnectionsMetadataItemRequest[] | null
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationRoleConnectionsMetadataItemRequestInput[] | null
             }
             output: ApplicationRoleConnectionsMetadataItemResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationRoleConnectionsMetadataItemRequest[] | null
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationRoleConnectionsMetadataItemRequestInput[] | null
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: ApplicationRoleConnectionsMetadataItemRequest[] | null
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: ApplicationRoleConnectionsMetadataItemRequestInput[] | null
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -5210,7 +5419,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output:
               | GuildChannelResponse
               | PrivateChannelResponse
@@ -5220,20 +5429,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output:
               | GuildChannelResponse
               | PrivateChannelResponse
@@ -5243,25 +5452,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               json:
-                | UpdateDMRequestPartial
-                | UpdateGroupDMRequestPartial
-                | UpdateGuildChannelRequestPartial
-                | UpdateThreadRequestPartial
+                | UpdateDMRequestPartialInput
+                | UpdateGroupDMRequestPartialInput
+                | UpdateGuildChannelRequestPartialInput
+                | UpdateThreadRequestPartialInput
             }
             output:
               | GuildChannelResponse
@@ -5272,24 +5481,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               json:
-                | UpdateDMRequestPartial
-                | UpdateGroupDMRequestPartial
-                | UpdateGuildChannelRequestPartial
-                | UpdateThreadRequestPartial
+                | UpdateDMRequestPartialInput
+                | UpdateGroupDMRequestPartialInput
+                | UpdateGuildChannelRequestPartialInput
+                | UpdateThreadRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               json:
-                | UpdateDMRequestPartial
-                | UpdateGroupDMRequestPartial
-                | UpdateGuildChannelRequestPartial
-                | UpdateThreadRequestPartial
+                | UpdateDMRequestPartialInput
+                | UpdateGroupDMRequestPartialInput
+                | UpdateGuildChannelRequestPartialInput
+                | UpdateThreadRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -5300,24 +5509,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/followers': {
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { webhook_channel_id: SnowflakeType }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { webhook_channel_id: SnowflakeTypeInput }
             }
             output: ChannelFollowerResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { webhook_channel_id: SnowflakeType }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { webhook_channel_id: SnowflakeTypeInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { webhook_channel_id: SnowflakeType }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { webhook_channel_id: SnowflakeTypeInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -5328,78 +5537,77 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/invites': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output:
-              | (
-                  | FriendInviteResponse
-                  | GroupDMInviteResponse
-                  | GuildInviteResponse
-                  | ({ [x: string]: unknown } | null)
-                )[]
+              | (FriendInviteResponse | GroupDMInviteResponse | GuildInviteResponse | null)[]
               | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: CreateGroupDMInviteRequest | CreateGuildInviteRequest
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput
             } & {
               form:
-                | CreateGroupDMInviteRequest
-                | CreateGuildInviteRequest
-                | { target_users_file?: string | undefined }
+                | (CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput)
+                | ((CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput) & {
+                    target_users_file?: string
+                  })
             }
             output: FriendInviteResponse | GroupDMInviteResponse | GuildInviteResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: CreateGroupDMInviteRequest | CreateGuildInviteRequest
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput
             } & {
               form:
-                | CreateGroupDMInviteRequest
-                | CreateGuildInviteRequest
-                | { target_users_file?: string | undefined }
+                | (CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput)
+                | ((CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput) & {
+                    target_users_file?: string
+                  })
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: CreateGroupDMInviteRequest | CreateGuildInviteRequest
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput
             } & {
               form:
-                | CreateGroupDMInviteRequest
-                | CreateGuildInviteRequest
-                | { target_users_file?: string | undefined }
+                | (CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput)
+                | ((CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput) & {
+                    target_users_file?: string
+                  })
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: CreateGroupDMInviteRequest | CreateGuildInviteRequest
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput
             } & {
               form:
-                | CreateGroupDMInviteRequest
-                | CreateGuildInviteRequest
-                | { target_users_file?: string | undefined }
+                | (CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput)
+                | ((CreateGroupDMInviteRequestInput | CreateGuildInviteRequestInput) & {
+                    target_users_file?: string
+                  })
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -5410,12 +5618,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/messages': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               query: {
-                around?: SnowflakeType | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
+                around?: SnowflakeTypeInput
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
               }
             }
             output: MessageResponse[] | null
@@ -5423,12 +5631,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               query: {
-                around?: SnowflakeType | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
+                around?: SnowflakeTypeInput
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
               }
             }
             output: RatelimitedResponse
@@ -5436,12 +5644,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               query: {
-                around?: SnowflakeType | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
+                around?: SnowflakeTypeInput
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
               }
             }
             output: ErrorResponse
@@ -5450,168 +5658,69 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType } } & { json: MessageCreateRequest } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: MessageCreateRequestInput
+            } & {
               form:
-                | MessageCreateRequest
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    sticker_ids?: (SnowflakeType[] | null) | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    flags?: (number | null) | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    shared_client_theme?:
-                      | ({ [x: string]: unknown } | null)
-                      | CustomClientThemeShareRequest
-                      | undefined
-                    message_reference?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageReferenceRequest
-                      | undefined
-                    nonce?: bigint | string | ({ [x: string]: unknown } | null) | undefined
-                    enforce_nonce?: (boolean | null) | undefined
-                    tts?: (boolean | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | MessageCreateRequestInput
+                | (MessageCreateRequestInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & { json: MessageCreateRequest } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: MessageCreateRequestInput
+            } & {
               form:
-                | MessageCreateRequest
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    sticker_ids?: (SnowflakeType[] | null) | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    flags?: (number | null) | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    shared_client_theme?:
-                      | ({ [x: string]: unknown } | null)
-                      | CustomClientThemeShareRequest
-                      | undefined
-                    message_reference?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageReferenceRequest
-                      | undefined
-                    nonce?: bigint | string | ({ [x: string]: unknown } | null) | undefined
-                    enforce_nonce?: (boolean | null) | undefined
-                    tts?: (boolean | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | MessageCreateRequestInput
+                | (MessageCreateRequestInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & { json: MessageCreateRequest } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: MessageCreateRequestInput
+            } & {
               form:
-                | MessageCreateRequest
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    sticker_ids?: (SnowflakeType[] | null) | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    flags?: (number | null) | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    shared_client_theme?:
-                      | ({ [x: string]: unknown } | null)
-                      | CustomClientThemeShareRequest
-                      | undefined
-                    message_reference?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageReferenceRequest
-                      | undefined
-                    nonce?: bigint | string | ({ [x: string]: unknown } | null) | undefined
-                    enforce_nonce?: (boolean | null) | undefined
-                    tts?: (boolean | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | MessageCreateRequestInput
+                | (MessageCreateRequestInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -5622,24 +5731,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/messages/bulk-delete': {
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { messages: SnowflakeType[] }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { messages: SnowflakeTypeInput[] }
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { messages: SnowflakeType[] }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { messages: SnowflakeTypeInput[] }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { messages: SnowflakeType[] }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { messages: SnowflakeTypeInput[] }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -5650,24 +5759,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/messages/pins': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: PinnedMessagesResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -5678,38 +5787,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/messages/pins/:message_id': {
       $put:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -5719,176 +5828,107 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/messages/:message_id': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: MessageEditRequestPartial
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: MessageEditRequestPartialInput
             } & {
               form:
-                | MessageEditRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    flags?: (number | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    sticker_ids?: (SnowflakeType[] | null) | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | MessageEditRequestPartialInput
+                | (MessageEditRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: MessageEditRequestPartial
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: MessageEditRequestPartialInput
             } & {
               form:
-                | MessageEditRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    flags?: (number | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    sticker_ids?: (SnowflakeType[] | null) | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | MessageEditRequestPartialInput
+                | (MessageEditRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: MessageEditRequestPartial
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: MessageEditRequestPartialInput
             } & {
               form:
-                | MessageEditRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    flags?: (number | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    sticker_ids?: (SnowflakeType[] | null) | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | MessageEditRequestPartialInput
+                | (MessageEditRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -5899,19 +5939,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/messages/:message_id/crosspost': {
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -5921,19 +5961,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/messages/:message_id/reactions': {
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -5944,42 +5984,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
-            } & {
-              query: {
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                type?: ReactionTypes | undefined
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
               }
-            }
+            } & { query: { after?: SnowflakeTypeInput; limit?: unknown; type?: unknown } }
             output: UserResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
-            } & {
-              query: {
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                type?: ReactionTypes | undefined
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
               }
-            }
+            } & { query: { after?: SnowflakeTypeInput; limit?: unknown; type?: unknown } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
-            } & {
-              query: {
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                type?: ReactionTypes | undefined
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
               }
-            }
+            } & { query: { after?: SnowflakeTypeInput; limit?: unknown; type?: unknown } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -5987,7 +6021,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: {}
             outputFormat: string
@@ -5995,7 +6033,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
@@ -6003,7 +6045,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6015,7 +6061,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: {}
             outputFormat: string
@@ -6023,7 +6073,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
@@ -6031,7 +6085,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6040,7 +6098,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: {}
             outputFormat: string
@@ -6048,7 +6110,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
@@ -6056,7 +6122,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; emoji_name: string }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                emoji_name: string
+              }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6069,10 +6139,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                channel_id: SnowflakeType
-                message_id: SnowflakeType
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
                 emoji_name: string
-                user_id: SnowflakeType
+                user_id: SnowflakeTypeInput
               }
             }
             output: {}
@@ -6082,10 +6152,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                channel_id: SnowflakeType
-                message_id: SnowflakeType
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
                 emoji_name: string
-                user_id: SnowflakeType
+                user_id: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -6095,10 +6165,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                channel_id: SnowflakeType
-                message_id: SnowflakeType
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
                 emoji_name: string
-                user_id: SnowflakeType
+                user_id: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -6110,24 +6180,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/messages/:message_id/threads': {
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: CreateTextThreadWithMessageRequest
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: CreateTextThreadWithMessageRequestInput
             }
             output: ThreadResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: CreateTextThreadWithMessageRequest
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: CreateTextThreadWithMessageRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: CreateTextThreadWithMessageRequest
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: CreateTextThreadWithMessageRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6138,24 +6208,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/permissions/member/:user_id': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              query: { implicit?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              query: { implicit?: string }
             }
             output: PermissionsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              query: { implicit?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              query: { implicit?: string }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              query: { implicit?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              query: { implicit?: string }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6166,24 +6236,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/permissions/role/:role_id': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType; role_id: SnowflakeType } } & {
-              query: { implicit?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } } & {
+              query: { implicit?: string }
             }
             output: PermissionsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType; role_id: SnowflakeType } } & {
-              query: { implicit?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } } & {
+              query: { implicit?: string }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; role_id: SnowflakeType } } & {
-              query: { implicit?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } } & {
+              query: { implicit?: string }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6194,11 +6264,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/permissions/:overwrite_id': {
       $put:
         | {
-            input: { param: { channel_id: SnowflakeType; overwrite_id: SnowflakeType } } & {
+            input: {
+              param: { channel_id: SnowflakeTypeInput; overwrite_id: SnowflakeTypeInput }
+            } & {
               json: {
-                type?: ({ [x: string]: unknown } | null) | ChannelPermissionOverwrites | undefined
-                allow?: (number | null) | undefined
-                deny?: (number | null) | undefined
+                type?: null | ChannelPermissionOverwritesInput
+                allow?: number | null
+                deny?: number | null
               }
             }
             output: {}
@@ -6206,11 +6278,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; overwrite_id: SnowflakeType } } & {
+            input: {
+              param: { channel_id: SnowflakeTypeInput; overwrite_id: SnowflakeTypeInput }
+            } & {
               json: {
-                type?: ({ [x: string]: unknown } | null) | ChannelPermissionOverwrites | undefined
-                allow?: (number | null) | undefined
-                deny?: (number | null) | undefined
+                type?: null | ChannelPermissionOverwritesInput
+                allow?: number | null
+                deny?: number | null
               }
             }
             output: RatelimitedResponse
@@ -6218,11 +6292,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; overwrite_id: SnowflakeType } } & {
+            input: {
+              param: { channel_id: SnowflakeTypeInput; overwrite_id: SnowflakeTypeInput }
+            } & {
               json: {
-                type?: ({ [x: string]: unknown } | null) | ChannelPermissionOverwrites | undefined
-                allow?: (number | null) | undefined
-                deny?: (number | null) | undefined
+                type?: null | ChannelPermissionOverwritesInput
+                allow?: number | null
+                deny?: number | null
               }
             }
             output: ErrorResponse
@@ -6231,19 +6307,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType; overwrite_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; overwrite_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; overwrite_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; overwrite_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; overwrite_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; overwrite_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6253,19 +6329,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/pins': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: MessageResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6275,38 +6351,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/pins/:message_id': {
       $put:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6317,24 +6393,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; answer_id: number }
-            } & { query: { after?: SnowflakeType | undefined; limit?: number | undefined } }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                answer_id: unknown
+              }
+            } & { query: { after?: SnowflakeTypeInput; limit?: unknown } }
             output: PollAnswerDetailsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; answer_id: number }
-            } & { query: { after?: SnowflakeType | undefined; limit?: number | undefined } }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                answer_id: unknown
+              }
+            } & { query: { after?: SnowflakeTypeInput; limit?: unknown } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
             input: {
-              param: { channel_id: SnowflakeType; message_id: SnowflakeType; answer_id: number }
-            } & { query: { after?: SnowflakeType | undefined; limit?: number | undefined } }
+              param: {
+                channel_id: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
+                answer_id: unknown
+              }
+            } & { query: { after?: SnowflakeTypeInput; limit?: unknown } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6344,19 +6432,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/polls/:message_id/expire': {
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; message_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6366,44 +6454,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/recipients/:user_id': {
       $put:
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: {
-                access_token?: (string | null) | undefined
-                nick?: (string | null) | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: { access_token?: string | null; nick?: string | null }
             }
             output: PrivateChannelResponse | PrivateGroupChannelResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: {
-                access_token?: (string | null) | undefined
-                nick?: (string | null) | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: { access_token?: string | null; nick?: string | null }
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: {
-                access_token?: (string | null) | undefined
-                nick?: (string | null) | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: { access_token?: string | null; nick?: string | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: {
-                access_token?: (string | null) | undefined
-                nick?: (string | null) | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: { access_token?: string | null; nick?: string | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6411,19 +6487,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6433,19 +6509,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/send-soundboard-sound': {
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType } } & { json: SoundboardSoundSendRequest }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: SoundboardSoundSendRequestInput
+            }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & { json: SoundboardSoundSendRequest }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: SoundboardSoundSendRequestInput
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & { json: SoundboardSoundSendRequest }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: SoundboardSoundSendRequestInput
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6455,36 +6537,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/thread-members': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                after?: SnowflakeType | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { with_member?: string; limit?: unknown; after?: SnowflakeTypeInput }
             }
             output: ThreadMemberResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                after?: SnowflakeType | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { with_member?: string; limit?: unknown; after?: SnowflakeTypeInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                after?: SnowflakeType | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { with_member?: string; limit?: unknown; after?: SnowflakeTypeInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6495,38 +6565,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/thread-members/@me': {
       $put:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6536,24 +6606,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/thread-members/:user_id': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              query: { with_member?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              query: { with_member?: string }
             }
             output: ThreadMemberResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              query: { with_member?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              query: { with_member?: string }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } } & {
-              query: { with_member?: boolean | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              query: { with_member?: string }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6561,38 +6631,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6602,25 +6672,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/threads': {
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: CreateForumThreadRequest | CreateTextThreadWithoutMessageRequest
-            } & { form: CreateForumThreadRequest | CreateTextThreadWithoutMessageRequest }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: CreateForumThreadRequestInput | CreateTextThreadWithoutMessageRequestInput
+            } & { form: CreateForumThreadRequestInput | CreateTextThreadWithoutMessageRequestInput }
             output: CreatedThreadResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: CreateForumThreadRequest | CreateTextThreadWithoutMessageRequest
-            } & { form: CreateForumThreadRequest | CreateTextThreadWithoutMessageRequest }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: CreateForumThreadRequestInput | CreateTextThreadWithoutMessageRequestInput
+            } & { form: CreateForumThreadRequestInput | CreateTextThreadWithoutMessageRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: CreateForumThreadRequest | CreateTextThreadWithoutMessageRequest
-            } & { form: CreateForumThreadRequest | CreateTextThreadWithoutMessageRequest }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: CreateForumThreadRequestInput | CreateTextThreadWithoutMessageRequestInput
+            } & { form: CreateForumThreadRequestInput | CreateTextThreadWithoutMessageRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6630,24 +6700,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/threads/archived/private': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: ThreadsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6658,24 +6728,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/threads/archived/public': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: ThreadsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: string | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: string; limit?: unknown }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6686,19 +6756,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/threads/search': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               query: {
-                name?: string | undefined
-                slop?: number | undefined
-                min_id?: SnowflakeType | undefined
-                max_id?: SnowflakeType | undefined
-                tag?: string | SnowflakeType[] | undefined
-                tag_setting?: ThreadSearchTagSetting | undefined
-                archived?: boolean | undefined
-                sort_by?: ThreadSortingMode | undefined
-                sort_order?: SortingOrder | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                name?: string
+                slop?: unknown
+                min_id?: SnowflakeTypeInput
+                max_id?: SnowflakeTypeInput
+                tag?: string | SnowflakeTypeInput[]
+                tag_setting?: ThreadSearchTagSettingInput
+                archived?: string
+                sort_by?: ThreadSortingModeInput
+                sort_order?: SortingOrderInput
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ThreadSearchResponse
@@ -6706,19 +6776,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               query: {
-                name?: string | undefined
-                slop?: number | undefined
-                min_id?: SnowflakeType | undefined
-                max_id?: SnowflakeType | undefined
-                tag?: string | SnowflakeType[] | undefined
-                tag_setting?: ThreadSearchTagSetting | undefined
-                archived?: boolean | undefined
-                sort_by?: ThreadSortingMode | undefined
-                sort_order?: SortingOrder | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                name?: string
+                slop?: unknown
+                min_id?: SnowflakeTypeInput
+                max_id?: SnowflakeTypeInput
+                tag?: string | SnowflakeTypeInput[]
+                tag_setting?: ThreadSearchTagSettingInput
+                archived?: string
+                sort_by?: ThreadSortingModeInput
+                sort_order?: SortingOrderInput
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: SearchIndexNotReadyResponse
@@ -6726,19 +6796,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 202
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               query: {
-                name?: string | undefined
-                slop?: number | undefined
-                min_id?: SnowflakeType | undefined
-                max_id?: SnowflakeType | undefined
-                tag?: string | SnowflakeType[] | undefined
-                tag_setting?: ThreadSearchTagSetting | undefined
-                archived?: boolean | undefined
-                sort_by?: ThreadSortingMode | undefined
-                sort_order?: SortingOrder | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                name?: string
+                slop?: unknown
+                min_id?: SnowflakeTypeInput
+                max_id?: SnowflakeTypeInput
+                tag?: string | SnowflakeTypeInput[]
+                tag_setting?: ThreadSearchTagSettingInput
+                archived?: string
+                sort_by?: ThreadSortingModeInput
+                sort_order?: SortingOrderInput
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: RatelimitedResponse
@@ -6746,19 +6816,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
               query: {
-                name?: string | undefined
-                slop?: number | undefined
-                min_id?: SnowflakeType | undefined
-                max_id?: SnowflakeType | undefined
-                tag?: string | SnowflakeType[] | undefined
-                tag_setting?: ThreadSearchTagSetting | undefined
-                archived?: boolean | undefined
-                sort_by?: ThreadSortingMode | undefined
-                sort_order?: SortingOrder | undefined
-                limit?: number | undefined
-                offset?: number | undefined
+                name?: string
+                slop?: unknown
+                min_id?: SnowflakeTypeInput
+                max_id?: SnowflakeTypeInput
+                tag?: string | SnowflakeTypeInput[]
+                tag_setting?: ThreadSearchTagSettingInput
+                archived?: string
+                sort_by?: ThreadSortingModeInput
+                sort_order?: SortingOrderInput
+                limit?: unknown
+                offset?: unknown
               }
             }
             output: ErrorResponse
@@ -6770,25 +6840,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/typing': {
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: TypingIndicatorResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6798,24 +6868,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/users/@me/threads/archived/private': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: SnowflakeType | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: SnowflakeTypeInput; limit?: unknown }
             }
             output: ThreadsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: SnowflakeType | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: SnowflakeTypeInput; limit?: unknown }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              query: { before?: SnowflakeType | undefined; limit?: number | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              query: { before?: SnowflakeTypeInput; limit?: unknown }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6826,24 +6896,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/voice-status': {
       $put:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { status?: (string | null) | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { status?: string | null }
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { status?: (string | null) | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { status?: string | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { status?: (string | null) | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { status?: string | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6854,7 +6924,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/channels/:channel_id/webhooks': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output:
               | (
                   | ApplicationIncomingWebhookResponse
@@ -6866,37 +6936,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { name: string; avatar?: (string | null) | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { name: string; avatar?: string | null }
             }
             output: GuildIncomingWebhookResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { name: string; avatar?: (string | null) | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { name: string; avatar?: string | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: { name: string; avatar?: (string | null) | undefined }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { name: string; avatar?: string | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -6943,44 +7013,44 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { with_counts?: boolean | undefined }
-            }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { query: { with_counts?: string } }
             output: GuildWithCountsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { with_counts?: boolean | undefined }
-            }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { query: { with_counts?: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { with_counts?: boolean | undefined }
-            }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { query: { with_counts?: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: GuildPatchRequestPartial }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: GuildPatchRequestPartialInput
+            }
             output: GuildResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: GuildPatchRequestPartial }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: GuildPatchRequestPartialInput
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: GuildPatchRequestPartial }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: GuildPatchRequestPartialInput
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -6990,14 +7060,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/audit-logs': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                user_id?: SnowflakeType | undefined
-                target_id?: SnowflakeType | undefined
-                action_type?: AuditLogActionTypes | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
+                user_id?: SnowflakeTypeInput
+                target_id?: SnowflakeTypeInput
+                action_type?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
               }
             }
             output: GuildAuditLogResponse
@@ -7005,14 +7075,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                user_id?: SnowflakeType | undefined
-                target_id?: SnowflakeType | undefined
-                action_type?: AuditLogActionTypes | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
+                user_id?: SnowflakeTypeInput
+                target_id?: SnowflakeTypeInput
+                action_type?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
               }
             }
             output: RatelimitedResponse
@@ -7020,14 +7090,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                user_id?: SnowflakeType | undefined
-                target_id?: SnowflakeType | undefined
-                action_type?: AuditLogActionTypes | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
+                user_id?: SnowflakeTypeInput
+                target_id?: SnowflakeTypeInput
+                action_type?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
               }
             }
             output: ErrorResponse
@@ -7039,7 +7109,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/auto-moderation/rules': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output:
               | (
                   | DefaultKeywordRuleResponse
@@ -7047,33 +7117,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | MLSpamRuleResponse
                   | MentionSpamRuleResponse
                   | UserProfileRuleResponse
-                  | ({ [x: string]: unknown } | null)
+                  | null
                 )[]
               | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json:
-                | DefaultKeywordListUpsertRequest
-                | KeywordUpsertRequest
-                | MLSpamUpsertRequest
-                | MentionSpamUpsertRequest
-                | UserProfileUpsertRequest
+                | DefaultKeywordListUpsertRequestInput
+                | KeywordUpsertRequestInput
+                | MLSpamUpsertRequestInput
+                | MentionSpamUpsertRequestInput
+                | UserProfileUpsertRequestInput
             }
             output:
               | DefaultKeywordRuleResponse
@@ -7085,26 +7155,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json:
-                | DefaultKeywordListUpsertRequest
-                | KeywordUpsertRequest
-                | MLSpamUpsertRequest
-                | MentionSpamUpsertRequest
-                | UserProfileUpsertRequest
+                | DefaultKeywordListUpsertRequestInput
+                | KeywordUpsertRequestInput
+                | MLSpamUpsertRequestInput
+                | MentionSpamUpsertRequestInput
+                | UserProfileUpsertRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json:
-                | DefaultKeywordListUpsertRequest
-                | KeywordUpsertRequest
-                | MLSpamUpsertRequest
-                | MentionSpamUpsertRequest
-                | UserProfileUpsertRequest
+                | DefaultKeywordListUpsertRequestInput
+                | KeywordUpsertRequestInput
+                | MLSpamUpsertRequestInput
+                | MentionSpamUpsertRequestInput
+                | UserProfileUpsertRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7115,7 +7185,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/auto-moderation/rules/:rule_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } }
             output:
               | DefaultKeywordRuleResponse
               | KeywordRuleResponse
@@ -7126,45 +7196,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } } & {
               json:
-                | DefaultKeywordListUpsertRequestPartial
-                | KeywordUpsertRequestPartial
-                | MLSpamUpsertRequestPartial
-                | MentionSpamUpsertRequestPartial
-                | UserProfileUpsertRequestPartial
+                | DefaultKeywordListUpsertRequestPartialInput
+                | KeywordUpsertRequestPartialInput
+                | MLSpamUpsertRequestPartialInput
+                | MentionSpamUpsertRequestPartialInput
+                | UserProfileUpsertRequestPartialInput
             }
             output:
               | DefaultKeywordRuleResponse
@@ -7176,26 +7246,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } } & {
               json:
-                | DefaultKeywordListUpsertRequestPartial
-                | KeywordUpsertRequestPartial
-                | MLSpamUpsertRequestPartial
-                | MentionSpamUpsertRequestPartial
-                | UserProfileUpsertRequestPartial
+                | DefaultKeywordListUpsertRequestPartialInput
+                | KeywordUpsertRequestPartialInput
+                | MLSpamUpsertRequestPartialInput
+                | MentionSpamUpsertRequestPartialInput
+                | UserProfileUpsertRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; rule_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput; rule_id: SnowflakeTypeInput } } & {
               json:
-                | DefaultKeywordListUpsertRequestPartial
-                | KeywordUpsertRequestPartial
-                | MLSpamUpsertRequestPartial
-                | MentionSpamUpsertRequestPartial
-                | UserProfileUpsertRequestPartial
+                | DefaultKeywordListUpsertRequestPartialInput
+                | KeywordUpsertRequestPartialInput
+                | MLSpamUpsertRequestPartialInput
+                | MentionSpamUpsertRequestPartialInput
+                | UserProfileUpsertRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7206,36 +7276,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/bans': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: {
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; before?: SnowflakeTypeInput; after?: SnowflakeTypeInput }
             }
             output: GuildBanResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: {
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; before?: SnowflakeTypeInput; after?: SnowflakeTypeInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: {
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; before?: SnowflakeTypeInput; after?: SnowflakeTypeInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7246,43 +7304,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/bans/:user_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: GuildBanResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $put:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: BanUserFromGuildRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: BanUserFromGuildRequestInput
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: BanUserFromGuildRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: BanUserFromGuildRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: BanUserFromGuildRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: BanUserFromGuildRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7290,24 +7348,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: UnbanUserFromGuildRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: UnbanUserFromGuildRequestInput
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: UnbanUserFromGuildRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: UnbanUserFromGuildRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: UnbanUserFromGuildRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: UnbanUserFromGuildRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7318,19 +7376,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/bulk-ban': {
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: BulkBanUsersRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: BulkBanUsersRequestInput }
             output: BulkBanUsersResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: BulkBanUsersRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: BulkBanUsersRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: BulkBanUsersRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: BulkBanUsersRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -7340,7 +7398,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/channels': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output:
               | (
                   | GuildChannelResponse
@@ -7353,44 +7411,50 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: CreateGuildChannelRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: CreateGuildChannelRequestInput
+            }
             output: GuildChannelResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: CreateGuildChannelRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: CreateGuildChannelRequestInput
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: CreateGuildChannelRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: CreateGuildChannelRequestInput
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json: {
-                id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                position?: (number | null) | undefined
-                parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                lock_permissions?: (boolean | null) | undefined
+                id?: null | SnowflakeTypeInput
+                position?: number | null
+                parent_id?: null | SnowflakeTypeInput
+                lock_permissions?: boolean | null
               }[]
             }
             output: {}
@@ -7398,12 +7462,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json: {
-                id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                position?: (number | null) | undefined
-                parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                lock_permissions?: (boolean | null) | undefined
+                id?: null | SnowflakeTypeInput
+                position?: number | null
+                parent_id?: null | SnowflakeTypeInput
+                lock_permissions?: boolean | null
               }[]
             }
             output: RatelimitedResponse
@@ -7411,12 +7475,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json: {
-                id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                position?: (number | null) | undefined
-                parent_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                lock_permissions?: (boolean | null) | undefined
+                id?: null | SnowflakeTypeInput
+                position?: number | null
+                parent_id?: null | SnowflakeTypeInput
+                lock_permissions?: boolean | null
               }[]
             }
             output: ErrorResponse
@@ -7428,55 +7492,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/emojis': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: EmojiResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: {
-                name: string
-                image: string
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { name: string; image: string; roles?: (null | SnowflakeTypeInput)[] | null }
             }
             output: EmojiResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: {
-                name: string
-                image: string
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { name: string; image: string; roles?: (null | SnowflakeTypeInput)[] | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: {
-                name: string
-                image: string
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { name: string; image: string; roles?: (null | SnowflakeTypeInput)[] | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7487,71 +7539,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/emojis/:emoji_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: EmojiResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } } & {
-              json: {
-                name?: string | undefined
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } } & {
+              json: { name?: string; roles?: (null | SnowflakeTypeInput)[] | null }
             }
             output: EmojiResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } } & {
-              json: {
-                name?: string | undefined
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } } & {
+              json: { name?: string; roles?: (null | SnowflakeTypeInput)[] | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; emoji_id: SnowflakeType } } & {
-              json: {
-                name?: string | undefined
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput; emoji_id: SnowflakeTypeInput } } & {
+              json: { name?: string; roles?: (null | SnowflakeTypeInput)[] | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7562,19 +7605,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/incident-actions': {
       $put:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: GuildIncidentActionsRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: GuildIncidentActionsRequestInput
+            }
             output: GuildIncidentsDataResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: GuildIncidentActionsRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: GuildIncidentActionsRequestInput
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: GuildIncidentActionsRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: GuildIncidentActionsRequestInput
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -7584,7 +7633,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/integrations': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output:
               | (
                   | DiscordIntegrationResponse
@@ -7596,13 +7645,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -7612,19 +7661,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/integrations/:integration_id': {
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; integration_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; integration_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; integration_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; integration_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; integration_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; integration_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -7634,26 +7683,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/invites': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output:
-              | (
-                  | FriendInviteResponse
-                  | GroupDMInviteResponse
-                  | GuildInviteResponse
-                  | ({ [x: string]: unknown } | null)
-                )[]
+              | (FriendInviteResponse | GroupDMInviteResponse | GuildInviteResponse | null)[]
               | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -7663,24 +7707,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/members': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { limit?: number | undefined; after?: SnowflakeType | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; after?: SnowflakeTypeInput }
             }
             output: GuildMemberResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { limit?: number | undefined; after?: SnowflakeType | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; after?: SnowflakeTypeInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { limit?: number | undefined; after?: SnowflakeType | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; after?: SnowflakeTypeInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7691,12 +7735,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/members/@me': {
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json: {
-                nick?: (string | null) | undefined
-                avatar?: (string | null) | undefined
-                bio?: (string | null) | undefined
-                banner?: (string | null) | undefined
+                nick?: string | null
+                avatar?: string | null
+                bio?: string | null
+                banner?: string | null
               }
             }
             output: PrivateGuildMemberResponse
@@ -7704,12 +7748,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json: {
-                nick?: (string | null) | undefined
-                avatar?: (string | null) | undefined
-                bio?: (string | null) | undefined
-                banner?: (string | null) | undefined
+                nick?: string | null
+                avatar?: string | null
+                bio?: string | null
+                banner?: string | null
               }
             }
             output: RatelimitedResponse
@@ -7717,12 +7761,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json: {
-                nick?: (string | null) | undefined
-                avatar?: (string | null) | undefined
-                bio?: (string | null) | undefined
-                banner?: (string | null) | undefined
+                nick?: string | null
+                avatar?: string | null
+                bio?: string | null
+                banner?: string | null
               }
             }
             output: ErrorResponse
@@ -7734,24 +7778,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/members/search': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { limit?: number | undefined; query: string }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; query: string }
             }
             output: GuildMemberResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { limit?: number | undefined; query: string }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; query: string }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { limit?: number | undefined; query: string }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { limit?: unknown; query: string }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7762,51 +7806,51 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/members/:user_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: GuildMemberResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $put:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: BotAddGuildMemberRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: BotAddGuildMemberRequestInput
             }
             output: GuildMemberResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: BotAddGuildMemberRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: BotAddGuildMemberRequestInput
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: BotAddGuildMemberRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: BotAddGuildMemberRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: BotAddGuildMemberRequest
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: BotAddGuildMemberRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7814,34 +7858,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
               json: {
-                nick?: (string | null) | undefined
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-                mute?: (boolean | null) | undefined
-                deaf?: (boolean | null) | undefined
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                communication_disabled_until?: (string | null) | undefined
-                flags?: (number | null) | undefined
+                nick?: string | null
+                roles?: (null | SnowflakeTypeInput)[] | null
+                mute?: boolean | null
+                deaf?: boolean | null
+                channel_id?: null | SnowflakeTypeInput
+                communication_disabled_until?: string | null
+                flags?: number | null
               }
             }
             output: GuildMemberResponse
@@ -7849,15 +7893,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
               json: {
-                nick?: (string | null) | undefined
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-                mute?: (boolean | null) | undefined
-                deaf?: (boolean | null) | undefined
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                communication_disabled_until?: (string | null) | undefined
-                flags?: (number | null) | undefined
+                nick?: string | null
+                roles?: (null | SnowflakeTypeInput)[] | null
+                mute?: boolean | null
+                deaf?: boolean | null
+                channel_id?: null | SnowflakeTypeInput
+                communication_disabled_until?: string | null
+                flags?: number | null
               }
             }
             output: {}
@@ -7865,15 +7909,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
               json: {
-                nick?: (string | null) | undefined
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-                mute?: (boolean | null) | undefined
-                deaf?: (boolean | null) | undefined
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                communication_disabled_until?: (string | null) | undefined
-                flags?: (number | null) | undefined
+                nick?: string | null
+                roles?: (null | SnowflakeTypeInput)[] | null
+                mute?: boolean | null
+                deaf?: boolean | null
+                channel_id?: null | SnowflakeTypeInput
+                communication_disabled_until?: string | null
+                flags?: number | null
               }
             }
             output: RatelimitedResponse
@@ -7881,15 +7925,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
               json: {
-                nick?: (string | null) | undefined
-                roles?: ((({ [x: string]: unknown } | null) | SnowflakeType)[] | null) | undefined
-                mute?: (boolean | null) | undefined
-                deaf?: (boolean | null) | undefined
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                communication_disabled_until?: (string | null) | undefined
-                flags?: (number | null) | undefined
+                nick?: string | null
+                roles?: (null | SnowflakeTypeInput)[] | null
+                mute?: boolean | null
+                deaf?: boolean | null
+                channel_id?: null | SnowflakeTypeInput
+                communication_disabled_until?: string | null
+                flags?: number | null
               }
             }
             output: ErrorResponse
@@ -7902,7 +7946,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: {
-              param: { guild_id: SnowflakeType; user_id: SnowflakeType; role_id: SnowflakeType }
+              param: {
+                guild_id: SnowflakeTypeInput
+                user_id: SnowflakeTypeInput
+                role_id: SnowflakeTypeInput
+              }
             }
             output: {}
             outputFormat: string
@@ -7910,7 +7958,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; user_id: SnowflakeType; role_id: SnowflakeType }
+              param: {
+                guild_id: SnowflakeTypeInput
+                user_id: SnowflakeTypeInput
+                role_id: SnowflakeTypeInput
+              }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
@@ -7918,7 +7970,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; user_id: SnowflakeType; role_id: SnowflakeType }
+              param: {
+                guild_id: SnowflakeTypeInput
+                user_id: SnowflakeTypeInput
+                role_id: SnowflakeTypeInput
+              }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7927,7 +7983,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: {
-              param: { guild_id: SnowflakeType; user_id: SnowflakeType; role_id: SnowflakeType }
+              param: {
+                guild_id: SnowflakeTypeInput
+                user_id: SnowflakeTypeInput
+                role_id: SnowflakeTypeInput
+              }
             }
             output: {}
             outputFormat: string
@@ -7935,7 +7995,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; user_id: SnowflakeType; role_id: SnowflakeType }
+              param: {
+                guild_id: SnowflakeTypeInput
+                user_id: SnowflakeTypeInput
+                role_id: SnowflakeTypeInput
+              }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
@@ -7943,7 +8007,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; user_id: SnowflakeType; role_id: SnowflakeType }
+              param: {
+                guild_id: SnowflakeTypeInput
+                user_id: SnowflakeTypeInput
+                role_id: SnowflakeTypeInput
+              }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -7954,32 +8022,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/messages/search': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                sort_by?: SortingMode | undefined
-                sort_order?: SortingOrder | undefined
-                content?: string | undefined
-                slop?: number | undefined
-                author_id?: SnowflakeType[] | undefined
-                author_type?: AuthorType[] | undefined
-                mentions?: SnowflakeType[] | undefined
-                mentions_role_id?: SnowflakeType[] | undefined
-                replied_to_user_id?: SnowflakeType[] | undefined
-                replied_to_message_id?: SnowflakeType[] | undefined
-                mention_everyone?: boolean | undefined
-                min_id?: SnowflakeType | undefined
-                max_id?: SnowflakeType | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                has?: HasOption[] | undefined
-                link_hostname?: string[] | undefined
-                embed_provider?: string[] | undefined
-                embed_type?: SearchableEmbedType[] | undefined
-                attachment_extension?: string[] | undefined
-                attachment_filename?: string[] | undefined
-                pinned?: boolean | undefined
-                include_nsfw?: boolean | undefined
-                channel_id?: SnowflakeType[] | undefined
+                sort_by?: SortingModeInput
+                sort_order?: SortingOrderInput
+                content?: string
+                slop?: unknown
+                author_id?: unknown
+                author_type?: unknown
+                mentions?: unknown
+                mentions_role_id?: unknown
+                replied_to_user_id?: unknown
+                replied_to_message_id?: unknown
+                mention_everyone?: string
+                min_id?: SnowflakeTypeInput
+                max_id?: SnowflakeTypeInput
+                limit?: unknown
+                offset?: unknown
+                has?: unknown
+                link_hostname?: unknown
+                embed_provider?: unknown
+                embed_type?: unknown
+                attachment_extension?: unknown
+                attachment_filename?: unknown
+                pinned?: string
+                include_nsfw?: string
+                channel_id?: unknown
               }
             }
             output: GuildSearchResponse
@@ -7987,32 +8055,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                sort_by?: SortingMode | undefined
-                sort_order?: SortingOrder | undefined
-                content?: string | undefined
-                slop?: number | undefined
-                author_id?: SnowflakeType[] | undefined
-                author_type?: AuthorType[] | undefined
-                mentions?: SnowflakeType[] | undefined
-                mentions_role_id?: SnowflakeType[] | undefined
-                replied_to_user_id?: SnowflakeType[] | undefined
-                replied_to_message_id?: SnowflakeType[] | undefined
-                mention_everyone?: boolean | undefined
-                min_id?: SnowflakeType | undefined
-                max_id?: SnowflakeType | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                has?: HasOption[] | undefined
-                link_hostname?: string[] | undefined
-                embed_provider?: string[] | undefined
-                embed_type?: SearchableEmbedType[] | undefined
-                attachment_extension?: string[] | undefined
-                attachment_filename?: string[] | undefined
-                pinned?: boolean | undefined
-                include_nsfw?: boolean | undefined
-                channel_id?: SnowflakeType[] | undefined
+                sort_by?: SortingModeInput
+                sort_order?: SortingOrderInput
+                content?: string
+                slop?: unknown
+                author_id?: unknown
+                author_type?: unknown
+                mentions?: unknown
+                mentions_role_id?: unknown
+                replied_to_user_id?: unknown
+                replied_to_message_id?: unknown
+                mention_everyone?: string
+                min_id?: SnowflakeTypeInput
+                max_id?: SnowflakeTypeInput
+                limit?: unknown
+                offset?: unknown
+                has?: unknown
+                link_hostname?: unknown
+                embed_provider?: unknown
+                embed_type?: unknown
+                attachment_extension?: unknown
+                attachment_filename?: unknown
+                pinned?: string
+                include_nsfw?: string
+                channel_id?: unknown
               }
             }
             output: SearchIndexNotReadyResponse
@@ -8020,32 +8088,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 202
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                sort_by?: SortingMode | undefined
-                sort_order?: SortingOrder | undefined
-                content?: string | undefined
-                slop?: number | undefined
-                author_id?: SnowflakeType[] | undefined
-                author_type?: AuthorType[] | undefined
-                mentions?: SnowflakeType[] | undefined
-                mentions_role_id?: SnowflakeType[] | undefined
-                replied_to_user_id?: SnowflakeType[] | undefined
-                replied_to_message_id?: SnowflakeType[] | undefined
-                mention_everyone?: boolean | undefined
-                min_id?: SnowflakeType | undefined
-                max_id?: SnowflakeType | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                has?: HasOption[] | undefined
-                link_hostname?: string[] | undefined
-                embed_provider?: string[] | undefined
-                embed_type?: SearchableEmbedType[] | undefined
-                attachment_extension?: string[] | undefined
-                attachment_filename?: string[] | undefined
-                pinned?: boolean | undefined
-                include_nsfw?: boolean | undefined
-                channel_id?: SnowflakeType[] | undefined
+                sort_by?: SortingModeInput
+                sort_order?: SortingOrderInput
+                content?: string
+                slop?: unknown
+                author_id?: unknown
+                author_type?: unknown
+                mentions?: unknown
+                mentions_role_id?: unknown
+                replied_to_user_id?: unknown
+                replied_to_message_id?: unknown
+                mention_everyone?: string
+                min_id?: SnowflakeTypeInput
+                max_id?: SnowflakeTypeInput
+                limit?: unknown
+                offset?: unknown
+                has?: unknown
+                link_hostname?: unknown
+                embed_provider?: unknown
+                embed_type?: unknown
+                attachment_extension?: unknown
+                attachment_filename?: unknown
+                pinned?: string
+                include_nsfw?: string
+                channel_id?: unknown
               }
             }
             output: RatelimitedResponse
@@ -8053,32 +8121,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                sort_by?: SortingMode | undefined
-                sort_order?: SortingOrder | undefined
-                content?: string | undefined
-                slop?: number | undefined
-                author_id?: SnowflakeType[] | undefined
-                author_type?: AuthorType[] | undefined
-                mentions?: SnowflakeType[] | undefined
-                mentions_role_id?: SnowflakeType[] | undefined
-                replied_to_user_id?: SnowflakeType[] | undefined
-                replied_to_message_id?: SnowflakeType[] | undefined
-                mention_everyone?: boolean | undefined
-                min_id?: SnowflakeType | undefined
-                max_id?: SnowflakeType | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                has?: HasOption[] | undefined
-                link_hostname?: string[] | undefined
-                embed_provider?: string[] | undefined
-                embed_type?: SearchableEmbedType[] | undefined
-                attachment_extension?: string[] | undefined
-                attachment_filename?: string[] | undefined
-                pinned?: boolean | undefined
-                include_nsfw?: boolean | undefined
-                channel_id?: SnowflakeType[] | undefined
+                sort_by?: SortingModeInput
+                sort_order?: SortingOrderInput
+                content?: string
+                slop?: unknown
+                author_id?: unknown
+                author_type?: unknown
+                mentions?: unknown
+                mentions_role_id?: unknown
+                replied_to_user_id?: unknown
+                replied_to_message_id?: unknown
+                mention_everyone?: string
+                min_id?: SnowflakeTypeInput
+                max_id?: SnowflakeTypeInput
+                limit?: unknown
+                offset?: unknown
+                has?: unknown
+                link_hostname?: unknown
+                embed_provider?: unknown
+                embed_type?: unknown
+                attachment_extension?: unknown
+                attachment_filename?: unknown
+                pinned?: string
+                include_nsfw?: string
+                channel_id?: unknown
               }
             }
             output: ErrorResponse
@@ -8090,25 +8158,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/new-member-welcome': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: GuildHomeSettingsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8118,38 +8186,44 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/onboarding': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: UserGuildOnboardingResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $put:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: UpdateGuildOnboardingRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateGuildOnboardingRequestInput
+            }
             output: GuildOnboardingResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: UpdateGuildOnboardingRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateGuildOnboardingRequestInput
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: UpdateGuildOnboardingRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateGuildOnboardingRequestInput
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8159,19 +8233,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/permissions/member/:user_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: PermissionsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8181,19 +8255,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/permissions/role/:role_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: PermissionsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8203,19 +8277,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/preview': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: GuildPreviewResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8225,42 +8299,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/prune': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: {
-                days?: number | undefined
-                include_roles?:
-                  | string
-                  | (({ [x: string]: unknown } | null) | SnowflakeType)[]
-                  | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { days?: unknown; include_roles?: string | (null | SnowflakeTypeInput)[] }
             }
             output: GuildPruneResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: {
-                days?: number | undefined
-                include_roles?:
-                  | string
-                  | (({ [x: string]: unknown } | null) | SnowflakeType)[]
-                  | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { days?: unknown; include_roles?: string | (null | SnowflakeTypeInput)[] }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: {
-                days?: number | undefined
-                include_roles?:
-                  | string
-                  | (({ [x: string]: unknown } | null) | SnowflakeType)[]
-                  | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { days?: unknown; include_roles?: string | (null | SnowflakeTypeInput)[] }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -8268,19 +8324,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: PruneGuildRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: PruneGuildRequestInput }
             output: GuildPruneResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: PruneGuildRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: PruneGuildRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: PruneGuildRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: PruneGuildRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8290,19 +8346,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/regions': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: VoiceRegionResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8312,12 +8368,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/requests': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                status?: {} | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                status?: unknown
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: GuildJoinRequestsListResponse
@@ -8325,12 +8381,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                status?: {} | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                status?: unknown
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -8338,12 +8394,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               query: {
-                status?: {} | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                status?: unknown
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -8355,24 +8411,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/requests/:request_id': {
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; request_id: SnowflakeType } } & {
-              json: { action?: {} | undefined; rejection_reason?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput; request_id: SnowflakeTypeInput } } & {
+              json: {
+                action?: GuildJoinRequestApplicationStatusInput
+                rejection_reason?: string | null
+              }
             }
             output: GuildJoinRequestResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; request_id: SnowflakeType } } & {
-              json: { action?: {} | undefined; rejection_reason?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput; request_id: SnowflakeTypeInput } } & {
+              json: {
+                action?: GuildJoinRequestApplicationStatusInput
+                rejection_reason?: string | null
+              }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; request_id: SnowflakeType } } & {
-              json: { action?: {} | undefined; rejection_reason?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput; request_id: SnowflakeTypeInput } } & {
+              json: {
+                action?: GuildJoinRequestApplicationStatusInput
+                rejection_reason?: string | null
+              }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -8383,57 +8448,63 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/roles': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: GuildRoleResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: CreateRoleRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: CreateRoleRequestInput }
             output: GuildRoleResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: CreateRoleRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: CreateRoleRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: CreateRoleRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & { json: CreateRoleRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: UpdateRolePositionsRequest[] }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateRolePositionsRequestInput[]
+            }
             output: GuildRoleResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: UpdateRolePositionsRequest[] }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateRolePositionsRequestInput[]
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: UpdateRolePositionsRequest[] }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateRolePositionsRequestInput[]
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8443,19 +8514,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/roles/member-counts': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
-            output: { [x: string]: number }
+            input: { param: { guild_id: SnowflakeTypeInput } }
+            output: { [key: string]: number }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8465,62 +8536,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/roles/:role_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: GuildRoleResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } } & {
-              json: UpdateRoleRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } } & {
+              json: UpdateRoleRequestPartialInput
             }
             output: GuildRoleResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } } & {
-              json: UpdateRoleRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } } & {
+              json: UpdateRoleRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; role_id: SnowflakeType } } & {
-              json: UpdateRoleRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; role_id: SnowflakeTypeInput } } & {
+              json: UpdateRoleRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -8531,8 +8602,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/scheduled-events': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { with_user_count?: boolean | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { with_user_count?: string }
             }
             output:
               | (
@@ -8545,16 +8616,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { with_user_count?: boolean | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { with_user_count?: string }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { with_user_count?: boolean | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { with_user_count?: string }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -8562,11 +8633,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json:
-                | ExternalScheduledEventCreateRequest
-                | StageScheduledEventCreateRequest
-                | VoiceScheduledEventCreateRequest
+                | ExternalScheduledEventCreateRequestInput
+                | StageScheduledEventCreateRequestInput
+                | VoiceScheduledEventCreateRequestInput
             }
             output:
               | ExternalScheduledEventResponse
@@ -8576,22 +8647,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json:
-                | ExternalScheduledEventCreateRequest
-                | StageScheduledEventCreateRequest
-                | VoiceScheduledEventCreateRequest
+                | ExternalScheduledEventCreateRequestInput
+                | StageScheduledEventCreateRequestInput
+                | VoiceScheduledEventCreateRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
               json:
-                | ExternalScheduledEventCreateRequest
-                | StageScheduledEventCreateRequest
-                | VoiceScheduledEventCreateRequest
+                | ExternalScheduledEventCreateRequestInput
+                | StageScheduledEventCreateRequestInput
+                | VoiceScheduledEventCreateRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -8603,8 +8674,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { query: { with_user_count?: boolean | undefined } }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { query: { with_user_count?: string } }
             output:
               | ExternalScheduledEventResponse
               | StageScheduledEventResponse
@@ -8614,35 +8685,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { query: { with_user_count?: boolean | undefined } }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { query: { with_user_count?: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { query: { with_user_count?: boolean | undefined } }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { query: { with_user_count?: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType } }
+            input: {
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType } }
+            input: {
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType } }
+            input: {
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8650,12 +8727,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
             } & {
               json:
-                | ExternalScheduledEventPatchRequestPartial
-                | StageScheduledEventPatchRequestPartial
-                | VoiceScheduledEventPatchRequestPartial
+                | ExternalScheduledEventPatchRequestPartialInput
+                | StageScheduledEventPatchRequestPartialInput
+                | VoiceScheduledEventPatchRequestPartialInput
             }
             output:
               | ExternalScheduledEventResponse
@@ -8666,12 +8743,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
             } & {
               json:
-                | ExternalScheduledEventPatchRequestPartial
-                | StageScheduledEventPatchRequestPartial
-                | VoiceScheduledEventPatchRequestPartial
+                | ExternalScheduledEventPatchRequestPartialInput
+                | StageScheduledEventPatchRequestPartialInput
+                | VoiceScheduledEventPatchRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
@@ -8679,12 +8756,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
             } & {
               json:
-                | ExternalScheduledEventPatchRequestPartial
-                | StageScheduledEventPatchRequestPartial
-                | VoiceScheduledEventPatchRequestPartial
+                | ExternalScheduledEventPatchRequestPartialInput
+                | StageScheduledEventPatchRequestPartialInput
+                | VoiceScheduledEventPatchRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -8696,24 +8773,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { json: GuildScheduledEventExceptionCreateRequest }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { json: GuildScheduledEventExceptionCreateRequestInput }
             output: GuildScheduledEventExceptionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { json: GuildScheduledEventExceptionCreateRequest }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { json: GuildScheduledEventExceptionCreateRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { json: GuildScheduledEventExceptionCreateRequest }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { json: GuildScheduledEventExceptionCreateRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8725,9 +8802,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                exception_id: SnowflakeTypeInput
               }
             }
             output: {}
@@ -8737,9 +8814,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                exception_id: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -8749,9 +8826,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                exception_id: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -8762,11 +8839,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                exception_id: SnowflakeTypeInput
               }
-            } & { json: GuildScheduledEventExceptionPatchRequestPartial }
+            } & { json: GuildScheduledEventExceptionPatchRequestPartialInput }
             output: GuildScheduledEventExceptionResponse
             outputFormat: 'json'
             status: 200
@@ -8774,11 +8851,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                exception_id: SnowflakeTypeInput
               }
-            } & { json: GuildScheduledEventExceptionPatchRequestPartial }
+            } & { json: GuildScheduledEventExceptionPatchRequestPartialInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
@@ -8786,11 +8863,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                exception_id: SnowflakeTypeInput
               }
-            } & { json: GuildScheduledEventExceptionPatchRequestPartial }
+            } & { json: GuildScheduledEventExceptionPatchRequestPartialInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8801,13 +8878,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
             } & {
               query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                with_member?: string
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: ScheduledEventUserResponse[] | null
@@ -8816,13 +8893,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
             } & {
               query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                with_member?: string
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -8831,13 +8908,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
             } & {
               query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                with_member?: string
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -8850,24 +8927,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { query: { guild_scheduled_event_exception_ids?: SnowflakeType[] | undefined } }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { query: { guild_scheduled_event_exception_ids?: unknown } }
             output: ScheduledEventUserCountResponse
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { query: { guild_scheduled_event_exception_ids?: SnowflakeType[] | undefined } }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { query: { guild_scheduled_event_exception_ids?: unknown } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
             input: {
-              param: { guild_id: SnowflakeType; guild_scheduled_event_id: SnowflakeType }
-            } & { query: { guild_scheduled_event_exception_ids?: SnowflakeType[] | undefined } }
+              param: { guild_id: SnowflakeTypeInput; guild_scheduled_event_id: SnowflakeTypeInput }
+            } & { query: { guild_scheduled_event_exception_ids?: unknown } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8879,16 +8956,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                guild_scheduled_event_exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                guild_scheduled_event_exception_id: SnowflakeTypeInput
               }
             } & {
               query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                with_member?: string
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: ScheduledEventUserResponse[] | null
@@ -8898,16 +8975,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                guild_scheduled_event_exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                guild_scheduled_event_exception_id: SnowflakeTypeInput
               }
             } & {
               query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                with_member?: string
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -8917,16 +8994,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                guild_id: SnowflakeType
-                guild_scheduled_event_id: SnowflakeType
-                guild_scheduled_event_exception_id: SnowflakeType
+                guild_id: SnowflakeTypeInput
+                guild_scheduled_event_id: SnowflakeTypeInput
+                guild_scheduled_event_exception_id: SnowflakeTypeInput
               }
             } & {
               query: {
-                with_member?: boolean | undefined
-                limit?: number | undefined
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
+                with_member?: string
+                limit?: unknown
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -8938,38 +9015,44 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/soundboard-sounds': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ListGuildSoundboardSoundsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: SoundboardCreateRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: SoundboardCreateRequestInput
+            }
             output: SoundboardSoundResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: SoundboardCreateRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: SoundboardCreateRequestInput
+            }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & { json: SoundboardCreateRequest }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: SoundboardCreateRequestInput
+            }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -8979,62 +9062,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/soundboard-sounds/:sound_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } }
             output: SoundboardSoundResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } } & {
-              json: SoundboardPatchRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } } & {
+              json: SoundboardPatchRequestPartialInput
             }
             output: SoundboardSoundResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } } & {
-              json: SoundboardPatchRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } } & {
+              json: SoundboardPatchRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sound_id: SnowflakeType } } & {
-              json: SoundboardPatchRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; sound_id: SnowflakeTypeInput } } & {
+              json: SoundboardPatchRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9045,58 +9128,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/stickers': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: GuildStickerResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              form: {
-                name: string
-                tags: string
-                description?: (string | null) | undefined
-                file: string
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              form: { name: string; tags: string; description?: string | null; file: string }
             }
             output: GuildStickerResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              form: {
-                name: string
-                tags: string
-                description?: (string | null) | undefined
-                file: string
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              form: { name: string; tags: string; description?: string | null; file: string }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              form: {
-                name: string
-                tags: string
-                description?: (string | null) | undefined
-                file: string
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              form: { name: string; tags: string; description?: string | null; file: string }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9107,74 +9175,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/stickers/:sticker_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } }
             output: GuildStickerResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } } & {
-              json: {
-                name?: string | undefined
-                tags?: string | undefined
-                description?: (string | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } } & {
+              json: { name?: string; tags?: string; description?: string | null }
             }
             output: GuildStickerResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } } & {
-              json: {
-                name?: string | undefined
-                tags?: string | undefined
-                description?: (string | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } } & {
+              json: { name?: string; tags?: string; description?: string | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; sticker_id: SnowflakeType } } & {
-              json: {
-                name?: string | undefined
-                tags?: string | undefined
-                description?: (string | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput; sticker_id: SnowflakeTypeInput } } & {
+              json: { name?: string; tags?: string; description?: string | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9185,43 +9241,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/templates': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: GuildTemplateResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: { name: string; description?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { name: string; description?: string | null }
             }
             output: GuildTemplateResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: { name: string; description?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { name: string; description?: string | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: { name: string; description?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { name: string; description?: string | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9232,62 +9288,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/templates/:code': {
       $put:
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } }
             output: GuildTemplateResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } }
             output: GuildTemplateResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } } & {
-              json: { name?: string | undefined; description?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } } & {
+              json: { name?: string; description?: string | null }
             }
             output: GuildTemplateResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } } & {
-              json: { name?: string | undefined; description?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } } & {
+              json: { name?: string; description?: string | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; code: string } } & {
-              json: { name?: string | undefined; description?: (string | null) | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput; code: string } } & {
+              json: { name?: string; description?: string | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9298,19 +9354,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/threads/active': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ThreadsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -9320,19 +9376,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/vanity-url': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: VanityURLResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -9342,43 +9398,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/voice-states/@me': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: VoiceStateResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: UpdateSelfVoiceStateRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateSelfVoiceStateRequestPartialInput
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: UpdateSelfVoiceStateRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateSelfVoiceStateRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: UpdateSelfVoiceStateRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: UpdateSelfVoiceStateRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9389,43 +9445,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/voice-states/:user_id': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: VoiceStateResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: UpdateVoiceStateRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: UpdateVoiceStateRequestPartialInput
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: UpdateVoiceStateRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: UpdateVoiceStateRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType; user_id: SnowflakeType } } & {
-              json: UpdateVoiceStateRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
+              json: UpdateVoiceStateRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9436,7 +9492,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/webhooks': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output:
               | (
                   | ApplicationIncomingWebhookResponse
@@ -9448,13 +9504,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -9464,43 +9520,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/welcome-screen': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: GuildWelcomeScreenResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: WelcomeScreenPatchRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: WelcomeScreenPatchRequestPartialInput
             }
             output: GuildWelcomeScreenResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: WelcomeScreenPatchRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: WelcomeScreenPatchRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: WelcomeScreenPatchRequestPartial
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: WelcomeScreenPatchRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9511,52 +9567,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/widget': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: WidgetSettingsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: {
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                enabled?: (boolean | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { channel_id?: null | SnowflakeTypeInput; enabled?: boolean | null }
             }
             output: WidgetSettingsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: {
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                enabled?: (boolean | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { channel_id?: null | SnowflakeTypeInput; enabled?: boolean | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              json: {
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
-                enabled?: (boolean | null) | undefined
-              }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              json: { channel_id?: null | SnowflakeTypeInput; enabled?: boolean | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9567,19 +9614,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/widget.json': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: WidgetResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -9589,24 +9636,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/guilds/:guild_id/widget.png': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { style?: WidgetImageStyles | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { style?: WidgetImageStylesInput }
             }
-            output: string
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { style?: WidgetImageStyles | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { style?: WidgetImageStylesInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } } & {
-              query: { style?: WidgetImageStyles | undefined }
+            input: { param: { guild_id: SnowflakeTypeInput } } & {
+              query: { style?: WidgetImageStylesInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9617,104 +9664,104 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/interactions/:interaction_id/:interaction_token/callback': {
       $post:
         | {
-            input: { param: { interaction_id: SnowflakeType; interaction_token: string } } & {
-              query: { with_response?: boolean | undefined }
+            input: { param: { interaction_id: SnowflakeTypeInput; interaction_token: string } } & {
+              query: { with_response?: string }
             } & {
               json:
-                | ApplicationCommandAutocompleteCallbackRequest
-                | CreateMessageInteractionCallbackRequest
-                | LaunchActivityInteractionCallbackRequest
-                | ModalInteractionCallbackRequest
-                | PongInteractionCallbackRequest
-                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
-                | UpdateMessageInteractionCallbackRequest
+                | ApplicationCommandAutocompleteCallbackRequestInput
+                | CreateMessageInteractionCallbackRequestInput
+                | LaunchActivityInteractionCallbackRequestInput
+                | ModalInteractionCallbackRequestInput
+                | PongInteractionCallbackRequestInput
+                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput
+                | UpdateMessageInteractionCallbackRequestInput
             } & {
               form:
-                | ApplicationCommandAutocompleteCallbackRequest
-                | CreateMessageInteractionCallbackRequest
-                | LaunchActivityInteractionCallbackRequest
-                | ModalInteractionCallbackRequest
-                | PongInteractionCallbackRequest
-                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
-                | UpdateMessageInteractionCallbackRequest
+                | ApplicationCommandAutocompleteCallbackRequestInput
+                | CreateMessageInteractionCallbackRequestInput
+                | LaunchActivityInteractionCallbackRequestInput
+                | ModalInteractionCallbackRequestInput
+                | PongInteractionCallbackRequestInput
+                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput
+                | UpdateMessageInteractionCallbackRequestInput
             }
             output: InteractionCallbackResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { interaction_id: SnowflakeType; interaction_token: string } } & {
-              query: { with_response?: boolean | undefined }
+            input: { param: { interaction_id: SnowflakeTypeInput; interaction_token: string } } & {
+              query: { with_response?: string }
             } & {
               json:
-                | ApplicationCommandAutocompleteCallbackRequest
-                | CreateMessageInteractionCallbackRequest
-                | LaunchActivityInteractionCallbackRequest
-                | ModalInteractionCallbackRequest
-                | PongInteractionCallbackRequest
-                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
-                | UpdateMessageInteractionCallbackRequest
+                | ApplicationCommandAutocompleteCallbackRequestInput
+                | CreateMessageInteractionCallbackRequestInput
+                | LaunchActivityInteractionCallbackRequestInput
+                | ModalInteractionCallbackRequestInput
+                | PongInteractionCallbackRequestInput
+                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput
+                | UpdateMessageInteractionCallbackRequestInput
             } & {
               form:
-                | ApplicationCommandAutocompleteCallbackRequest
-                | CreateMessageInteractionCallbackRequest
-                | LaunchActivityInteractionCallbackRequest
-                | ModalInteractionCallbackRequest
-                | PongInteractionCallbackRequest
-                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
-                | UpdateMessageInteractionCallbackRequest
+                | ApplicationCommandAutocompleteCallbackRequestInput
+                | CreateMessageInteractionCallbackRequestInput
+                | LaunchActivityInteractionCallbackRequestInput
+                | ModalInteractionCallbackRequestInput
+                | PongInteractionCallbackRequestInput
+                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput
+                | UpdateMessageInteractionCallbackRequestInput
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { interaction_id: SnowflakeType; interaction_token: string } } & {
-              query: { with_response?: boolean | undefined }
+            input: { param: { interaction_id: SnowflakeTypeInput; interaction_token: string } } & {
+              query: { with_response?: string }
             } & {
               json:
-                | ApplicationCommandAutocompleteCallbackRequest
-                | CreateMessageInteractionCallbackRequest
-                | LaunchActivityInteractionCallbackRequest
-                | ModalInteractionCallbackRequest
-                | PongInteractionCallbackRequest
-                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
-                | UpdateMessageInteractionCallbackRequest
+                | ApplicationCommandAutocompleteCallbackRequestInput
+                | CreateMessageInteractionCallbackRequestInput
+                | LaunchActivityInteractionCallbackRequestInput
+                | ModalInteractionCallbackRequestInput
+                | PongInteractionCallbackRequestInput
+                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput
+                | UpdateMessageInteractionCallbackRequestInput
             } & {
               form:
-                | ApplicationCommandAutocompleteCallbackRequest
-                | CreateMessageInteractionCallbackRequest
-                | LaunchActivityInteractionCallbackRequest
-                | ModalInteractionCallbackRequest
-                | PongInteractionCallbackRequest
-                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
-                | UpdateMessageInteractionCallbackRequest
+                | ApplicationCommandAutocompleteCallbackRequestInput
+                | CreateMessageInteractionCallbackRequestInput
+                | LaunchActivityInteractionCallbackRequestInput
+                | ModalInteractionCallbackRequestInput
+                | PongInteractionCallbackRequestInput
+                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput
+                | UpdateMessageInteractionCallbackRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { interaction_id: SnowflakeType; interaction_token: string } } & {
-              query: { with_response?: boolean | undefined }
+            input: { param: { interaction_id: SnowflakeTypeInput; interaction_token: string } } & {
+              query: { with_response?: string }
             } & {
               json:
-                | ApplicationCommandAutocompleteCallbackRequest
-                | CreateMessageInteractionCallbackRequest
-                | LaunchActivityInteractionCallbackRequest
-                | ModalInteractionCallbackRequest
-                | PongInteractionCallbackRequest
-                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
-                | UpdateMessageInteractionCallbackRequest
+                | ApplicationCommandAutocompleteCallbackRequestInput
+                | CreateMessageInteractionCallbackRequestInput
+                | LaunchActivityInteractionCallbackRequestInput
+                | ModalInteractionCallbackRequestInput
+                | PongInteractionCallbackRequestInput
+                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput
+                | UpdateMessageInteractionCallbackRequestInput
             } & {
               form:
-                | ApplicationCommandAutocompleteCallbackRequest
-                | CreateMessageInteractionCallbackRequest
-                | LaunchActivityInteractionCallbackRequest
-                | ModalInteractionCallbackRequest
-                | PongInteractionCallbackRequest
-                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequest
-                | UpdateMessageInteractionCallbackRequest
+                | ApplicationCommandAutocompleteCallbackRequestInput
+                | CreateMessageInteractionCallbackRequestInput
+                | LaunchActivityInteractionCallbackRequestInput
+                | ModalInteractionCallbackRequestInput
+                | PongInteractionCallbackRequestInput
+                | SocialLayerSKUPurchaseEligibilityInteractionCallbackRequestInput
+                | UpdateMessageInteractionCallbackRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -9727,10 +9774,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { code: string } } & {
               query: {
-                with_counts?: boolean | undefined
-                guild_scheduled_event_id?: SnowflakeType | undefined
-                target_channel_id?: SnowflakeType | undefined
-                target_message_id?: SnowflakeType | undefined
+                with_counts?: string
+                guild_scheduled_event_id?: SnowflakeTypeInput
+                target_channel_id?: SnowflakeTypeInput
+                target_message_id?: SnowflakeTypeInput
               }
             }
             output: FriendInviteResponse | GroupDMInviteResponse | GuildInviteResponse
@@ -9740,10 +9787,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { code: string } } & {
               query: {
-                with_counts?: boolean | undefined
-                guild_scheduled_event_id?: SnowflakeType | undefined
-                target_channel_id?: SnowflakeType | undefined
-                target_message_id?: SnowflakeType | undefined
+                with_counts?: string
+                guild_scheduled_event_id?: SnowflakeTypeInput
+                target_channel_id?: SnowflakeTypeInput
+                target_message_id?: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -9753,10 +9800,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { code: string } } & {
               query: {
-                with_counts?: boolean | undefined
-                guild_scheduled_event_id?: SnowflakeType | undefined
-                target_channel_id?: SnowflakeType | undefined
-                target_message_id?: SnowflakeType | undefined
+                with_counts?: string
+                guild_scheduled_event_id?: SnowflakeTypeInput
+                target_channel_id?: SnowflakeTypeInput
+                target_message_id?: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -9786,7 +9833,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/invites/:code/target-users': {
       $get:
-        | { input: { param: { code: string } }; output: string; outputFormat: 'text'; status: 200 }
+        | { input: { param: { code: string } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { code: string } }
             output: RatelimitedResponse
@@ -9823,19 +9870,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/invites/:code/target-users/bulk-add': {
       $post:
         | {
-            input: { param: { code: string } } & { json: { user_ids: SnowflakeType[] } }
+            input: { param: { code: string } } & { json: { user_ids: SnowflakeTypeInput[] } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { code: string } } & { json: { user_ids: SnowflakeType[] } }
+            input: { param: { code: string } } & { json: { user_ids: SnowflakeTypeInput[] } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { code: string } } & { json: { user_ids: SnowflakeType[] } }
+            input: { param: { code: string } } & { json: { user_ids: SnowflakeTypeInput[] } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -9845,19 +9892,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/invites/:code/target-users/bulk-delete': {
       $post:
         | {
-            input: { param: { code: string } } & { json: { user_ids: SnowflakeType[] } }
+            input: { param: { code: string } } & { json: { user_ids: SnowflakeTypeInput[] } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { code: string } } & { json: { user_ids: SnowflakeType[] } }
+            input: { param: { code: string } } & { json: { user_ids: SnowflakeTypeInput[] } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { code: string } } & { json: { user_ids: SnowflakeType[] } }
+            input: { param: { code: string } } & { json: { user_ids: SnowflakeTypeInput[] } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -9889,38 +9936,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/invites/:code/target-users/:user_id': {
       $put:
         | {
-            input: { param: { code: string; user_id: SnowflakeType } }
+            input: { param: { code: string; user_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { code: string; user_id: SnowflakeType } }
+            input: { param: { code: string; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { code: string; user_id: SnowflakeType } }
+            input: { param: { code: string; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { code: string; user_id: SnowflakeType } }
+            input: { param: { code: string; user_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { code: string; user_id: SnowflakeType } }
+            input: { param: { code: string; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { code: string; user_id: SnowflakeType } }
+            input: { param: { code: string; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -9932,12 +9979,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                lobby_metadata?: ({ [x: string]: string } | null) | undefined
-                member_metadata?: ({ [x: string]: string } | null) | undefined
+                idle_timeout_seconds?: number | null
+                lobby_metadata?: { [key: string]: string } | null
+                member_metadata?: { [key: string]: string } | null
                 secret: string
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                name?: (string | null) | undefined
+                flags?: null | 1
+                name?: string | null
               }
             }
             output: LobbyResponse
@@ -9947,12 +9994,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                lobby_metadata?: ({ [x: string]: string } | null) | undefined
-                member_metadata?: ({ [x: string]: string } | null) | undefined
+                idle_timeout_seconds?: number | null
+                lobby_metadata?: { [key: string]: string } | null
+                member_metadata?: { [key: string]: string } | null
                 secret: string
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                name?: (string | null) | undefined
+                flags?: null | 1
+                name?: string | null
               }
             }
             output: RatelimitedResponse
@@ -9962,12 +10009,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                lobby_metadata?: ({ [x: string]: string } | null) | undefined
-                member_metadata?: ({ [x: string]: string } | null) | undefined
+                idle_timeout_seconds?: number | null
+                lobby_metadata?: { [key: string]: string } | null
+                member_metadata?: { [key: string]: string } | null
                 secret: string
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                name?: (string | null) | undefined
+                flags?: null | 1
+                name?: string | null
               }
             }
             output: ErrorResponse
@@ -9978,12 +10025,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                members?: (LobbyMemberRequest[] | null) | undefined
-                metadata?: ({ [x: string]: string } | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                override_event_webhooks_url?: (string | null) | undefined
-                name?: (string | null) | undefined
+                idle_timeout_seconds?: number | null
+                members?: LobbyMemberRequestInput[] | null
+                metadata?: { [key: string]: string } | null
+                flags?: null | 1
+                override_event_webhooks_url?: string | null
+                name?: string | null
               }
             }
             output: LobbyResponse
@@ -9993,12 +10040,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                members?: (LobbyMemberRequest[] | null) | undefined
-                metadata?: ({ [x: string]: string } | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                override_event_webhooks_url?: (string | null) | undefined
-                name?: (string | null) | undefined
+                idle_timeout_seconds?: number | null
+                members?: LobbyMemberRequestInput[] | null
+                metadata?: { [key: string]: string } | null
+                flags?: null | 1
+                override_event_webhooks_url?: string | null
+                name?: string | null
               }
             }
             output: RatelimitedResponse
@@ -10008,12 +10055,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                members?: (LobbyMemberRequest[] | null) | undefined
-                metadata?: ({ [x: string]: string } | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                override_event_webhooks_url?: (string | null) | undefined
-                name?: (string | null) | undefined
+                idle_timeout_seconds?: number | null
+                members?: LobbyMemberRequestInput[] | null
+                metadata?: { [key: string]: string } | null
+                flags?: null | 1
+                override_event_webhooks_url?: string | null
+                name?: string | null
               }
             }
             output: ErrorResponse
@@ -10025,52 +10072,52 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id': {
       $get:
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: LobbyResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                metadata?: ({ [x: string]: string } | null) | undefined
-                members?: (LobbyMemberRequest[] | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                override_event_webhooks_url?: (string | null) | undefined
-                name?: (string | null) | undefined
+                idle_timeout_seconds?: number | null
+                metadata?: { [key: string]: string } | null
+                members?: LobbyMemberRequestInput[] | null
+                flags?: null | 1
+                override_event_webhooks_url?: string | null
+                name?: string | null
               }
             }
             output: LobbyResponse
@@ -10078,14 +10125,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                metadata?: ({ [x: string]: string } | null) | undefined
-                members?: (LobbyMemberRequest[] | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                override_event_webhooks_url?: (string | null) | undefined
-                name?: (string | null) | undefined
+                idle_timeout_seconds?: number | null
+                metadata?: { [key: string]: string } | null
+                members?: LobbyMemberRequestInput[] | null
+                flags?: null | 1
+                override_event_webhooks_url?: string | null
+                name?: string | null
               }
             }
             output: RatelimitedResponse
@@ -10093,14 +10140,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
               json: {
-                idle_timeout_seconds?: (number | null) | undefined
-                metadata?: ({ [x: string]: string } | null) | undefined
-                members?: (LobbyMemberRequest[] | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                override_event_webhooks_url?: (string | null) | undefined
-                name?: (string | null) | undefined
+                idle_timeout_seconds?: number | null
+                metadata?: { [key: string]: string } | null
+                members?: LobbyMemberRequestInput[] | null
+                flags?: null | 1
+                override_event_webhooks_url?: string | null
+                name?: string | null
               }
             }
             output: ErrorResponse
@@ -10112,24 +10159,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id/channel-linking': {
       $patch:
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              json: { channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: { channel_id?: null | SnowflakeTypeInput }
             }
             output: LobbyResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              json: { channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: { channel_id?: null | SnowflakeTypeInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              json: { channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: { channel_id?: null | SnowflakeTypeInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -10140,19 +10187,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id/members/@me': {
       $delete:
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10162,19 +10209,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id/members/@me/invites': {
       $post:
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: LobbyGuildInviteResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10184,24 +10231,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id/members/bulk': {
       $post:
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              json: BulkLobbyMemberRequest[] | null
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: BulkLobbyMemberRequestInput[] | null
             }
             output: LobbyMemberResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              json: BulkLobbyMemberRequest[] | null
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: BulkLobbyMemberRequestInput[] | null
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              json: BulkLobbyMemberRequest[] | null
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: BulkLobbyMemberRequestInput[] | null
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -10212,11 +10259,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id/members/:user_id': {
       $put:
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } } & {
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
               json: {
-                metadata?: ({ [x: string]: string } | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                additional_name?: (string | null) | undefined
+                metadata?: { [key: string]: string } | null
+                flags?: null | 1
+                additional_name?: string | null
               }
             }
             output: LobbyMemberResponse
@@ -10224,11 +10271,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } } & {
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
               json: {
-                metadata?: ({ [x: string]: string } | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                additional_name?: (string | null) | undefined
+                metadata?: { [key: string]: string } | null
+                flags?: null | 1
+                additional_name?: string | null
               }
             }
             output: RatelimitedResponse
@@ -10236,11 +10283,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } } & {
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } } & {
               json: {
-                metadata?: ({ [x: string]: string } | null) | undefined
-                flags?: ({ [x: string]: unknown } | null) | 1 | undefined
-                additional_name?: (string | null) | undefined
+                metadata?: { [key: string]: string } | null
+                flags?: null | 1
+                additional_name?: string | null
               }
             }
             output: ErrorResponse
@@ -10249,19 +10296,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10271,19 +10318,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id/members/:user_id/invites': {
       $post:
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: LobbyGuildInviteResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType; user_id: SnowflakeType } }
+            input: { param: { lobby_id: SnowflakeTypeInput; user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10293,50 +10340,44 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id/messages': {
       $get:
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              query: { limit?: number | undefined }
-            }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & { query: { limit?: unknown } }
             output: LobbyMessageResponse[] | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              query: { limit?: number | undefined }
-            }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & { query: { limit?: unknown } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & {
-              query: { limit?: number | undefined }
-            }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & { query: { limit?: unknown } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { lobby_id: SnowflakeType } } & { json: SDKMessageRequest } & {
-              form: SDKMessageRequest
-            }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: SDKMessageRequestInput
+            } & { form: SDKMessageRequestInput }
             output: LobbyMessageResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & { json: SDKMessageRequest } & {
-              form: SDKMessageRequest
-            }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: SDKMessageRequestInput
+            } & { form: SDKMessageRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType } } & { json: SDKMessageRequest } & {
-              form: SDKMessageRequest
-            }
+            input: { param: { lobby_id: SnowflakeTypeInput } } & {
+              json: SDKMessageRequestInput
+            } & { form: SDKMessageRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10346,25 +10387,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/lobbies/:lobby_id/messages/:message_id/moderation-metadata': {
       $put:
         | {
-            input: { param: { lobby_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: { [x: string]: string }
-            } & { form: { [x: string]: string } }
+            input: { param: { lobby_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: { [key: string]: string }
+            } & { form: { [key: string]: string } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { lobby_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: { [x: string]: string }
-            } & { form: { [x: string]: string } }
+            input: { param: { lobby_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: { [key: string]: string }
+            } & { form: { [key: string]: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { lobby_id: SnowflakeType; message_id: SnowflakeType } } & {
-              json: { [x: string]: string }
-            } & { form: { [x: string]: string } }
+            input: { param: { lobby_id: SnowflakeTypeInput; message_id: SnowflakeTypeInput } } & {
+              json: { [key: string]: string }
+            } & { form: { [key: string]: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10409,11 +10450,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                user_id_1: SnowflakeType
-                user_id_2: SnowflakeType
-                message_id: SnowflakeType
+                user_id_1: SnowflakeTypeInput
+                user_id_2: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
               }
-            } & { json: { [x: string]: string } } & { form: { [x: string]: string } }
+            } & { json: { [key: string]: string } } & { form: { [key: string]: string } }
             output: {}
             outputFormat: string
             status: 204
@@ -10421,11 +10462,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                user_id_1: SnowflakeType
-                user_id_2: SnowflakeType
-                message_id: SnowflakeType
+                user_id_1: SnowflakeTypeInput
+                user_id_2: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
               }
-            } & { json: { [x: string]: string } } & { form: { [x: string]: string } }
+            } & { json: { [key: string]: string } } & { form: { [key: string]: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
@@ -10433,11 +10474,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: {
-                user_id_1: SnowflakeType
-                user_id_2: SnowflakeType
-                message_id: SnowflakeType
+                user_id_1: SnowflakeTypeInput
+                user_id_2: SnowflakeTypeInput
+                message_id: SnowflakeTypeInput
               }
-            } & { json: { [x: string]: string } } & { form: { [x: string]: string } }
+            } & { json: { [key: string]: string } } & { form: { [key: string]: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10449,10 +10490,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                client_id: SnowflakeType
-                client_secret?: (string | null) | undefined
+                client_id: SnowflakeTypeInput
+                client_secret?: string | null
                 external_auth_token: string
-                external_auth_type: ApplicationIdentityProviderAuthType
+                external_auth_type: ApplicationIdentityProviderAuthTypeInput
               }
             }
             output: {}
@@ -10462,10 +10503,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                client_id: SnowflakeType
-                client_secret?: (string | null) | undefined
+                client_id: SnowflakeTypeInput
+                client_secret?: string | null
                 external_auth_token: string
-                external_auth_type: ApplicationIdentityProviderAuthType
+                external_auth_type: ApplicationIdentityProviderAuthTypeInput
               }
             }
             output: RatelimitedResponse
@@ -10475,10 +10516,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                client_id: SnowflakeType
-                client_secret?: (string | null) | undefined
+                client_id: SnowflakeTypeInput
+                client_secret?: string | null
                 external_auth_token: string
-                external_auth_type: ApplicationIdentityProviderAuthType
+                external_auth_type: ApplicationIdentityProviderAuthTypeInput
               }
             }
             output: ErrorResponse
@@ -10514,10 +10555,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                client_id: SnowflakeType
-                client_secret?: (string | null) | undefined
+                client_id: SnowflakeTypeInput
+                client_secret?: string | null
                 external_auth_token: string
-                external_auth_type: ApplicationIdentityProviderAuthType
+                external_auth_type: ApplicationIdentityProviderAuthTypeInput
               }
             }
             output: ProvisionalTokenResponse
@@ -10527,10 +10568,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                client_id: SnowflakeType
-                client_secret?: (string | null) | undefined
+                client_id: SnowflakeTypeInput
+                client_secret?: string | null
                 external_auth_token: string
-                external_auth_type: ApplicationIdentityProviderAuthType
+                external_auth_type: ApplicationIdentityProviderAuthTypeInput
               }
             }
             output: RatelimitedResponse
@@ -10540,10 +10581,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                client_id: SnowflakeType
-                client_secret?: (string | null) | undefined
+                client_id: SnowflakeTypeInput
+                client_secret?: string | null
                 external_auth_token: string
-                external_auth_type: ApplicationIdentityProviderAuthType
+                external_auth_type: ApplicationIdentityProviderAuthTypeInput
               }
             }
             output: ErrorResponse
@@ -10557,9 +10598,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                provisional_user_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+                provisional_user_id?: null | SnowflakeTypeInput
                 external_user_id: string
-                preferred_global_name?: (string | null) | undefined
+                preferred_global_name?: string | null
               }
             }
             output: ProvisionalTokenResponse
@@ -10569,9 +10610,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                provisional_user_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+                provisional_user_id?: null | SnowflakeTypeInput
                 external_user_id: string
-                preferred_global_name?: (string | null) | undefined
+                preferred_global_name?: string | null
               }
             }
             output: RatelimitedResponse
@@ -10581,9 +10622,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                provisional_user_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+                provisional_user_id?: null | SnowflakeTypeInput
                 external_user_id: string
-                preferred_global_name?: (string | null) | undefined
+                preferred_global_name?: string | null
               }
             }
             output: ErrorResponse
@@ -10595,12 +10636,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/skus/:sku_id/subscriptions': {
       $get:
         | {
-            input: { param: { sku_id: SnowflakeType } } & {
+            input: { param: { sku_id: SnowflakeTypeInput } } & {
               query: {
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                user_id?: SnowflakeType | undefined
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                user_id?: SnowflakeTypeInput
               }
             }
             output: SubscriptionResponse[]
@@ -10608,12 +10649,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { sku_id: SnowflakeType } } & {
+            input: { param: { sku_id: SnowflakeTypeInput } } & {
               query: {
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                user_id?: SnowflakeType | undefined
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                user_id?: SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -10621,12 +10662,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { sku_id: SnowflakeType } } & {
+            input: { param: { sku_id: SnowflakeTypeInput } } & {
               query: {
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                user_id?: SnowflakeType | undefined
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                user_id?: SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -10638,25 +10679,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/skus/:sku_id/subscriptions/:subscription_id': {
       $get:
         | {
-            input: { param: { sku_id: SnowflakeType; subscription_id: SnowflakeType } } & {
-              query: { user_id?: SnowflakeType | undefined }
-            }
+            input: {
+              param: { sku_id: SnowflakeTypeInput; subscription_id: SnowflakeTypeInput }
+            } & { query: { user_id?: SnowflakeTypeInput } }
             output: SubscriptionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { sku_id: SnowflakeType; subscription_id: SnowflakeType } } & {
-              query: { user_id?: SnowflakeType | undefined }
-            }
+            input: {
+              param: { sku_id: SnowflakeTypeInput; subscription_id: SnowflakeTypeInput }
+            } & { query: { user_id?: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { sku_id: SnowflakeType; subscription_id: SnowflakeType } } & {
-              query: { user_id?: SnowflakeType | undefined }
-            }
+            input: {
+              param: { sku_id: SnowflakeTypeInput; subscription_id: SnowflakeTypeInput }
+            } & { query: { user_id?: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10676,16 +10717,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 topic: string
-                channel_id: SnowflakeType
-                privacy_level?:
-                  | ({ [x: string]: unknown } | null)
-                  | StageInstancesPrivacyLevels
-                  | undefined
-                guild_scheduled_event_id?:
-                  | ({ [x: string]: unknown } | null)
-                  | SnowflakeType
-                  | undefined
-                send_start_notification?: (boolean | null) | undefined
+                channel_id: SnowflakeTypeInput
+                privacy_level?: null | StageInstancesPrivacyLevelsInput
+                guild_scheduled_event_id?: null | SnowflakeTypeInput
+                send_start_notification?: boolean | null
               }
             }
             output: StageInstanceResponse
@@ -10696,16 +10731,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 topic: string
-                channel_id: SnowflakeType
-                privacy_level?:
-                  | ({ [x: string]: unknown } | null)
-                  | StageInstancesPrivacyLevels
-                  | undefined
-                guild_scheduled_event_id?:
-                  | ({ [x: string]: unknown } | null)
-                  | SnowflakeType
-                  | undefined
-                send_start_notification?: (boolean | null) | undefined
+                channel_id: SnowflakeTypeInput
+                privacy_level?: null | StageInstancesPrivacyLevelsInput
+                guild_scheduled_event_id?: null | SnowflakeTypeInput
+                send_start_notification?: boolean | null
               }
             }
             output: RatelimitedResponse
@@ -10716,16 +10745,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 topic: string
-                channel_id: SnowflakeType
-                privacy_level?:
-                  | ({ [x: string]: unknown } | null)
-                  | StageInstancesPrivacyLevels
-                  | undefined
-                guild_scheduled_event_id?:
-                  | ({ [x: string]: unknown } | null)
-                  | SnowflakeType
-                  | undefined
-                send_start_notification?: (boolean | null) | undefined
+                channel_id: SnowflakeTypeInput
+                privacy_level?: null | StageInstancesPrivacyLevelsInput
+                guild_scheduled_event_id?: null | SnowflakeTypeInput
+                send_start_notification?: boolean | null
               }
             }
             output: ErrorResponse
@@ -10737,71 +10760,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/stage-instances/:channel_id': {
       $get:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: StageInstanceResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } }
+            input: { param: { channel_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: {
-                topic?: string | undefined
-                privacy_level?: StageInstancesPrivacyLevels | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { topic?: string; privacy_level?: StageInstancesPrivacyLevelsInput }
             }
             output: StageInstanceResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: {
-                topic?: string | undefined
-                privacy_level?: StageInstancesPrivacyLevels | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { topic?: string; privacy_level?: StageInstancesPrivacyLevelsInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { channel_id: SnowflakeType } } & {
-              json: {
-                topic?: string | undefined
-                privacy_level?: StageInstancesPrivacyLevels | undefined
-              }
+            input: { param: { channel_id: SnowflakeTypeInput } } & {
+              json: { topic?: string; privacy_level?: StageInstancesPrivacyLevelsInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -10819,19 +10833,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/sticker-packs/:pack_id': {
       $get:
         | {
-            input: { param: { pack_id: SnowflakeType } }
+            input: { param: { pack_id: SnowflakeTypeInput } }
             output: StickerPackResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { pack_id: SnowflakeType } }
+            input: { param: { pack_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { pack_id: SnowflakeType } }
+            input: { param: { pack_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10841,19 +10855,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/stickers/:sticker_id': {
       $get:
         | {
-            input: { param: { sticker_id: SnowflakeType } }
+            input: { param: { sticker_id: SnowflakeTypeInput } }
             output: GuildStickerResponse | StandardStickerResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { sticker_id: SnowflakeType } }
+            input: { param: { sticker_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { sticker_id: SnowflakeType } }
+            input: { param: { sticker_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10867,19 +10881,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 400 }
       $patch:
         | {
-            input: { json: BotAccountPatchRequest }
+            input: { json: BotAccountPatchRequestInput }
             output: UserPIIResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: BotAccountPatchRequest }
+            input: { json: BotAccountPatchRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { json: BotAccountPatchRequest }
+            input: { json: BotAccountPatchRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10889,33 +10903,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/users/@me/applications/:application_id/entitlements': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              query: {
-                sku_ids?: string | (({ [x: string]: unknown } | null) | SnowflakeType)[] | undefined
-                exclude_consumed?: boolean | undefined
-              }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              query: { sku_ids?: string | (null | SnowflakeTypeInput)[]; exclude_consumed?: string }
             }
             output: EntitlementResponse[]
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              query: {
-                sku_ids?: string | (({ [x: string]: unknown } | null) | SnowflakeType)[] | undefined
-                exclude_consumed?: boolean | undefined
-              }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              query: { sku_ids?: string | (null | SnowflakeTypeInput)[]; exclude_consumed?: string }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              query: {
-                sku_ids?: string | (({ [x: string]: unknown } | null) | SnowflakeType)[] | undefined
-                exclude_consumed?: boolean | undefined
-              }
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              query: { sku_ids?: string | (null | SnowflakeTypeInput)[]; exclude_consumed?: string }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -10926,43 +10931,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/users/@me/applications/:application_id/role-connection': {
       $get:
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: ApplicationUserRoleConnectionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $put:
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: UpdateApplicationUserRoleConnectionRequest
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: UpdateApplicationUserRoleConnectionRequestInput
             }
             output: ApplicationUserRoleConnectionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: UpdateApplicationUserRoleConnectionRequest
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: UpdateApplicationUserRoleConnectionRequestInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } } & {
-              json: UpdateApplicationUserRoleConnectionRequest
+            input: { param: { application_id: SnowflakeTypeInput } } & {
+              json: UpdateApplicationUserRoleConnectionRequestInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -10970,19 +10975,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { application_id: SnowflakeType } }
+            input: { param: { application_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -10992,19 +10997,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/users/@me/channels': {
       $post:
         | {
-            input: { json: CreatePrivateChannelRequest }
+            input: { json: CreatePrivateChannelRequestInput }
             output: PrivateChannelResponse | PrivateGroupChannelResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreatePrivateChannelRequest }
+            input: { json: CreatePrivateChannelRequestInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { json: CreatePrivateChannelRequest }
+            input: { json: CreatePrivateChannelRequestInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -11028,11 +11033,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                shard?: number | undefined
-                with_counts?: boolean | undefined
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                shard?: unknown
+                with_counts?: string
               }
             }
             output: MyGuildResponse[] | null
@@ -11042,11 +11047,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                shard?: number | undefined
-                with_counts?: boolean | undefined
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                shard?: unknown
+                with_counts?: string
               }
             }
             output: RatelimitedResponse
@@ -11056,11 +11061,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                before?: SnowflakeType | undefined
-                after?: SnowflakeType | undefined
-                limit?: number | undefined
-                shard?: number | undefined
-                with_counts?: boolean | undefined
+                before?: SnowflakeTypeInput
+                after?: SnowflakeTypeInput
+                limit?: unknown
+                shard?: unknown
+                with_counts?: string
               }
             }
             output: ErrorResponse
@@ -11072,19 +11077,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/users/@me/guilds/:guild_id': {
       $delete:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -11094,19 +11099,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/users/@me/guilds/:guild_id/member': {
       $get:
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: PrivateGuildMemberResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { guild_id: SnowflakeType } }
+            input: { param: { guild_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -11116,19 +11121,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/users/:user_id': {
       $get:
         | {
-            input: { param: { user_id: SnowflakeType } }
+            input: { param: { user_id: SnowflakeTypeInput } }
             output: UserResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { user_id: SnowflakeType } }
+            input: { param: { user_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { user_id: SnowflakeType } }
+            input: { param: { user_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -11145,7 +11150,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks/:webhook_id': {
       $get:
         | {
-            input: { param: { webhook_id: SnowflakeType } }
+            input: { param: { webhook_id: SnowflakeTypeInput } }
             output:
               | ApplicationIncomingWebhookResponse
               | ChannelFollowerWebhookResponse
@@ -11154,43 +11159,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { webhook_id: SnowflakeType } }
+            input: { param: { webhook_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType } }
+            input: { param: { webhook_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $delete:
         | {
-            input: { param: { webhook_id: SnowflakeType } }
+            input: { param: { webhook_id: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { webhook_id: SnowflakeType } }
+            input: { param: { webhook_id: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType } }
+            input: { param: { webhook_id: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { webhook_id: SnowflakeType } } & {
+            input: { param: { webhook_id: SnowflakeTypeInput } } & {
               json: {
-                name?: string | undefined
-                avatar?: (string | null) | undefined
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+                name?: string
+                avatar?: string | null
+                channel_id?: null | SnowflakeTypeInput
               }
             }
             output:
@@ -11201,11 +11206,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { webhook_id: SnowflakeType } } & {
+            input: { param: { webhook_id: SnowflakeTypeInput } } & {
               json: {
-                name?: string | undefined
-                avatar?: (string | null) | undefined
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+                name?: string
+                avatar?: string | null
+                channel_id?: null | SnowflakeTypeInput
               }
             }
             output: RatelimitedResponse
@@ -11213,11 +11218,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType } } & {
+            input: { param: { webhook_id: SnowflakeTypeInput } } & {
               json: {
-                name?: string | undefined
-                avatar?: (string | null) | undefined
-                channel_id?: ({ [x: string]: unknown } | null) | SnowflakeType | undefined
+                name?: string
+                avatar?: string | null
+                channel_id?: null | SnowflakeTypeInput
               }
             }
             output: ErrorResponse
@@ -11229,7 +11234,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks/:webhook_id/:webhook_token': {
       $get:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } }
             output:
               | ApplicationIncomingWebhookResponse
               | ChannelFollowerWebhookResponse
@@ -11238,69 +11243,61 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $post:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: {
-                wait?: boolean | undefined
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
-              }
-            } & { json: IncomingWebhookRequestPartial | IncomingWebhookUpdateRequestPartial } & {
-              form: IncomingWebhookRequestPartial | IncomingWebhookUpdateRequestPartial
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput; with_components?: string }
+            } & {
+              json: IncomingWebhookRequestPartialInput | IncomingWebhookUpdateRequestPartialInput
+            } & {
+              form: IncomingWebhookRequestPartialInput | IncomingWebhookUpdateRequestPartialInput
             }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: {
-                wait?: boolean | undefined
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
-              }
-            } & { json: IncomingWebhookRequestPartial | IncomingWebhookUpdateRequestPartial } & {
-              form: IncomingWebhookRequestPartial | IncomingWebhookUpdateRequestPartial
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput; with_components?: string }
+            } & {
+              json: IncomingWebhookRequestPartialInput | IncomingWebhookUpdateRequestPartialInput
+            } & {
+              form: IncomingWebhookRequestPartialInput | IncomingWebhookUpdateRequestPartialInput
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: {
-                wait?: boolean | undefined
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
-              }
-            } & { json: IncomingWebhookRequestPartial | IncomingWebhookUpdateRequestPartial } & {
-              form: IncomingWebhookRequestPartial | IncomingWebhookUpdateRequestPartial
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput; with_components?: string }
+            } & {
+              json: IncomingWebhookRequestPartialInput | IncomingWebhookUpdateRequestPartialInput
+            } & {
+              form: IncomingWebhookRequestPartialInput | IncomingWebhookUpdateRequestPartialInput
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: {
-                wait?: boolean | undefined
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
-              }
-            } & { json: IncomingWebhookRequestPartial | IncomingWebhookUpdateRequestPartial } & {
-              form: IncomingWebhookRequestPartial | IncomingWebhookUpdateRequestPartial
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput; with_components?: string }
+            } & {
+              json: IncomingWebhookRequestPartialInput | IncomingWebhookUpdateRequestPartialInput
+            } & {
+              form: IncomingWebhookRequestPartialInput | IncomingWebhookUpdateRequestPartialInput
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -11308,27 +11305,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
           }
       $patch:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              json: { name?: string | undefined; avatar?: (string | null) | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              json: { name?: string; avatar?: string | null }
             }
             output:
               | ApplicationIncomingWebhookResponse
@@ -11338,16 +11335,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              json: { name?: string | undefined; avatar?: (string | null) | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              json: { name?: string; avatar?: string | null }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              json: { name?: string | undefined; avatar?: (string | null) | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              json: { name?: string; avatar?: string | null }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -11358,25 +11355,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks/:webhook_id/:webhook_token/github': {
       $post:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { wait?: boolean | undefined; thread_id?: SnowflakeType | undefined }
-            } & { json: GithubWebhook }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput }
+            } & { json: GithubWebhookInput }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { wait?: boolean | undefined; thread_id?: SnowflakeType | undefined }
-            } & { json: GithubWebhook }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput }
+            } & { json: GithubWebhookInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { wait?: boolean | undefined; thread_id?: SnowflakeType | undefined }
-            } & { json: GithubWebhook }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput }
+            } & { json: GithubWebhookInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -11386,24 +11383,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks/:webhook_id/:webhook_token/messages/@original': {
       $get:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { thread_id?: SnowflakeType | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput }
             }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { thread_id?: SnowflakeType | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { thread_id?: SnowflakeType | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -11411,24 +11408,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { thread_id?: SnowflakeType | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput }
             }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { thread_id?: SnowflakeType | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput }
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { thread_id?: SnowflakeType | undefined }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput }
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -11436,147 +11433,69 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: {
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
-              }
-            } & { json: IncomingWebhookUpdateRequestPartial } & {
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput; with_components?: string }
+            } & { json: IncomingWebhookUpdateRequestPartialInput } & {
               form:
-                | IncomingWebhookUpdateRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    flags?: (number | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | IncomingWebhookUpdateRequestPartialInput
+                | (IncomingWebhookUpdateRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: {
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
-              }
-            } & { json: IncomingWebhookUpdateRequestPartial } & {
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput; with_components?: string }
+            } & { json: IncomingWebhookUpdateRequestPartialInput } & {
               form:
-                | IncomingWebhookUpdateRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    flags?: (number | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | IncomingWebhookUpdateRequestPartialInput
+                | (IncomingWebhookUpdateRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: {
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
-              }
-            } & { json: IncomingWebhookUpdateRequestPartial } & {
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { thread_id?: SnowflakeTypeInput; with_components?: string }
+            } & { json: IncomingWebhookUpdateRequestPartialInput } & {
               form:
-                | IncomingWebhookUpdateRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    flags?: (number | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | IncomingWebhookUpdateRequestPartialInput
+                | (IncomingWebhookUpdateRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -11588,24 +11507,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & { query: { thread_id?: SnowflakeType | undefined } }
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
+              }
+            } & { query: { thread_id?: SnowflakeTypeInput } }
             output: MessageResponse
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & { query: { thread_id?: SnowflakeType | undefined } }
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
+              }
+            } & { query: { thread_id?: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & { query: { thread_id?: SnowflakeType | undefined } }
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
+              }
+            } & { query: { thread_id?: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -11613,24 +11544,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & { query: { thread_id?: SnowflakeType | undefined } }
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
+              }
+            } & { query: { thread_id?: SnowflakeTypeInput } }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & { query: { thread_id?: SnowflakeType | undefined } }
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
+              }
+            } & { query: { thread_id?: SnowflakeTypeInput } }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & { query: { thread_id?: SnowflakeType | undefined } }
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
+              }
+            } & { query: { thread_id?: SnowflakeTypeInput } }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -11638,50 +11581,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & {
-              query: {
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
               }
-            } & { json: IncomingWebhookUpdateRequestPartial } & {
+            } & { query: { thread_id?: SnowflakeTypeInput; with_components?: string } } & {
+              json: IncomingWebhookUpdateRequestPartialInput
+            } & {
               form:
-                | IncomingWebhookUpdateRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    flags?: (number | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | IncomingWebhookUpdateRequestPartialInput
+                | (IncomingWebhookUpdateRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: MessageResponse
             outputFormat: 'json'
@@ -11689,50 +11610,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & {
-              query: {
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
               }
-            } & { json: IncomingWebhookUpdateRequestPartial } & {
+            } & { query: { thread_id?: SnowflakeTypeInput; with_components?: string } } & {
+              json: IncomingWebhookUpdateRequestPartialInput
+            } & {
               form:
-                | IncomingWebhookUpdateRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    flags?: (number | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | IncomingWebhookUpdateRequestPartialInput
+                | (IncomingWebhookUpdateRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: RatelimitedResponse
             outputFormat: 'json'
@@ -11740,50 +11639,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: {
-              param: { webhook_id: SnowflakeType; webhook_token: string; message_id: SnowflakeType }
-            } & {
-              query: {
-                thread_id?: SnowflakeType | undefined
-                with_components?: boolean | undefined
+              param: {
+                webhook_id: SnowflakeTypeInput
+                webhook_token: string
+                message_id: SnowflakeTypeInput
               }
-            } & { json: IncomingWebhookUpdateRequestPartial } & {
+            } & { query: { thread_id?: SnowflakeTypeInput; with_components?: string } } & {
+              json: IncomingWebhookUpdateRequestPartialInput
+            } & {
               form:
-                | IncomingWebhookUpdateRequestPartial
-                | {
-                    content?: (string | null) | undefined
-                    embeds?: (RichEmbed[] | null) | undefined
-                    allowed_mentions?:
-                      | ({ [x: string]: unknown } | null)
-                      | MessageAllowedMentionsRequest
-                      | undefined
-                    components?:
-                      | (
-                          | (
-                              | ActionRowComponentForMessageRequest
-                              | ContainerComponentForMessageRequest
-                              | FileComponentForMessageRequest
-                              | MediaGalleryComponentForMessageRequest
-                              | SectionComponentForMessageRequest
-                              | SeparatorComponentForMessageRequest
-                              | TextDisplayComponentForMessageRequest
-                            )[]
-                          | null
-                        )
-                      | undefined
-                    attachments?: (MessageAttachmentRequest[] | null) | undefined
-                    poll?: ({ [x: string]: unknown } | null) | PollCreateRequest | undefined
-                    flags?: (number | null) | undefined
-                    'files[0]'?: string | undefined
-                    'files[1]'?: string | undefined
-                    'files[2]'?: string | undefined
-                    'files[3]'?: string | undefined
-                    'files[4]'?: string | undefined
-                    'files[5]'?: string | undefined
-                    'files[6]'?: string | undefined
-                    'files[7]'?: string | undefined
-                    'files[8]'?: string | undefined
-                    'files[9]'?: string | undefined
-                  }
+                | IncomingWebhookUpdateRequestPartialInput
+                | (IncomingWebhookUpdateRequestPartialInput & {
+                    'files[0]'?: string
+                    'files[1]'?: string
+                    'files[2]'?: string
+                    'files[3]'?: string
+                    'files[4]'?: string
+                    'files[5]'?: string
+                    'files[6]'?: string
+                    'files[7]'?: string
+                    'files[8]'?: string
+                    'files[9]'?: string
+                  })
             }
             output: ErrorResponse
             outputFormat: 'json'
@@ -11794,25 +11671,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/webhooks/:webhook_id/:webhook_token/slack': {
       $post:
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { wait?: boolean | undefined; thread_id?: SnowflakeType | undefined }
-            } & { json: SlackWebhook } & { form: SlackWebhook }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput }
+            } & { json: SlackWebhookInput } & { form: SlackWebhookInput }
             output: string | null
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { wait?: boolean | undefined; thread_id?: SnowflakeType | undefined }
-            } & { json: SlackWebhook } & { form: SlackWebhook }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput }
+            } & { json: SlackWebhookInput } & { form: SlackWebhookInput }
             output: RatelimitedResponse
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { webhook_id: SnowflakeType; webhook_token: string } } & {
-              query: { wait?: boolean | undefined; thread_id?: SnowflakeType | undefined }
-            } & { json: SlackWebhook } & { form: SlackWebhook }
+            input: { param: { webhook_id: SnowflakeTypeInput; webhook_token: string } } & {
+              query: { wait?: string; thread_id?: SnowflakeTypeInput }
+            } & { json: SlackWebhookInput } & { form: SlackWebhookInput }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400

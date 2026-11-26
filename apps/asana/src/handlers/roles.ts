@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteRolesRoleGidRoute,
-  getRolesRoleGidRoute,
   getRolesRoute,
   postRolesRoute,
+  getRolesRoleGidRoute,
   putRolesRoleGidRoute,
+  deleteRolesRoleGidRoute,
 } from '../routes'
 
 export const getRolesRouteHandler: RouteHandler<typeof getRolesRoute> = async (c) => {

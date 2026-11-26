@@ -1,0 +1,18 @@
+{
+  "hono-takibi.config.ts": {
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
+    "generated": true,
+    "config": "157fcc2962c42ecda91bdfbb6eea3e9df7c18f879dafaeab19cbdbbac1e8a686",
+    "sources": {
+      "https://raw.githubusercontent.com/activepieces/activepieces/main/docs/openapi.json": {
+        "etag": "W/\"6d204f4cff3d9a65414627b36b675e26d21756681d88e5e1c2d4f974d965884a\"",
+        "sha256": "45d87dc374f492c2321fffecb304a68394b26886d928745ed194f41bba0409fc",
+        "canonical": "3ebc889486ddf58a76834b84014cb2b31ff66170203791515f1f0ce7aae348b5"
+      }
+    },
+    "typecheck": {
+      "errors": 0
+    }
+  }
+}

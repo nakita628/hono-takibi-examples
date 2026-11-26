@@ -1,17 +1,17 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getInstanceCommunicationRoute,
-  getInstanceOauthApplicationSettingsRoute,
-  getInstanceOrganizationSettingsRoute,
-  getInstanceProtectRoute,
   getInstanceRoute,
-  patchInstanceCommunicationRoute,
-  patchInstanceOauthApplicationSettingsRoute,
-  patchInstanceOrganizationSettingsRoute,
-  patchInstanceProtectRoute,
-  patchInstanceRestrictionsRoute,
   patchInstanceRoute,
+  patchInstanceRestrictionsRoute,
+  getInstanceProtectRoute,
+  patchInstanceProtectRoute,
+  getInstanceCommunicationRoute,
+  patchInstanceCommunicationRoute,
+  getInstanceOauthApplicationSettingsRoute,
+  patchInstanceOauthApplicationSettingsRoute,
   postInstanceChangeDomainRoute,
+  getInstanceOrganizationSettingsRoute,
+  patchInstanceOrganizationSettingsRoute,
 } from '../routes'
 
 export const getInstanceRouteHandler: RouteHandler<typeof getInstanceRoute> = async (c) => {

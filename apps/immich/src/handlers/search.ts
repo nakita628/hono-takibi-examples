@@ -2,14 +2,14 @@ import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   getSearchCitiesRoute,
   getSearchExploreRoute,
-  getSearchPersonRoute,
-  getSearchPlacesRoute,
-  getSearchSuggestionsRoute,
   postSearchLargeAssetsRoute,
   postSearchMetadataRoute,
+  getSearchPersonRoute,
+  getSearchPlacesRoute,
   postSearchRandomRoute,
   postSearchSmartRoute,
   postSearchStatisticsRoute,
+  getSearchSuggestionsRoute,
 } from '../routes'
 
 export const getSearchCitiesRouteHandler: RouteHandler<typeof getSearchCitiesRoute> = async (c) => {

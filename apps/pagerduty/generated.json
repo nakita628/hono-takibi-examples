@@ -1,13 +1,14 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
     "generated": true,
     "config": "7b4436c08c22c782a02f483ccff4b4968677ee4ac79b4772ee221d78e280436e",
     "sources": {
       "https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json": {
-        "etag": "W/\"b842b2a19e96684fa5ce192d16da52a49d754c3e87d48df77ad38107a47c58e4\"",
-        "sha256": "788e9bf1e3575109d9e89d845650a56050082d8a63c83430b8218425032c2fa0"
+        "etag": "W/\"470b8402c74a41f26c1b73affe549ed0d10582a82148de4d46718e9b62804dda\"",
+        "sha256": "691b9534e0e77336f5277307c06eca63acf8043f4a30d5fe352f4d235d8e7c18",
+        "canonical": "9a52b544c7a942b7ab448665331e74d42baa71c0a96f99379ee0c437c1baf1fd"
       }
     },
     "typecheck": {

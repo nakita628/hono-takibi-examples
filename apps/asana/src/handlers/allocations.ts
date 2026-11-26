@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAllocationsAllocationGidRoute,
   getAllocationsAllocationGidRoute,
+  putAllocationsAllocationGidRoute,
+  deleteAllocationsAllocationGidRoute,
   getAllocationsRoute,
   postAllocationsRoute,
-  putAllocationsAllocationGidRoute,
 } from '../routes'
 
 export const getAllocationsAllocationGidRouteHandler: RouteHandler<

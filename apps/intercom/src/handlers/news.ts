@@ -1,13 +1,13 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteNewsNewsItemsNewsItemIdRoute,
-  getNewsNewsfeedsNewsfeedIdItemsRoute,
-  getNewsNewsfeedsNewsfeedIdRoute,
-  getNewsNewsfeedsRoute,
-  getNewsNewsItemsNewsItemIdRoute,
   getNewsNewsItemsRoute,
   postNewsNewsItemsRoute,
+  getNewsNewsItemsNewsItemIdRoute,
   putNewsNewsItemsNewsItemIdRoute,
+  deleteNewsNewsItemsNewsItemIdRoute,
+  getNewsNewsfeedsNewsfeedIdItemsRoute,
+  getNewsNewsfeedsRoute,
+  getNewsNewsfeedsNewsfeedIdRoute,
 } from '../routes'
 
 export const getNewsNewsItemsRouteHandler: RouteHandler<typeof getNewsNewsItemsRoute> = async (

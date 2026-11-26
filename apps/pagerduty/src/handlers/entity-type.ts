@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getEntityTypeIdTagsRoute, postEntityTypeIdChangeTagsRoute } from '../routes'
+import type { postEntityTypeIdChangeTagsRoute, getEntityTypeIdTagsRoute } from '../routes'
 
 export const postEntityTypeIdChangeTagsRouteHandler: RouteHandler<
   typeof postEntityTypeIdChangeTagsRoute

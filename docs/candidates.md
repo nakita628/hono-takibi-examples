@@ -6,11 +6,8 @@ been added. This file only holds what is still to do and what has been ruled out
 ## Pending
 
 One line per document: `name | raw URL | note`. Take them from the top, at most three a day.
-Each was checked with `node scripts/probe-spec.mjs`: the first three on 2026-11-22, the rest on 2026-11-25.
+Each was checked with `node scripts/probe-spec.mjs` on 2026-11-25.
 
-- activepieces | https://raw.githubusercontent.com/activepieces/activepieces/main/docs/openapi.json | OpenAPI 3.1.0, 119 operations
-- binance-spot | https://raw.githubusercontent.com/binance/binance-api-swagger/master/spot_api.yaml | OpenAPI 3.0.2, 340 operations, 999 KB
-- apache-gravitino | https://raw.githubusercontent.com/apache/gravitino/main/docs/open-api/openapi.yaml | Does not parse (`deficient indentation (447:11)`), same cause as `iceberg-rest-catalog`, nakita628/hono-takibi#406. Add it config-only, or generate it once hono-takibi reads that shape
 - lakefs | https://raw.githubusercontent.com/treeverse/lakeFS/master/api/swagger.yml | OpenAPI 3.0.0, 130 operations (the file is named swagger.yml, the document is OpenAPI 3)
 - ceph-dashboard | https://raw.githubusercontent.com/ceph/ceph/main/src/pybind/mgr/dashboard/openapi.yaml | OpenAPI 3.0.0, 450 operations, 1.1 MB
 - typebot-builder | https://raw.githubusercontent.com/baptisteArno/typebot.io/main/apps/docs/openapi/builder.json | OpenAPI 3.1.1, 68 operations, 3.4 MB

@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getBrandsIdRoute, getBrandsRoute } from '../routes'
+import type { getBrandsRoute, getBrandsIdRoute } from '../routes'
 
 export const getBrandsRouteHandler: RouteHandler<typeof getBrandsRoute> = async (c) => {
   throw new Error('Not implemented')

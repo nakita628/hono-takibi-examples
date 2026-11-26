@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getPluginsIdRoute,
-  getPluginsMethodsRoute,
   getPluginsRoute,
+  getPluginsMethodsRoute,
   getPluginsTemplatesRoute,
+  getPluginsIdRoute,
 } from '../routes'
 
 export const getPluginsRouteHandler: RouteHandler<typeof getPluginsRoute> = async (c) => {

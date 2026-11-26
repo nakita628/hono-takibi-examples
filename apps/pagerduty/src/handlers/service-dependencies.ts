@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getServiceDependenciesBusinessServicesIdRoute,
-  getServiceDependenciesTechnicalServicesIdRoute,
   postServiceDependenciesAssociateRoute,
+  getServiceDependenciesBusinessServicesIdRoute,
   postServiceDependenciesDisassociateRoute,
+  getServiceDependenciesTechnicalServicesIdRoute,
 } from '../routes'
 
 export const postServiceDependenciesAssociateRouteHandler: RouteHandler<

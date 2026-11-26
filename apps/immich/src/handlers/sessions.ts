@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteSessionsIdRoute,
   deleteSessionsRoute,
   getSessionsRoute,
-  postSessionsIdLockRoute,
   postSessionsRoute,
+  deleteSessionsIdRoute,
   putSessionsIdRoute,
+  postSessionsIdLockRoute,
 } from '../routes'
 
 export const deleteSessionsRouteHandler: RouteHandler<typeof deleteSessionsRoute> = async (c) => {

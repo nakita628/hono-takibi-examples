@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getMessagesStatusRoute,
-  getMessagesWhatsappStatusRoute,
   postMessagesRoute,
+  getMessagesWhatsappStatusRoute,
+  getMessagesStatusRoute,
 } from '../routes'
 
 export const postMessagesRouteHandler: RouteHandler<typeof postMessagesRoute> = async (c) => {

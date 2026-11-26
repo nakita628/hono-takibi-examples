@@ -1,7 +1,7 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getDownloadContentDataJobIdentifierRoute,
   getDownloadReportingDataJobIdentifierRoute,
+  getDownloadContentDataJobIdentifierRoute,
 } from '../routes'
 
 export const getDownloadReportingDataJobIdentifierRouteHandler: RouteHandler<

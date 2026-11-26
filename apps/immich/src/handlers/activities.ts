@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteActivitiesIdRoute,
   getActivitiesRoute,
-  getActivitiesStatisticsRoute,
   postActivitiesRoute,
+  getActivitiesStatisticsRoute,
+  deleteActivitiesIdRoute,
 } from '../routes'
 
 export const getActivitiesRouteHandler: RouteHandler<typeof getActivitiesRoute> = async (c) => {

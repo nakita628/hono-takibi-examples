@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   getStandardsRoute,
-  getStandardsScoresResourceTypeIdRoute,
-  getStandardsScoresResourceTypeRoute,
   putStandardsIdRoute,
+  getStandardsScoresResourceTypeRoute,
+  getStandardsScoresResourceTypeIdRoute,
 } from '../routes'
 
 export const getStandardsRouteHandler: RouteHandler<typeof getStandardsRoute> = async (c) => {

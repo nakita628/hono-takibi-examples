@@ -15339,6 +15339,415 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
+<h1 id="workos-organizationsissuer-trusts">organizations.issuer-trusts</h1>
+
+Manage the issuers an organization trusts.
+
+## List issuer trusts
+
+<a id="opIdIssuerTrustsController_list"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/issuer_trusts \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /organizations/{organization_id}/issuer_trusts`
+
+Get the issuers an organization trusts.
+
+<h3 id="list-issuer-trusts-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|The ID of the organization.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "issuer_trust",
+      "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+      "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+      "type": "claude",
+      "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+      "enabled": true,
+      "created_at": "2026-01-15T12:00:00.000Z",
+      "updated_at": "2026-01-15T12:00:00.000Z"
+    }
+  ],
+  "list_metadata": {
+    "before": "issuer_trust_01HXYZ123456789ABCDEFGHIJ",
+    "after": "issuer_trust_01HXYZ987654321KJIHGFEDCBA"
+  }
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="list-issuer-trusts-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[IssuerTrustList](#schemaissuertrustlist)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Create an issuer trust
+
+<a id="opIdIssuerTrustsController_create"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/issuer_trusts \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "type": "claude",
+    "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A"
+  }'
+```
+
+`POST /organizations/{organization_id}/issuer_trusts`
+
+Trust an issuer for an organization. WorkOS checks the issuer's OpenID configuration and that the organization has a verified domain. The trust is created disabled; enable it to start accepting ID-JAGs from the issuer.
+
+> Body parameter
+
+```json
+{
+  "type": "claude",
+  "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A"
+}
+```
+
+<h3 id="create-an-issuer-trust-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|The ID of the organization.|
+|body|body|object|true|none|
+|» type|body|string|true|The type of issuer, which identifies who operates it.|
+|» issuer|body|string|true|The issuer URL. WorkOS fetches the issuer's OpenID configuration to confirm it before creating the trust.|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "object": "issuer_trust",
+  "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+  "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+  "type": "claude",
+  "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+  "enabled": false,
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "action_denied",
+  "message": "Request could not be processed."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "account_selection_required",
+  "message": "Validation failed.",
+  "errors": [
+    {
+      "code": "action_denied",
+      "message": "Request could not be processed."
+    }
+  ]
+}
+```
+
+<h3 id="create-an-issuer-trust-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created|Created|[IssuerTrust](#schemaissuertrust)|
+|400|Bad Request|Bad Request|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
+|403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+|422|Unprocessable Entity|Unprocessable Entity|[ErrorBodyWithCodeErrors](#schemaerrorbodywithcodeerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Get an issuer trust
+
+<a id="opIdIssuerTrustsController_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/issuer_trusts/issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /organizations/{organization_id}/issuer_trusts/{id}`
+
+Get an issuer trust by its ID.
+
+<h3 id="get-an-issuer-trust-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|The ID of the organization.|
+|id|path|string|true|The ID of the issuer trust.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "issuer_trust",
+  "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+  "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+  "type": "claude",
+  "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+  "enabled": true,
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="get-an-issuer-trust-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[IssuerTrust](#schemaissuertrust)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Delete an issuer trust
+
+<a id="opIdIssuerTrustsController_delete"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/issuer_trusts/issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /organizations/{organization_id}/issuer_trusts/{id}`
+
+Stop trusting an issuer. ID-JAGs from the issuer are rejected from then on.
+
+<h3 id="delete-an-issuer-trust-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|The ID of the organization.|
+|id|path|string|true|The ID of the issuer trust.|
+
+> Example responses
+
+> 403 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="delete-an-issuer-trust-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|No Content|None|
+|403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Update an issuer trust
+
+<a id="opIdIssuerTrustsController_update"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/organizations/org_01EHZNVPK3SFK441A1RGBFSHRT/issuer_trusts/issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A \
+  -X PATCH \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "enabled": true
+  }'
+```
+
+`PATCH /organizations/{organization_id}/issuer_trusts/{id}`
+
+Enable or disable an issuer trust. ID-JAGs from a disabled issuer are rejected. `enabled` is the only field that can be changed, and an omitted field is left unchanged.
+
+> Body parameter
+
+```json
+{
+  "enabled": true
+}
+```
+
+<h3 id="update-an-issuer-trust-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|organization_id|path|string|true|The ID of the organization.|
+|id|path|string|true|The ID of the issuer trust.|
+|body|body|object|true|none|
+|» enabled|body|boolean|false|Whether ID-JAGs from the issuer are accepted.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "issuer_trust",
+  "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+  "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+  "type": "claude",
+  "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+  "enabled": true,
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+> 400 Response
+
+```json
+{
+  "code": "action_denied",
+  "message": "Request could not be processed."
+}
+```
+
+> 403 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "code": "account_selection_required",
+  "message": "Validation failed.",
+  "errors": [
+    {
+      "code": "action_denied",
+      "message": "Request could not be processed."
+    }
+  ]
+}
+```
+
+<h3 id="update-an-issuer-trust-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[IssuerTrust](#schemaissuertrust)|
+|400|Bad Request|Bad Request|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
+|403|Forbidden|Forbidden|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+|422|Unprocessable Entity|Unprocessable Entity|[ErrorBodyWithCodeErrors](#schemaerrorbodywithcodeerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
 <h1 id="workos-organizationsit-contacts">organizations.it-contacts</h1>
 
 Manage IT contacts for organizations.
@@ -19078,6 +19487,108 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer
 </aside>
 
+## Get a Radar detection
+
+<a id="opIdRadarDetectionsController_find"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/radar/detections/detection_01HZBC6N1EB1ZY7KG32X \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /radar/detections/{id}`
+
+Get a Radar detection from the last 30 days, including the evidence for why Radar fired.
+
+<h3 id="get-a-radar-detection-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The unique ID of the Radar detection.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "radar_detection",
+  "id": "detection_01HZBC6N1EB1ZY7KG32X",
+  "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+  "control": "bot_detection",
+  "verdict": "challenge",
+  "challenge_type": "email",
+  "evidence": {
+    "control": "bot_detection",
+    "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+    "details": {
+      "signals": [
+        {
+          "signal": "risky_ip",
+          "action": "challenge"
+        },
+        {
+          "signal": "suspicious_email_pattern",
+          "action": "challenge"
+        }
+      ],
+      "decided_by": "risky_ip",
+      "ip_risk": [
+        "tor"
+      ],
+      "email_pattern": [
+        "repeated_format"
+      ]
+    }
+  },
+  "ip_address": "203.0.113.42",
+  "location": {
+    "city": "San Francisco",
+    "country": "US"
+  },
+  "user_agent": "Mozilla/5.0",
+  "email": "user@example.com",
+  "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+  "action": "signup",
+  "auth_method": "password",
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+> 402 Response
+
+```json
+{
+  "code": "action_denied",
+  "message": "Request could not be processed."
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="get-a-radar-detection-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[RadarDetection](#schemaradardetection)|
+|402|Payment Required||[ErrorBodyWithCode](#schemaerrorbodywithcode)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
 ## Add an entry to a Radar list
 
 <a id="opIdRadarStandaloneController_updateRadarList"></a>
@@ -20042,7 +20553,9 @@ Status Code **403**
 |*anyOf*|[OrganizationSelectionRequiredErrorBody](#schemaorganizationselectionrequirederrorbody)|false|none|none|
 |*anyOf*|[PasskeyProgressiveEnrollmentErrorBody](#schemapasskeyprogressiveenrollmenterrorbody)|false|none|none|
 |*anyOf*|[RadarChallengeErrorBody](#schemaradarchallengeerrorbody)|false|none|none|
+|*anyOf*|[RadarEmailChallengeErrorBody](#schemaradaremailchallengeerrorbody)|false|none|none|
 |*anyOf*|[RadarSignUpChallengeErrorBody](#schemaradarsignupchallengeerrorbody)|false|none|none|
+|*anyOf*|[RadarSmsChallengeErrorBody](#schemaradarsmschallengeerrorbody)|false|none|none|
 |*anyOf*|[RadarSmsSignInChallengeErrorBody](#schemaradarsmssigninchallengeerrorbody)|false|none|none|
 |*anyOf*|[ApplicationConsentRequiredErrorBody](#schemaapplicationconsentrequirederrorbody)|false|none|none|
 |*anyOf*|[PolicyDeniedErrorBody](#schemapolicydeniederrorbody)|false|none|none|
@@ -20857,6 +21370,60 @@ Creates a new CORS origin for the API key's application. CORS origins allow brow
 |201|Created|CORS origin created successfully.|[CorsOriginResponse](#schemacorsoriginresponse)|
 |409|Conflict|Duplicate CORS origin.|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
 |422|Unprocessable Entity|Validation error.|[ErrorBodyWithConstraintsPropertyErrors](#schemaerrorbodywithconstraintspropertyerrors)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Delete a CORS origin
+
+<a id="opIdCorsOriginsController_delete"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/user_management/cors_origins/cors_origin_01HXYZ123456789ABCDEFGHIJ \
+  -X DELETE \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`DELETE /user_management/cors_origins/{id}`
+
+Deletes a CORS origin from the API key's application.
+
+<h3 id="delete-a-cors-origin-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|The ID of the CORS origin to delete.|
+
+> Example responses
+
+> 401 Response
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "CORS origin not found: 'cors_origin_01HXYZ123456789ABCDEFGHIJ'."
+}
+```
+
+<h3 id="delete-a-cors-origin-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|204|No Content|CORS origin deleted successfully.|None|
+|401|Unauthorized|Unauthorized|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|CORS origin not found.|[ErrorBody](#schemaerrorbody)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -23238,7 +23805,12 @@ Calling this API with an organization and user that match an `inactive` organiza
 
 ```json
 {
-  "message": "Request could not be processed."
+  "code": "entities_not_found",
+  "message": "Request could not be processed.",
+  "ids": [
+    "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E",
+    "org_01E4ZCR3C56J083X43JQXF3JK5"
+  ]
 }
 ```
 
@@ -23257,7 +23829,7 @@ Calling this API with an organization and user that match an `inactive` organiza
 |---|---|---|---|
 |201|Created|Created|Inline|
 |400|Bad Request|Bad Request|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
-|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+|404|Not Found|Not Found|Inline|
 |422|Unprocessable Entity|Unprocessable Entity|Inline|
 
 <h3 id="create-an-organization-membership-responseschema">Response Schema</h3>
@@ -23288,6 +23860,13 @@ Status Code **201**
 |status|active|
 |status|inactive|
 |status|pending|
+
+Status Code **404**
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*anyOf*|[EntitiesNotFoundErrorBodyWithIdsList](#schemaentitiesnotfounderrorbodywithidslist)|false|none|none|
+|*anyOf*|[EntityNotFoundErrorBodyWithEntityId](#schemaentitynotfounderrorbodywithentityid)|false|none|none|
 
 Status Code **422**
 
@@ -24970,6 +25549,7 @@ Status Code **400**
 |*anyOf*|[PasswordAndPasswordHashTypeProvidedErrorBody](#schemapasswordandpasswordhashtypeprovidederrorbody)|false|none|none|
 |*anyOf*|[PasswordSaltPositionRequiresPasswordHashErrorBody](#schemapasswordsaltpositionrequirespasswordhasherrorbody)|false|none|none|
 |*anyOf*|[InvalidMetadataErrorBody](#schemainvalidmetadataerrorbody)|false|none|none|
+|*anyOf*|[EmailDomainNotDeliverableErrorBody](#schemaemaildomainnotdeliverableerrorbody)|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -25037,6 +25617,89 @@ Get the details of an existing user by an [external identifier](/authkit/metadat
 |---|---|---|---|
 |200|OK|OK|[UserlandUser](#schemauserlanduser)|
 |404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Get a user by identity
+
+<a id="opIdUserlandUserIdentitiesController_getByIdentity"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/user_management/users/identities/GitHubOAuth/4F42ABDE-1E44-4B66-824A-5F733C037A6D \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /user_management/users/identities/{provider}/{idp_id}`
+
+Get the user that holds an identity, by the identity's provider and its ID in that provider, as returned by [Get user identities](/reference/authkit/identity/list).
+
+<h3 id="get-a-user-by-identity-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|provider|path|string|true|The OAuth provider of the identity, the same value you pass as `provider` to [Get authorization URL](/reference/authkit/authentication/get-authorization-url) (case-insensitive).|
+|idp_id|path|string|true|The unique ID of the user in the external identity provider.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "user",
+  "id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+  "first_name": "Marcelina",
+  "last_name": "Davis",
+  "name": "Marcelina Davis",
+  "profile_picture_url": "https://workoscdn.com/images/v1/123abc",
+  "email": "marcelina.davis@example.com",
+  "email_verified": true,
+  "external_id": "f1ffa2b2-c20b-4d39-be5c-212726e11222",
+  "metadata": {
+    "timezone": "America/New_York"
+  },
+  "last_sign_in_at": "2025-06-25T19:07:33.155Z",
+  "locale": "en-US",
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "message": "Request could not be processed."
+}
+```
+
+> 422 Response
+
+```json
+{
+  "message": "Validation failed.",
+  "errors": [
+    {
+      "code": "required",
+      "field": "event.action"
+    }
+  ]
+}
+```
+
+<h3 id="get-a-user-by-identity-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|OK|[UserlandUser](#schemauserlanduser)|
+|404|Not Found|Not Found|[ErrorBody](#schemaerrorbody)|
+|422|Unprocessable Entity|Unprocessable Entity|[ErrorBodyWithCodeFieldErrors](#schemaerrorbodywithcodefielderrors)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -28129,6 +28792,7 @@ Create a new webhook endpoint to receive event notifications.
 |» events|connection.deactivated|
 |» events|connection.saml_certificate_renewal_required|
 |» events|connection.saml_certificate_renewed|
+|» events|connection.saml_certificate_replaced|
 |» events|connection.deleted|
 |» events|dsync.activated|
 |» events|dsync.deleted|
@@ -28162,6 +28826,9 @@ Create a new webhook endpoint to receive event notifications.
 |» events|invitation.created|
 |» events|invitation.resent|
 |» events|invitation.revoked|
+|» events|issuer_trust.created|
+|» events|issuer_trust.deleted|
+|» events|issuer_trust.updated|
 |» events|magic_auth.created|
 |» events|organization.created|
 |» events|organization.deleted|
@@ -28257,6 +28924,69 @@ Status Code **422**
 |---|---|---|---|---|
 |*anyOf*|[InvalidUrlErrorBody](#schemainvalidurlerrorbody)|false|none|none|
 |*anyOf*|[InvalidRequestParametersErrorBodyWithErrors](#schemainvalidrequestparameterserrorbodywitherrors)|false|none|none|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer
+</aside>
+
+## Get a Webhook Endpoint
+
+<a id="opIdWebhookEndpointsController_get"></a>
+
+> Code samples
+
+```bash
+curl https://api.workos.com/webhook_endpoints/we_0123456789 \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}"
+```
+
+`GET /webhook_endpoints/{id}`
+
+Get the details of an existing webhook endpoint.
+
+<h3 id="get-a-webhook-endpoint-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|id|path|string|true|Unique identifier of the Webhook Endpoint.|
+
+> Example responses
+
+> 200 Response
+
+```json
+{
+  "object": "webhook_endpoint",
+  "id": "we_0123456789",
+  "endpoint_url": "https://example.com/webhooks",
+  "secret": "whsec_0FWAiVGkEfGBqqsJH4aNAGBJ4",
+  "status": "enabled",
+  "events": [
+    "user.created",
+    "dsync.user.created"
+  ],
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+> 404 Response
+
+```json
+{
+  "code": "action_denied",
+  "message": "Request could not be processed."
+}
+```
+
+<h3 id="get-a-webhook-endpoint-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|200|OK|Webhook endpoint retrieved successfully.|[WebhookEndpointJson](#schemawebhookendpointjson)|
+|404|Not Found|Webhook endpoint not found.|[ErrorBodyWithCode](#schemaerrorbodywithcode)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -28406,6 +29136,7 @@ Update the properties of an existing webhook endpoint.
 |» events|connection.deactivated|
 |» events|connection.saml_certificate_renewal_required|
 |» events|connection.saml_certificate_renewed|
+|» events|connection.saml_certificate_replaced|
 |» events|connection.deleted|
 |» events|dsync.activated|
 |» events|dsync.deleted|
@@ -28439,6 +29170,9 @@ Update the properties of an existing webhook endpoint.
 |» events|invitation.created|
 |» events|invitation.resent|
 |» events|invitation.revoked|
+|» events|issuer_trust.created|
+|» events|issuer_trust.deleted|
+|» events|issuer_trust.updated|
 |» events|magic_auth.created|
 |» events|organization.created|
 |» events|organization.deleted|
@@ -32523,6 +33257,7 @@ bearer
 |events|connection.deactivated|
 |events|connection.saml_certificate_renewal_required|
 |events|connection.saml_certificate_renewed|
+|events|connection.saml_certificate_replaced|
 |events|connection.deleted|
 |events|dsync.activated|
 |events|dsync.deleted|
@@ -32556,6 +33291,9 @@ bearer
 |events|invitation.created|
 |events|invitation.resent|
 |events|invitation.revoked|
+|events|issuer_trust.created|
+|events|issuer_trust.deleted|
+|events|issuer_trust.updated|
 |events|magic_auth.created|
 |events|organization.created|
 |events|organization.deleted|
@@ -32671,6 +33409,7 @@ bearer
 |events|connection.deactivated|
 |events|connection.saml_certificate_renewal_required|
 |events|connection.saml_certificate_renewed|
+|events|connection.saml_certificate_replaced|
 |events|connection.deleted|
 |events|dsync.activated|
 |events|dsync.deleted|
@@ -32704,6 +33443,9 @@ bearer
 |events|invitation.created|
 |events|invitation.resent|
 |events|invitation.revoked|
+|events|issuer_trust.created|
+|events|issuer_trust.deleted|
+|events|issuer_trust.updated|
 |events|magic_auth.created|
 |events|organization.created|
 |events|organization.deleted|
@@ -33200,6 +33942,223 @@ A machine-readable error code; additional values may be added over time.
 |code|string|false|none|The error code identifying the type of error.|
 |statusCode|number|false|none|The HTTP status code.|
 
+<h2 id="tocS_ErrorBodyWithCodeErrors">ErrorBodyWithCodeErrors</h2>
+<!-- backwards compatibility -->
+<a id="schemaerrorbodywithcodeerrors"></a>
+<a id="schema_ErrorBodyWithCodeErrors"></a>
+<a id="tocSerrorbodywithcodeerrors"></a>
+<a id="tocserrorbodywithcodeerrors"></a>
+
+```json
+{
+  "code": "account_selection_required",
+  "message": "Validation failed.",
+  "errors": [
+    {
+      "code": "action_denied",
+      "message": "Request could not be processed."
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|[ErrorBodyCode](#schemaerrorbodycode)|true|none|A machine-readable error code; additional values may be added over time.|
+|message|string|true|none|A human-readable description of the error.|
+|errors|[[ErrorBodyWithCode](#schemaerrorbodywithcode)]|true|none|The list of validation errors.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|code|account_selection_required|
+|code|action_denied|
+|code|already_claimed|
+|code|ambiguous_saml_options|
+|code|api_key_already_expired|
+|code|application_consent_required|
+|code|auth_method_disabled|
+|code|auth_method_mismatch|
+|code|authentication_method_not_allowed|
+|code|authorization_resource_external_id_conflict|
+|code|bad_request|
+|code|both_saml_and_oidc_options_provided|
+|code|cannot_deactivate_pending_organization_membership|
+|code|cannot_delete_last_certificate|
+|code|cannot_reactivate_pending_organization_membership|
+|code|cannot_remove_group_sourced_role|
+|code|certificate_expired|
+|code|chain_depth_exceeded|
+|code|claim_denied|
+|code|claim_expired|
+|code|client_secret_not_accepted|
+|code|client_secret_required|
+|code|code_challenge_not_found|
+|code|concurrent_flag_target_update|
+|code|concurrent_request|
+|code|connected_account_limit_reached|
+|code|connection_could_not_be_verified|
+|code|connection_deletion_in_progress|
+|code|connection_is_not_saml|
+|code|connection_type_conflicts_with_options|
+|code|connection_type_not_supported|
+|code|connection_type_not_updatable|
+|code|connection_type_or_options_required|
+|code|daily_quota_exceeded|
+|code|directory_sync_disabled|
+|code|directory_sync_in_progress|
+|code|directory_sync_rate_limited|
+|code|directory_sync_unsupported|
+|code|discovery_endpoint_must_use_https|
+|code|discovery_endpoint_tenant_not_allowed|
+|code|domain_already_exists|
+|code|domain_already_verified|
+|code|duplicate_endpoint|
+|code|duplicate_group_role_assignment|
+|code|email_already_in_use|
+|code|email_already_invited|
+|code|email_already_invited_to_organization|
+|code|email_already_verified|
+|code|email_change_code_expired|
+|code|email_change_code_incorrect|
+|code|email_change_code_previously_used|
+|code|email_change_not_allowed|
+|code|email_change_not_needed|
+|code|email_change_too_many_attempts|
+|code|email_completion_required|
+|code|email_domain_not_deliverable|
+|code|email_mismatch|
+|code|email_not_available|
+|code|email_password_auth_disabled|
+|code|email_previously_verified|
+|code|email_verification_code_expired|
+|code|email_verification_code_incorrect|
+|code|email_verification_code_previously_used|
+|code|email_verification_required|
+|code|entities_not_found|
+|code|entity_not_found|
+|code|expires_in_days_too_long|
+|code|expires_in_days_too_short|
+|code|external_auth_session_already_completed|
+|code|external_id_already_in_use|
+|code|external_id_already_used|
+|code|group_membership_limit_exceeded|
+|code|group_membership_update_overlap|
+|code|group_role_assignment_update_overlap|
+|code|id_token_signature_algorithm_not_supported|
+|code|idp_metadata_fetch_failed|
+|code|incomplete_saml_options|
+|code|invalid_agent_access_token|
+|code|invalid_certificate|
+|code|invalid_claim|
+|code|invalid_credentials|
+|code|invalid_email|
+|code|invalid_idp_sso_url|
+|code|invalid_invite|
+|code|invalid_issuer_metadata|
+|code|invalid_issuer_url|
+|code|invalid_locale|
+|code|invalid_metadata|
+|code|invalid_one_time_code|
+|code|invalid_organization|
+|code|invalid_organization_id|
+|code|invalid_password_hash|
+|code|invalid_pending_authentication_token|
+|code|invalid_refresh_token|
+|code|invalid_request|
+|code|invalid_request_parameters|
+|code|invalid_role|
+|code|invalid_state|
+|code|invalid_url|
+|code|invalid_user_access_token|
+|code|invitation_email_not_sent|
+|code|invite_accepted|
+|code|invite_expired|
+|code|invite_has_accepted_user_id|
+|code|invite_not_pending|
+|code|invite_revoked|
+|code|ip_address_required|
+|code|issuer_already_trusted|
+|code|it_contact_already_exists|
+|code|it_contact_invitation_already_active|
+|code|key_pair_not_accepted|
+|code|lock_timeout|
+|code|max_age_exceeded|
+|code|mfa_challenge|
+|code|mfa_enrollment|
+|code|missing_organization_id_or_resource_type_slug|
+|code|missing_user_id_or_organization_id|
+|code|multiple_roles_not_enabled|
+|code|name_already_in_use|
+|code|no_pending_email_change|
+|code|not_claude_issuer|
+|code|oidc_options_required|
+|code|one_time_code_expired|
+|code|one_time_code_previously_used|
+|code|one_time_code_too_many_attempts|
+|code|organization_already_has_trust|
+|code|organization_blocked_from_sending_invites|
+|code|organization_has_idp_managed_ema|
+|code|organization_membership_directory_managed|
+|code|organization_not_found|
+|code|organization_not_invocable|
+|code|organization_role_slug_conflict|
+|code|organization_selection_required|
+|code|organization_without_verified_domain|
+|code|passkey_progressive_enrollment|
+|code|password_and_password_hash_provided|
+|code|password_and_password_hash_type_provided|
+|code|password_reset_error|
+|code|password_reset_not_allowed|
+|code|password_salt_position_requires_password_hash|
+|code|password_strength_error|
+|code|permission_not_found|
+|code|permission_slug_conflict|
+|code|phone_number_required|
+|code|production_feature_requires_billing|
+|code|radar_challenge|
+|code|radar_email_challenge|
+|code|radar_sign_up_challenge|
+|code|radar_sms_challenge|
+|code|radar_sms_sign_in_challenge|
+|code|rate_limit_exceeded|
+|code|resource_has_dependents|
+|code|resource_limit_exceeded|
+|code|resource_type_update_in_progress|
+|code|role_assignment_update_overlap|
+|code|role_has_assignments|
+|code|role_has_group_role_mappings|
+|code|role_not_found|
+|code|role_not_invocable|
+|code|role_slug_conflict|
+|code|saml_options_required|
+|code|session_expired|
+|code|session_revoked|
+|code|session_settings_not_found|
+|code|sms_challenge_quota_reached|
+|code|sms_challenge_rate_limited|
+|code|sp_signing_cert_already_exists|
+|code|stripe_customer_id_already_used|
+|code|sub_resource_scoped_role_not_allowed|
+|code|team_not_found|
+|code|token_authentication_method_not_supported|
+|code|too_many_failed_verification_attempts|
+|code|too_many_sp_encryption_certs|
+|code|unsupported_invocation_type|
+|code|user_already_exists|
+|code|user_already_organization_member|
+|code|user_code_expired|
+|code|user_consent_options_not_supported|
+|code|user_creation_error|
+|code|user_mismatch|
+|code|user_not_member_of_organization|
+|code|user_session_ended|
+|code|verification_id_required|
+|code|wrong_account|
+
 <h2 id="tocS_ConnectionFinishErrorBody">ConnectionFinishErrorBody</h2>
 <!-- backwards compatibility -->
 <a id="schemaconnectionfinisherrorbody"></a>
@@ -33419,213 +34378,6 @@ A machine-readable error code; additional values may be added over time.
 |code|connected_account_limit_reached|
 |code|idempotency_key_conflict|
 
-<h2 id="tocS_ErrorBodyWithCodeErrors">ErrorBodyWithCodeErrors</h2>
-<!-- backwards compatibility -->
-<a id="schemaerrorbodywithcodeerrors"></a>
-<a id="schema_ErrorBodyWithCodeErrors"></a>
-<a id="tocSerrorbodywithcodeerrors"></a>
-<a id="tocserrorbodywithcodeerrors"></a>
-
-```json
-{
-  "code": "account_selection_required",
-  "message": "Validation failed.",
-  "errors": [
-    {
-      "code": "action_denied",
-      "message": "Request could not be processed."
-    }
-  ]
-}
-```
-
-### Properties
-
-|Name|Type|Required|Restrictions|Description|
-|---|---|---|---|---|
-|code|[ErrorBodyCode](#schemaerrorbodycode)|true|none|A machine-readable error code; additional values may be added over time.|
-|message|string|true|none|A human-readable description of the error.|
-|errors|[[ErrorBodyWithCode](#schemaerrorbodywithcode)]|true|none|The list of validation errors.|
-
-#### Enumerated Values
-
-|Property|Value|
-|---|---|
-|code|account_selection_required|
-|code|action_denied|
-|code|already_claimed|
-|code|ambiguous_saml_options|
-|code|api_key_already_expired|
-|code|application_consent_required|
-|code|auth_method_disabled|
-|code|auth_method_mismatch|
-|code|authentication_method_not_allowed|
-|code|authorization_resource_external_id_conflict|
-|code|bad_request|
-|code|both_saml_and_oidc_options_provided|
-|code|cannot_deactivate_pending_organization_membership|
-|code|cannot_delete_last_certificate|
-|code|cannot_reactivate_pending_organization_membership|
-|code|cannot_remove_group_sourced_role|
-|code|certificate_expired|
-|code|chain_depth_exceeded|
-|code|claim_denied|
-|code|claim_expired|
-|code|client_secret_not_accepted|
-|code|client_secret_required|
-|code|code_challenge_not_found|
-|code|concurrent_flag_target_update|
-|code|concurrent_request|
-|code|connected_account_limit_reached|
-|code|connection_could_not_be_verified|
-|code|connection_deletion_in_progress|
-|code|connection_is_not_saml|
-|code|connection_type_conflicts_with_options|
-|code|connection_type_not_supported|
-|code|connection_type_not_updatable|
-|code|connection_type_or_options_required|
-|code|daily_quota_exceeded|
-|code|directory_sync_disabled|
-|code|directory_sync_in_progress|
-|code|directory_sync_rate_limited|
-|code|directory_sync_unsupported|
-|code|discovery_endpoint_must_use_https|
-|code|discovery_endpoint_tenant_not_allowed|
-|code|domain_already_exists|
-|code|domain_already_verified|
-|code|duplicate_endpoint|
-|code|duplicate_group_role_assignment|
-|code|email_already_in_use|
-|code|email_already_invited|
-|code|email_already_invited_to_organization|
-|code|email_already_verified|
-|code|email_change_code_expired|
-|code|email_change_code_incorrect|
-|code|email_change_code_previously_used|
-|code|email_change_not_allowed|
-|code|email_change_not_needed|
-|code|email_change_too_many_attempts|
-|code|email_completion_required|
-|code|email_domain_not_deliverable|
-|code|email_mismatch|
-|code|email_not_available|
-|code|email_password_auth_disabled|
-|code|email_previously_verified|
-|code|email_verification_code_expired|
-|code|email_verification_code_incorrect|
-|code|email_verification_code_previously_used|
-|code|email_verification_required|
-|code|entity_not_found|
-|code|expires_in_days_too_long|
-|code|expires_in_days_too_short|
-|code|external_auth_session_already_completed|
-|code|external_id_already_in_use|
-|code|external_id_already_used|
-|code|group_membership_limit_exceeded|
-|code|group_membership_update_overlap|
-|code|group_role_assignment_update_overlap|
-|code|id_token_signature_algorithm_not_supported|
-|code|idp_metadata_fetch_failed|
-|code|incomplete_saml_options|
-|code|invalid_agent_access_token|
-|code|invalid_certificate|
-|code|invalid_claim|
-|code|invalid_credentials|
-|code|invalid_email|
-|code|invalid_idp_sso_url|
-|code|invalid_invite|
-|code|invalid_locale|
-|code|invalid_metadata|
-|code|invalid_one_time_code|
-|code|invalid_organization|
-|code|invalid_organization_id|
-|code|invalid_password_hash|
-|code|invalid_pending_authentication_token|
-|code|invalid_refresh_token|
-|code|invalid_request|
-|code|invalid_request_parameters|
-|code|invalid_role|
-|code|invalid_state|
-|code|invalid_url|
-|code|invalid_user_access_token|
-|code|invitation_email_not_sent|
-|code|invite_accepted|
-|code|invite_expired|
-|code|invite_has_accepted_user_id|
-|code|invite_not_pending|
-|code|invite_revoked|
-|code|ip_address_required|
-|code|it_contact_already_exists|
-|code|it_contact_invitation_already_active|
-|code|key_pair_not_accepted|
-|code|lock_timeout|
-|code|max_age_exceeded|
-|code|mfa_challenge|
-|code|mfa_enrollment|
-|code|missing_organization_id_or_resource_type_slug|
-|code|missing_user_id_or_organization_id|
-|code|multiple_roles_not_enabled|
-|code|name_already_in_use|
-|code|no_pending_email_change|
-|code|oidc_options_required|
-|code|one_time_code_expired|
-|code|one_time_code_previously_used|
-|code|one_time_code_too_many_attempts|
-|code|organization_blocked_from_sending_invites|
-|code|organization_membership_directory_managed|
-|code|organization_not_found|
-|code|organization_not_invocable|
-|code|organization_role_slug_conflict|
-|code|organization_selection_required|
-|code|passkey_progressive_enrollment|
-|code|password_and_password_hash_provided|
-|code|password_and_password_hash_type_provided|
-|code|password_reset_error|
-|code|password_reset_not_allowed|
-|code|password_salt_position_requires_password_hash|
-|code|password_strength_error|
-|code|permission_not_found|
-|code|permission_slug_conflict|
-|code|phone_number_required|
-|code|production_feature_requires_billing|
-|code|radar_challenge|
-|code|radar_sign_up_challenge|
-|code|radar_sms_sign_in_challenge|
-|code|rate_limit_exceeded|
-|code|resource_has_dependents|
-|code|resource_limit_exceeded|
-|code|resource_type_update_in_progress|
-|code|role_assignment_update_overlap|
-|code|role_has_assignments|
-|code|role_has_group_role_mappings|
-|code|role_not_found|
-|code|role_not_invocable|
-|code|role_slug_conflict|
-|code|saml_options_required|
-|code|session_expired|
-|code|session_revoked|
-|code|session_settings_not_found|
-|code|sms_challenge_quota_reached|
-|code|sms_challenge_rate_limited|
-|code|sp_signing_cert_already_exists|
-|code|stripe_customer_id_already_used|
-|code|sub_resource_scoped_role_not_allowed|
-|code|team_not_found|
-|code|token_authentication_method_not_supported|
-|code|too_many_failed_verification_attempts|
-|code|too_many_sp_encryption_certs|
-|code|unsupported_invocation_type|
-|code|user_already_exists|
-|code|user_already_organization_member|
-|code|user_code_expired|
-|code|user_consent_options_not_supported|
-|code|user_creation_error|
-|code|user_mismatch|
-|code|user_not_member_of_organization|
-|code|user_session_ended|
-|code|verification_id_required|
-|code|wrong_account|
-
 <h2 id="tocS_OrganizationConnectedAccountImportErrorBody">OrganizationConnectedAccountImportErrorBody</h2>
 <!-- backwards compatibility -->
 <a id="schemaorganizationconnectedaccountimporterrorbody"></a>
@@ -33751,6 +34503,55 @@ A machine-readable error code; additional values may be added over time.
 |message|string|true|none|A human-readable description of the error.|
 |code|string|true|none|The error code identifying the type of error.|
 |role_slug|string|true|none|The slug of the role that is not allowed.|
+
+<h2 id="tocS_EntitiesNotFoundErrorBodyWithIdsList">EntitiesNotFoundErrorBodyWithIdsList</h2>
+<!-- backwards compatibility -->
+<a id="schemaentitiesnotfounderrorbodywithidslist"></a>
+<a id="schema_EntitiesNotFoundErrorBodyWithIdsList"></a>
+<a id="tocSentitiesnotfounderrorbodywithidslist"></a>
+<a id="tocsentitiesnotfounderrorbodywithidslist"></a>
+
+```json
+{
+  "code": "entities_not_found",
+  "message": "Request could not be processed.",
+  "ids": [
+    "user_01E4ZCR3C5A4QZ2Z2JQXGKZJ9E",
+    "org_01E4ZCR3C56J083X43JQXF3JK5"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|The error code identifying the type of error.|
+|message|string|true|none|A human-readable description of the error.|
+|ids|[string]|true|none|The requested user and organization IDs, in that order.|
+
+<h2 id="tocS_EntityNotFoundErrorBodyWithEntityId">EntityNotFoundErrorBodyWithEntityId</h2>
+<!-- backwards compatibility -->
+<a id="schemaentitynotfounderrorbodywithentityid"></a>
+<a id="schema_EntityNotFoundErrorBodyWithEntityId"></a>
+<a id="tocSentitynotfounderrorbodywithentityid"></a>
+<a id="tocsentitynotfounderrorbodywithentityid"></a>
+
+```json
+{
+  "code": "entity_not_found",
+  "message": "Request could not be processed.",
+  "entity_id": "org_01E4ZCR3C56J083X43JQXF3JK5"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|The error code identifying the type of error.|
+|message|string|true|none|A human-readable description of the error.|
+|entity_id|string|true|none|The ID of the organization that was not found.|
 
 <h2 id="tocS_EmailCompletionRequiredErrorBodyWithEmailCompletionToken">EmailCompletionRequiredErrorBodyWithEmailCompletionToken</h2>
 <!-- backwards compatibility -->
@@ -35367,6 +36168,27 @@ A machine-readable error code; additional values may be added over time.
 |code|string|true|none|The error code identifying the type of error.|
 |message|string|true|none|A human-readable description of the error.|
 
+<h2 id="tocS_RadarEmailChallengeErrorBody">RadarEmailChallengeErrorBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaradaremailchallengeerrorbody"></a>
+<a id="schema_RadarEmailChallengeErrorBody"></a>
+<a id="tocSradaremailchallengeerrorbody"></a>
+<a id="tocsradaremailchallengeerrorbody"></a>
+
+```json
+{
+  "code": "radar_email_challenge",
+  "message": "Request could not be processed."
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|The error code identifying the type of error.|
+|message|string|true|none|A human-readable description of the error.|
+
 <h2 id="tocS_RadarSignUpChallengeErrorBody">RadarSignUpChallengeErrorBody</h2>
 <!-- backwards compatibility -->
 <a id="schemaradarsignupchallengeerrorbody"></a>
@@ -35377,6 +36199,27 @@ A machine-readable error code; additional values may be added over time.
 ```json
 {
   "code": "radar_sign_up_challenge",
+  "message": "Request could not be processed."
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|The error code identifying the type of error.|
+|message|string|true|none|A human-readable description of the error.|
+
+<h2 id="tocS_RadarSmsChallengeErrorBody">RadarSmsChallengeErrorBody</h2>
+<!-- backwards compatibility -->
+<a id="schemaradarsmschallengeerrorbody"></a>
+<a id="schema_RadarSmsChallengeErrorBody"></a>
+<a id="tocSradarsmschallengeerrorbody"></a>
+<a id="tocsradarsmschallengeerrorbody"></a>
+
+```json
+{
+  "code": "radar_sms_challenge",
   "message": "Request could not be processed."
 }
 ```
@@ -38648,6 +39491,39 @@ Additional context about the event.
 |created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 
+<h2 id="tocS_IssuerTrust">IssuerTrust</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuertrust"></a>
+<a id="schema_IssuerTrust"></a>
+<a id="tocSissuertrust"></a>
+<a id="tocsissuertrust"></a>
+
+```json
+{
+  "object": "issuer_trust",
+  "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+  "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+  "type": "claude",
+  "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+  "enabled": true,
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|The Issuer Trust object.|
+|id|string|true|none|The unique ID of the Issuer Trust.|
+|organization_id|string|true|none|The ID of the Organization that trusts the issuer.|
+|type|string|true|none|The type of issuer, which identifies who operates it.|
+|issuer|string|true|none|The issuer URL. ID-JAGs whose `iss` claim equals this URL are exchanged for access tokens scoped to the Organization.|
+|enabled|boolean|true|none|Whether ID-JAGs from the issuer are accepted. A trust is created disabled.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+
 <h2 id="tocS_PipesConnectedAccount">PipesConnectedAccount</h2>
 <!-- backwards compatibility -->
 <a id="schemapipesconnectedaccount"></a>
@@ -39163,6 +40039,13 @@ An event emitted by WorkOS.
 |*oneOf*|object|false|none|none|
 |id|string|true|none|Unique identifier for the event.|
 |event|string|true|none|none|
+|data|object|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
 |data|[DirectoryGroup](#schemadirectorygroup)|true|none|The event payload.|
 |created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
@@ -39381,6 +40264,27 @@ An event emitted by WorkOS.
 |id|string|true|none|Unique identifier for the event.|
 |event|string|true|none|none|
 |data|object|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|[IssuerTrust](#schemaissuertrust)|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|[IssuerTrust](#schemaissuertrust)|true|none|The event payload.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
+|object|string|true|none|Distinguishes the Event object.|
+|*oneOf*|object|false|none|none|
+|id|string|true|none|Unique identifier for the event.|
+|event|string|true|none|none|
+|data|[IssuerTrust](#schemaissuertrust)|true|none|The event payload.|
 |created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |context|[EventContextDto](#schemaeventcontextdto)|false|none|Additional context about the event.|
 |object|string|true|none|Distinguishes the Event object.|
@@ -40144,6 +41048,43 @@ An event emitted by WorkOS.
 |created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
 |value|string(password)|true|none|The full API Key value. Only returned once at creation time.|
+
+<h2 id="tocS_IssuerTrustList">IssuerTrustList</h2>
+<!-- backwards compatibility -->
+<a id="schemaissuertrustlist"></a>
+<a id="schema_IssuerTrustList"></a>
+<a id="tocSissuertrustlist"></a>
+<a id="tocsissuertrustlist"></a>
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "object": "issuer_trust",
+      "id": "issuer_trust_01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+      "organization_id": "org_01EHZNVPK3SFK441A1RGBFSHRT",
+      "type": "claude",
+      "issuer": "https://claude.ai/v1/ema/t/01JZ8X4N2R7Q9M3K5T6V8W0Y1A",
+      "enabled": true,
+      "created_at": "2026-01-15T12:00:00.000Z",
+      "updated_at": "2026-01-15T12:00:00.000Z"
+    }
+  ],
+  "list_metadata": {
+    "before": "issuer_trust_01HXYZ123456789ABCDEFGHIJ",
+    "after": "issuer_trust_01HXYZ987654321KJIHGFEDCBA"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|Indicates this is a list response.|
+|data|[[IssuerTrust](#schemaissuertrust)]|true|none|The list of records for the current page.|
+|list_metadata|object|true|none|Pagination cursors for navigating between pages of results.|
 
 <h2 id="tocS_ItContact">ItContact</h2>
 <!-- backwards compatibility -->
@@ -41164,6 +42105,637 @@ Organization-managed OAuth credential configuration. Present only for integratio
 |---|---|---|---|---|
 |verification_id|string|true|none|The ID of the SMS verification. Pass this to the authenticate endpoint to verify the code.|
 |phone_number|string|true|none|The phone number the verification code was sent to.|
+
+<h2 id="tocS_RadarDetectionList">RadarDetectionList</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionlist"></a>
+<a id="schema_RadarDetectionList"></a>
+<a id="tocSradardetectionlist"></a>
+<a id="tocsradardetectionlist"></a>
+
+```json
+{
+  "type": "domain",
+  "action": "block",
+  "name": "Disposable email domains",
+  "workos_managed": true
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The type of values the list holds.|
+|action|string \| null|true|none|The action the list applies to matching values. `null` for WorkOS-managed lists.|
+|name|string \| null|true|none|The name of the list.|
+|workos_managed|boolean|true|none|Whether WorkOS maintains the list.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|ip_address|
+|type|domain|
+|type|email|
+|type|device|
+|type|user_agent|
+|type|device_fingerprint|
+|type|country|
+
+<h2 id="tocS_RadarDetectionAllowedBy">RadarDetectionAllowedBy</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionallowedby"></a>
+<a id="schema_RadarDetectionAllowedBy"></a>
+<a id="tocSradardetectionallowedby"></a>
+<a id="tocsradardetectionallowedby"></a>
+
+```json
+{
+  "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+  "list": {
+    "type": "domain",
+    "action": "block",
+    "name": "Disposable email domains",
+    "workos_managed": true
+  },
+  "entry": "example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|list_id|string|true|none|The ID of the matched list.|
+|list|[RadarDetectionList](#schemaradardetectionlist) \| null|true|none|The list as it is now. `null` if the list has since been deleted.|
+|entry|string|false|none|The list entry that matched.|
+
+<h2 id="tocS_RadarDetectionBotDetectionSignal">RadarDetectionBotDetectionSignal</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionbotdetectionsignal"></a>
+<a id="schema_RadarDetectionBotDetectionSignal"></a>
+<a id="tocSradardetectionbotdetectionsignal"></a>
+<a id="tocsradardetectionbotdetectionsignal"></a>
+
+```json
+{
+  "signal": "risky_ip",
+  "action": "block"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|signal|string|true|none|none|
+|action|string|false|none|The action this signal would take on its own.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|signal|risky_ip|
+|signal|anomalous_ip|
+|signal|excessive_domain_sign_ups|
+|signal|suspicious_browser_signals|
+|signal|missing_device_fingerprint|
+|signal|suspicious_email_pattern|
+|signal|automated_client|
+|signal|workos_risk_model|
+|action|block|
+|action|challenge|
+
+<h2 id="tocS_RadarDetectionIpSignUps">RadarDetectionIpSignUps</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionipsignups"></a>
+<a id="schema_RadarDetectionIpSignUps"></a>
+<a id="tocSradardetectionipsignups"></a>
+<a id="tocsradardetectionipsignups"></a>
+
+```json
+{
+  "count": 6,
+  "window_minutes": 5
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|count|integer|true|none|The number of sign-ups.|
+|window_minutes|integer|true|none|The window the sign-ups were counted in.|
+
+<h2 id="tocS_RadarDetectionDomainSignUps">RadarDetectionDomainSignUps</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectiondomainsignups"></a>
+<a id="schema_RadarDetectionDomainSignUps"></a>
+<a id="tocSradardetectiondomainsignups"></a>
+<a id="tocsradardetectiondomainsignups"></a>
+
+```json
+{
+  "root_domain": "example.com",
+  "count": 44
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|root_domain|string|true|none|The root domain of the email address.|
+|count|integer|false|none|The number of sign-ups.|
+
+<h2 id="tocS_RadarDetectionBotDetectionDetails">RadarDetectionBotDetectionDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionbotdetectiondetails"></a>
+<a id="schema_RadarDetectionBotDetectionDetails"></a>
+<a id="tocSradardetectionbotdetectiondetails"></a>
+<a id="tocsradardetectionbotdetectiondetails"></a>
+
+```json
+{
+  "signals": [
+    {
+      "signal": "risky_ip",
+      "action": "block"
+    }
+  ],
+  "decided_by": "risky_ip",
+  "ip_risk": [
+    "abuser"
+  ],
+  "email_pattern": [
+    "generated_looking"
+  ],
+  "browser_signals": [
+    "automation_framework"
+  ],
+  "ip_sign_ups": {
+    "count": 6,
+    "window_minutes": 5
+  },
+  "domain_sign_ups": {
+    "root_domain": "example.com",
+    "count": 44
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|signals|[[RadarDetectionBotDetectionSignal](#schemaradardetectionbotdetectionsignal)]|true|none|Every bot detection signal that fired.|
+|decided_by|string|false|none|The signal that determined the verdict.|
+|ip_risk|[string]|false|none|Why the IP address is risky.|
+|email_pattern|[string]|false|none|Why the email address looks suspicious.|
+|browser_signals|[string]|false|none|Why the browser looks automated.|
+|ip_sign_ups|[RadarDetectionIpSignUps](#schemaradardetectionipsignups)|false|none|Recent sign-ups from this IP address.|
+|domain_sign_ups|[RadarDetectionDomainSignUps](#schemaradardetectiondomainsignups)|false|none|Recent sign-ups from this email domain.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|decided_by|risky_ip|
+|decided_by|anomalous_ip|
+|decided_by|excessive_domain_sign_ups|
+|decided_by|suspicious_browser_signals|
+|decided_by|missing_device_fingerprint|
+|decided_by|suspicious_email_pattern|
+|decided_by|automated_client|
+|decided_by|workos_risk_model|
+|ip_risk|abuser|
+|ip_risk|anonymous|
+|ip_risk|vpn|
+|ip_risk|tor|
+|ip_risk|proxy|
+|email_pattern|generated_looking|
+|email_pattern|repeated_format|
+|email_pattern|suspicious_domain|
+|browser_signals|automation_framework|
+|browser_signals|headless_browser|
+|browser_signals|tampered_signals|
+|browser_signals|inconsistent_hardware|
+|browser_signals|missing_signals|
+|browser_signals|missing_expected_signals|
+
+<h2 id="tocS_RadarDetectionBruteForceAttackDetails">RadarDetectionBruteForceAttackDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionbruteforceattackdetails"></a>
+<a id="schema_RadarDetectionBruteForceAttackDetails"></a>
+<a id="tocSradardetectionbruteforceattackdetails"></a>
+<a id="tocsradardetectionbruteforceattackdetails"></a>
+
+```json
+{
+  "attempts": 11,
+  "window_minutes": 1,
+  "matched_on": "device_fingerprint_and_email"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attempts|integer|true|none|The number of sign-in attempts.|
+|window_minutes|integer|true|none|The window the attempts were counted in.|
+|matched_on|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|matched_on|device_fingerprint_and_email|
+|matched_on|ip_and_email|
+
+<h2 id="tocS_RadarDetectionDomainProtectionsDetails">RadarDetectionDomainProtectionsDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectiondomainprotectionsdetails"></a>
+<a id="schema_RadarDetectionDomainProtectionsDetails"></a>
+<a id="tocSradardetectiondomainprotectionsdetails"></a>
+<a id="tocsradardetectiondomainprotectionsdetails"></a>
+
+```json
+{
+  "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+  "list": {
+    "type": "domain",
+    "action": "block",
+    "name": "Disposable email domains",
+    "workos_managed": true
+  },
+  "also_matched_list_ids": [
+    "radar_list_01HZBC6N1EB1ZY7KG32Y"
+  ],
+  "also_matched_lists": [
+    {
+      "type": "domain",
+      "action": "block",
+      "name": "Disposable email domains",
+      "workos_managed": true
+    }
+  ],
+  "matched_domain": "example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|list_id|string|true|none|The ID of the matched list.|
+|list|[RadarDetectionList](#schemaradardetectionlist) \| null|true|none|The list as it is now. `null` if the list has since been deleted.|
+|also_matched_list_ids|[string]|false|none|The IDs of other lists the domain is on.|
+|also_matched_lists|[[RadarDetectionList](#schemaradardetectionlist) \| null]|false|none|Other lists the domain is on.|
+|matched_domain|string|false|none|The domain that matched the list.|
+
+<h2 id="tocS_RadarDetectionPreviousAttempt">RadarDetectionPreviousAttempt</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionpreviousattempt"></a>
+<a id="schema_RadarDetectionPreviousAttempt"></a>
+<a id="tocSradardetectionpreviousattempt"></a>
+<a id="tocsradardetectionpreviousattempt"></a>
+
+```json
+{
+  "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+  "ip_address": "198.51.100.7",
+  "user_agent": "Mozilla/5.0",
+  "location": {
+    "city": "San Francisco",
+    "country": "US"
+  },
+  "created_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attempt_id|string|true|none|The ID of the authentication attempt.|
+|ip_address|string|false|none|The IP address of the earlier attempt.|
+|user_agent|string \| null|false|none|The user agent of the earlier attempt.|
+|location|object|true|none|Where the IP address of the earlier attempt is located.|
+|created_at|string(date-time)|true|none|When that earlier sign-in happened.|
+
+<h2 id="tocS_RadarDetectionImpossibleTravelDetails">RadarDetectionImpossibleTravelDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionimpossibletraveldetails"></a>
+<a id="schema_RadarDetectionImpossibleTravelDetails"></a>
+<a id="tocSradardetectionimpossibletraveldetails"></a>
+<a id="tocsradardetectionimpossibletraveldetails"></a>
+
+```json
+{
+  "previous": {
+    "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+    "ip_address": "198.51.100.7",
+    "user_agent": "Mozilla/5.0",
+    "location": {
+      "city": "San Francisco",
+      "country": "US"
+    },
+    "created_at": "2026-01-15T12:00:00.000Z"
+  },
+  "distance_km": 8543,
+  "speed_km_per_s": 4.07
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|previous|[RadarDetectionPreviousAttempt](#schemaradardetectionpreviousattempt)|true|none|The previous successful sign-in.|
+|distance_km|number|true|none|The distance from the previous sign-in, in kilometers.|
+|speed_km_per_s|number|true|none|The speed needed to travel that distance, in km per second.|
+
+<h2 id="tocS_RadarDetectionRepeatSignUpDetails">RadarDetectionRepeatSignUpDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionrepeatsignupdetails"></a>
+<a id="schema_RadarDetectionRepeatSignUpDetails"></a>
+<a id="tocSradardetectionrepeatsignupdetails"></a>
+<a id="tocsradardetectionrepeatsignupdetails"></a>
+
+```json
+{
+  "matched_on": "email",
+  "prior_sign_ups": 8,
+  "window_days": 60
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|matched_on|string|true|none|none|
+|prior_sign_ups|integer|true|none|The number of earlier sign-ups.|
+|window_days|integer|true|none|The window the sign-ups were counted in.|
+|*oneOf*|object|false|none|none|
+|matched_on|string|true|none|none|
+|matched_user_id|string|true|none|The existing user whose email this sign-up is an alias of.|
+
+<h2 id="tocS_RadarDetectionStaleAccountDetails">RadarDetectionStaleAccountDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionstaleaccountdetails"></a>
+<a id="schema_RadarDetectionStaleAccountDetails"></a>
+<a id="tocSradardetectionstaleaccountdetails"></a>
+<a id="tocsradardetectionstaleaccountdetails"></a>
+
+```json
+{
+  "last_activity_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|last_activity_at|string \| null(date-time)|true|none|When the user was last active. `null` if unknown.|
+
+<h2 id="tocS_RadarDetectionUnrecognizedDeviceDetails">RadarDetectionUnrecognizedDeviceDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionunrecognizeddevicedetails"></a>
+<a id="schema_RadarDetectionUnrecognizedDeviceDetails"></a>
+<a id="tocSradardetectionunrecognizeddevicedetails"></a>
+<a id="tocsradardetectionunrecognizeddevicedetails"></a>
+
+```json
+{
+  "previous_device": {
+    "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+    "ip_address": "198.51.100.7",
+    "user_agent": "Mozilla/5.0",
+    "location": {
+      "city": "San Francisco",
+      "country": "US"
+    },
+    "created_at": "2026-01-15T12:00:00.000Z"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|previous_device|[RadarDetectionPreviousAttempt](#schemaradardetectionpreviousattempt) \| null|true|none|The device the user last signed in from.|
+
+<h2 id="tocS_RadarDetectionRestrictionDetails">RadarDetectionRestrictionDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionrestrictiondetails"></a>
+<a id="schema_RadarDetectionRestrictionDetails"></a>
+<a id="tocSradardetectionrestrictiondetails"></a>
+<a id="tocsradardetectionrestrictiondetails"></a>
+
+```json
+{
+  "type": "list",
+  "list_id": "radar_list_01HZBC6N1EB1ZY7KG32X",
+  "list": {
+    "type": "domain",
+    "action": "block",
+    "name": "Disposable email domains",
+    "workos_managed": true
+  },
+  "entry": "example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|list_id|string|true|none|The ID of the matched list.|
+|list|[RadarDetectionList](#schemaradardetectionlist) \| null|true|none|The list as it is now. `null` if the list has since been deleted.|
+|entry|string|false|none|The list entry that matched.|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|trigger|string|true|none|Why SMS sign-in was restricted.|
+|phone_country|string|false|none|The country of the phone number. Only when `trigger` is `country_mismatch`.|
+|line_type|string|false|none|The line type of the phone number. Only when `trigger` is `non_mobile_line`.|
+|masked_phone_number|string|false|none|The phone number, masked to its last four digits.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|trigger|country_mismatch|
+|trigger|non_mobile_line|
+|trigger|previously_selected|
+|trigger|unknown_line_type|
+|trigger|missing_signals|
+
+<h2 id="tocS_RadarDetectionEvidence">RadarDetectionEvidence</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetectionevidence"></a>
+<a id="schema_RadarDetectionEvidence"></a>
+<a id="tocSradardetectionevidence"></a>
+<a id="tocsradardetectionevidence"></a>
+
+```json
+{
+  "control": "bot_detection",
+  "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+  "details": {
+    "signals": [
+      {
+        "signal": "risky_ip",
+        "action": "challenge"
+      },
+      {
+        "signal": "suspicious_email_pattern",
+        "action": "challenge"
+      }
+    ],
+    "decided_by": "risky_ip",
+    "ip_risk": [
+      "tor"
+    ],
+    "email_pattern": [
+      "repeated_format"
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|summary|string|true|none|A human-readable explanation of why Radar fired.|
+|allowed_by|[RadarDetectionAllowedBy](#schemaradardetectionallowedby)|false|none|The allowlist that overrode the verdict. Only present when an allowlist allowed the attempt.|
+|*oneOf*|object|false|none|none|
+|control|string|true|none|The control the evidence is for. Always the same as the detection's `control`.|
+|details|[RadarDetectionBotDetectionDetails](#schemaradardetectionbotdetectiondetails)|true|none|Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.|
+|*oneOf*|object|false|none|none|
+|control|string|true|none|The control the evidence is for. Always the same as the detection's `control`.|
+|details|[RadarDetectionBruteForceAttackDetails](#schemaradardetectionbruteforceattackdetails)|true|none|Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.|
+|*oneOf*|object|false|none|none|
+|control|string|true|none|The control the evidence is for. Always the same as the detection's `control`.|
+|details|[RadarDetectionDomainProtectionsDetails](#schemaradardetectiondomainprotectionsdetails)|true|none|Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.|
+|*oneOf*|object|false|none|none|
+|control|string|true|none|The control the evidence is for. Always the same as the detection's `control`.|
+|details|[RadarDetectionImpossibleTravelDetails](#schemaradardetectionimpossibletraveldetails)|true|none|Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.|
+|*oneOf*|object|false|none|none|
+|control|string|true|none|The control the evidence is for. Always the same as the detection's `control`.|
+|details|[RadarDetectionRepeatSignUpDetails](#schemaradardetectionrepeatsignupdetails)|true|none|Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.|
+|*oneOf*|object|false|none|none|
+|control|string|true|none|The control the evidence is for. Always the same as the detection's `control`.|
+|details|[RadarDetectionStaleAccountDetails](#schemaradardetectionstaleaccountdetails)|true|none|Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.|
+|*oneOf*|object|false|none|none|
+|control|string|true|none|The control the evidence is for. Always the same as the detection's `control`.|
+|details|[RadarDetectionUnrecognizedDeviceDetails](#schemaradardetectionunrecognizeddevicedetails)|true|none|Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.|
+|*oneOf*|object|false|none|none|
+|control|string|true|none|The control the evidence is for. Always the same as the detection's `control`.|
+|details|[RadarDetectionRestrictionDetails](#schemaradardetectionrestrictiondetails)|true|none|Facts specific to the control. See the [Radar detection object](/reference/radar/detections#evidence-details) for the fields each control reports.|
+
+<h2 id="tocS_RadarDetection">RadarDetection</h2>
+<!-- backwards compatibility -->
+<a id="schemaradardetection"></a>
+<a id="schema_RadarDetection"></a>
+<a id="tocSradardetection"></a>
+<a id="tocsradardetection"></a>
+
+```json
+{
+  "object": "radar_detection",
+  "id": "detection_01HZBC6N1EB1ZY7KG32X",
+  "attempt_id": "radar_att_01HZBC6N1EB1ZY7KG32X",
+  "control": "bot_detection",
+  "verdict": "challenge",
+  "challenge_type": "email",
+  "evidence": {
+    "control": "bot_detection",
+    "summary": "Sign-up from a Tor exit node with an email format shared by many recent sign-ups. The action was decided by the risky IP. The email pattern would also have challenged.",
+    "details": {
+      "signals": [
+        {
+          "signal": "risky_ip",
+          "action": "challenge"
+        },
+        {
+          "signal": "suspicious_email_pattern",
+          "action": "challenge"
+        }
+      ],
+      "decided_by": "risky_ip",
+      "ip_risk": [
+        "tor"
+      ],
+      "email_pattern": [
+        "repeated_format"
+      ]
+    }
+  },
+  "ip_address": "203.0.113.42",
+  "location": {
+    "city": "San Francisco",
+    "country": "US"
+  },
+  "user_agent": "Mozilla/5.0",
+  "email": "user@example.com",
+  "user_id": "user_01E4ZCR3C56J083X43JQXF3JK5",
+  "action": "signup",
+  "auth_method": "password",
+  "created_at": "2026-01-15T12:00:00.000Z",
+  "updated_at": "2026-01-15T12:00:00.000Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|object|string|true|none|Distinguishes the Radar detection object.|
+|id|string|true|none|The unique ID of the detection.|
+|attempt_id|string|true|none|The ID of the authentication attempt.|
+|control|string|true|none|The Radar control that determined the verdict.|
+|verdict|string|true|none|The verdict Radar reached for the attempt.|
+|challenge_type|string \| null|true|none|The challenge Radar issued, if the verdict is `challenge`.|
+|evidence|[RadarDetectionEvidence](#schemaradardetectionevidence) \| null|true|none|Why Radar fired. `null` for detections recorded before evidence was captured.|
+|ip_address|string|true|none|The IP address of the attempt.|
+|location|object|true|none|Where the IP address is located.|
+|user_agent|string|true|none|The user agent of the attempt.|
+|email|string|true|none|The email address used in the attempt.|
+|user_id|string \| null|true|none|The ID of the user, if one exists.|
+|action|string \| null|true|none|Whether the attempt was a sign-up or a sign-in, as on the `authentication.radar_risk_detected` event. `null` if unknown.|
+|auth_method|string \| null|true|none|The authentication method used for the attempt.|
+|created_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+|updated_at|string(date-time)|true|none|An ISO 8601 timestamp.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|control|bot_detection|
+|control|brute_force_attack|
+|control|domain_protections|
+|control|impossible_travel|
+|control|repeat_sign_up|
+|control|stale_account|
+|control|unrecognized_device|
+|control|restriction|
+|verdict|allow|
+|verdict|block|
+|verdict|challenge|
+|verdict|log|
 
 <h2 id="tocS_RadarStandaloneResponse">RadarStandaloneResponse</h2>
 <!-- backwards compatibility -->

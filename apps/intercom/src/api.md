@@ -485,6 +485,21 @@ Requires the `read_admins` OAuth scope.
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "52609d5a-89ae-4a95-aaae-c25f81ac8806",
+  "errors": [
+    {
+      "code": "action_forbidden",
+      "message": "Teammate lacks permission to access all teammates and team details"
+    }
+  ]
+}
+```
+
 <h3 id="list-all-activity-logs-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -492,6 +507,7 @@ Requires the `read_admins` OAuth scope.
 |200|OK|Successful response|[activity_log_list](#schemaactivity_log_list)|
 |400|Bad Request|Bad Request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|Forbidden. Returned when the access token acts as a teammate who lacks the permission to access all teammates and team details.|[error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -648,6 +664,21 @@ Requires the `read_admins` OAuth scope.
 }
 ```
 
+> 403 Response
+
+```json
+{
+  "type": "error.list",
+  "request_id": "52609d5a-89ae-4a95-aaae-c25f81ac8806",
+  "errors": [
+    {
+      "code": "action_forbidden",
+      "message": "Teammate lacks permission to access all teammates and team details"
+    }
+  ]
+}
+```
+
 <h3 id="search-activity-logs-responses">Responses</h3>
 
 |Status|Meaning|Description|Schema|
@@ -655,6 +686,7 @@ Requires the `read_admins` OAuth scope.
 |200|OK|Successful response|[activity_log_list](#schemaactivity_log_list)|
 |400|Bad Request|Bad Request|[error](#schemaerror)|
 |401|Unauthorized|Unauthorized|[error](#schemaerror)|
+|403|Forbidden|Forbidden. Returned when the access token acts as a teammate who lacks the permission to access all teammates and team details.|[error](#schemaerror)|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:

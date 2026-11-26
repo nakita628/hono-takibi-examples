@@ -1,4 +1,4 @@
-type IntercomVersion =
+type IntercomVersionInput =
   | '1.0'
   | '1.1'
   | '1.2'
@@ -47,7 +47,7 @@ type AdminWithApp = {
   role?:
     | ({ type?: string | undefined; id?: string | undefined; name?: string | undefined } | null)
     | undefined
-  app?: App | undefined
+  app?: (App | null) | undefined
 } | null
 type Error = {
   type: string
@@ -55,7 +55,7 @@ type Error = {
   errors: {
     code: string | number
     message?: (string | null) | undefined
-    data?: ({ [x: string]: unknown } | null) | undefined
+    data?: ({ [key: string]: unknown } | null) | undefined
   }[]
 }
 type Macro = {
@@ -129,12 +129,7 @@ type ActivityLogMetadata = {
   auto?: (boolean | null) | undefined
   setting_type?: (string | null) | undefined
   changes?:
-    | ({
-        [x: string]: {
-          before?: { [x: string]: unknown } | undefined
-          after?: { [x: string]: unknown } | undefined
-        }
-      } | null)
+    | ({ [key: string]: { before?: any | undefined; after?: any | undefined } } | null)
     | undefined
   conversation_assignment_limit?: (number | null) | undefined
   ticket_assignment_limit?: (number | null) | undefined
@@ -144,8 +139,8 @@ type ActivityLogMetadata = {
   mode?: (string | null) | undefined
   consent_id?: (number | null) | undefined
   expired_at?: (string | null) | undefined
-  before?: ({ [x: string]: unknown } | null) | undefined
-  after?: ({ [x: string]: unknown } | null) | undefined
+  before?: ({ [key: string]: unknown } | null) | undefined
+  after?: ({ [key: string]: unknown } | null) | undefined
 } | null
 type ActivityLog = {
   type?: string | undefined
@@ -575,23 +570,28 @@ type OfficeHoursException = {
   created_at?: number | undefined
   updated_at?: number | undefined
 }
-type UpdateOfficeHoursExceptionRequest = {
-  exception_date?: string | undefined
-  exception_type?: 'closed' | 'custom_hours' | undefined
-  name?: string | undefined
-  time_intervals?: (OfficeHoursTimeInterval[] | null) | undefined
-  recurring_annually?: boolean | undefined
+type OfficeHoursTimeIntervalInput = {
+  start_minute?: number
+  end_minute?: number
+  day_of_week?: number
+}
+type UpdateOfficeHoursExceptionRequestInput = {
+  exception_date?: string
+  exception_type?: 'closed' | 'custom_hours'
+  name?: string
+  time_intervals?: OfficeHoursTimeIntervalInput[] | null
+  recurring_annually?: boolean
 }
 type OfficeHoursExceptionList = {
   type?: string | undefined
   data?: OfficeHoursException[] | undefined
 }
-type CreateOfficeHoursExceptionRequest = {
+type CreateOfficeHoursExceptionRequestInput = {
   exception_date: string
   exception_type: 'closed' | 'custom_hours'
-  name?: string | undefined
-  time_intervals?: (OfficeHoursTimeInterval[] | null) | undefined
-  recurring_annually?: boolean | undefined
+  name?: string
+  time_intervals?: OfficeHoursTimeIntervalInput[] | null
+  recurring_annually?: boolean
 }
 type OfficeHoursSchedule = {
   type?: string | undefined
@@ -603,19 +603,19 @@ type OfficeHoursSchedule = {
   created_at?: number | undefined
   updated_at?: number | undefined
 }
-type UpdateOfficeHoursScheduleRequest = {
-  name?: string | undefined
-  time_zone_name?: string | undefined
-  time_intervals?: OfficeHoursTimeInterval[] | undefined
+type UpdateOfficeHoursScheduleRequestInput = {
+  name?: string
+  time_zone_name?: string
+  time_intervals?: OfficeHoursTimeIntervalInput[]
 }
 type OfficeHoursScheduleList = {
   type?: string | undefined
   data?: OfficeHoursSchedule[] | undefined
 }
-type CreateOfficeHoursScheduleRequest = {
+type CreateOfficeHoursScheduleRequestInput = {
   name: string
-  time_zone_name?: string | undefined
-  time_intervals: OfficeHoursTimeInterval[]
+  time_zone_name?: string
+  time_intervals: OfficeHoursTimeIntervalInput[]
 }
 type ContentImportSource = {
   type: 'content_import_source'
@@ -634,26 +634,28 @@ type ContentImportSourcesList = {
   total_count?: number | undefined
   data?: ContentImportSource[] | undefined
 }
-type CreateContentImportSourceRequest = {
+type CreateContentImportSourceRequestInput = {
   sync_behavior: 'api'
-  status?: 'active' | 'deactivated' | undefined
+  status?: 'active' | 'deactivated'
   url: string
-  audience_ids?: number | number[] | undefined
+  audience_ids?: (number | number[]) | null
 }
-type UpdateContentImportSourceRequest = {
+type UpdateContentImportSourceRequestInput = {
   sync_behavior: 'api' | 'automatic' | 'manual'
-  status?: 'active' | 'deactivated' | undefined
+  status?: 'active' | 'deactivated'
   url: string
-  audience_ids?: number | number[] | undefined
-  apply_audience_to_existing_content?: boolean | undefined
+  audience_ids?: (number | number[]) | null
+  apply_audience_to_existing_content?: boolean
 }
+type Reference = { type?: string | undefined; id?: (string | null) | undefined }
 type Tag = {
   type?: string | undefined
   id?: string | undefined
   name?: string | undefined
   applied_at?: (number | null) | undefined
-  applied_by?: { type?: string | undefined; id?: (string | null) | undefined } | undefined
+  applied_by?: (Reference | null) | undefined
 }
+type Tags = { type?: 'tag.list' | undefined; tags?: Tag[] | undefined }
 type ExternalPage = {
   type: 'external_page'
   id: string
@@ -671,7 +673,7 @@ type ExternalPage = {
   created_at: number
   updated_at: number
   last_ingested_at: number
-  tags?: { type?: 'tag.list' | undefined; tags?: Tag[] | undefined } | undefined
+  tags?: Tags | undefined
 }
 type ExternalPagesList = {
   type?: 'list' | undefined
@@ -679,32 +681,32 @@ type ExternalPagesList = {
   total_count?: number | undefined
   data?: ExternalPage[] | undefined
 }
-type CreateExternalPageRequest = {
+type CreateExternalPageRequestInput = {
   title: string
   html: string
-  url?: string | undefined
-  ai_agent_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
+  url?: string
+  ai_agent_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
   locale: string
   source_id: number
   external_id: string
-  audience_ids?: (number[] | null) | undefined
+  audience_ids?: number[] | null
 }
-type UpdateExternalPageRequest = {
+type UpdateExternalPageRequestInput = {
   title: string
   html: string
-  url?: string | undefined
-  ai_agent_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
+  url?: string
+  ai_agent_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
   locale: string
   source_id: number
   external_id: string
-  audience_ids?: (number[] | null) | undefined
+  audience_ids?: number[] | null
 }
 type ArticleContent = {
-  type?: null | 'article_content' | undefined
+  type?: ('article_content' | null) | undefined
   content_id?: string | undefined
   title?: string | undefined
   description?: string | undefined
@@ -725,7 +727,7 @@ type ArticleContent = {
   updated_by_id?: (number | null) | undefined
 } | null
 type ArticleTranslatedContent = {
-  type?: null | 'article_translated_content' | undefined
+  type?: ('article_translated_content' | null) | undefined
   ar?: ArticleContent | undefined
   bg?: ArticleContent | undefined
   bs?: ArticleContent | undefined
@@ -764,7 +766,6 @@ type ArticleTranslatedContent = {
   'zh-CN'?: ArticleContent | undefined
   'zh-TW'?: ArticleContent | undefined
 } | null
-type Tags = { type?: 'tag.list' | undefined; tags?: Tag[] | undefined }
 type ArticleListItem = {
   type?: 'article' | undefined
   id?: string | undefined
@@ -790,17 +791,20 @@ type ArticleListItem = {
   updated_by_id?: (number | null) | undefined
   exclude_from_article_suggestions?: boolean | undefined
   help_center_audience?:
-    | 'everyone'
-    | 'all_users'
-    | 'all_visitors'
-    | 'all_leads'
-    | 'all_visitors_and_leads'
-    | 'restricted'
+    | (
+        | 'everyone'
+        | 'all_users'
+        | 'all_visitors'
+        | 'all_leads'
+        | 'all_visitors_and_leads'
+        | 'restricted'
+        | null
+      )
     | undefined
   scheduled_publish_at?: (number | null) | undefined
   scheduled_unpublish_at?: (number | null) | undefined
   default_locale?: string | undefined
-  translated_content?: ArticleTranslatedContent | undefined
+  translated_content?: (ArticleTranslatedContent | null) | undefined
   tags?: Tags | undefined
   folder_id?: (number | null) | undefined
 }
@@ -810,91 +814,123 @@ type ArticleList = {
   total_count?: number | undefined
   data?: ArticleListItem[] | undefined
 }
-type CreateArticleRequest = {
-  title?: string | undefined
-  description?: string | undefined
-  body?: string | undefined
-  body_markdown?: string | undefined
-  author_id?: number | undefined
-  state?: 'published' | 'draft' | undefined
-  parent_id?: number | undefined
-  parent_ids?: number[] | undefined
-  locale?: string | undefined
-  translated_content?: ArticleTranslatedContent | undefined
-  folder_id?: (number | null) | undefined
-  audience_ids?: (number[] | null) | undefined
-  ai_chatbot_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
-  scheduled_publish_at?: (string | null) | undefined
-  scheduled_unpublish_at?: (string | null) | undefined
+type ArticleContentInput = {
+  type?: 'article_content' | null
+  content_id?: string
+  title?: string
+  description?: string
+  body?: string
+  body_markdown?: string | null
+  author_id?: number
+  state?: 'published' | 'draft'
+  created_at?: number
+  updated_at?: number
+  has_unpublished_changes?: boolean
+  draft_updated_at?: number | null
+  url?: string
+  audience_ids?: number[] | null
+  ai_chatbot_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
+  created_by_id?: number | null
+  updated_by_id?: number | null
 } | null
-type Article = {
-  type?: 'article' | undefined
-  id?: string | undefined
-  workspace_id?: string | undefined
-  content_id?: string | undefined
-  title?: string | undefined
-  description?: (string | null) | undefined
-  body?: (string | null) | undefined
-  body_markdown?: (string | null) | undefined
-  author_id?: number | undefined
-  state?: 'published' | 'draft' | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  has_unpublished_changes?: boolean | undefined
-  draft_updated_at?: (number | null) | undefined
-  url?: (string | null) | undefined
-  parent_ids?: number[] | undefined
-  audience_ids?: (number[] | null) | undefined
-  ai_chatbot_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
-  created_by_id?: (number | null) | undefined
-  updated_by_id?: (number | null) | undefined
-  exclude_from_article_suggestions?: boolean | undefined
-  help_center_audience?:
-    | 'everyone'
-    | 'all_users'
-    | 'all_visitors'
-    | 'all_leads'
-    | 'all_visitors_and_leads'
-    | 'restricted'
-    | undefined
-  scheduled_publish_at?: (number | null) | undefined
-  scheduled_unpublish_at?: (number | null) | undefined
-  default_locale?: string | undefined
-  translated_content?: ArticleTranslatedContent | undefined
-  tags?: Tags | undefined
-  folder_id?: (number | null) | undefined
-}
-type UpdateArticleRequest = {
-  title?: string | undefined
-  description?: string | undefined
-  body?: string | undefined
-  body_markdown?: string | undefined
-  author_id?: number | undefined
-  state?: 'published' | 'draft' | undefined
-  parent_id?: (string | null) | undefined
-  parent_ids?: number[] | undefined
-  translated_content?: ArticleTranslatedContent | undefined
-  folder_id?: (number | null) | undefined
-  audience_ids?: (number[] | null) | undefined
-  ai_chatbot_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
-  scheduled_publish_at?: (string | null) | undefined
-  scheduled_unpublish_at?: (string | null) | undefined
+type ArticleTranslatedContentInput = {
+  type?: 'article_translated_content' | null
+  ar?: ArticleContentInput
+  bg?: ArticleContentInput
+  bs?: ArticleContentInput
+  ca?: ArticleContentInput
+  cs?: ArticleContentInput
+  da?: ArticleContentInput
+  de?: ArticleContentInput
+  el?: ArticleContentInput
+  en?: ArticleContentInput
+  es?: ArticleContentInput
+  et?: ArticleContentInput
+  fi?: ArticleContentInput
+  fr?: ArticleContentInput
+  he?: ArticleContentInput
+  hr?: ArticleContentInput
+  hu?: ArticleContentInput
+  id?: ArticleContentInput
+  it?: ArticleContentInput
+  ja?: ArticleContentInput
+  ko?: ArticleContentInput
+  lt?: ArticleContentInput
+  lv?: ArticleContentInput
+  mn?: ArticleContentInput
+  nb?: ArticleContentInput
+  nl?: ArticleContentInput
+  pl?: ArticleContentInput
+  pt?: ArticleContentInput
+  ro?: ArticleContentInput
+  ru?: ArticleContentInput
+  sl?: ArticleContentInput
+  sr?: ArticleContentInput
+  sv?: ArticleContentInput
+  tr?: ArticleContentInput
+  vi?: ArticleContentInput
+  'pt-BR'?: ArticleContentInput
+  'zh-CN'?: ArticleContentInput
+  'zh-TW'?: ArticleContentInput
+} | null
+type CreateArticleRequestInput = {
+  title?: string
+  description?: string
+  body?: string
+  body_markdown?: string
+  author_id?: number
+  state?: 'published' | 'draft'
+  parent_id?: number
+  parent_ids?: number[]
+  locale?: string
+  translated_content?: ArticleTranslatedContentInput
+  folder_id?: number | null
+  audience_ids?: number[] | null
+  ai_chatbot_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
+  scheduled_publish_at?: string | null
+  scheduled_unpublish_at?: string | null
+} | null
+type ArticleStatistics = {
+  type?: 'article_statistics' | undefined
+  views?: number | undefined
+  conversations?: number | undefined
+  reactions?: number | undefined
+  happy_reaction_percentage?: number | undefined
+  neutral_reaction_percentage?: number | undefined
+  sad_reaction_percentage?: number | undefined
+  fin_involvements?: number | undefined
+  fin_resolutions?: number | undefined
+  fin_resolution_rate?: number | undefined
+} | null
+type Article = ArticleListItem & { statistics?: (ArticleStatistics | null) | undefined }
+type UpdateArticleRequestInput = {
+  title?: string
+  description?: string
+  body?: string
+  body_markdown?: string
+  author_id?: number
+  state?: 'published' | 'draft'
+  parent_id?: string | null
+  parent_ids?: number[]
+  translated_content?: ArticleTranslatedContentInput
+  folder_id?: number | null
+  audience_ids?: number[] | null
+  ai_chatbot_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
+  scheduled_publish_at?: string | null
+  scheduled_unpublish_at?: string | null
 } | null
 type DeletedArticleObject = {
   id?: string | undefined
   object?: 'article' | undefined
   deleted?: boolean | undefined
 }
-type PublishArticleDraftRequest = {
-  locales?: string[] | undefined
-  author_id?: number | undefined
-} | null
+type PublishArticleDraftRequestInput = { locales?: string[]; author_id?: number } | null
 type ArticleVersionSummary = {
   type?: 'article_version' | undefined
   id?: string | undefined
@@ -954,14 +990,14 @@ type AwayStatusReason = {
   emoji?: string | undefined
   order?: number | undefined
   deleted?: boolean | undefined
-  associated_to_phone_status?: 'wrap_up' | 'on_a_call' | 'coaching' | null | undefined
+  associated_to_phone_status?: ('wrap_up' | 'on_a_call' | 'coaching' | null) | undefined
 }
 type AwayStatusReasonList = { type?: 'list' | undefined; data?: AwayStatusReason[] | undefined }
 type Predicate = {
   attribute?: string | undefined
   type?: string | undefined
   comparison?: string | undefined
-  value?: { [x: string]: unknown } | undefined
+  value?: any | undefined
   predicates?: Predicate[] | undefined
 }
 type Audience = {
@@ -981,42 +1017,49 @@ type AudienceList = {
   per_page?: number | undefined
   total_pages?: number | undefined
 }
-type CreateAudienceRequest = {
+type PredicateInput = {
+  attribute?: string
+  type?: string
+  comparison?: string
+  value?: any
+  predicates?: PredicateInput[]
+}
+type CreateAudienceRequestInput = {
   name: string
-  predicates?: Predicate[] | undefined
-  role_predicates?: Predicate[] | undefined
+  predicates?: PredicateInput[]
+  role_predicates?: PredicateInput[]
 }
-type UpdateAudienceRequest = {
-  name?: string | undefined
-  predicates?: Predicate[] | undefined
-  role_predicates?: Predicate[] | undefined
+type UpdateAudienceRequestInput = {
+  name?: string
+  predicates?: PredicateInput[]
+  role_predicates?: PredicateInput[]
 }
-type FinAgentMessage = {
+type FinAgentMessageInput = {
   author: 'user' | 'agent' | 'fin'
   body: string
-  timestamp?: string | undefined
-  timestamp_ms?: string | undefined
+  timestamp?: string
+  timestamp_ms?: string
 }
-type FinAgentUser = {
+type FinAgentUserInput = {
   id: string
-  name?: string | undefined
-  email?: string | undefined
-  attributes?: { [x: string]: unknown } | undefined
+  name?: string
+  email?: string
+  attributes?: { [key: string]: unknown }
 }
-type FinAgentAttachment = {
+type FinAgentAttachmentInput = {
   type: 'url' | 'file'
-  url?: string | undefined
-  name?: string | undefined
-  content_type?: string | undefined
-  data?: string | undefined
+  url?: string
+  name?: string
+  content_type?: string
+  data?: string
 }
-type FinAgentConversationMetadata = {
-  history?: FinAgentMessage[] | undefined
-  attributes?: { [x: string]: unknown } | undefined
+type FinAgentConversationMetadataInput = {
+  history?: FinAgentMessageInput[]
+  attributes?: { [key: string]: unknown }
 }
 type FinAgentAttributeErrors = {
-  user?: { attributes?: { [x: string]: string } | undefined } | undefined
-  conversation?: { attributes?: { [x: string]: string } | undefined } | undefined
+  user?: { attributes?: { [key: string]: string } | undefined } | undefined
+  conversation?: { attributes?: { [key: string]: string } | undefined } | undefined
 }
 type HelpCenterRedirect = {
   id?: string | undefined
@@ -1035,7 +1078,7 @@ type HelpCenterRedirectList = {
   total_count?: number | undefined
   data?: HelpCenterRedirect[] | undefined
 }
-type CreateHelpCenterRedirectRequest = {
+type CreateHelpCenterRedirectRequestInput = {
   from_url: string
   locale: string
   target_type: 'article' | 'collection'
@@ -1047,12 +1090,12 @@ type DeletedHelpCenterRedirectObject = {
   deleted?: boolean | undefined
 }
 type GroupContent = {
-  type?: null | 'group_content' | undefined
+  type?: ('group_content' | null) | undefined
   name?: string | undefined
   description?: string | undefined
 } | null
 type GroupTranslatedContent = {
-  type?: null | 'group_translated_content' | undefined
+  type?: ('group_translated_content' | null) | undefined
   ar?: GroupContent | undefined
   bg?: GroupContent | undefined
   bs?: GroupContent | undefined
@@ -1103,7 +1146,7 @@ type Collection = {
   icon?: (string | null) | undefined
   order?: number | undefined
   default_locale?: string | undefined
-  translated_content?: GroupTranslatedContent | undefined
+  translated_content?: (GroupTranslatedContent | null) | undefined
   parent_id?: (string | null) | undefined
   help_center_id?: (number | null) | undefined
 }
@@ -1113,21 +1156,66 @@ type CollectionList = {
   total_count?: number | undefined
   data?: Collection[] | undefined
 }
-type CreateCollectionRequest = {
-  name?: string | undefined
-  description?: string | undefined
-  icon?: string | undefined
-  translated_content?: GroupTranslatedContent | undefined
-  parent_id?: (string | null) | undefined
-  help_center_id?: (number | null) | undefined
+type GroupContentInput = {
+  type?: 'group_content' | null
+  name?: string
+  description?: string
+} | null
+type GroupTranslatedContentInput = {
+  type?: 'group_translated_content' | null
+  ar?: GroupContentInput
+  bg?: GroupContentInput
+  bs?: GroupContentInput
+  ca?: GroupContentInput
+  cs?: GroupContentInput
+  da?: GroupContentInput
+  de?: GroupContentInput
+  el?: GroupContentInput
+  en?: GroupContentInput
+  es?: GroupContentInput
+  et?: GroupContentInput
+  fi?: GroupContentInput
+  fr?: GroupContentInput
+  he?: GroupContentInput
+  hr?: GroupContentInput
+  hu?: GroupContentInput
+  id?: GroupContentInput
+  it?: GroupContentInput
+  ja?: GroupContentInput
+  ko?: GroupContentInput
+  lt?: GroupContentInput
+  lv?: GroupContentInput
+  mn?: GroupContentInput
+  nb?: GroupContentInput
+  nl?: GroupContentInput
+  pl?: GroupContentInput
+  pt?: GroupContentInput
+  ro?: GroupContentInput
+  ru?: GroupContentInput
+  sl?: GroupContentInput
+  sr?: GroupContentInput
+  sv?: GroupContentInput
+  tr?: GroupContentInput
+  vi?: GroupContentInput
+  'pt-BR'?: GroupContentInput
+  'zh-CN'?: GroupContentInput
+  'zh-TW'?: GroupContentInput
+} | null
+type CreateCollectionRequestInput = {
+  name?: string
+  description?: string
+  icon?: string
+  translated_content?: GroupTranslatedContentInput | null
+  parent_id?: string | null
+  help_center_id?: number | null
 }
-type UpdateCollectionRequest = {
-  name?: string | undefined
-  description?: string | undefined
-  icon?: string | undefined
-  translated_content?: GroupTranslatedContent | undefined
-  parent_id?: (string | null) | undefined
-  help_center_id?: (number | null) | undefined
+type UpdateCollectionRequestInput = {
+  name?: string
+  description?: string
+  icon?: string
+  translated_content?: GroupTranslatedContentInput | null
+  parent_id?: string | null
+  help_center_id?: number | null
 }
 type DeletedCollectionObject = {
   id?: string | undefined
@@ -1171,50 +1259,34 @@ type InternalArticleList = {
   total_count?: number | undefined
   data?: InternalArticleListItem[] | undefined
 }
-type CreateInternalArticleRequest = {
+type CreateInternalArticleRequestInput = {
   title: string
-  body?: string | undefined
-  body_markdown?: string | undefined
-  json_blocks?: { [x: string]: unknown }[] | undefined
-  locale?: string | undefined
+  body?: string
+  body_markdown?: string
+  json_blocks?: { [key: string]: unknown }[]
+  locale?: string
   author_id: number
   owner_id: number
-  folder_id?: (number | null) | undefined
-  audience_ids?: (number[] | null) | undefined
-  ai_chatbot_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
+  folder_id?: number | null
+  audience_ids?: number[] | null
+  ai_chatbot_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
 } | null
-type InternalArticle = {
-  id?: number | undefined
-  title?: string | undefined
-  body?: (string | null) | undefined
-  body_markdown?: (string | null) | undefined
-  owner_id?: number | undefined
-  author_id?: number | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  locale?: string | undefined
-  folder_id?: (number | null) | undefined
-  audience_ids?: (number[] | null) | undefined
-  ai_chatbot_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
-  tags?: Tags | undefined
-}
-type UpdateInternalArticleRequest = {
-  title?: string | undefined
-  body?: string | undefined
-  body_markdown?: string | undefined
-  json_blocks?: { [x: string]: unknown }[] | undefined
-  locale?: string | undefined
-  author_id?: number | undefined
-  owner_id?: number | undefined
-  folder_id?: (number | null) | undefined
-  audience_ids?: (number[] | null) | undefined
-  ai_chatbot_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
+type InternalArticle = InternalArticleListItem
+type UpdateInternalArticleRequestInput = {
+  title?: string
+  body?: string
+  body_markdown?: string
+  json_blocks?: { [key: string]: unknown }[]
+  locale?: string
+  author_id?: number
+  owner_id?: number
+  folder_id?: number | null
+  audience_ids?: number[] | null
+  ai_chatbot_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
 } | null
 type DeletedInternalArticleObject = {
   id?: string | undefined
@@ -1247,18 +1319,19 @@ type IpAllowlist = {
   enabled?: boolean | undefined
   ip_allowlist?: string[] | undefined
 }
-type CreateOrUpdateCompanyRequest = {
-  name?: string | undefined
-  company_id?: string | undefined
-  id?: string | undefined
-  plan?: string | undefined
-  size?: number | undefined
-  website?: string | undefined
-  industry?: string | undefined
-  custom_attributes?: { [x: string]: (string | null) | number | number | boolean } | undefined
-  remote_created_at?: number | undefined
-  update_last_request_at?: boolean | undefined
-  monthly_spend?: number | undefined
+type IpAllowlistInput = { type?: string; enabled?: boolean; ip_allowlist?: string[] }
+type CreateOrUpdateCompanyRequestInput = {
+  name?: string
+  company_id?: string
+  id?: string
+  plan?: string
+  size?: number
+  website?: string
+  industry?: string
+  custom_attributes?: { [key: string]: (string | null) | number | number | boolean }
+  remote_created_at?: number
+  update_last_request_at?: boolean
+  monthly_spend?: number
 } | null
 type TagBasic = { type?: string | undefined; id?: string | undefined; name?: string | undefined }
 type Segment = {
@@ -1295,7 +1368,7 @@ type Company = {
   monthly_spend?: number | undefined
   session_count?: number | undefined
   user_count?: number | undefined
-  custom_attributes?: { [x: string]: (string | null) | number | number | boolean } | undefined
+  custom_attributes?: { [key: string]: (string | null) | number | number | boolean } | undefined
   tags?: { type?: 'tag.list' | undefined; tags?: TagBasic[] | undefined } | undefined
   segments?: { type?: 'segment.list' | undefined; segments?: Segment[] | undefined } | undefined
   notes?:
@@ -1316,21 +1389,21 @@ type CompanyList = {
 }
 type CompanyUserList = {
   type?: 'user.list' | undefined
-  users?: { [x: string]: unknown }[] | undefined
+  users?: { [key: string]: unknown }[] | undefined
   pages?: PagesLink | undefined
   total_count?: number | undefined
   limited?: boolean | undefined
 }
-type UpdateCompanyRequest = {
-  name?: string | undefined
-  update_last_request_at?: boolean | undefined
-  plan?: string | undefined
-  size?: number | undefined
-  website?: string | undefined
-  industry?: string | undefined
-  custom_attributes?: { [x: string]: (string | null) | number | number | boolean } | undefined
-  remote_created_at?: number | undefined
-  monthly_spend?: number | undefined
+type UpdateCompanyRequestInput = {
+  name?: string
+  update_last_request_at?: boolean
+  plan?: string
+  size?: number
+  website?: string
+  industry?: string
+  custom_attributes?: { [key: string]: (string | null) | number | number | boolean }
+  remote_created_at?: number
+  monthly_spend?: number
 } | null
 type DeletedCompanyObject = {
   id?: string | undefined
@@ -1432,7 +1505,7 @@ type Contact = {
   ios_os_version?: (string | null) | undefined
   ios_sdk_version?: (string | null) | undefined
   ios_last_seen_at?: (number | null) | undefined
-  custom_attributes?: { [x: string]: unknown } | undefined
+  custom_attributes?: { [key: string]: unknown } | undefined
   avatar?: (string | null) | undefined
   tags?: ContactTags | undefined
   notes?: ContactNotes | undefined
@@ -1472,31 +1545,7 @@ type Note = {
   created_at?: number | undefined
   contact?: ({ type?: string | undefined; id?: string | undefined } | null) | undefined
   company?: ({ type?: string | undefined; id?: string | undefined } | null) | undefined
-  author?:
-    | {
-        type?: string | undefined
-        id?: string | undefined
-        name?: string | undefined
-        email?: string | undefined
-        job_title?: string | undefined
-        away_mode_enabled?: boolean | undefined
-        away_mode_reassign?: boolean | undefined
-        away_status_reason_id?: (number | null) | undefined
-        has_inbox_seat?: boolean | undefined
-        team_ids?: number[] | undefined
-        avatar?:
-          | ({ type?: string | undefined; image_url?: (string | null) | undefined } | null)
-          | undefined
-        team_priority_level?: TeamPriorityLevel | undefined
-        role?:
-          | ({
-              type?: string | undefined
-              id?: string | undefined
-              name?: string | undefined
-            } | null)
-          | undefined
-      }
-    | undefined
+  author?: (Admin | null) | undefined
   body?: string | undefined
 }
 type NoteList = {
@@ -1505,36 +1554,20 @@ type NoteList = {
   total_count?: number | undefined
   pages?: PagesLink | undefined
 }
-type SingleFilterSearchRequest = {
-  field?: string | undefined
-  operator?:
-    | '='
-    | '!='
-    | 'IN'
-    | 'NIN'
-    | '<'
-    | '<='
-    | '>'
-    | '>='
-    | '~'
-    | '!~'
-    | '^'
-    | '$'
-    | undefined
-  value?: string | number | boolean | (string | number)[] | undefined
+type SingleFilterSearchRequestInput = {
+  field?: string
+  operator?: '=' | '!=' | 'IN' | 'NIN' | '<' | '<=' | '>' | '>=' | '~' | '!~' | '^' | '$'
+  value?: (string | number | boolean | (string | number)[]) | null
 }
-type MultipleFilterSearchRequest = {
-  operator?: 'AND' | 'OR' | undefined
-  value?: MultipleFilterSearchRequest[] | SingleFilterSearchRequest[] | undefined
+type MultipleFilterSearchRequestInput = {
+  operator?: 'AND' | 'OR'
+  value?: MultipleFilterSearchRequestInput[] | SingleFilterSearchRequestInput[]
 }
-type StartingAfterPaging = {
-  per_page?: number | undefined
-  starting_after?: (string | null) | undefined
-} | null
-type CompanySearchRequest = {
-  query: SingleFilterSearchRequest | MultipleFilterSearchRequest
-  pagination?: StartingAfterPaging | undefined
-  sort?: { field?: string | undefined; order?: 'ascending' | 'descending' | undefined } | undefined
+type StartingAfterPagingInput = { per_page?: number; starting_after?: string | null } | null
+type CompanySearchRequestInput = {
+  query: SingleFilterSearchRequestInput | MultipleFilterSearchRequestInput
+  pagination?: StartingAfterPagingInput
+  sort?: { field?: string; order?: 'ascending' | 'descending' }
 }
 type CompanySearchResponse = {
   type?: 'list' | undefined
@@ -1545,7 +1578,7 @@ type CompanySearchResponse = {
 type CompanyScroll = {
   type?: 'list' | undefined
   data?: Company[] | undefined
-  pages?: ({ [x: string]: unknown } | null) | undefined
+  pages?: ({ [key: string]: unknown } | null) | undefined
   total_count?: (number | null) | undefined
   scroll_param?: string | undefined
 } | null
@@ -1601,45 +1634,42 @@ type DeletedContactList = {
       }
     | undefined
 }
-type UpdateContactRequest = {
-  role?: string | undefined
-  external_id?: string | undefined
-  email?: string | undefined
-  email_verified?: (boolean | null) | undefined
-  phone?: (string | null) | undefined
-  name?: (string | null) | undefined
-  avatar?: (string | null) | undefined
-  signed_up_at?: (number | null) | undefined
-  last_seen_at?: (number | null) | undefined
-  owner_id?: (string | null) | undefined
-  unsubscribed_from_emails?: (boolean | null) | undefined
-  sms_consent?: boolean | undefined
-  unsubscribed_from_sms?: boolean | undefined
-  language_override?: (string | null) | undefined
-  custom_attributes?: ({ [x: string]: unknown } | null) | undefined
+type UpdateContactRequestInput = {
+  role?: string
+  external_id?: string
+  email?: string
+  email_verified?: boolean | null
+  phone?: string | null
+  name?: string | null
+  avatar?: string | null
+  signed_up_at?: number | null
+  last_seen_at?: number | null
+  owner_id?: string | null
+  unsubscribed_from_emails?: boolean | null
+  sms_consent?: boolean
+  unsubscribed_from_sms?: boolean
+  language_override?: string | null
+  custom_attributes?: { [key: string]: unknown } | null
 }
-type ContactDeleted = {
+type ContactReference = {
   type?: 'contact' | undefined
   id?: string | undefined
   external_id?: (string | null) | undefined
 }
-type MergeContactsRequest = {
+type ContactDeleted = ContactReference & { deleted?: boolean | undefined }
+type MergeContactsRequestInput = { from: string; into: string; skip_duplicate_validation?: boolean }
+type MergePreviewRequestInput = {
   from: string
   into: string
-  skip_duplicate_validation?: boolean | undefined
-}
-type MergePreviewRequest = {
-  from: string
-  into: string
-  skip_duplicate_validation?: boolean | undefined
-  custom_attribute_names?: string[] | undefined
+  skip_duplicate_validation?: boolean
+  custom_attribute_names?: string[]
 }
 type MergePreviewAttributeChange = {
   field?: string | undefined
   outcome?: 'adopted' | 'discarded' | 'merged' | undefined
-  from_value?: ({ [x: string]: unknown } | null) | undefined
-  into_value?: ({ [x: string]: unknown } | null) | undefined
-  new_into_value?: ({ [x: string]: unknown } | null) | undefined
+  from_value?: (any | null) | undefined
+  into_value?: (any | null) | undefined
+  new_into_value?: (any | null) | undefined
 }
 type MergePreviewAttributeChanges = {
   attributes?: MergePreviewAttributeChange[] | undefined
@@ -1677,10 +1707,10 @@ type MergePreviewBlocked = {
   reasons?: MergePreviewReason[] | undefined
 }
 type MergePreviewResponse = MergePreviewAllowed | MergePreviewBlocked
-type ContactSearchRequest = {
-  query: SingleFilterSearchRequest | MultipleFilterSearchRequest
-  pagination?: StartingAfterPaging | undefined
-  sort?: { field?: string | undefined; order?: 'ascending' | 'descending' | undefined } | undefined
+type ContactSearchRequestInput = {
+  query: SingleFilterSearchRequestInput | MultipleFilterSearchRequestInput
+  pagination?: StartingAfterPagingInput
+  sort?: { field?: string; order?: 'ascending' | 'descending' }
 }
 type ContactList = {
   type?: 'list' | undefined
@@ -1717,20 +1747,9 @@ type ContactActivityList = {
       }
     | undefined
 }
-type CreateContactRequest =
-  | { [x: string]: unknown }
-  | { [x: string]: unknown }
-  | { [x: string]: unknown }
-type ContactArchived = {
-  type?: 'contact' | undefined
-  id?: string | undefined
-  external_id?: (string | null) | undefined
-}
-type ContactUnarchived = {
-  type?: 'contact' | undefined
-  id?: string | undefined
-  external_id?: (string | null) | undefined
-}
+type CreateContactRequestInput = unknown | unknown | unknown
+type ContactArchived = ContactReference & { archived?: boolean | undefined }
+type ContactUnarchived = ContactReference & { archived?: boolean | undefined }
 type Banner = {
   type?: string | undefined
   id?: string | undefined
@@ -1752,7 +1771,7 @@ type Banner = {
         tour_url?: (string | null) | undefined
       } | null)
     | undefined
-  client_targeting?: ({ [x: string]: unknown }[] | null) | undefined
+  client_targeting?: ({ [key: string]: unknown }[] | null) | undefined
   created_at?: number | undefined
 }
 type BannerList = { type?: string | undefined; data?: Banner[] | undefined }
@@ -1761,36 +1780,32 @@ type BannerDismiss = {
   view_id?: string | undefined
   dismissed?: boolean | undefined
 }
-type ContactBlocked = {
-  type?: 'contact' | undefined
-  id?: string | undefined
-  external_id?: (string | null) | undefined
-}
+type ContactBlocked = ContactReference & { blocked?: boolean | undefined }
 type MergeHistoryList = {
   type?: 'list' | undefined
   data?: MergeHistoryItem[] | undefined
   next_cursor?: (string | null) | undefined
   has_more?: boolean | undefined
 }
-type BulkCreateContactsRequest = {
+type BulkCreateContactsRequestInput = {
   contacts: {
-    external_id?: string | undefined
-    email?: string | undefined
-    email_verified?: (boolean | null) | undefined
-    name?: string | undefined
-    role?: string | undefined
-    phone?: string | undefined
-    avatar?: string | undefined
-    language_override?: string | undefined
-    custom_attributes?: { [x: string]: unknown } | undefined
-    signed_up_at?: number | undefined
-    last_seen_at?: number | undefined
-    owner_id?: string | undefined
-    unsubscribed_from_emails?: boolean | undefined
-    companies?: { company_id: string; name?: string | undefined }[] | undefined
-    tags?: { add?: { id: string }[] | undefined } | undefined
+    external_id?: string
+    email?: string
+    email_verified?: boolean | null
+    name?: string
+    role?: string
+    phone?: string
+    avatar?: string
+    language_override?: string
+    custom_attributes?: { [key: string]: unknown }
+    signed_up_at?: number
+    last_seen_at?: number
+    owner_id?: string
+    unsubscribed_from_emails?: boolean
+    companies?: { company_id: string; name?: string }[]
+    tags?: { add?: { id: string }[] }
   }[]
-  job?: { id?: string | undefined } | undefined
+  job?: { id?: string }
 }
 type ContactsBulkJob = {
   id?: string | undefined
@@ -1811,31 +1826,26 @@ type ContactsBulkJob = {
     | undefined
   url?: string | undefined
 }
-type BulkUpdateContactsRequest = {
+type BulkUpdateContactsRequestInput = {
   contacts: {
     id: string
-    external_id?: string | undefined
-    email?: string | undefined
-    email_verified?: (boolean | null) | undefined
-    name?: string | undefined
-    phone?: string | undefined
-    avatar?: string | undefined
-    owner_id?: string | undefined
-    unsubscribed_from_emails?: boolean | undefined
-    language_override?: string | undefined
-    custom_attributes?: { [x: string]: unknown } | undefined
-    companies?:
-      | { company_id: string; name?: string | undefined; remove?: boolean | undefined }[]
-      | undefined
-    tags?: { add?: { id: string }[] | undefined; remove?: { id: string }[] | undefined } | undefined
+    external_id?: string
+    email?: string
+    email_verified?: boolean | null
+    name?: string
+    phone?: string
+    avatar?: string
+    owner_id?: string
+    unsubscribed_from_emails?: boolean
+    language_override?: string
+    custom_attributes?: { [key: string]: unknown }
+    companies?: { company_id: string; name?: string; remove?: boolean }[]
+    tags?: { add?: { id: string }[]; remove?: { id: string }[] }
   }[]
-  job?: { id?: string | undefined } | undefined
+  job?: { id?: string }
 }
-type BulkDeleteContactsRequest = {
-  contacts: { id: string }[]
-  job?: { id?: string | undefined } | undefined
-}
-type ContentBulkActionRequest = {
+type BulkDeleteContactsRequestInput = { contacts: { id: string }[]; job?: { id?: string } }
+type ContentBulkActionRequestInput = {
   action: 'publish' | 'unpublish' | 'delete' | 'set_availability' | 'set_audience' | 'update_tags'
   content_ids: {
     type:
@@ -1847,21 +1857,9 @@ type ContentBulkActionRequest = {
       | 'internal_article'
     id: string
   }[]
-  availability?:
-    | {
-        ai_agent?: boolean | undefined
-        copilot?: boolean | undefined
-        sales_agent?: boolean | undefined
-      }
-    | undefined
-  audience?:
-    | {
-        add_segment_ids?: number[] | undefined
-        remove_segment_ids?: number[] | undefined
-        remove_all?: boolean | undefined
-      }
-    | undefined
-  tags?: { add_tag_ids?: number[] | undefined; remove_tag_ids?: number[] | undefined } | undefined
+  availability?: { ai_agent?: boolean; copilot?: boolean; sales_agent?: boolean }
+  audience?: { add_segment_ids?: number[]; remove_segment_ids?: number[]; remove_all?: boolean }
+  tags?: { add_tag_ids?: number[]; remove_tag_ids?: number[] }
 }
 type ContentBulkActionResponse = { type?: string | undefined; status?: string | undefined }
 type ContentSearchDefaultItem = {
@@ -1902,7 +1900,7 @@ type ContentSnippet = {
   id?: string | undefined
   title?: (string | null) | undefined
   locale?: string | undefined
-  json_blocks?: { [x: string]: unknown }[] | undefined
+  json_blocks?: { [key: string]: unknown }[] | undefined
   body_markdown?: (string | null) | undefined
   chatbot_availability?: number | undefined
   copilot_availability?: number | undefined
@@ -1921,25 +1919,25 @@ type ContentSnippetList = {
   per_page?: number | undefined
   total_pages?: number | undefined
 }
-type ContentSnippetCreateRequest = {
+type ContentSnippetCreateRequestInput = {
   title: string
-  json_blocks?: { [x: string]: unknown }[] | undefined
-  body_markdown?: string | undefined
-  locale?: string | undefined
-  audience_ids?: (number[] | null) | undefined
-  ai_chatbot_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
+  json_blocks?: { [key: string]: unknown }[]
+  body_markdown?: string
+  locale?: string
+  audience_ids?: number[] | null
+  ai_chatbot_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
 }
-type ContentSnippetUpdateRequest = {
-  title?: string | undefined
-  json_blocks?: { [x: string]: unknown }[] | undefined
-  body_markdown?: string | undefined
-  locale?: string | undefined
-  audience_ids?: (number[] | null) | undefined
-  ai_chatbot_availability?: boolean | undefined
-  ai_copilot_availability?: boolean | undefined
-  ai_sales_agent_availability?: boolean | undefined
+type ContentSnippetUpdateRequestInput = {
+  title?: string
+  json_blocks?: { [key: string]: unknown }[]
+  body_markdown?: string
+  locale?: string
+  audience_ids?: number[] | null
+  ai_chatbot_availability?: boolean
+  ai_copilot_availability?: boolean
+  ai_sales_agent_availability?: boolean
 }
 type DynamicContentVariation = {
   type?: string | undefined
@@ -1947,7 +1945,7 @@ type DynamicContentVariation = {
   locale?: string | undefined
   brand_id?: (string | null) | undefined
   text_content?: (string | null) | undefined
-  json_blocks?: ({ [x: string]: unknown }[] | null) | undefined
+  json_blocks?: ({ [key: string]: unknown }[] | null) | undefined
   intentionally_empty?: boolean | undefined
   created_at?: number | undefined
   updated_at?: number | undefined
@@ -1971,28 +1969,23 @@ type DynamicContentList = {
   per_page?: number | undefined
   total_pages?: number | undefined
 }
-type DynamicContentVariationRequest = {
+type DynamicContentVariationRequestInput = {
   locale: string
-  brand_id?: (string | null) | undefined
-  text_content?: string | undefined
-  body?: string | undefined
-  intentionally_empty?: boolean | undefined
+  brand_id?: string | null
+  text_content?: string
+  body?: string
+  intentionally_empty?: boolean
 }
-type DynamicContentCreateRequest = {
+type DynamicContentCreateRequestInput = {
   name: string
   content_type: 'inline' | 'block'
   default_locale: string
-  variations: DynamicContentVariationRequest[]
+  variations: DynamicContentVariationRequestInput[]
 }
-type DynamicContentUpdateRequest = {
-  name?: string | undefined
-  default_locale?: string | undefined
-  variations?: DynamicContentVariationRequest[] | undefined
-}
-type ContactReference = {
-  type?: 'contact' | undefined
-  id?: string | undefined
-  external_id?: (string | null) | undefined
+type DynamicContentUpdateRequestInput = {
+  name?: string
+  default_locale?: string
+  variations?: DynamicContentVariationRequestInput[]
 }
 type ConversationRating = {
   rating?: number | undefined
@@ -2059,7 +2052,6 @@ type ConversationContacts = {
   type?: 'contact.list' | undefined
   contacts?: ContactReference[] | undefined
 }
-type Reference = { type?: string | undefined; id?: (string | null) | undefined }
 type ConversationTeammates = { type?: string | undefined; admins?: Reference[] | undefined } | null
 type AiTopicSubtopic = {
   topic_name?: string | undefined
@@ -2114,7 +2106,7 @@ type ConversationStatistics = {
 type LinkedObject = {
   type?: 'ticket' | 'conversation' | undefined
   id?: string | undefined
-  category?: 'Customer' | 'Back-office' | 'Tracker' | null | undefined
+  category?: ('Customer' | 'Back-office' | 'Tracker' | null) | undefined
 }
 type LinkedObjectList = {
   type?: 'list' | undefined
@@ -2142,21 +2134,19 @@ type ContentSourcesList = {
 }
 type AiAgent = {
   source_type?:
-    | 'essentials_plan_setup'
-    | 'profile'
-    | 'workflow'
-    | 'workflow_preview'
-    | 'fin_preview'
+    | ('essentials_plan_setup' | 'profile' | 'workflow' | 'workflow_preview' | 'fin_preview' | null)
     | undefined
   source_title?: (string | null) | undefined
-  last_answer_type?: null | 'ai_answer' | 'custom_answer' | undefined
+  last_answer_type?: ('ai_answer' | 'custom_answer' | null) | undefined
   resolution_state?:
-    | 'assumed_resolution'
-    | 'confirmed_resolution'
-    | 'escalated'
-    | 'negative_feedback'
-    | 'procedure_handoff'
-    | null
+    | (
+        | 'assumed_resolution'
+        | 'confirmed_resolution'
+        | 'escalated'
+        | 'negative_feedback'
+        | 'procedure_handoff'
+        | null
+      )
     | undefined
   rating?: (number | null) | undefined
   rating_remark?: (string | null) | undefined
@@ -2166,14 +2156,14 @@ type AiAgent = {
 }
 type SalesAgent = {
   outcome?:
-    | 'qualified'
-    | 'disqualified'
-    | 'product_discovery'
-    | 'escalated_to_support'
-    | 'spam'
+    | ('qualified' | 'disqualified' | 'product_discovery' | 'escalated_to_support' | 'spam' | null)
     | undefined
   routing_outcome?: (string | null) | undefined
-  collected_data?: ({ [x: string]: string } | null) | undefined
+  collected_data?: ({ [key: string]: string } | null) | undefined
+}
+type ConversationChannel = {
+  initial?: (string | null) | undefined
+  current?: (string | null) | undefined
 }
 type FileAttribute = {
   type?: string | undefined
@@ -2221,20 +2211,19 @@ type ConversationScorecardNote = {
   body?: string | undefined
 }
 type ConversationScorecardEvaluatorReason = { name?: (string | null) | undefined }
+type ConversationScorecardEvaluatorResult = {
+  value?: (string | null) | undefined
+  value_label?: string | undefined
+  source?: (string | null) | undefined
+  reasoning?: (string | null) | undefined
+  reason_ids?: (string[] | null) | undefined
+  reasons?: ConversationScorecardEvaluatorReason[] | undefined
+  other_text?: (string | null) | undefined
+}
 type ConversationScorecardEvaluator = {
   evaluator_id?: string | undefined
   name?: (string | null) | undefined
-  result?:
-    | {
-        value?: (string | null) | undefined
-        value_label?: string | undefined
-        source?: (string | null) | undefined
-        reasoning?: (string | null) | undefined
-        reason_ids?: (string[] | null) | undefined
-        reasons?: ConversationScorecardEvaluatorReason[] | undefined
-        other_text?: (string | null) | undefined
-      }
-    | undefined
+  result?: (ConversationScorecardEvaluatorResult | null) | undefined
 }
 type ConversationScorecard = {
   scorecard_id?: string | undefined
@@ -2248,12 +2237,15 @@ type ConversationScorecard = {
   reviewed_teammate?: ConversationScorecardReviewedTeammate | undefined
   reviewer?: ConversationScorecardReviewer | undefined
   review_status?:
-    | 'unreviewed'
-    | 'submitted'
-    | 'passed_review'
-    | 'needs_fix'
-    | 'wont_fix'
-    | 'fix_complete'
+    | (
+        | 'unreviewed'
+        | 'submitted'
+        | 'passed_review'
+        | 'needs_fix'
+        | 'wont_fix'
+        | 'fix_complete'
+        | null
+      )
     | undefined
   submitted_by?: ConversationScorecardSubmittedBy | undefined
   revised_by?: ConversationScorecardRevisedBy | undefined
@@ -2274,7 +2266,7 @@ type ConversationListItem = {
   priority?: 'none' | 'low' | 'medium' | 'high' | 'urgent' | undefined
   admin_assignee_id?: number | undefined
   team_assignee_id?: number | undefined
-  company?: Company | undefined
+  company?: (Company | null) | undefined
   tags?: Tags | undefined
   conversation_rating?: ConversationRating | undefined
   source?: ConversationSource | undefined
@@ -2286,12 +2278,10 @@ type ConversationListItem = {
   statistics?: ConversationStatistics | undefined
   linked_objects?: LinkedObjectList | undefined
   ai_agent_participated?: boolean | undefined
-  ai_agent?: AiAgent | undefined
+  ai_agent?: (AiAgent | null) | undefined
   sales_agent_participated?: boolean | undefined
-  sales_agent?: SalesAgent | undefined
-  channel?:
-    | { initial?: (string | null) | undefined; current?: (string | null) | undefined }
-    | undefined
+  sales_agent?: (SalesAgent | null) | undefined
+  channel?: (ConversationChannel | null) | undefined
   topics?:
     | {
         type?: string | undefined
@@ -2308,8 +2298,8 @@ type ConversationListItem = {
         url?: string | undefined
         custom_attributes?:
           | {
-              [x: string]: {
-                value?: (string | null) | number | boolean | number[] | FileAttribute | undefined
+              [key: string]: {
+                value?: ((string | null) | number | boolean | number[] | FileAttribute) | undefined
                 type?: string | undefined
               }
             }
@@ -2332,18 +2322,26 @@ type ConversationList = {
   total_count?: number | undefined
   pages?: CursorPages | undefined
 }
-type CreateConversationRequest = {
-  from: {
-    type: 'lead' | 'user'
-    id?: string | undefined
-    user_id?: string | undefined
-    email?: string | undefined
-  }
+type CreateConversationRequestInput = {
+  from: { type: 'lead' | 'user'; id?: string; user_id?: string; email?: string }
   body: string
+  subject?: string
+  attachment_urls?: string[]
+  created_at?: number
+  brand_id?: string
+}
+type Message = {
+  type: string
+  id: string
+  created_at: number
   subject?: string | undefined
-  attachment_urls?: string[] | undefined
-  created_at?: number | undefined
-  brand_id?: string | undefined
+  body: string
+  message_type: 'email' | 'inapp' | 'facebook' | 'twitter' | 'whatsapp'
+  conversation_id?: string | undefined
+  owner?: Admin | undefined
+  template?: string | undefined
+  external_id?: string | undefined
+  whatsapp_message_id?: string | undefined
 }
 type ConversationPartAuthor = {
   type?: string | undefined
@@ -2358,8 +2356,11 @@ type EmailMessageMetadata = {
   email_address_headers?: EmailAddressHeader[] | undefined
   message_id?: (string | null) | undefined
 }
+type QuickReplyOption = { text: string; uuid: string }
 type ConversationPartMetadata = {
-  quick_reply_options?: { text: string; uuid: string }[] | undefined
+  quick_reply_options?:
+    | (QuickReplyOption & { translations?: ({ [key: string]: unknown } | null) | undefined })[]
+    | undefined
   quick_reply_option_uuid?: string | undefined
 }
 type ConversationAttributeUpdatedByWorkflow = {
@@ -2412,18 +2413,18 @@ type ConversationPart = {
   created_at?: number | undefined
   updated_at?: number | undefined
   notified_at?: number | undefined
-  assigned_to?: Reference | undefined
+  assigned_to?: (Reference | null) | undefined
   admin_assignee_id?: (number | null) | undefined
   team_assignee_id?: (number | null) | undefined
   author?: ConversationPartAuthor | undefined
   attachments?: PartAttachment[] | undefined
   external_id?: (string | null) | undefined
   redacted?: boolean | undefined
-  email_message_metadata?: EmailMessageMetadata | undefined
-  metadata?: ConversationPartMetadata | undefined
+  email_message_metadata?: (EmailMessageMetadata | null) | undefined
+  metadata?: (ConversationPartMetadata | null) | undefined
   state?: 'open' | 'closed' | 'snoozed' | undefined
   tags?: (TagBasic[] | null) | undefined
-  event_details?: EventDetails | undefined
+  event_details?: (EventDetails | null) | undefined
   app_package_code?: (string | null) | undefined
   translations?: ({ original?: string | undefined } | null) | undefined
 }
@@ -2446,7 +2447,7 @@ type Conversation = {
   priority?: 'none' | 'low' | 'medium' | 'high' | 'urgent' | undefined
   admin_assignee_id?: number | undefined
   team_assignee_id?: number | undefined
-  company?: Company | undefined
+  company?: (Company | null) | undefined
   tags?: Tags | undefined
   conversation_rating?: ConversationRating | undefined
   source?: ConversationSource | undefined
@@ -2459,151 +2460,140 @@ type Conversation = {
   conversation_parts?: ConversationParts | undefined
   linked_objects?: LinkedObjectList | undefined
   ai_agent_participated?: boolean | undefined
-  ai_agent?: AiAgent | undefined
+  ai_agent?: (AiAgent | null) | undefined
   sales_agent_participated?: boolean | undefined
-  sales_agent?: SalesAgent | undefined
-  channel?:
-    | { initial?: (string | null) | undefined; current?: (string | null) | undefined }
-    | undefined
+  sales_agent?: (SalesAgent | null) | undefined
+  channel?: (ConversationChannel | null) | undefined
   external_references?: ConversationExternalReference[] | undefined
   monitor_evaluations?: ConversationMonitorEvaluation[] | undefined
   scorecards?: ConversationScorecard[] | undefined
 }
-type Datetime = string | number
-type CustomObjectInstance = {
-  id?: string | undefined
-  external_id?: string | undefined
-  external_created_at?: (number | null) | undefined
-  external_updated_at?: (number | null) | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  type?: string | undefined
-  custom_attributes?:
-    | { [x: string]: (string | null) | number | number | boolean | { [x: string]: unknown } }
-    | undefined
+type DatetimeInput = string | number
+type CustomObjectInstanceInput = {
+  id?: string
+  external_id?: string
+  external_created_at?: number | null
+  external_updated_at?: number | null
+  created_at?: number
+  updated_at?: number
+  type?: string
+  custom_attributes?: {
+    [key: string]: (string | null) | number | number | boolean | { [key: string]: unknown }
+  }
 } | null
-type CustomObjectInstanceList = {
-  type?: string | undefined
-  instances?: CustomObjectInstance[] | undefined
+type CustomObjectInstanceListInput = { type?: string; instances?: CustomObjectInstanceInput[] }
+type CustomAttributesRequestInput = {
+  [key: string]: string | number | number | boolean | DatetimeInput | CustomObjectInstanceListInput
 }
-type CustomAttributesRequest = {
-  [x: string]: string | number | number | boolean | Datetime | CustomObjectInstanceList
-}
-type UpdateConversationRequest = {
-  read?: boolean | undefined
-  title?: string | undefined
-  custom_attributes?: CustomAttributesRequest | undefined
-  company_id?: string | undefined
+type UpdateConversationRequestInput = {
+  read?: boolean
+  title?: string
+  custom_attributes?: CustomAttributesRequestInput
+  company_id?: string
 }
 type ConversationDeleted = {
   id?: string | undefined
   object?: 'conversation' | 'ticket' | undefined
   deleted?: boolean | undefined
 }
-type SearchRequest = {
-  query: SingleFilterSearchRequest | MultipleFilterSearchRequest
-  pagination?: StartingAfterPaging | undefined
-  sort?: { field: string; order?: 'ascending' | 'descending' | undefined } | undefined
+type SearchRequestInput = {
+  query: SingleFilterSearchRequestInput | MultipleFilterSearchRequestInput
+  pagination?: StartingAfterPagingInput
+  sort?: { field: string; order?: 'ascending' | 'descending' }
 }
-type ContactReplyIntercomUserIdRequest = {
+type ContactReplyBaseRequestInput = {
   message_type: 'comment'
   type: 'user'
-  body?: string | undefined
-  created_at?: number | undefined
-  attachment_urls?: string[] | undefined
-  reply_options?: { text: string; uuid: string }[] | undefined
+  body?: string
+  created_at?: number
+  attachment_urls?: string[]
+  reply_options?: { text: string; uuid: string }[]
 }
-type ContactReplyEmailRequest = {
-  message_type: 'comment'
-  type: 'user'
-  body?: string | undefined
-  created_at?: number | undefined
-  attachment_urls?: string[] | undefined
-  reply_options?: { text: string; uuid: string }[] | undefined
+type ConversationAttachmentFilesInput = { content_type?: string; data?: string; name?: string }
+type ContactReplyIntercomUserIdRequestInput = ContactReplyBaseRequestInput & {
+  intercom_user_id: string
+  attachment_files?: ConversationAttachmentFilesInput[]
 }
-type ContactReplyUserIdRequest = {
-  message_type: 'comment'
-  type: 'user'
-  body?: string | undefined
-  created_at?: number | undefined
-  attachment_urls?: string[] | undefined
-  reply_options?: { text: string; uuid: string }[] | undefined
+type ContactReplyEmailRequestInput = ContactReplyBaseRequestInput & {
+  email: string
+  attachment_files?: ConversationAttachmentFilesInput[]
 }
-type ContactReplyConversationRequest =
-  | ContactReplyIntercomUserIdRequest
-  | ContactReplyEmailRequest
-  | ContactReplyUserIdRequest
-type QuickReplyOption = { text: string; uuid: string }
-type ConversationAttachmentFiles = {
-  content_type?: string | undefined
-  data?: string | undefined
-  name?: string | undefined
+type ContactReplyUserIdRequestInput = ContactReplyBaseRequestInput & {
+  user_id: string
+  attachment_files?: ConversationAttachmentFilesInput[]
 }
-type AdminReplyConversationRequest = {
+type ContactReplyConversationRequestInput =
+  | ContactReplyIntercomUserIdRequestInput
+  | ContactReplyEmailRequestInput
+  | ContactReplyUserIdRequestInput
+type QuickReplyOptionInput = { text: string; uuid: string }
+type AdminReplyConversationRequestInput = {
   message_type: 'comment' | 'note' | 'quick_reply'
   type: 'admin'
-  body?: string | undefined
+  body?: string
   admin_id: string
-  created_at?: number | undefined
-  reply_options?: QuickReplyOption[] | undefined
-  attachment_urls?: string[] | undefined
-  attachment_files?: ConversationAttachmentFiles[] | undefined
-  skip_notifications?: boolean | undefined
-  assignee_id?: string | undefined
-  skip_reopen?: boolean | undefined
+  created_at?: number
+  reply_options?: QuickReplyOptionInput[]
+  attachment_urls?: string[]
+  attachment_files?: ConversationAttachmentFilesInput[]
+  skip_notifications?: boolean
+  assignee_id?: string
+  skip_reopen?: boolean
 }
-type BotReplyConversationRequest = {
+type BotReplyConversationRequestInput = {
   message_type: 'comment' | 'note' | 'quick_reply'
   type: 'bot'
   bot_id: string
-  body?: string | undefined
-  created_at?: number | undefined
-  reply_options?: QuickReplyOption[] | undefined
-  attachment_urls?: string[] | undefined
-  skip_notifications?: boolean | undefined
+  body?: string
+  created_at?: number
+  reply_options?: QuickReplyOptionInput[]
+  attachment_urls?: string[]
+  skip_notifications?: boolean
 }
-type ReplyConversationRequest =
-  | ContactReplyConversationRequest
-  | AdminReplyConversationRequest
-  | BotReplyConversationRequest
-type CloseConversationRequest = {
+type ReplyConversationRequestInput =
+  | ContactReplyConversationRequestInput
+  | AdminReplyConversationRequestInput
+  | BotReplyConversationRequestInput
+type CloseConversationRequestInput = {
   message_type: 'close'
   type: 'admin'
   admin_id: string
-  body?: string | undefined
-  assignee_id?: string | undefined
-  skip_notifications?: boolean | undefined
+  body?: string
+  assignee_id?: string
+  skip_notifications?: boolean
 }
-type SnoozeConversationRequest = {
+type SnoozeConversationRequestInput = {
   message_type: 'snoozed'
   admin_id: string
   snoozed_until: number
 }
-type OpenConversationRequest = {
+type OpenConversationRequestInput = {
   message_type: 'open'
   admin_id: string
-  assignee_id?: string | undefined
-  skip_notifications?: boolean | undefined
+  assignee_id?: string
+  skip_notifications?: boolean
 }
-type AssignConversationRequest = {
+type AssignConversationRequestInput = {
   message_type: 'assignment'
   type: 'admin' | 'team'
   admin_id: string
   assignee_id: string
-  body?: string | undefined
-  skip_reopen?: boolean | undefined
-  skip_notifications?: boolean | undefined
+  body?: string
+  skip_reopen?: boolean
+  skip_notifications?: boolean
 }
-type CustomerRequest = { intercom_user_id: string } | { user_id: string } | { email: string }
-type AttachContactToConversationRequest = {
-  admin_id?: string | undefined
-  intercom_user_id?: string | undefined
-  user_id?: string | undefined
-  email?: string | undefined
-  customer: CustomerRequest
+type CustomerRequestInput =
+  | ({ intercom_user_id: string } | { user_id: string } | { email: string })
+  | null
+type AttachContactToConversationRequestInput = {
+  admin_id?: string
+  intercom_user_id?: string
+  user_id?: string
+  email?: string
+  customer: CustomerRequestInput
 }
 type ConversationParticipantsResponse = { customers: { type: string; id: string }[] }
-type DetachContactFromConversationRequest = { admin_id: string }
+type DetachContactFromConversationRequestInput = { admin_id: string }
 type TeammateReference = {
   type: 'admin' | 'team' | 'bot'
   id: number
@@ -2652,7 +2642,7 @@ type HitlEvent = {
           | 'timed_out_escalated'
           | 'superseded'
           | undefined
-        approved_draft_type?: 'original' | 'revised' | undefined
+        approved_draft_type?: ('original' | 'revised' | null) | undefined
         final_draft?: (string | null) | undefined
         sent_text?: (string | null) | undefined
         duration_seconds?: (number | null) | undefined
@@ -2680,11 +2670,7 @@ type SideConversationList = {
       }
     | undefined
 }
-type RateConversationRequest = {
-  intercom_user_id: string
-  rating: number
-  remark?: string | undefined
-}
+type RateConversationRequestInput = { intercom_user_id: string; rating: number; remark?: string }
 type RatedConversation = {
   type?: 'conversation_rating' | undefined
   conversation_id?: string | undefined
@@ -2697,20 +2683,20 @@ type RatedConversation = {
     | { type?: 'admin' | 'bot' | 'workflow' | undefined; id?: string | undefined }
     | undefined
 }
-type RedactConversationRequest =
+type RedactConversationRequestInput =
   | { type: 'conversation_part'; conversation_id: string; conversation_part_id: string }
   | { type: 'source'; conversation_id: string; source_id: string }
-type MergeConversationsRequest = { merge_into_conversation_id: number }
-type TicketRequestCustomAttributes = {
-  [x: string]: (string | null) | number | boolean | number[] | string[]
+type MergeConversationsRequestInput = { merge_into_conversation_id: number }
+type TicketRequestCustomAttributesInput = {
+  [key: string]: (string | null) | number | boolean | number[] | string[]
 }
-type ConvertConversationToTicketRequest = {
+type ConvertConversationToTicketRequestInput = {
   ticket_type_id: string
-  ticket_state_id?: string | undefined
-  attributes?: TicketRequestCustomAttributes | undefined
+  ticket_state_id?: string
+  attributes?: TicketRequestCustomAttributesInput
 }
 type TicketCustomAttributes = {
-  [x: string]: (string | null) | number | boolean | FileAttribute[] | FileAttribute
+  [key: string]: (string | null) | number | boolean | FileAttribute[] | FileAttribute
 }
 type TicketState = {
   type?: string | undefined
@@ -2726,7 +2712,7 @@ type TicketTypeAttribute = {
   name?: string | undefined
   description?: string | undefined
   data_type?: string | undefined
-  input_options?: ({ [x: string]: unknown } | null) | undefined
+  input_options?: ({ [key: string]: unknown } | null) | undefined
   order?: number | undefined
   required_to_create?: boolean | undefined
   required_to_create_for_contacts?: boolean | undefined
@@ -2781,7 +2767,7 @@ type TicketPart = {
   ticket_state?: 'submitted' | 'in_progress' | 'waiting_on_customer' | 'resolved' | undefined
   created_at?: number | undefined
   updated_at?: number | undefined
-  assigned_to?: Reference | undefined
+  assigned_to?: (Reference | null) | undefined
   admin_assignee_id?: (number | null) | undefined
   team_assignee_id?: (number | null) | undefined
   author?: TicketPartAuthor | undefined
@@ -2836,7 +2822,7 @@ type DeletedConversationList = {
   total_count?: number | undefined
   pages?: PagesLink | undefined
 }
-type CreateConversationStreamTokenRequest = { external_id: string }
+type CreateConversationStreamTokenRequestInput = { external_id: string }
 type ConversationStreamToken = {
   type?: 'conversation_stream_token' | undefined
   expires_at?: number | undefined
@@ -2855,117 +2841,59 @@ type ConversationStreamToken = {
       }
     | undefined
 }
-type ConversationAttributeStringType = {
+type ConversationAttributeBase = {
   type?: 'conversation_attribute' | undefined
   id?: number | undefined
   name?: string | undefined
   description?: string | undefined
-  data_type?: 'string' | undefined
+  data_type?:
+    | 'string'
+    | 'integer'
+    | 'list'
+    | 'decimal'
+    | 'boolean'
+    | 'datetime'
+    | 'relationship'
+    | 'files'
+    | undefined
   required?: boolean | undefined
   visible_to_team_ids?: string[] | undefined
   archived?: boolean | undefined
   created_at?: number | undefined
   updated_at?: number | undefined
   admin_id?: (string | null) | undefined
+}
+type ConversationAttributeStringType = ConversationAttributeBase & {
+  data_type?: 'string' | undefined
   multiline?: boolean | undefined
 }
-type ConversationAttributeIntegerType = {
-  type?: 'conversation_attribute' | undefined
-  id?: number | undefined
-  name?: string | undefined
-  description?: string | undefined
+type ConversationAttributeIntegerType = ConversationAttributeBase & {
   data_type?: 'integer' | undefined
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  archived?: boolean | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  admin_id?: (string | null) | undefined
 }
 type ConversationAttributeOption = {
   id?: string | undefined
   label?: string | undefined
   archived?: boolean | undefined
 }
-type ConversationAttributeListType = {
-  type?: 'conversation_attribute' | undefined
-  id?: number | undefined
-  name?: string | undefined
-  description?: string | undefined
+type ConversationAttributeListType = ConversationAttributeBase & {
   data_type?: 'list' | undefined
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  archived?: boolean | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  admin_id?: (string | null) | undefined
   options?: ConversationAttributeOption[] | undefined
 }
-type ConversationAttributeDecimalType = {
-  type?: 'conversation_attribute' | undefined
-  id?: number | undefined
-  name?: string | undefined
-  description?: string | undefined
+type ConversationAttributeDecimalType = ConversationAttributeBase & {
   data_type?: 'decimal' | undefined
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  archived?: boolean | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  admin_id?: (string | null) | undefined
 }
-type ConversationAttributeBooleanType = {
-  type?: 'conversation_attribute' | undefined
-  id?: number | undefined
-  name?: string | undefined
-  description?: string | undefined
+type ConversationAttributeBooleanType = ConversationAttributeBase & {
   data_type?: 'boolean' | undefined
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  archived?: boolean | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  admin_id?: (string | null) | undefined
 }
-type ConversationAttributeDatetimeType = {
-  type?: 'conversation_attribute' | undefined
-  id?: number | undefined
-  name?: string | undefined
-  description?: string | undefined
+type ConversationAttributeDatetimeType = ConversationAttributeBase & {
   data_type?: 'datetime' | undefined
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  archived?: boolean | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  admin_id?: (string | null) | undefined
 }
-type ConversationAttributeRelationshipType = {
-  type?: 'conversation_attribute' | undefined
-  id?: number | undefined
-  name?: string | undefined
-  description?: string | undefined
+type ConversationAttributeRelationshipType = ConversationAttributeBase & {
   data_type?: 'relationship' | undefined
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  archived?: boolean | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  admin_id?: (string | null) | undefined
   reference?: { type?: 'one' | 'many' | undefined; object_type_id?: string | undefined } | undefined
 }
-type ConversationAttributeFilesType = {
-  type?: 'conversation_attribute' | undefined
-  id?: number | undefined
-  name?: string | undefined
-  description?: string | undefined
+type ConversationAttributeFilesType = ConversationAttributeBase & {
   data_type?: 'files' | undefined
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  archived?: boolean | undefined
-  created_at?: number | undefined
-  updated_at?: number | undefined
-  admin_id?: (string | null) | undefined
 }
 type ConversationAttribute =
   | ConversationAttributeStringType
@@ -2980,92 +2908,84 @@ type ConversationAttributeList = {
   type?: 'list' | undefined
   data?: ConversationAttribute[] | undefined
 }
-type CreateConversationAttributeStringRequest = {
+type CreateConversationAttributeRequestBaseInput = {
   name: string
-  description?: string | undefined
-  data_type: 'string'
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  multiline?: boolean | undefined
+  description?: string
+  data_type:
+    | 'string'
+    | 'integer'
+    | 'list'
+    | 'decimal'
+    | 'boolean'
+    | 'datetime'
+    | 'relationship'
+    | 'files'
+  required?: boolean
+  visible_to_team_ids?: string[]
 }
-type CreateConversationAttributeIntegerRequest = {
-  name: string
-  description?: string | undefined
-  data_type: 'integer'
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
+type CreateConversationAttributeStringRequestInput = CreateConversationAttributeRequestBaseInput & {
+  data_type?: 'string'
+  multiline?: boolean
 }
-type CreateConversationAttributeOptionRequest = { label: string }
-type CreateConversationAttributeListRequest = {
-  name: string
-  description?: string | undefined
-  data_type: 'list'
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  options: CreateConversationAttributeOptionRequest[]
+type CreateConversationAttributeIntegerRequestInput =
+  CreateConversationAttributeRequestBaseInput & { data_type?: 'integer' }
+type CreateConversationAttributeOptionRequestInput = { label: string }
+type CreateConversationAttributeListRequestInput = CreateConversationAttributeRequestBaseInput & {
+  data_type?: 'list'
+  options: CreateConversationAttributeOptionRequestInput[]
 }
-type CreateConversationAttributeDecimalRequest = {
-  name: string
-  description?: string | undefined
-  data_type: 'decimal'
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
+type CreateConversationAttributeDecimalRequestInput =
+  CreateConversationAttributeRequestBaseInput & { data_type?: 'decimal' }
+type CreateConversationAttributeBooleanRequestInput =
+  CreateConversationAttributeRequestBaseInput & { data_type?: 'boolean' }
+type CreateConversationAttributeDatetimeRequestInput =
+  CreateConversationAttributeRequestBaseInput & { data_type?: 'datetime' }
+type CreateConversationAttributeRelationshipRequestInput =
+  CreateConversationAttributeRequestBaseInput & {
+    data_type?: 'relationship'
+    reference: { type: 'one' | 'many'; object_type_id: string }
+  }
+type CreateConversationAttributeFilesRequestInput = CreateConversationAttributeRequestBaseInput & {
+  data_type?: 'files'
 }
-type CreateConversationAttributeBooleanRequest = {
-  name: string
-  description?: string | undefined
-  data_type: 'boolean'
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
+type CreateConversationAttributeRequestInput =
+  | CreateConversationAttributeStringRequestInput
+  | CreateConversationAttributeIntegerRequestInput
+  | CreateConversationAttributeListRequestInput
+  | CreateConversationAttributeDecimalRequestInput
+  | CreateConversationAttributeBooleanRequestInput
+  | CreateConversationAttributeDatetimeRequestInput
+  | CreateConversationAttributeRelationshipRequestInput
+  | CreateConversationAttributeFilesRequestInput
+type UpdateConversationAttributeRequestInput = {
+  name?: string
+  description?: string
+  multiline?: boolean
+  required?: boolean
+  visible_to_team_ids?: string[]
+  reference?: { type: 'one' | 'many'; object_type_id?: string }
 }
-type CreateConversationAttributeDatetimeRequest = {
-  name: string
-  description?: string | undefined
-  data_type: 'datetime'
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
+type UpdateConversationAttributeOptionRequestInput = { label: string }
+type CreateOrUpdateCustomObjectInstanceRequestInput = {
+  external_id?: string
+  external_created_at?: number | null
+  external_updated_at?: number | null
+  custom_attributes?: {
+    [key: string]: (string | null) | number | number | boolean | string[]
+  } | null
 }
-type CreateConversationAttributeRelationshipRequest = {
-  name: string
-  description?: string | undefined
-  data_type: 'relationship'
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  reference: { type: 'one' | 'many'; object_type_id: string }
-}
-type CreateConversationAttributeFilesRequest = {
-  name: string
-  description?: string | undefined
-  data_type: 'files'
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-}
-type CreateConversationAttributeRequest =
-  | CreateConversationAttributeStringRequest
-  | CreateConversationAttributeIntegerRequest
-  | CreateConversationAttributeListRequest
-  | CreateConversationAttributeDecimalRequest
-  | CreateConversationAttributeBooleanRequest
-  | CreateConversationAttributeDatetimeRequest
-  | CreateConversationAttributeRelationshipRequest
-  | CreateConversationAttributeFilesRequest
-type UpdateConversationAttributeRequest = {
-  name?: string | undefined
-  description?: string | undefined
-  multiline?: boolean | undefined
-  required?: boolean | undefined
-  visible_to_team_ids?: string[] | undefined
-  reference?: { type: 'one' | 'many'; object_type_id?: string | undefined } | undefined
-}
-type UpdateConversationAttributeOptionRequest = { label: string }
-type CreateOrUpdateCustomObjectInstanceRequest = {
+type CustomObjectInstance = {
+  id?: string | undefined
   external_id?: string | undefined
   external_created_at?: (number | null) | undefined
   external_updated_at?: (number | null) | undefined
+  created_at?: number | undefined
+  updated_at?: number | undefined
+  type?: string | undefined
   custom_attributes?:
-    | ({ [x: string]: (string | null) | number | number | boolean | string[] } | null)
+    | { [key: string]: (string | null) | number | number | boolean | { [key: string]: unknown } }
     | undefined
-}
+} | null
 type CustomObjectInstancesPaginatedList = {
   type?: 'list' | undefined
   pages?: PagesLink | undefined
@@ -3077,7 +2997,7 @@ type CustomObjectInstanceNotFound = {
   id?: (string | null) | undefined
   external_id?: (string | null) | undefined
   type?: string | undefined
-  custom_attributes?: { [x: string]: unknown } | undefined
+  custom_attributes?: { [key: string]: unknown } | undefined
   external_created_at?: (number | null) | undefined
   external_updated_at?: (number | null) | undefined
   created_at?: (number | null) | undefined
@@ -3116,12 +3036,10 @@ type DataAttribute = {
   admin_id?: string | undefined
 }
 type DataAttributeList = { type?: 'list' | undefined; data?: DataAttribute[] | undefined }
-type CreateDataAttributeRequest =
-  | { data_type?: 'options' | undefined; options: { value?: string | undefined }[] }
-  | { data_type?: 'string' | 'integer' | 'float' | 'boolean' | 'date' | undefined }
-type UpdateDataAttributeRequest =
-  | { options: { value?: string | undefined }[] }
-  | { [x: string]: unknown }
+type CreateDataAttributeRequestInput =
+  | { data_type?: 'options'; options: { value?: string }[] }
+  | { data_type?: 'string' | 'integer' | 'float' | 'boolean' | 'date' }
+type UpdateDataAttributeRequestInput = { options: { value?: string }[] } | any
 type DataConnector = {
   type?: 'data_connector' | undefined
   id?: string | undefined
@@ -3149,31 +3067,29 @@ type DataConnectorList = {
       }
     | undefined
 }
-type CreateDataConnectorRequest = {
+type CreateDataConnectorRequestInput = {
   name: string
-  description?: string | undefined
-  internal_description?: string | undefined
-  http_method?: 'get' | 'post' | 'put' | 'delete' | 'patch' | undefined
-  url?: string | undefined
-  body?: string | undefined
-  direct_fin_usage?: boolean | undefined
-  audiences?: ('leads' | 'users' | 'visitors')[] | undefined
-  headers?: { name: string; value: string }[] | undefined
-  data_inputs?:
-    | {
-        name: string
-        type: 'string' | 'integer' | 'decimal' | 'boolean'
-        description: string
-        required: boolean
-        default_value?: string | undefined
-      }[]
-    | undefined
-  customer_authentication?: boolean | undefined
-  bypass_authentication?: boolean | undefined
-  enforce_auth?: boolean | undefined
-  validate_missing_attributes?: boolean | undefined
-  mock_response?: { [x: string]: unknown } | undefined
-  token_ids?: string[] | undefined
+  description?: string
+  internal_description?: string
+  http_method?: 'get' | 'post' | 'put' | 'delete' | 'patch'
+  url?: string
+  body?: string
+  direct_fin_usage?: boolean
+  audiences?: ('leads' | 'users' | 'visitors')[]
+  headers?: { name: string; value: string }[]
+  data_inputs?: {
+    name: string
+    type: 'string' | 'integer' | 'decimal' | 'boolean'
+    description: string
+    required: boolean
+    default_value?: string
+  }[]
+  customer_authentication?: boolean
+  bypass_authentication?: boolean
+  enforce_auth?: boolean
+  validate_missing_attributes?: boolean
+  mock_response?: { [key: string]: unknown }
+  token_ids?: string[]
 }
 type DataConnectorDetail = {
   type?: 'data_connector' | undefined
@@ -3211,7 +3127,7 @@ type DataConnectorDetail = {
     | {
         path?: string | undefined
         type?: 'unknown' | 'string' | 'integer' | 'decimal' | 'datetime' | 'boolean' | undefined
-        example_value?: ({ [x: string]: unknown } | null) | undefined
+        example_value?: (any | null) | undefined
         redacted?: boolean | undefined
       }[]
     | undefined
@@ -3250,32 +3166,30 @@ type DeletedDataConnectorObject = {
   object?: 'data_connector' | undefined
   deleted?: boolean | undefined
 }
-type UpdateDataConnectorRequest = {
-  name?: string | undefined
-  description?: string | undefined
-  internal_description?: string | undefined
-  state?: 'draft' | 'live' | undefined
-  http_method?: 'get' | 'post' | 'put' | 'delete' | 'patch' | undefined
-  url?: string | undefined
-  body?: string | undefined
-  direct_fin_usage?: boolean | undefined
-  audiences?: ('leads' | 'users' | 'visitors')[] | undefined
-  headers?: { name: string; value: string }[] | undefined
-  data_inputs?:
-    | {
-        name: string
-        type: 'string' | 'integer' | 'decimal' | 'boolean'
-        description: string
-        required: boolean
-        default_value?: string | undefined
-      }[]
-    | undefined
-  customer_authentication?: boolean | undefined
-  bypass_authentication?: boolean | undefined
-  enforce_auth?: boolean | undefined
-  validate_missing_attributes?: boolean | undefined
-  mock_response?: { [x: string]: unknown } | undefined
-  token_ids?: string[] | undefined
+type UpdateDataConnectorRequestInput = {
+  name?: string
+  description?: string
+  internal_description?: string
+  state?: 'draft' | 'live'
+  http_method?: 'get' | 'post' | 'put' | 'delete' | 'patch'
+  url?: string
+  body?: string
+  direct_fin_usage?: boolean
+  audiences?: ('leads' | 'users' | 'visitors')[]
+  headers?: { name: string; value: string }[]
+  data_inputs?: {
+    name: string
+    type: 'string' | 'integer' | 'decimal' | 'boolean'
+    description: string
+    required: boolean
+    default_value?: string
+  }[]
+  customer_authentication?: boolean
+  bypass_authentication?: boolean
+  enforce_auth?: boolean
+  validate_missing_attributes?: boolean
+  mock_response?: { [key: string]: unknown }
+  token_ids?: string[]
 }
 type DataConnectorExecutionResult = {
   type?: 'data_connector.execution' | undefined
@@ -3285,33 +3199,39 @@ type DataConnectorExecutionResult = {
   http_status?: (number | null) | undefined
   http_method?: 'get' | 'post' | 'put' | 'delete' | 'patch' | undefined
   error_type?:
-    | 'request_configuration_error'
-    | 'faraday_error'
-    | '3rd_party_error'
-    | 'response_mapping_error'
-    | 'token_refresh_error'
-    | 'fin_action_response_formatting_error'
-    | 'fin_action_identity_verification_error'
-    | 'email_verification_error'
-    | 'non_fin_standalone_action_identity_verification_error'
-    | 'request_validation_error'
-    | 'client_side_action_error'
-    | 'code_block_transformation_error'
-    | 'otp_preview_not_supported_error'
+    | (
+        | 'request_configuration_error'
+        | 'faraday_error'
+        | '3rd_party_error'
+        | 'response_mapping_error'
+        | 'token_refresh_error'
+        | 'fin_action_response_formatting_error'
+        | 'fin_action_identity_verification_error'
+        | 'email_verification_error'
+        | 'non_fin_standalone_action_identity_verification_error'
+        | 'request_validation_error'
+        | 'client_side_action_error'
+        | 'code_block_transformation_error'
+        | 'otp_preview_not_supported_error'
+        | null
+      )
     | undefined
   error_message?: (string | null) | undefined
   execution_time_ms?: (number | null) | undefined
   source_type?:
-    | 'custom_bot'
-    | 'inbound_custom_bot'
-    | 'button_custom_bot'
-    | 'answer'
-    | 'workflow'
-    | 'saved_reply'
-    | 'triggerable_custom_bot'
-    | 'inbox'
-    | 'fin'
-    | 'synthetic_test'
+    | (
+        | 'custom_bot'
+        | 'inbound_custom_bot'
+        | 'button_custom_bot'
+        | 'answer'
+        | 'workflow'
+        | 'saved_reply'
+        | 'triggerable_custom_bot'
+        | 'inbox'
+        | 'fin'
+        | 'synthetic_test'
+        | null
+      )
     | undefined
   source_id?: (string | null) | undefined
   conversation_id?: (string | null) | undefined
@@ -3362,14 +3282,14 @@ type DataConnectorVersion = {
               type?: string | undefined
               description?: (string | null) | undefined
               required?: boolean | undefined
-              default_value?: { [x: string]: unknown } | undefined
+              default_value?: any | undefined
             }[]
           | undefined
         response_fields?:
           | {
               path?: string | undefined
               type?: string | undefined
-              example_value?: { [x: string]: unknown } | undefined
+              example_value?: any | undefined
               redacted?: boolean | undefined
             }[]
           | undefined
@@ -3411,11 +3331,8 @@ type DataConnectorVersionList = {
       }
     | undefined
 }
-type UpdateDataConnectorVersionRequest = { note: string | null }
-type CreateDataEventRequest =
-  | { [x: string]: unknown }
-  | { [x: string]: unknown }
-  | { [x: string]: unknown }
+type UpdateDataConnectorVersionRequestInput = { note: string | null }
+type CreateDataEventRequestInput = unknown | unknown | unknown
 type DataEvent = {
   type?: 'event' | undefined
   event_name: string
@@ -3425,7 +3342,7 @@ type DataEvent = {
   intercom_user_id?: string | undefined
   email?: string | undefined
   metadata?:
-    | { [x: string]: string | number | number | boolean | { [x: string]: unknown } }
+    | { [key: string]: string | number | number | boolean | { [key: string]: unknown } }
     | undefined
 }
 type DataEventList = {
@@ -3447,11 +3364,8 @@ type DataEventSummary = {
   user_id?: string | undefined
   events?: DataEventSummaryItem[] | undefined
 }
-type CreateDataEventSummariesRequest =
-  | { [x: string]: unknown }
-  | { [x: string]: unknown }
-  | { [x: string]: unknown }
-type CreateDataExportsRequest = { created_at_after: number; created_at_before: number }
+type CreateDataEventSummariesRequestInput = unknown | unknown | unknown
+type CreateDataExportsRequestInput = { created_at_after: number; created_at_before: number }
 type DataExport = {
   job_identifier?: string | undefined
   status?: 'pending' | 'in_progress' | 'failed' | 'completed' | 'no_data' | 'canceled' | undefined
@@ -3467,23 +3381,7 @@ type Jobs = {
   resource_id?: (string | null) | undefined
   resource_url?: (string | null) | undefined
 }
-type CreateMessageRequest =
-  | { [x: string]: unknown }
-  | { [x: string]: unknown }
-  | { [x: string]: unknown }
-type Message = {
-  type: string
-  id: string
-  created_at: number
-  subject?: string | undefined
-  body: string
-  message_type: 'email' | 'inapp' | 'facebook' | 'twitter' | 'whatsapp'
-  conversation_id?: string | undefined
-  owner?: Admin | undefined
-  template?: string | undefined
-  external_id?: string | undefined
-  whatsapp_message_id?: string | undefined
-}
+type CreateMessageRequestInput = (unknown | unknown | unknown) | null
 type WhatsappMessageStatus = {
   conversation_id?: string | undefined
   status?: 'sent' | 'delivered' | 'read' | 'failed' | undefined
@@ -3549,27 +3447,28 @@ type PaginatedResponse = {
   total_count?: number | undefined
   data?: (NewsItem | Newsfeed)[] | undefined
 }
-type NewsItemRequest = {
+type NewsfeedAssignmentInput = { newsfeed_id?: number; published_at?: number | null }
+type NewsItemRequestInput = {
   title: string
-  body?: string | undefined
+  body?: string
   sender_id: number
-  state?: 'draft' | 'live' | undefined
-  deliver_silently?: boolean | undefined
-  labels?: string[] | undefined
-  cover_image_url?: string | undefined
-  reactions?: string[] | undefined
-  newsfeed_assignments?: NewsfeedAssignment[] | undefined
+  state?: 'draft' | 'live'
+  deliver_silently?: boolean
+  labels?: string[]
+  cover_image_url?: string
+  reactions?: string[]
+  newsfeed_assignments?: NewsfeedAssignmentInput[]
 }
-type UpdateNewsItemRequest = {
-  title?: string | undefined
-  body?: string | undefined
+type UpdateNewsItemRequestInput = {
+  title?: string
+  body?: string
   sender_id: number
-  state?: 'draft' | 'live' | undefined
-  deliver_silently?: boolean | undefined
-  labels?: string[] | undefined
-  cover_image_url?: string | undefined
-  reactions?: string[] | undefined
-  newsfeed_assignments?: NewsfeedAssignment[] | undefined
+  state?: 'draft' | 'live'
+  deliver_silently?: boolean
+  labels?: string[]
+  cover_image_url?: string
+  reactions?: string[]
+  newsfeed_assignments?: NewsfeedAssignmentInput[]
 }
 type DeletedObject = {
   id?: string | undefined
@@ -3582,15 +3481,16 @@ type DeletedNoteObject = {
   deleted?: boolean | undefined
 }
 type SegmentList = { type?: 'segment.list' | undefined; segments?: Segment[] | undefined }
-type CreatePhoneSwitchRequest = {
+type CreatePhoneSwitchRequestInput = {
   phone: string
-  custom_attributes?: { [x: string]: (string | null) | number | boolean } | undefined
-  body?: string | undefined
-  send_notification?: boolean | undefined
-  user_input_phone?: (string | null) | undefined
-  country?: (string | null) | undefined
+  custom_attributes?: { [key: string]: (string | null) | number | boolean }
+  body?: string
+  send_notification?: boolean
+  user_input_phone?: string | null
+  country?: string | null
 } | null
 type PhoneSwitch = { type?: 'phone_call_redirect' | undefined; url?: string | undefined } | null
+type Datetime = string | number
 type Call = {
   type?: string | undefined
   id?: string | undefined
@@ -3623,8 +3523,8 @@ type CallList = {
   pages?: PagesLink | undefined
 }
 type CallTranscriptTurn = {
-  start_time?: string | number | undefined
-  end_time?: string | number | undefined
+  start_time?: (string | number) | undefined
+  end_time?: (string | number) | undefined
   speaker_label?: string | undefined
   speaker?: string | undefined
   content?: string | undefined
@@ -3645,42 +3545,25 @@ type CallTranscriptTurn = {
       }[]
     | undefined
 }
-type CreateOrUpdateTagRequest = {
+type CreateOrUpdateTagRequestInput = {
   name: string
-  id?: string | undefined
-  ids_to_add?: string[] | undefined
-  taggable_type?: 'user' | 'company' | undefined
+  id?: string
+  ids_to_add?: string[]
+  taggable_type?: 'user' | 'company'
 }
-type TagCompanyRequest = {
+type TagCompanyRequestInput = {
   name: string
-  companies: {
-    id?: string | undefined
-    company_id?: string | undefined
-    name?: string | undefined
-  }[]
+  companies: { id?: string; company_id?: string; name?: string }[]
 }
-type UntagCompanyRequest = {
+type UntagCompanyRequestInput = {
   name: string
-  companies: {
-    id?: string | undefined
-    company_id?: string | undefined
-    name?: string | undefined
-    untag: boolean
-  }[]
+  companies: { id?: string; company_id?: string; name?: string; untag: boolean }[]
 }
-type TagMultipleUsersRequest = {
+type TagMultipleUsersRequestInput = {
   name: string
-  users: {
-    id?: string | undefined
-    user_id?: string | undefined
-    email?: string | undefined
-    untag?: boolean | undefined
-  }[]
+  users: { id?: string; user_id?: string; email?: string; untag?: boolean }[]
 }
-type TagCreateResponse = {
-  type?: string | undefined
-  id?: string | undefined
-  name?: string | undefined
+type TagCreateResponse = TagBasic & {
   users?: ({ id?: string | undefined; tagged?: boolean | undefined }[] | null) | undefined
   companies?: ({ id?: string | undefined; tagged?: boolean | undefined }[] | null) | undefined
 }
@@ -3732,84 +3615,65 @@ type TicketStateDetailed = {
     | undefined
 } | null
 type TicketStateList = { type?: string | undefined; data?: TicketStateDetailed[] | undefined }
-type CreateTicketTypeAttributeRequest = {
+type CreateTicketTypeAttributeRequestInput = {
   name: string
-  description?: string | undefined
+  description?: string
   data_type: 'string' | 'list' | 'integer' | 'decimal' | 'boolean' | 'datetime' | 'files'
-  required_to_create?: boolean | undefined
-  required_to_create_for_contacts?: boolean | undefined
-  visible_on_create?: boolean | undefined
-  visible_to_contacts?: boolean | undefined
-  multiline?: boolean | undefined
-  list_items?: string | undefined
-  allow_multiple_values?: boolean | undefined
+  required_to_create?: boolean
+  required_to_create_for_contacts?: boolean
+  visible_on_create?: boolean
+  visible_to_contacts?: boolean
+  multiline?: boolean
+  list_items?: string
+  allow_multiple_values?: boolean
 }
-type UpdateTicketTypeAttributeRequest = {
-  name?: string | undefined
-  description?: string | undefined
-  required_to_create?: boolean | undefined
-  required_to_create_for_contacts?: boolean | undefined
-  visible_on_create?: boolean | undefined
-  visible_to_contacts?: boolean | undefined
-  multiline?: boolean | undefined
-  list_items?: string | undefined
-  allow_multiple_values?: boolean | undefined
-  archived?: boolean | undefined
+type UpdateTicketTypeAttributeRequestInput = {
+  name?: string
+  description?: string
+  required_to_create?: boolean
+  required_to_create_for_contacts?: boolean
+  visible_on_create?: boolean
+  visible_to_contacts?: boolean
+  multiline?: boolean
+  list_items?: string
+  allow_multiple_values?: boolean
+  archived?: boolean
 }
 type TicketTypeList = { type?: string | undefined; data?: TicketType[] | undefined }
-type CreateTicketTypeRequest = {
+type CreateTicketTypeRequestInput = {
   name: string
-  description?: string | undefined
+  description?: string
   category: 'Customer' | 'Back-office' | 'Tracker'
-  icon?: string | undefined
-  is_internal?: boolean | undefined
+  icon?: string
+  is_internal?: boolean
 } | null
-type UpdateTicketTypeRequest = {
-  name?: string | undefined
-  description?: string | undefined
-  category?: 'Customer' | 'Back-office' | 'Tracker' | undefined
-  icon?: string | undefined
-  archived?: boolean | undefined
-  is_internal?: boolean | undefined
+type UpdateTicketTypeRequestInput = {
+  name?: string
+  description?: string
+  category?: 'Customer' | 'Back-office' | 'Tracker'
+  icon?: string
+  archived?: boolean
+  is_internal?: boolean
 } | null
-type ContactReplyTicketIntercomUserIdRequest = {
-  message_type: 'comment'
-  type: 'user'
-  body?: string | undefined
-  created_at?: number | undefined
-  attachment_urls?: string[] | undefined
-  reply_options?: { text: string; uuid: string }[] | undefined
+type ContactReplyTicketIntercomUserIdRequestInput = ContactReplyBaseRequestInput & {
+  intercom_user_id: string
 }
-type ContactReplyTicketUserIdRequest = {
-  message_type: 'comment'
-  type: 'user'
-  body?: string | undefined
-  created_at?: number | undefined
-  attachment_urls?: string[] | undefined
-  reply_options?: { text: string; uuid: string }[] | undefined
-}
-type ContactReplyTicketEmailRequest = {
-  message_type: 'comment'
-  type: 'user'
-  body?: string | undefined
-  created_at?: number | undefined
-  attachment_urls?: string[] | undefined
-  reply_options?: { text: string; uuid: string }[] | undefined
-}
-type ContactReplyTicketRequest =
-  | ContactReplyTicketIntercomUserIdRequest
-  | ContactReplyTicketUserIdRequest
-  | ContactReplyTicketEmailRequest
-type AdminReplyTicketRequest = {
+type ContactReplyTicketUserIdRequestInput = ContactReplyBaseRequestInput & { user_id: string }
+type ContactReplyTicketEmailRequestInput = ContactReplyBaseRequestInput & { email: string }
+type ContactReplyTicketRequestInput =
+  | ContactReplyTicketIntercomUserIdRequestInput
+  | ContactReplyTicketUserIdRequestInput
+  | ContactReplyTicketEmailRequestInput
+type AdminReplyTicketRequestInput = {
   message_type: 'comment' | 'note' | 'quick_reply'
   type: 'admin'
-  body?: string | undefined
+  body?: string
   admin_id: string
-  created_at?: number | undefined
-  reply_options?: { text: string; uuid: string }[] | undefined
-  attachment_urls?: string[] | undefined
-  attachment_files?: ConversationAttachmentFiles[] | undefined
-  cross_post?: boolean | undefined
+  created_at?: number
+  reply_options?: { text: string; uuid: string }[]
+  attachment_urls?: string[]
+  attachment_files?: ConversationAttachmentFilesInput[]
+  cross_post?: boolean
 }
 type TicketReply = {
   type?: 'ticket_part' | undefined
@@ -3824,15 +3688,35 @@ type TicketReply = {
   app_package_code?: string | undefined
   translations?: ({ original?: string | undefined } | null) | undefined
 }
+type CreateTicketRequestInput = {
+  ticket_type_id: string
+  contacts?: ({ id: string } | { external_id: string } | { email: string })[]
+  conversation_to_link_id?: string
+  company_id?: string
+  created_at?: number
+  ticket_attributes?: TicketRequestCustomAttributesInput
+  assignment?: { admin_assignee_id?: string; team_assignee_id?: string }
+  channel?: 'email'
+}
+type UpdateTicketRequestInput = {
+  ticket_attributes?: { [key: string]: unknown }
+  ticket_state_id?: string
+  company_id?: string
+  open?: boolean
+  is_shared?: boolean
+  snoozed_until?: number
+  admin_id?: number
+  assignee_id?: string
+}
 type TicketDeleted = {
   id?: string | undefined
   object?: 'ticket' | undefined
   deleted?: boolean | undefined
 }
-type ChangeTicketTypeRequest = {
+type ChangeTicketTypeRequestInput = {
   ticket_type_id: string
   ticket_state_id: string
-  ticket_attributes?: { [x: string]: unknown } | undefined
+  ticket_attributes?: { [key: string]: unknown }
 }
 type TicketList = {
   type?: 'ticket.list' | undefined
@@ -3840,7 +3724,7 @@ type TicketList = {
   total_count?: number | undefined
   pages?: CursorPages | undefined
 }
-type UpdateVisitorRequest = { [x: string]: unknown } | { [x: string]: unknown }
+type UpdateVisitorRequestInput = unknown | unknown
 type Visitor = {
   type?: string | undefined
   id?: string | undefined
@@ -3904,7 +3788,7 @@ type Visitor = {
         segments?: { type?: 'segment' | undefined; id?: string | undefined }[] | undefined
       }
     | undefined
-  custom_attributes?: { [x: string]: (string | null) | number | number | boolean } | undefined
+  custom_attributes?: { [key: string]: (string | null) | number | number | boolean } | undefined
   referrer?: (string | null) | undefined
   utm_campaign?: (string | null) | undefined
   utm_content?: (string | null) | undefined
@@ -3913,10 +3797,10 @@ type Visitor = {
   utm_term?: (string | null) | undefined
   do_not_track?: (boolean | null) | undefined
 } | null
-type ConvertVisitorRequest = {
+type ConvertVisitorRequestInput = {
   type: string
-  user?: { [x: string]: unknown } | { [x: string]: unknown } | { [x: string]: unknown } | undefined
-  visitor: { [x: string]: unknown } | { [x: string]: unknown }
+  user?: unknown | unknown | unknown
+  visitor: unknown | unknown
 }
 type Brand = {
   type?: string | undefined
@@ -3942,12 +3826,12 @@ type EmailSetting = {
   updated_at?: number | undefined
 }
 type EmailList = { type?: string | undefined; data?: EmailSetting[] | undefined }
-type RegisterFinVoiceCallRequest = {
+type RegisterFinVoiceCallRequestInput = {
   phone_number: string
   call_id: string
-  source?: 'five9' | 'zoom_phone' | 'nice_cxone' | 'dialpad' | 'generic' | 'aws_connect' | undefined
-  vendor_internal_id?: (string | null) | undefined
-  data?: ({ [x: string]: unknown } | null) | undefined
+  source?: 'five9' | 'zoom_phone' | 'nice_cxone' | 'dialpad' | 'generic' | 'aws_connect'
+  vendor_internal_id?: string | null
+  data?: { [key: string]: unknown } | null
 } | null
 type AiCallResponse = {
   id?: number | undefined
@@ -3958,11 +3842,11 @@ type AiCallResponse = {
   external_call_id?: string | undefined
   vendor_internal_id?: (string | null) | undefined
   intercom_conversation_id?: (string | null) | undefined
-  call_transcript?: { [x: string]: unknown }[] | undefined
+  call_transcript?: { [key: string]: unknown }[] | undefined
   call_summary?: string | undefined
-  intent?: { [x: string]: unknown }[] | undefined
+  intent?: { [key: string]: unknown }[] | undefined
   fin_call_duration?: (string | null) | undefined
-  data?: { [x: string]: unknown } | undefined
+  data?: { [key: string]: unknown } | undefined
   language?: (string | null) | undefined
 }
 type WorkflowExport = {
@@ -3980,10 +3864,10 @@ type WorkflowExport = {
         preferred_devices?: string[] | undefined
         created_at?: string | undefined
         updated_at?: string | undefined
-        targeting?: ({ [x: string]: unknown } | null) | undefined
-        snapshot?: ({ [x: string]: unknown } | null) | undefined
-        attributes?: { [x: string]: unknown }[] | undefined
-        embedded_rules?: { [x: string]: unknown }[] | undefined
+        targeting?: ({ [key: string]: unknown } | null) | undefined
+        snapshot?: ({ [key: string]: unknown } | null) | undefined
+        attributes?: { [key: string]: unknown }[] | undefined
+        embedded_rules?: { [key: string]: unknown }[] | undefined
       }
     | undefined
 }
@@ -3993,19 +3877,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/me': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: AdminWithApp
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -4016,7 +3900,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Macro
             outputFormat: 'json'
@@ -4024,7 +3908,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4032,7 +3916,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4040,7 +3924,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4052,48 +3936,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                updated_since?: bigint | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string; updated_since?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: MacroList
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
-              query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                updated_since?: bigint | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string; updated_since?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
-              query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                updated_since?: bigint | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string; updated_since?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
-              query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                updated_since?: bigint | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string; updated_since?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 403
@@ -4103,13 +3971,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/admins/:admin_id/away': {
       $put:
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 away_mode_enabled: boolean
                 away_mode_reassign: boolean
-                away_status_reason_id?: number | undefined
+                away_status_reason_id?: number
               }
             }
             output: Admin
@@ -4117,13 +3985,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 away_mode_enabled: boolean
                 away_mode_reassign: boolean
-                away_status_reason_id?: number | undefined
+                away_status_reason_id?: number
               }
             }
             output: Error
@@ -4131,13 +3999,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 away_mode_enabled: boolean
                 away_mode_reassign: boolean
-                away_status_reason_id?: number | undefined
+                away_status_reason_id?: number
               }
             }
             output: Error
@@ -4145,13 +4013,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 away_mode_enabled: boolean
                 away_mode_reassign: boolean
-                away_status_reason_id?: number | undefined
+                away_status_reason_id?: number
               }
             }
             output: Error
@@ -4159,13 +4027,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 403
           }
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 away_mode_enabled: boolean
                 away_mode_reassign: boolean
-                away_status_reason_id?: number | undefined
+                away_status_reason_id?: number
               }
             }
             output: Error
@@ -4173,13 +4041,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 away_mode_enabled: boolean
                 away_mode_reassign: boolean
-                away_status_reason_id?: number | undefined
+                away_status_reason_id?: number
               }
             }
             output: Error
@@ -4193,12 +4061,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                created_at_after?: string | undefined
-                created_at_before?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                created_at_after?: string
+                created_at_before?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ActivityLogList
             outputFormat: 'json'
             status: 200
@@ -4206,12 +4074,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                created_at_after?: string | undefined
-                created_at_before?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                created_at_after?: string
+                created_at_before?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -4219,28 +4087,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                created_at_after?: string | undefined
-                created_at_before?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                created_at_after?: string
+                created_at_before?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
+          }
+        | {
+            input: {
+              query: {
+                created_at_after?: string
+                created_at_before?: string
+                page?: unknown
+                per_page?: unknown
+              }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
+            output: Error
+            outputFormat: 'json'
+            status: 403
           }
     }
   } & {
     '/admins/activity_logs/search': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
-                created_at_after?: number | undefined
-                created_at_before?: number | undefined
-                event_types?: string[] | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                created_at_after?: number
+                created_at_before?: number
+                event_types?: string[]
+                page?: number
+                per_page?: number
               }
             }
             output: ActivityLogList
@@ -4248,13 +4129,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
-                created_at_after?: number | undefined
-                created_at_before?: number | undefined
-                event_types?: string[] | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                created_at_after?: number
+                created_at_before?: number
+                event_types?: string[]
+                page?: number
+                per_page?: number
               }
             }
             output: Error
@@ -4262,31 +4143,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
-                created_at_after?: number | undefined
-                created_at_before?: number | undefined
-                event_types?: string[] | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                created_at_after?: number
+                created_at_before?: number
+                event_types?: string[]
+                page?: number
+                per_page?: number
               }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
+        | {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: {
+                created_at_after?: number
+                created_at_before?: number
+                event_types?: string[]
+                page?: number
+                per_page?: number
+              }
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 403
+          }
     }
   } & {
     '/admins/activity_log_event_types': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ActivityLogEventTypeList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -4296,16 +4191,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/admins': {
       $get:
         | {
-            input: { query: { display_avatar?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { display_avatar?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: AdminList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { display_avatar?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { display_avatar?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4317,7 +4212,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: OfficeHoursException
             outputFormat: 'json'
@@ -4325,7 +4220,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4333,7 +4228,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4342,40 +4237,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursExceptionRequestInput }
             output: OfficeHoursException
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursExceptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursExceptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursExceptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursExceptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -4383,7 +4278,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {
               id?: string | undefined
@@ -4395,7 +4290,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4403,7 +4298,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { office_hours_schedule_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4415,7 +4310,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { office_hours_schedule_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: OfficeHoursExceptionList
             outputFormat: 'json'
@@ -4423,7 +4318,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { office_hours_schedule_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4431,7 +4326,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { office_hours_schedule_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4440,40 +4335,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { office_hours_schedule_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOfficeHoursExceptionRequestInput }
             output: OfficeHoursException
             outputFormat: 'json'
             status: 201
           }
         | {
             input: { param: { office_hours_schedule_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOfficeHoursExceptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { office_hours_schedule_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOfficeHoursExceptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { office_hours_schedule_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOfficeHoursExceptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { office_hours_schedule_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOfficeHoursExceptionRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOfficeHoursExceptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -4484,7 +4379,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: OfficeHoursSchedule
             outputFormat: 'json'
@@ -4492,7 +4387,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4500,7 +4395,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4509,40 +4404,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursScheduleRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursScheduleRequestInput }
             output: OfficeHoursSchedule
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursScheduleRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursScheduleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursScheduleRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursScheduleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursScheduleRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursScheduleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateOfficeHoursScheduleRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateOfficeHoursScheduleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -4550,7 +4445,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {
               id?: string | undefined
@@ -4562,7 +4457,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4570,7 +4465,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4578,7 +4473,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4589,45 +4484,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/office_hours_schedules': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: OfficeHoursScheduleList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateOfficeHoursScheduleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateOfficeHoursScheduleRequestInput
             }
             output: OfficeHoursSchedule
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateOfficeHoursScheduleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateOfficeHoursScheduleRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateOfficeHoursScheduleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateOfficeHoursScheduleRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateOfficeHoursScheduleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateOfficeHoursScheduleRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -4638,24 +4533,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/admins/:admin_id': {
       $get:
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Admin
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { admin_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { admin_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4668,16 +4563,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                admin_id: number
-                reassign_messages_admin_id: number
-                reassign_owner_admin_id: number
-                reassign_articles_author_id: number
-                reassign_conversations_admin_id: number
-                reassign_replies_teams?:
-                  | { team_id?: number | undefined; assignee_id?: number | undefined }[]
-                  | undefined
+                admin_id: unknown
+                reassign_messages_admin_id: unknown
+                reassign_owner_admin_id: unknown
+                reassign_articles_author_id: unknown
+                reassign_conversations_admin_id: unknown
+                reassign_replies_teams?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: {
               id?: string | undefined
               object?: 'admin' | undefined
@@ -4689,16 +4582,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                admin_id: number
-                reassign_messages_admin_id: number
-                reassign_owner_admin_id: number
-                reassign_articles_author_id: number
-                reassign_conversations_admin_id: number
-                reassign_replies_teams?:
-                  | { team_id?: number | undefined; assignee_id?: number | undefined }[]
-                  | undefined
+                admin_id: unknown
+                reassign_messages_admin_id: unknown
+                reassign_owner_admin_id: unknown
+                reassign_articles_author_id: unknown
+                reassign_conversations_admin_id: unknown
+                reassign_replies_teams?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -4706,16 +4597,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                admin_id: number
-                reassign_messages_admin_id: number
-                reassign_owner_admin_id: number
-                reassign_articles_author_id: number
-                reassign_conversations_admin_id: number
-                reassign_replies_teams?:
-                  | { team_id?: number | undefined; assignee_id?: number | undefined }[]
-                  | undefined
+                admin_id: unknown
+                reassign_messages_admin_id: unknown
+                reassign_owner_admin_id: unknown
+                reassign_articles_author_id: unknown
+                reassign_conversations_admin_id: unknown
+                reassign_replies_teams?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 403
@@ -4723,16 +4612,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                admin_id: number
-                reassign_messages_admin_id: number
-                reassign_owner_admin_id: number
-                reassign_articles_author_id: number
-                reassign_conversations_admin_id: number
-                reassign_replies_teams?:
-                  | { team_id?: number | undefined; assignee_id?: number | undefined }[]
-                  | undefined
+                admin_id: unknown
+                reassign_messages_admin_id: unknown
+                reassign_owner_admin_id: unknown
+                reassign_articles_author_id: unknown
+                reassign_conversations_admin_id: unknown
+                reassign_replies_teams?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -4740,16 +4627,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                admin_id: number
-                reassign_messages_admin_id: number
-                reassign_owner_admin_id: number
-                reassign_articles_author_id: number
-                reassign_conversations_admin_id: number
-                reassign_replies_teams?:
-                  | { team_id?: number | undefined; assignee_id?: number | undefined }[]
-                  | undefined
+                admin_id: unknown
+                reassign_messages_admin_id: unknown
+                reassign_owner_admin_id: unknown
+                reassign_articles_author_id: unknown
+                reassign_conversations_admin_id: unknown
+                reassign_replies_teams?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 405
@@ -4759,24 +4644,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/ai/content_import_sources': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContentImportSourcesList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4784,24 +4669,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateContentImportSourceRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateContentImportSourceRequestInput
             }
             output: ContentImportSource
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateContentImportSourceRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateContentImportSourceRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateContentImportSourceRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateContentImportSourceRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -4813,7 +4698,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -4821,7 +4706,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4829,7 +4714,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4838,7 +4723,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContentImportSource
             outputFormat: 'json'
@@ -4846,7 +4731,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4854,7 +4739,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4863,32 +4748,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateContentImportSourceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateContentImportSourceRequestInput }
             output: ContentImportSource
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateContentImportSourceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateContentImportSourceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateContentImportSourceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateContentImportSourceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { source_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateContentImportSourceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateContentImportSourceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -4898,24 +4783,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/ai/external_pages': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ExternalPagesList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4923,32 +4808,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateExternalPageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateExternalPageRequestInput
             }
             output: ExternalPage
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateExternalPageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateExternalPageRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateExternalPageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateExternalPageRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateExternalPageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateExternalPageRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -4960,7 +4845,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ExternalPage
             outputFormat: 'json'
@@ -4968,7 +4853,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4976,7 +4861,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -4985,7 +4870,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ExternalPage
             outputFormat: 'json'
@@ -4993,7 +4878,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5001,7 +4886,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5010,32 +4895,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateExternalPageRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateExternalPageRequestInput }
             output: ExternalPage
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateExternalPageRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateExternalPageRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateExternalPageRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateExternalPageRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateExternalPageRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateExternalPageRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -5046,32 +4931,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { external_page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Tag
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { external_page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { external_page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { external_page_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -5082,7 +4967,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { external_page_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Tag
             outputFormat: 'json'
@@ -5090,7 +4975,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { external_page_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5098,7 +4983,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { external_page_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5106,7 +4991,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { external_page_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5117,24 +5002,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/articles': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ArticleList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5142,40 +5027,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateArticleRequestInput
             }
             output: Article
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateArticleRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateArticleRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateArticleRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateArticleRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -5186,24 +5071,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/articles/:article_id': {
       $get:
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Article
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5211,73 +5096,73 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Article
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
           }
       $delete:
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedArticleObject
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5288,24 +5173,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/articles/:id/draft': {
       $get:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Article
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5313,33 +5198,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Article
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateArticleRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -5349,33 +5234,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/articles/:id/draft/publish': {
       $post:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: PublishArticleDraftRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: PublishArticleDraftRequestInput }
             output: Article
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: PublishArticleDraftRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: PublishArticleDraftRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: PublishArticleDraftRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: PublishArticleDraftRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: PublishArticleDraftRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: PublishArticleDraftRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -5385,33 +5270,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/articles/:article_id/tags': {
       $post:
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Tag
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+            input: { param: { article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -5421,32 +5306,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/articles/:article_id/tags/:id': {
       $delete:
         | {
-            input: { param: { article_id: number; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown; id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Tag
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { article_id: number; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown; id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { article_id: number; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown; id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { article_id: number; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { article_id: unknown; id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5457,49 +5342,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/articles/:article_id/versions': {
       $get:
         | {
-            input: { param: { article_id: number } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                locale?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { article_id: unknown } } & {
+              query: { page?: unknown; per_page?: unknown; locale?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ArticleVersionList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { article_id: number } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                locale?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { article_id: unknown } } & {
+              query: { page?: unknown; per_page?: unknown; locale?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { article_id: number } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                locale?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { article_id: unknown } } & {
+              query: { page?: unknown; per_page?: unknown; locale?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { article_id: number } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                locale?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { article_id: unknown } } & {
+              query: { page?: unknown; per_page?: unknown; locale?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -5509,33 +5378,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/articles/:article_id/versions/:id': {
       $get:
         | {
-            input: { param: { article_id: number; id: string } } & {
-              query: { locale?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { article_id: unknown; id: string } } & {
+              query: { locale?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ArticleVersion
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { article_id: number; id: string } } & {
-              query: { locale?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { article_id: unknown; id: string } } & {
+              query: { locale?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { article_id: number; id: string } } & {
-              query: { locale?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { article_id: unknown; id: string } } & {
+              query: { locale?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { article_id: number; id: string } } & {
-              query: { locale?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { article_id: unknown; id: string } } & {
+              query: { locale?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -5547,14 +5416,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                phrase?: string | undefined
-                state?: 'published' | 'draft' | 'all' | undefined
-                help_center_id?: number | undefined
-                highlight?: boolean | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                phrase?: string
+                state?: 'published' | 'draft' | 'all'
+                help_center_id?: unknown
+                highlight?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ArticleSearchResponse
             outputFormat: 'json'
             status: 200
@@ -5562,14 +5431,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                phrase?: string | undefined
-                state?: 'published' | 'draft' | 'all' | undefined
-                help_center_id?: number | undefined
-                highlight?: boolean | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                phrase?: string
+                state?: 'published' | 'draft' | 'all'
+                help_center_id?: unknown
+                highlight?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -5577,14 +5446,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                phrase?: string | undefined
-                state?: 'published' | 'draft' | 'all' | undefined
-                help_center_id?: number | undefined
-                highlight?: boolean | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                phrase?: string
+                state?: 'published' | 'draft' | 'all'
+                help_center_id?: unknown
+                highlight?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -5594,13 +5463,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/away_status_reasons': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: AwayStatusReasonList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -5610,16 +5479,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/audiences': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: AudienceList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5627,24 +5496,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateAudienceRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateAudienceRequestInput
             }
             output: Audience
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateAudienceRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateAudienceRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateAudienceRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateAudienceRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -5656,7 +5525,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Audience
             outputFormat: 'json'
@@ -5664,7 +5533,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5672,7 +5541,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5681,32 +5550,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateAudienceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateAudienceRequestInput }
             output: Audience
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateAudienceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateAudienceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateAudienceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateAudienceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateAudienceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateAudienceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -5714,7 +5583,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -5722,7 +5591,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5730,7 +5599,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5738,7 +5607,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5749,7 +5618,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/export/reporting_data/enqueue': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 dataset_id: string
                 attribute_ids: string[]
@@ -5767,7 +5636,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 dataset_id: string
                 attribute_ids: string[]
@@ -5780,7 +5649,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 dataset_id: string
                 attribute_ids: string[]
@@ -5793,7 +5662,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 dataset_id: string
                 attribute_ids: string[]
@@ -5811,20 +5680,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {
               job_identifier?: string | undefined
               status?: 'pending' | 'complete' | 'failed' | undefined
               download_url?: string | undefined
-              download_expires_at?: bigint | string | undefined
+              download_expires_at?: (bigint | string) | undefined
             }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5832,7 +5701,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5840,7 +5709,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -5851,7 +5720,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/export/reporting_data/get_datasets': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: {
               type?: string | undefined
               data?:
@@ -5874,13 +5743,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -5892,18 +5761,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { job_identifier: string } } & {
               header: {
-                'Intercom-Version'?: IntercomVersion | undefined
+                'Intercom-Version'?: IntercomVersionInput
                 Accept: 'application/octet-stream'
               }
             }
-            output: File
-            outputFormat: 'text'
+            output: {}
+            outputFormat: string
             status: 200
           }
         | {
             input: { param: { job_identifier: string } } & {
               header: {
-                'Intercom-Version'?: IntercomVersion | undefined
+                'Intercom-Version'?: IntercomVersionInput
                 Accept: 'application/octet-stream'
               }
             }
@@ -5914,7 +5783,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { job_identifier: string } } & {
               header: {
-                'Intercom-Version'?: IntercomVersion | undefined
+                'Intercom-Version'?: IntercomVersionInput
                 Accept: 'application/octet-stream'
               }
             }
@@ -5925,7 +5794,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { job_identifier: string } } & {
               header: {
-                'Intercom-Version'?: IntercomVersion | undefined
+                'Intercom-Version'?: IntercomVersionInput
                 Accept: 'application/octet-stream'
               }
             }
@@ -5938,15 +5807,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/fin/start': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                conversation_metadata?: FinAgentConversationMetadataInput
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
             output: {
@@ -5968,15 +5837,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                conversation_metadata?: FinAgentConversationMetadataInput
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -5984,15 +5853,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                conversation_metadata?: FinAgentConversationMetadataInput
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -6000,15 +5869,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                conversation_metadata?: FinAgentConversationMetadataInput
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -6016,18 +5885,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                conversation_metadata?: FinAgentConversationMetadataInput
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
-            output: { errors?: { [x: string]: unknown } | undefined }
+            output: { errors?: { [key: string]: unknown } | undefined }
             outputFormat: 'json'
             status: 422
           }
@@ -6036,13 +5905,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/fin/reply': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                response_format?: 'html' | 'markdown'
               }
             }
             output: {
@@ -6064,13 +5933,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -6078,13 +5947,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -6092,13 +5961,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -6106,16 +5975,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                attachments?: FinAgentAttachment[] | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                attachments?: FinAgentAttachmentInput[]
+                response_format?: 'html' | 'markdown'
               }
             }
-            output: { errors?: { [x: string]: unknown } | undefined }
+            output: { errors?: { [key: string]: unknown } | undefined }
             outputFormat: 'json'
             status: 422
           }
@@ -6124,11 +5993,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/fin/csat': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
                 rating: 'terrible' | 'bad' | 'ok' | 'good' | 'amazing'
-                remark?: string | undefined
+                remark?: string
               }
             }
             output: {
@@ -6140,11 +6009,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
                 rating: 'terrible' | 'bad' | 'ok' | 'good' | 'amazing'
-                remark?: string | undefined
+                remark?: string
               }
             }
             output: Error
@@ -6152,11 +6021,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
                 rating: 'terrible' | 'bad' | 'ok' | 'good' | 'amazing'
-                remark?: string | undefined
+                remark?: string
               }
             }
             output: Error
@@ -6164,14 +6033,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
                 rating: 'terrible' | 'bad' | 'ok' | 'good' | 'amazing'
-                remark?: string | undefined
+                remark?: string
               }
             }
-            output: { errors?: { [x: string]: string } | undefined }
+            output: { errors?: { [key: string]: string } | undefined }
             outputFormat: 'json'
             status: 422
           }
@@ -6180,15 +6049,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/fin/capabilities': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                user: {
-                  id: string
-                  name?: string | undefined
-                  email?: string | undefined
-                  attributes?: { [x: string]: unknown } | undefined
-                }
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: { user: FinAgentUserInput }
             }
             output: {
               version?: string | undefined
@@ -6196,7 +6058,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 | {
                     name?: string | undefined
                     description?: (string | null) | undefined
-                    inputSchema?: { [x: string]: unknown } | undefined
+                    inputSchema?: { [key: string]: unknown } | undefined
                     endpoint?: string | undefined
                     method?: string | undefined
                   }[]
@@ -6207,62 +6069,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                user: {
-                  id: string
-                  name?: string | undefined
-                  email?: string | undefined
-                  attributes?: { [x: string]: unknown } | undefined
-                }
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: { user: FinAgentUserInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                user: {
-                  id: string
-                  name?: string | undefined
-                  email?: string | undefined
-                  attributes?: { [x: string]: unknown } | undefined
-                }
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: { user: FinAgentUserInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                user: {
-                  id: string
-                  name?: string | undefined
-                  email?: string | undefined
-                  attributes?: { [x: string]: unknown } | undefined
-                }
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: { user: FinAgentUserInput }
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                user: {
-                  id: string
-                  name?: string | undefined
-                  email?: string | undefined
-                  attributes?: { [x: string]: unknown } | undefined
-                }
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: { user: FinAgentUserInput }
             }
-            output: { errors?: { [x: string]: unknown } | undefined }
+            output: { errors?: { [key: string]: unknown } | undefined }
             outputFormat: 'json'
             status: 422
           }
@@ -6271,15 +6105,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/fin/ask': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                attachments?: FinAgentAttachment[] | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                conversation_metadata?: FinAgentConversationMetadataInput
+                attachments?: FinAgentAttachmentInput[]
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
             output: {
@@ -6294,15 +6128,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                attachments?: FinAgentAttachment[] | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                conversation_metadata?: FinAgentConversationMetadataInput
+                attachments?: FinAgentAttachmentInput[]
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -6310,15 +6144,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                attachments?: FinAgentAttachment[] | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                conversation_metadata?: FinAgentConversationMetadataInput
+                attachments?: FinAgentAttachmentInput[]
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -6326,15 +6160,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                attachments?: FinAgentAttachment[] | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                conversation_metadata?: FinAgentConversationMetadataInput
+                attachments?: FinAgentAttachmentInput[]
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
             output: Error
@@ -6342,18 +6176,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 conversation_id: string
-                message: FinAgentMessage
-                user: FinAgentUser
-                conversation_metadata?: FinAgentConversationMetadata | undefined
-                attachments?: FinAgentAttachment[] | undefined
-                environment?: string | undefined
-                response_format?: 'html' | 'markdown' | undefined
+                message: FinAgentMessageInput
+                user: FinAgentUserInput
+                conversation_metadata?: FinAgentConversationMetadataInput
+                attachments?: FinAgentAttachmentInput[]
+                environment?: string
+                response_format?: 'html' | 'markdown'
               }
             }
-            output: { errors?: { [x: string]: unknown } | undefined }
+            output: { errors?: { [key: string]: unknown } | undefined }
             outputFormat: 'json'
             status: 422
           }
@@ -6363,18 +6197,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { procedure_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 conversation_id: string
-                user: FinAgentUser
-                message?:
-                  | { body: string; author?: 'user' | 'agent' | 'fin' | undefined }
-                  | undefined
-                conversation_metadata?:
-                  | { attributes?: { [x: string]: unknown } | undefined }
-                  | undefined
-                environment?: string | undefined
+                user: FinAgentUserInput
+                message?: { body: string; author?: 'user' | 'agent' | 'fin' }
+                conversation_metadata?: { attributes?: { [key: string]: unknown } }
+                environment?: string
               }
             }
             output: {
@@ -6398,18 +6228,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { procedure_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 conversation_id: string
-                user: FinAgentUser
-                message?:
-                  | { body: string; author?: 'user' | 'agent' | 'fin' | undefined }
-                  | undefined
-                conversation_metadata?:
-                  | { attributes?: { [x: string]: unknown } | undefined }
-                  | undefined
-                environment?: string | undefined
+                user: FinAgentUserInput
+                message?: { body: string; author?: 'user' | 'agent' | 'fin' }
+                conversation_metadata?: { attributes?: { [key: string]: unknown } }
+                environment?: string
               }
             }
             output: Error
@@ -6418,18 +6244,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { procedure_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 conversation_id: string
-                user: FinAgentUser
-                message?:
-                  | { body: string; author?: 'user' | 'agent' | 'fin' | undefined }
-                  | undefined
-                conversation_metadata?:
-                  | { attributes?: { [x: string]: unknown } | undefined }
-                  | undefined
-                environment?: string | undefined
+                user: FinAgentUserInput
+                message?: { body: string; author?: 'user' | 'agent' | 'fin' }
+                conversation_metadata?: { attributes?: { [key: string]: unknown } }
+                environment?: string
               }
             }
             output: Error
@@ -6438,18 +6260,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { procedure_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 conversation_id: string
-                user: FinAgentUser
-                message?:
-                  | { body: string; author?: 'user' | 'agent' | 'fin' | undefined }
-                  | undefined
-                conversation_metadata?:
-                  | { attributes?: { [x: string]: unknown } | undefined }
-                  | undefined
-                environment?: string | undefined
+                user: FinAgentUserInput
+                message?: { body: string; author?: 'user' | 'agent' | 'fin' }
+                conversation_metadata?: { attributes?: { [key: string]: unknown } }
+                environment?: string
               }
             }
             output: Error
@@ -6458,21 +6276,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { procedure_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 conversation_id: string
-                user: FinAgentUser
-                message?:
-                  | { body: string; author?: 'user' | 'agent' | 'fin' | undefined }
-                  | undefined
-                conversation_metadata?:
-                  | { attributes?: { [x: string]: unknown } | undefined }
-                  | undefined
-                environment?: string | undefined
+                user: FinAgentUserInput
+                message?: { body: string; author?: 'user' | 'agent' | 'fin' }
+                conversation_metadata?: { attributes?: { [key: string]: unknown } }
+                environment?: string
               }
             }
-            output: { errors?: { [x: string]: unknown } | undefined }
+            output: { errors?: { [key: string]: unknown } | undefined }
             outputFormat: 'json'
             status: 422
           }
@@ -6481,8 +6295,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/fin/escalate': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: { [x: string]: unknown } | { [x: string]: unknown }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: unknown | unknown
             }
             output: {
               conversation_id?: string | undefined
@@ -6493,34 +6307,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: { [x: string]: unknown } | { [x: string]: unknown }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: unknown | unknown
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: { [x: string]: unknown } | { [x: string]: unknown }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: unknown | unknown
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: { [x: string]: unknown } | { [x: string]: unknown }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: unknown | unknown
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: { [x: string]: unknown } | { [x: string]: unknown }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: unknown | unknown
             }
-            output: { errors?: { [x: string]: unknown } | undefined }
+            output: { errors?: { [key: string]: unknown } | undefined }
             outputFormat: 'json'
             status: 422
           }
@@ -6530,24 +6344,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { help_center_id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: HelpCenterRedirectList
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { help_center_id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { help_center_id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -6555,48 +6369,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { help_center_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateHelpCenterRedirectRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateHelpCenterRedirectRequestInput }
             output: HelpCenterRedirect
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { help_center_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateHelpCenterRedirectRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateHelpCenterRedirectRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { help_center_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateHelpCenterRedirectRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateHelpCenterRedirectRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { help_center_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateHelpCenterRedirectRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateHelpCenterRedirectRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { help_center_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateHelpCenterRedirectRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateHelpCenterRedirectRequestInput }
             output: Error
             outputFormat: 'json'
             status: 409
           }
         | {
             input: { param: { help_center_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateHelpCenterRedirectRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateHelpCenterRedirectRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -6607,7 +6421,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { help_center_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: HelpCenterRedirect
             outputFormat: 'json'
@@ -6615,7 +6429,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { help_center_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6623,7 +6437,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { help_center_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6632,7 +6446,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { help_center_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedHelpCenterRedirectObject
             outputFormat: 'json'
@@ -6640,7 +6454,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { help_center_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6648,7 +6462,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { help_center_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6659,61 +6473,49 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/help_center/collections': {
       $get:
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                help_center_id?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; help_center_id?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: CollectionList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                help_center_id?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; help_center_id?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                help_center_id?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; help_center_id?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateCollectionRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateCollectionRequestInput
             }
             output: Collection
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateCollectionRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateCollectionRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateCollectionRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateCollectionRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -6724,24 +6526,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/help_center/collections/:collection_id': {
       $get:
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Collection
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6749,57 +6551,57 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCollectionRequest }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCollectionRequestInput }
             output: Collection
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCollectionRequest }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCollectionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCollectionRequest }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCollectionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCollectionRequest }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCollectionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
       $delete:
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedCollectionObject
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { collection_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { collection_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6810,24 +6612,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/help_center/help_centers/:help_center_id': {
       $get:
         | {
-            input: { param: { help_center_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { help_center_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: HelpCenter
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { help_center_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { help_center_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { help_center_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { help_center_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6838,13 +6640,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/help_center/help_centers': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: HelpCenterList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -6854,16 +6656,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/internal_articles': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: InternalArticleList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6871,40 +6673,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateInternalArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateInternalArticleRequestInput
             }
             output: InternalArticle
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateInternalArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateInternalArticleRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateInternalArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateInternalArticleRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateInternalArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateInternalArticleRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateInternalArticleRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateInternalArticleRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -6915,32 +6717,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/internal_articles/:internal_article_id': {
       $get:
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: InternalArticle
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -6948,73 +6750,73 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateInternalArticleRequest }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateInternalArticleRequestInput }
             output: InternalArticle
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateInternalArticleRequest }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateInternalArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateInternalArticleRequest }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateInternalArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateInternalArticleRequest }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateInternalArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateInternalArticleRequest }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateInternalArticleRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
           }
       $delete:
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedInternalArticleObject
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -7025,33 +6827,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/internal_articles/:internal_article_id/tags': {
       $post:
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Tag
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { internal_article_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+            input: { param: { internal_article_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -7061,33 +6863,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/internal_articles/:internal_article_id/tags/:id': {
       $delete:
         | {
-            input: { param: { internal_article_id: number; id: string } } & {
-              query: { admin_id?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { internal_article_id: unknown; id: string } } & {
+              query: { admin_id?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Tag
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { internal_article_id: number; id: string } } & {
-              query: { admin_id?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { internal_article_id: unknown; id: string } } & {
+              query: { admin_id?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { internal_article_id: number; id: string } } & {
-              query: { admin_id?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { internal_article_id: unknown; id: string } } & {
+              query: { admin_id?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { internal_article_id: number; id: string } } & {
-              query: { admin_id?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { internal_article_id: unknown; id: string } } & {
+              query: { admin_id?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -7097,37 +6899,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/internal_articles/search': {
       $get:
         | {
-            input: {
-              query: {
-                folder_id?: number | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { folder_id?: unknown; page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: InternalArticleSearchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                folder_id?: number | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { folder_id?: unknown; page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                folder_id?: number | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { folder_id?: unknown; page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -7137,13 +6927,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/folders': {
       $get:
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                parent_folder_id?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; parent_folder_id?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: {
               type?: 'list' | undefined
               data?: Folder[] | undefined
@@ -7154,26 +6940,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                parent_folder_id?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; parent_folder_id?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 folder: {
                   name: string
-                  description?: string | undefined
-                  emoji?: string | undefined
-                  parent_folder_id?: (number | null) | undefined
+                  description?: string
+                  emoji?: string
+                  parent_folder_id?: number | null
                 }
               }
             }
@@ -7182,13 +6964,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 folder: {
                   name: string
-                  description?: string | undefined
-                  emoji?: string | undefined
-                  parent_folder_id?: (number | null) | undefined
+                  description?: string
+                  emoji?: string
+                  parent_folder_id?: number | null
                 }
               }
             }
@@ -7197,13 +6979,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: {
                 folder: {
                   name: string
-                  description?: string | undefined
-                  emoji?: string | undefined
-                  parent_folder_id?: (number | null) | undefined
+                  description?: string
+                  emoji?: string
+                  parent_folder_id?: number | null
                 }
               }
             }
@@ -7216,32 +6998,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/folders/:id': {
       $get:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Folder
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -7249,15 +7031,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 folder: {
-                  name?: string | undefined
-                  description?: string | undefined
-                  emoji?: string | undefined
-                  parent_folder_id?: (number | null) | undefined
+                  name?: string
+                  description?: string
+                  emoji?: string
+                  parent_folder_id?: number | null
                 }
               }
             }
@@ -7266,15 +7048,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 folder: {
-                  name?: string | undefined
-                  description?: string | undefined
-                  emoji?: string | undefined
-                  parent_folder_id?: (number | null) | undefined
+                  name?: string
+                  description?: string
+                  emoji?: string
+                  parent_folder_id?: number | null
                 }
               }
             }
@@ -7283,15 +7065,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 folder: {
-                  name?: string | undefined
-                  description?: string | undefined
-                  emoji?: string | undefined
-                  parent_folder_id?: (number | null) | undefined
+                  name?: string
+                  description?: string
+                  emoji?: string
+                  parent_folder_id?: number | null
                 }
               }
             }
@@ -7300,15 +7082,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json: {
                 folder: {
-                  name?: string | undefined
-                  description?: string | undefined
-                  emoji?: string | undefined
-                  parent_folder_id?: (number | null) | undefined
+                  name?: string
+                  description?: string
+                  emoji?: string
+                  parent_folder_id?: number | null
                 }
               }
             }
@@ -7318,40 +7100,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $delete:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedFolderObject
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -7362,37 +7144,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/ip_allowlist': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: IpAllowlist
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
       $put:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: IpAllowlist
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: IpAllowlistInput
             }
             output: IpAllowlist
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: IpAllowlist
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: IpAllowlistInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: IpAllowlist
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: IpAllowlistInput
             }
             output: Error
             outputFormat: 'json'
@@ -7403,32 +7185,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/companies': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateOrUpdateCompanyRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateOrUpdateCompanyRequestInput
             }
             output: Company
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateOrUpdateCompanyRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateOrUpdateCompanyRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateOrUpdateCompanyRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateOrUpdateCompanyRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateOrUpdateCompanyRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateOrUpdateCompanyRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -7438,15 +7220,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: string | undefined
-                company_id?: string | undefined
-                tag_id?: string | undefined
-                segment_id?: string | undefined
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                name?: string
+                company_id?: string
+                tag_id?: string
+                segment_id?: string
+                type?: 'user' | 'users'
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Company | CompanyList | CompanyUserList
             outputFormat: 'json'
             status: 200
@@ -7454,15 +7236,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: string | undefined
-                company_id?: string | undefined
-                tag_id?: string | undefined
-                segment_id?: string | undefined
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                name?: string
+                company_id?: string
+                tag_id?: string
+                segment_id?: string
+                type?: 'user' | 'users'
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -7470,15 +7252,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: string | undefined
-                company_id?: string | undefined
-                tag_id?: string | undefined
-                segment_id?: string | undefined
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                name?: string
+                company_id?: string
+                tag_id?: string
+                segment_id?: string
+                type?: 'user' | 'users'
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -7486,15 +7268,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: string | undefined
-                company_id?: string | undefined
-                tag_id?: string | undefined
-                segment_id?: string | undefined
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                name?: string
+                company_id?: string
+                tag_id?: string
+                segment_id?: string
+                type?: 'user' | 'users'
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -7502,15 +7284,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: string | undefined
-                company_id?: string | undefined
-                tag_id?: string | undefined
-                segment_id?: string | undefined
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                name?: string
+                company_id?: string
+                tag_id?: string
+                segment_id?: string
+                type?: 'user' | 'users'
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 503
@@ -7521,48 +7303,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { type?: 'user' | 'users'; page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Company | CompanyUserList
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { type?: 'user' | 'users'; page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { type?: 'user' | 'users'; page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                type?: 'user' | 'users' | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { type?: 'user' | 'users'; page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -7570,40 +7336,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCompanyRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCompanyRequestInput }
             output: Company
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCompanyRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCompanyRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCompanyRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCompanyRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCompanyRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCompanyRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateCompanyRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateCompanyRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -7611,7 +7377,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedCompanyObject
             outputFormat: 'json'
@@ -7619,7 +7385,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -7627,7 +7393,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -7639,48 +7405,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                include_merge_history?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string; include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: CompanyAttachedContacts
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                include_merge_history?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string; include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                include_merge_history?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string; include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                include_merge_history?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string; include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -7691,7 +7441,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: CompanyAttachedSegments
             outputFormat: 'json'
@@ -7699,7 +7449,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -7707,7 +7457,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -7719,48 +7469,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: NoteList
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { company_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -7768,32 +7502,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { body: string; admin_id?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { body: string; admin_id?: string } }
             output: Note
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { body: string; admin_id?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { body: string; admin_id?: string } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { body: string; admin_id?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { body: string; admin_id?: string } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { body: string; admin_id?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { body: string; admin_id?: string } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -7803,32 +7537,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/companies/search': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CompanySearchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CompanySearchRequestInput
             }
             output: CompanySearchResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CompanySearchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CompanySearchRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CompanySearchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CompanySearchRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CompanySearchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CompanySearchRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -7839,37 +7573,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/companies/list': {
       $post:
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: CompanyList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -7879,40 +7601,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/companies/scroll': {
       $get:
         | {
-            input: { query: { scroll_param?: string | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { scroll_param?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: CompanyScroll
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { scroll_param?: string | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { scroll_param?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { scroll_param?: string | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { scroll_param?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { query: { scroll_param?: string | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { scroll_param?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { query: { scroll_param?: string | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { scroll_param?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -7924,7 +7646,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string } }
             output: Company
             outputFormat: 'json'
@@ -7932,7 +7654,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string } }
             output: Error
             outputFormat: 'json'
@@ -7940,7 +7662,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string } }
             output: Error
             outputFormat: 'json'
@@ -7948,7 +7670,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string } }
             output: Error
             outputFormat: 'json'
@@ -7957,48 +7679,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ContactAttachedCompanies
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -8009,7 +7715,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { contact_id: string; company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Company
             outputFormat: 'json'
@@ -8017,7 +7723,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string; company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8025,7 +7731,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string; company_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8037,48 +7743,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: NoteList
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -8086,32 +7776,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { body: string; admin_id?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { body: string; admin_id?: string } }
             output: Note
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { body: string; admin_id?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { body: string; admin_id?: string } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { body: string; admin_id?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { body: string; admin_id?: string } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { body: string; admin_id?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { body: string; admin_id?: string } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -8122,7 +7812,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContactSegments
             outputFormat: 'json'
@@ -8130,7 +7820,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8138,7 +7828,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8150,7 +7840,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: SubscriptionTypeList
             outputFormat: 'json'
@@ -8158,7 +7848,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8166,7 +7856,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8175,24 +7865,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; consent_type?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; consent_type?: string } }
             output: SubscriptionType
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; consent_type?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; consent_type?: string } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; consent_type?: string | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; consent_type?: string } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -8203,7 +7893,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { contact_id: string; subscription_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: SubscriptionType
             outputFormat: 'json'
@@ -8211,7 +7901,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string; subscription_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8219,7 +7909,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string; subscription_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8231,7 +7921,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: TagList
             outputFormat: 'json'
@@ -8239,7 +7929,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8247,7 +7937,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8256,7 +7946,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string } }
             output: Tag
             outputFormat: 'json'
@@ -8264,7 +7954,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string } }
             output: Error
             outputFormat: 'json'
@@ -8272,7 +7962,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string } }
             output: Error
             outputFormat: 'json'
@@ -8284,7 +7974,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { contact_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Tag
             outputFormat: 'json'
@@ -8292,7 +7982,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8300,7 +7990,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8311,37 +8001,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/contacts/deleted': {
       $get:
         | {
-            input: {
-              query: {
-                per_page?: number | undefined
-                page?: number | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; page?: unknown; escape_identity?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: DeletedContactList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                per_page?: number | undefined
-                page?: number | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; page?: unknown; escape_identity?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                per_page?: number | undefined
-                page?: number | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; page?: unknown; escape_identity?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -8352,78 +8030,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { contact_id: string } } & {
-              query: { include_merge_history?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateContactRequest
+              query: { include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateContactRequestInput
             }
-            output: {
-              type?: string | undefined
-              id?: string | undefined
-              external_id?: (string | null) | undefined
-              workspace_id?: string | undefined
-              role?: string | undefined
-              email?: string | undefined
-              email_domain?: string | undefined
-              email_verified?: boolean | undefined
-              phone?: (string | null) | undefined
-              name?: (string | null) | undefined
-              owner_id?: (string | null) | undefined
-              has_hard_bounced?: boolean | undefined
-              marked_email_as_spam?: boolean | undefined
-              unsubscribed_from_emails?: boolean | undefined
-              created_at?: number | undefined
-              updated_at?: number | undefined
-              signed_up_at?: (number | null) | undefined
-              last_seen_at?: (number | null) | undefined
-              last_replied_at?: (number | null) | undefined
-              last_contacted_at?: (number | null) | undefined
-              last_email_opened_at?: (number | null) | undefined
-              last_email_clicked_at?: (number | null) | undefined
-              language_override?: (string | null) | undefined
-              browser?: (string | null) | undefined
-              browser_version?: (string | null) | undefined
-              browser_language?: (string | null) | undefined
-              os?: (string | null) | undefined
-              android_app_name?: (string | null) | undefined
-              android_app_version?: (string | null) | undefined
-              android_device?: (string | null) | undefined
-              android_os_version?: (string | null) | undefined
-              android_sdk_version?: (string | null) | undefined
-              android_last_seen_at?: (number | null) | undefined
-              ios_app_name?: (string | null) | undefined
-              ios_app_version?: (string | null) | undefined
-              ios_device?: (string | null) | undefined
-              ios_os_version?: (string | null) | undefined
-              ios_sdk_version?: (string | null) | undefined
-              ios_last_seen_at?: (number | null) | undefined
-              custom_attributes?: { [x: string]: unknown } | undefined
-              avatar?: (string | null) | undefined
-              tags?: ContactTags | undefined
-              notes?: ContactNotes | undefined
-              companies?: ContactCompanies | undefined
-              location?: ContactLocation | undefined
-              social_profiles?: ContactSocialProfiles | undefined
-              opted_out_subscription_types?: ContactSubscriptionTypes | undefined
-              opted_in_subscription_types?: ContactSubscriptionTypes | undefined
-              utm_campaign?: (string | null) | undefined
-              utm_content?: (string | null) | undefined
-              utm_medium?: (string | null) | undefined
-              utm_source?: (string | null) | undefined
-              utm_term?: (string | null) | undefined
-              referrer?: (string | null) | undefined
-              sms_consent?: boolean | undefined
-              unsubscribed_from_sms?: boolean | undefined
-              enabled_push_messaging?: (boolean | null) | undefined
-              merge_history?: (MergeHistoryItem[] | null) | undefined
-            }
+            output: Contact & { enabled_push_messaging?: (boolean | null) | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: { include_merge_history?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateContactRequest
+              query: { include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateContactRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -8431,9 +8050,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: { include_merge_history?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateContactRequest
+              query: { include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateContactRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -8441,9 +8060,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: { include_merge_history?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateContactRequest
+              query: { include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateContactRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -8451,9 +8070,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: { include_merge_history?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateContactRequest
+              query: { include_merge_history?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateContactRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -8462,103 +8081,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
-            output: {
-              type?: string | undefined
-              id?: string | undefined
-              external_id?: (string | null) | undefined
-              workspace_id?: string | undefined
-              role?: string | undefined
-              email?: string | undefined
-              email_domain?: string | undefined
-              email_verified?: boolean | undefined
-              phone?: (string | null) | undefined
-              name?: (string | null) | undefined
-              owner_id?: (string | null) | undefined
-              has_hard_bounced?: boolean | undefined
-              marked_email_as_spam?: boolean | undefined
-              unsubscribed_from_emails?: boolean | undefined
-              created_at?: number | undefined
-              updated_at?: number | undefined
-              signed_up_at?: (number | null) | undefined
-              last_seen_at?: (number | null) | undefined
-              last_replied_at?: (number | null) | undefined
-              last_contacted_at?: (number | null) | undefined
-              last_email_opened_at?: (number | null) | undefined
-              last_email_clicked_at?: (number | null) | undefined
-              language_override?: (string | null) | undefined
-              browser?: (string | null) | undefined
-              browser_version?: (string | null) | undefined
-              browser_language?: (string | null) | undefined
-              os?: (string | null) | undefined
-              android_app_name?: (string | null) | undefined
-              android_app_version?: (string | null) | undefined
-              android_device?: (string | null) | undefined
-              android_os_version?: (string | null) | undefined
-              android_sdk_version?: (string | null) | undefined
-              android_last_seen_at?: (number | null) | undefined
-              ios_app_name?: (string | null) | undefined
-              ios_app_version?: (string | null) | undefined
-              ios_device?: (string | null) | undefined
-              ios_os_version?: (string | null) | undefined
-              ios_sdk_version?: (string | null) | undefined
-              ios_last_seen_at?: (number | null) | undefined
-              custom_attributes?: { [x: string]: unknown } | undefined
-              avatar?: (string | null) | undefined
-              tags?: ContactTags | undefined
-              notes?: ContactNotes | undefined
-              companies?: ContactCompanies | undefined
-              location?: ContactLocation | undefined
-              social_profiles?: ContactSocialProfiles | undefined
-              opted_out_subscription_types?: ContactSubscriptionTypes | undefined
-              opted_in_subscription_types?: ContactSubscriptionTypes | undefined
-              utm_campaign?: (string | null) | undefined
-              utm_content?: (string | null) | undefined
-              utm_medium?: (string | null) | undefined
-              utm_source?: (string | null) | undefined
-              utm_term?: (string | null) | undefined
-              referrer?: (string | null) | undefined
-              sms_consent?: boolean | undefined
-              unsubscribed_from_sms?: boolean | undefined
-              enabled_push_messaging?: (boolean | null) | undefined
-              merge_history?: (MergeHistoryItem[] | null) | undefined
-            }
+              query: { include_merge_history?: string; escape_identity?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
+            output: Contact & { enabled_push_messaging?: (boolean | null) | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { include_merge_history?: string; escape_identity?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { include_merge_history?: string; escape_identity?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { contact_id: string } } & {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { include_merge_history?: string; escape_identity?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 410
@@ -8566,7 +8114,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContactDeleted
             outputFormat: 'json'
@@ -8574,7 +8122,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8582,7 +8130,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -8593,100 +8141,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/contacts/merge': {
       $post:
         | {
-            input: { query: { include_merge_history?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeContactsRequest }
-            output: {
-              type?: string | undefined
-              id?: string | undefined
-              external_id?: (string | null) | undefined
-              workspace_id?: string | undefined
-              role?: string | undefined
-              email?: string | undefined
-              email_domain?: string | undefined
-              email_verified?: boolean | undefined
-              phone?: (string | null) | undefined
-              name?: (string | null) | undefined
-              owner_id?: (string | null) | undefined
-              has_hard_bounced?: boolean | undefined
-              marked_email_as_spam?: boolean | undefined
-              unsubscribed_from_emails?: boolean | undefined
-              created_at?: number | undefined
-              updated_at?: number | undefined
-              signed_up_at?: (number | null) | undefined
-              last_seen_at?: (number | null) | undefined
-              last_replied_at?: (number | null) | undefined
-              last_contacted_at?: (number | null) | undefined
-              last_email_opened_at?: (number | null) | undefined
-              last_email_clicked_at?: (number | null) | undefined
-              language_override?: (string | null) | undefined
-              browser?: (string | null) | undefined
-              browser_version?: (string | null) | undefined
-              browser_language?: (string | null) | undefined
-              os?: (string | null) | undefined
-              android_app_name?: (string | null) | undefined
-              android_app_version?: (string | null) | undefined
-              android_device?: (string | null) | undefined
-              android_os_version?: (string | null) | undefined
-              android_sdk_version?: (string | null) | undefined
-              android_last_seen_at?: (number | null) | undefined
-              ios_app_name?: (string | null) | undefined
-              ios_app_version?: (string | null) | undefined
-              ios_device?: (string | null) | undefined
-              ios_os_version?: (string | null) | undefined
-              ios_sdk_version?: (string | null) | undefined
-              ios_last_seen_at?: (number | null) | undefined
-              custom_attributes?: { [x: string]: unknown } | undefined
-              avatar?: (string | null) | undefined
-              tags?: ContactTags | undefined
-              notes?: ContactNotes | undefined
-              companies?: ContactCompanies | undefined
-              location?: ContactLocation | undefined
-              social_profiles?: ContactSocialProfiles | undefined
-              opted_out_subscription_types?: ContactSubscriptionTypes | undefined
-              opted_in_subscription_types?: ContactSubscriptionTypes | undefined
-              utm_campaign?: (string | null) | undefined
-              utm_content?: (string | null) | undefined
-              utm_medium?: (string | null) | undefined
-              utm_source?: (string | null) | undefined
-              utm_term?: (string | null) | undefined
-              referrer?: (string | null) | undefined
-              sms_consent?: boolean | undefined
-              unsubscribed_from_sms?: boolean | undefined
-              enabled_push_messaging?: (boolean | null) | undefined
-              merge_history?: (MergeHistoryItem[] | null) | undefined
-            }
+            input: { query: { include_merge_history?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeContactsRequestInput }
+            output: Contact & { enabled_push_messaging?: (boolean | null) | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { include_merge_history?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeContactsRequest }
+            input: { query: { include_merge_history?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeContactsRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { include_merge_history?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeContactsRequest }
+            input: { query: { include_merge_history?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeContactsRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { query: { include_merge_history?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeContactsRequest }
+            input: { query: { include_merge_history?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeContactsRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { query: { include_merge_history?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeContactsRequest }
+            input: { query: { include_merge_history?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeContactsRequestInput }
             output: Error
             outputFormat: 'json'
             status: 409
@@ -8696,24 +8185,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/contacts/merge/preview': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: MergePreviewRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: MergePreviewRequestInput
             }
             output: MergePreviewResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: MergePreviewRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: MergePreviewRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: MergePreviewRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: MergePreviewRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -8724,53 +8213,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/contacts/search': {
       $post:
         | {
-            input: {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContactSearchRequest
-            }
+            input: { query: { include_merge_history?: string; escape_identity?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContactSearchRequestInput }
             output: ContactList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContactSearchRequest
-            }
+            input: { query: { include_merge_history?: string; escape_identity?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContactSearchRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContactSearchRequest
-            }
+            input: { query: { include_merge_history?: string; escape_identity?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContactSearchRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContactSearchRequest
-            }
+            input: { query: { include_merge_history?: string; escape_identity?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContactSearchRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -8780,25 +8249,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/contacts/activities': {
       $get:
         | {
-            input: {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; starting_after?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: ContactActivityList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; starting_after?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; starting_after?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -8810,12 +8279,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-                per_page?: number | undefined
-                starting_after?: string | undefined
+                include_merge_history?: string
+                escape_identity?: string
+                per_page?: unknown
+                starting_after?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ContactList
             outputFormat: 'json'
             status: 200
@@ -8823,12 +8292,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-                per_page?: number | undefined
-                starting_after?: string | undefined
+                include_merge_history?: string
+                escape_identity?: string
+                per_page?: unknown
+                starting_after?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -8836,111 +8305,52 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-                per_page?: number | undefined
-                starting_after?: string | undefined
+                include_merge_history?: string
+                escape_identity?: string
+                per_page?: unknown
+                starting_after?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateContactRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateContactRequestInput
             }
-            output: {
-              type?: string | undefined
-              id?: string | undefined
-              external_id?: (string | null) | undefined
-              workspace_id?: string | undefined
-              role?: string | undefined
-              email?: string | undefined
-              email_domain?: string | undefined
-              email_verified?: boolean | undefined
-              phone?: (string | null) | undefined
-              name?: (string | null) | undefined
-              owner_id?: (string | null) | undefined
-              has_hard_bounced?: boolean | undefined
-              marked_email_as_spam?: boolean | undefined
-              unsubscribed_from_emails?: boolean | undefined
-              created_at?: number | undefined
-              updated_at?: number | undefined
-              signed_up_at?: (number | null) | undefined
-              last_seen_at?: (number | null) | undefined
-              last_replied_at?: (number | null) | undefined
-              last_contacted_at?: (number | null) | undefined
-              last_email_opened_at?: (number | null) | undefined
-              last_email_clicked_at?: (number | null) | undefined
-              language_override?: (string | null) | undefined
-              browser?: (string | null) | undefined
-              browser_version?: (string | null) | undefined
-              browser_language?: (string | null) | undefined
-              os?: (string | null) | undefined
-              android_app_name?: (string | null) | undefined
-              android_app_version?: (string | null) | undefined
-              android_device?: (string | null) | undefined
-              android_os_version?: (string | null) | undefined
-              android_sdk_version?: (string | null) | undefined
-              android_last_seen_at?: (number | null) | undefined
-              ios_app_name?: (string | null) | undefined
-              ios_app_version?: (string | null) | undefined
-              ios_device?: (string | null) | undefined
-              ios_os_version?: (string | null) | undefined
-              ios_sdk_version?: (string | null) | undefined
-              ios_last_seen_at?: (number | null) | undefined
-              custom_attributes?: { [x: string]: unknown } | undefined
-              avatar?: (string | null) | undefined
-              tags?: ContactTags | undefined
-              notes?: ContactNotes | undefined
-              companies?: ContactCompanies | undefined
-              location?: ContactLocation | undefined
-              social_profiles?: ContactSocialProfiles | undefined
-              opted_out_subscription_types?: ContactSubscriptionTypes | undefined
-              opted_in_subscription_types?: ContactSubscriptionTypes | undefined
-              utm_campaign?: (string | null) | undefined
-              utm_content?: (string | null) | undefined
-              utm_medium?: (string | null) | undefined
-              utm_source?: (string | null) | undefined
-              utm_term?: (string | null) | undefined
-              referrer?: (string | null) | undefined
-              sms_consent?: boolean | undefined
-              unsubscribed_from_sms?: boolean | undefined
-              enabled_push_messaging?: (boolean | null) | undefined
-              merge_history?: (MergeHistoryItem[] | null) | undefined
-            }
+            output: Contact & { enabled_push_messaging?: (boolean | null) | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateContactRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateContactRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateContactRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateContactRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateContactRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateContactRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateContactRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateContactRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -8952,103 +8362,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { external_id: string } } & {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
-            output: {
-              type?: string | undefined
-              id?: string | undefined
-              external_id?: (string | null) | undefined
-              workspace_id?: string | undefined
-              role?: string | undefined
-              email?: string | undefined
-              email_domain?: string | undefined
-              email_verified?: boolean | undefined
-              phone?: (string | null) | undefined
-              name?: (string | null) | undefined
-              owner_id?: (string | null) | undefined
-              has_hard_bounced?: boolean | undefined
-              marked_email_as_spam?: boolean | undefined
-              unsubscribed_from_emails?: boolean | undefined
-              created_at?: number | undefined
-              updated_at?: number | undefined
-              signed_up_at?: (number | null) | undefined
-              last_seen_at?: (number | null) | undefined
-              last_replied_at?: (number | null) | undefined
-              last_contacted_at?: (number | null) | undefined
-              last_email_opened_at?: (number | null) | undefined
-              last_email_clicked_at?: (number | null) | undefined
-              language_override?: (string | null) | undefined
-              browser?: (string | null) | undefined
-              browser_version?: (string | null) | undefined
-              browser_language?: (string | null) | undefined
-              os?: (string | null) | undefined
-              android_app_name?: (string | null) | undefined
-              android_app_version?: (string | null) | undefined
-              android_device?: (string | null) | undefined
-              android_os_version?: (string | null) | undefined
-              android_sdk_version?: (string | null) | undefined
-              android_last_seen_at?: (number | null) | undefined
-              ios_app_name?: (string | null) | undefined
-              ios_app_version?: (string | null) | undefined
-              ios_device?: (string | null) | undefined
-              ios_os_version?: (string | null) | undefined
-              ios_sdk_version?: (string | null) | undefined
-              ios_last_seen_at?: (number | null) | undefined
-              custom_attributes?: { [x: string]: unknown } | undefined
-              avatar?: (string | null) | undefined
-              tags?: ContactTags | undefined
-              notes?: ContactNotes | undefined
-              companies?: ContactCompanies | undefined
-              location?: ContactLocation | undefined
-              social_profiles?: ContactSocialProfiles | undefined
-              opted_out_subscription_types?: ContactSubscriptionTypes | undefined
-              opted_in_subscription_types?: ContactSubscriptionTypes | undefined
-              utm_campaign?: (string | null) | undefined
-              utm_content?: (string | null) | undefined
-              utm_medium?: (string | null) | undefined
-              utm_source?: (string | null) | undefined
-              utm_term?: (string | null) | undefined
-              referrer?: (string | null) | undefined
-              sms_consent?: boolean | undefined
-              unsubscribed_from_sms?: boolean | undefined
-              enabled_push_messaging?: (boolean | null) | undefined
-              merge_history?: (MergeHistoryItem[] | null) | undefined
-            }
+              query: { include_merge_history?: string; escape_identity?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
+            output: Contact & { enabled_push_messaging?: (boolean | null) | undefined }
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { external_id: string } } & {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { include_merge_history?: string; escape_identity?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { external_id: string } } & {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { include_merge_history?: string; escape_identity?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { external_id: string } } & {
-              query: {
-                include_merge_history?: boolean | undefined
-                escape_identity?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { include_merge_history?: string; escape_identity?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 410
@@ -9059,7 +8398,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContactArchived
             outputFormat: 'json'
@@ -9067,7 +8406,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9075,7 +8414,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9087,7 +8426,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContactUnarchived
             outputFormat: 'json'
@@ -9095,7 +8434,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9103,7 +8442,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9111,7 +8450,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9123,7 +8462,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: BannerList
             outputFormat: 'json'
@@ -9131,7 +8470,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9139,7 +8478,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9151,7 +8490,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { id: string; view_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: BannerDismiss
             outputFormat: 'json'
@@ -9159,7 +8498,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string; view_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9167,7 +8506,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string; view_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9179,7 +8518,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContactBlocked
             outputFormat: 'json'
@@ -9187,7 +8526,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9195,7 +8534,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9207,48 +8546,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              query: {
-                cursor?: string | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { cursor?: string; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: MergeHistoryList
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
-              query: {
-                cursor?: string | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { cursor?: string; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { id: string } } & {
-              query: {
-                cursor?: string | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { cursor?: string; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { id: string } } & {
-              query: {
-                cursor?: string | undefined
-                per_page?: number | undefined
-                order?: 'asc' | 'desc' | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { cursor?: string; per_page?: unknown; order?: 'asc' | 'desc' }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -9258,40 +8581,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/contacts/bulk': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkCreateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkCreateContactsRequestInput
             }
             output: ContactsBulkJob
             outputFormat: 'json'
             status: 202
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkCreateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkCreateContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkCreateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkCreateContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkCreateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkCreateContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkCreateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkCreateContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -9299,40 +8622,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkUpdateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkUpdateContactsRequestInput
             }
             output: ContactsBulkJob
             outputFormat: 'json'
             status: 202
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkUpdateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkUpdateContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkUpdateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkUpdateContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkUpdateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkUpdateContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkUpdateContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkUpdateContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -9343,40 +8666,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/contacts/bulk/delete': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkDeleteContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkDeleteContactsRequestInput
             }
             output: ContactsBulkJob
             outputFormat: 'json'
             status: 202
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkDeleteContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkDeleteContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkDeleteContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkDeleteContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkDeleteContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkDeleteContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: BulkDeleteContactsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: BulkDeleteContactsRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -9388,7 +8711,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContactsBulkJob
             outputFormat: 'json'
@@ -9396,7 +8719,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9404,7 +8727,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9415,24 +8738,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/content/bulk_actions': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContentBulkActionRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ContentBulkActionRequestInput
             }
             output: ContentBulkActionResponse
             outputFormat: 'json'
             status: 202
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContentBulkActionRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ContentBulkActionRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContentBulkActionRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ContentBulkActionRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -9445,36 +8768,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                query?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-                states?: ('published' | 'draft')[] | undefined
-                locales?: string[] | undefined
-                tag_ids?: number[] | undefined
-                tag_operator?: 'IN' | 'NIN' | undefined
-                any_tag_ids?: number[] | undefined
-                folder_ids?: number[] | undefined
-                folder_entity_type?: 'folder' | undefined
-                content_types?:
-                  | (
-                      | 'snippet'
-                      | 'external_content'
-                      | 'file_source_content'
-                      | 'internal_article'
-                      | 'article'
-                    )[]
-                  | undefined
-                copilot_state?: 'on' | 'off' | undefined
-                fin_service_state?: 'on' | 'off' | undefined
-                fin_sales_state?: 'on' | 'off' | undefined
-                created_by_ids?: number[] | undefined
-                last_updated_by_ids?: number[] | undefined
-                created_at_after?: number | undefined
-                created_at_before?: number | undefined
-                updated_at_after?: number | undefined
-                updated_at_before?: number | undefined
+                query?: string
+                page?: unknown
+                per_page?: unknown
+                states?: unknown
+                locales?: unknown
+                tag_ids?: unknown
+                tag_operator?: 'IN' | 'NIN'
+                any_tag_ids?: unknown
+                folder_ids?: unknown
+                folder_entity_type?: 'folder'
+                content_types?: unknown
+                copilot_state?: 'on' | 'off'
+                fin_service_state?: 'on' | 'off'
+                fin_sales_state?: 'on' | 'off'
+                created_by_ids?: unknown
+                last_updated_by_ids?: unknown
+                created_at_after?: unknown
+                created_at_before?: unknown
+                updated_at_after?: unknown
+                updated_at_before?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ContentSearchResponse
             outputFormat: 'json'
             status: 200
@@ -9482,36 +8797,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                query?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-                states?: ('published' | 'draft')[] | undefined
-                locales?: string[] | undefined
-                tag_ids?: number[] | undefined
-                tag_operator?: 'IN' | 'NIN' | undefined
-                any_tag_ids?: number[] | undefined
-                folder_ids?: number[] | undefined
-                folder_entity_type?: 'folder' | undefined
-                content_types?:
-                  | (
-                      | 'snippet'
-                      | 'external_content'
-                      | 'file_source_content'
-                      | 'internal_article'
-                      | 'article'
-                    )[]
-                  | undefined
-                copilot_state?: 'on' | 'off' | undefined
-                fin_service_state?: 'on' | 'off' | undefined
-                fin_sales_state?: 'on' | 'off' | undefined
-                created_by_ids?: number[] | undefined
-                last_updated_by_ids?: number[] | undefined
-                created_at_after?: number | undefined
-                created_at_before?: number | undefined
-                updated_at_after?: number | undefined
-                updated_at_before?: number | undefined
+                query?: string
+                page?: unknown
+                per_page?: unknown
+                states?: unknown
+                locales?: unknown
+                tag_ids?: unknown
+                tag_operator?: 'IN' | 'NIN'
+                any_tag_ids?: unknown
+                folder_ids?: unknown
+                folder_entity_type?: 'folder'
+                content_types?: unknown
+                copilot_state?: 'on' | 'off'
+                fin_service_state?: 'on' | 'off'
+                fin_sales_state?: 'on' | 'off'
+                created_by_ids?: unknown
+                last_updated_by_ids?: unknown
+                created_at_after?: unknown
+                created_at_before?: unknown
+                updated_at_after?: unknown
+                updated_at_before?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -9519,36 +8826,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                query?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-                states?: ('published' | 'draft')[] | undefined
-                locales?: string[] | undefined
-                tag_ids?: number[] | undefined
-                tag_operator?: 'IN' | 'NIN' | undefined
-                any_tag_ids?: number[] | undefined
-                folder_ids?: number[] | undefined
-                folder_entity_type?: 'folder' | undefined
-                content_types?:
-                  | (
-                      | 'snippet'
-                      | 'external_content'
-                      | 'file_source_content'
-                      | 'internal_article'
-                      | 'article'
-                    )[]
-                  | undefined
-                copilot_state?: 'on' | 'off' | undefined
-                fin_service_state?: 'on' | 'off' | undefined
-                fin_sales_state?: 'on' | 'off' | undefined
-                created_by_ids?: number[] | undefined
-                last_updated_by_ids?: number[] | undefined
-                created_at_after?: number | undefined
-                created_at_before?: number | undefined
-                updated_at_after?: number | undefined
-                updated_at_before?: number | undefined
+                query?: string
+                page?: unknown
+                per_page?: unknown
+                states?: unknown
+                locales?: unknown
+                tag_ids?: unknown
+                tag_operator?: 'IN' | 'NIN'
+                any_tag_ids?: unknown
+                folder_ids?: unknown
+                folder_entity_type?: 'folder'
+                content_types?: unknown
+                copilot_state?: 'on' | 'off'
+                fin_service_state?: 'on' | 'off'
+                fin_sales_state?: 'on' | 'off'
+                created_by_ids?: unknown
+                last_updated_by_ids?: unknown
+                created_at_after?: unknown
+                created_at_before?: unknown
+                updated_at_after?: unknown
+                updated_at_before?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -9556,36 +8855,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                query?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
-                states?: ('published' | 'draft')[] | undefined
-                locales?: string[] | undefined
-                tag_ids?: number[] | undefined
-                tag_operator?: 'IN' | 'NIN' | undefined
-                any_tag_ids?: number[] | undefined
-                folder_ids?: number[] | undefined
-                folder_entity_type?: 'folder' | undefined
-                content_types?:
-                  | (
-                      | 'snippet'
-                      | 'external_content'
-                      | 'file_source_content'
-                      | 'internal_article'
-                      | 'article'
-                    )[]
-                  | undefined
-                copilot_state?: 'on' | 'off' | undefined
-                fin_service_state?: 'on' | 'off' | undefined
-                fin_sales_state?: 'on' | 'off' | undefined
-                created_by_ids?: number[] | undefined
-                last_updated_by_ids?: number[] | undefined
-                created_at_after?: number | undefined
-                created_at_before?: number | undefined
-                updated_at_after?: number | undefined
-                updated_at_before?: number | undefined
+                query?: string
+                page?: unknown
+                per_page?: unknown
+                states?: unknown
+                locales?: unknown
+                tag_ids?: unknown
+                tag_operator?: 'IN' | 'NIN'
+                any_tag_ids?: unknown
+                folder_ids?: unknown
+                folder_entity_type?: 'folder'
+                content_types?: unknown
+                copilot_state?: 'on' | 'off'
+                fin_service_state?: 'on' | 'off'
+                fin_sales_state?: 'on' | 'off'
+                created_by_ids?: unknown
+                last_updated_by_ids?: unknown
+                created_at_after?: unknown
+                created_at_before?: unknown
+                updated_at_after?: unknown
+                updated_at_before?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -9595,16 +8886,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/content_snippets': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContentSnippetList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9612,40 +8903,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContentSnippetCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ContentSnippetCreateRequestInput
             }
             output: ContentSnippet
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContentSnippetCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ContentSnippetCreateRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContentSnippetCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ContentSnippetCreateRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContentSnippetCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ContentSnippetCreateRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ContentSnippetCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ContentSnippetCreateRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -9657,7 +8948,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ContentSnippet
             outputFormat: 'json'
@@ -9665,7 +8956,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9673,7 +8964,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9682,40 +8973,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContentSnippetUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContentSnippetUpdateRequestInput }
             output: ContentSnippet
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContentSnippetUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContentSnippetUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContentSnippetUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContentSnippetUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContentSnippetUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContentSnippetUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContentSnippetUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContentSnippetUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -9723,7 +9014,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -9731,7 +9022,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9739,7 +9030,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9747,7 +9038,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9759,32 +9050,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { content_snippet_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Tag
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { content_snippet_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { content_snippet_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { content_snippet_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: { id: string; admin_id?: (string | null) | undefined } }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: { id: string; admin_id?: string | null } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -9795,32 +9086,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { content_snippet_id: string; id: string } } & {
-              query: { admin_id?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { admin_id?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Tag
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { content_snippet_id: string; id: string } } & {
-              query: { admin_id?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { admin_id?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { content_snippet_id: string; id: string } } & {
-              query: { admin_id?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { admin_id?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { content_snippet_id: string; id: string } } & {
-              query: { admin_id?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { admin_id?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -9830,24 +9121,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/dynamic_contents': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DynamicContentList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9855,40 +9146,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: DynamicContentCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: DynamicContentCreateRequestInput
             }
             output: DynamicContent
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: DynamicContentCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: DynamicContentCreateRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: DynamicContentCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: DynamicContentCreateRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: DynamicContentCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: DynamicContentCreateRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: DynamicContentCreateRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: DynamicContentCreateRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -9900,7 +9191,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DynamicContent
             outputFormat: 'json'
@@ -9908,7 +9199,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9916,7 +9207,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9924,7 +9215,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9933,48 +9224,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DynamicContentUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DynamicContentUpdateRequestInput }
             output: DynamicContent
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DynamicContentUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DynamicContentUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DynamicContentUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DynamicContentUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DynamicContentUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DynamicContentUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DynamicContentUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DynamicContentUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DynamicContentUpdateRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DynamicContentUpdateRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -9982,7 +9273,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -9990,7 +9281,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -9998,7 +9289,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -10006,7 +9297,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -10014,7 +9305,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -10026,7 +9317,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string; admin_id: string } }
             output: Tag
             outputFormat: 'json'
@@ -10034,7 +9325,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string; admin_id: string } }
             output: Error
             outputFormat: 'json'
@@ -10042,7 +9333,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string; admin_id: string } }
             output: Error
             outputFormat: 'json'
@@ -10054,7 +9345,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { conversation_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { admin_id: string } }
             output: Tag
             outputFormat: 'json'
@@ -10062,7 +9353,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { admin_id: string } }
             output: Error
             outputFormat: 'json'
@@ -10070,7 +9361,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { admin_id: string } }
             output: Error
             outputFormat: 'json'
@@ -10083,12 +9374,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
+                per_page?: unknown
+                starting_after?: string
+                include_monitors?: string
+                include_scorecards?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ConversationList
             outputFormat: 'json'
             status: 200
@@ -10096,12 +9387,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
+                per_page?: unknown
+                starting_after?: string
+                include_monitors?: string
+                include_scorecards?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -10109,12 +9400,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
+                per_page?: unknown
+                starting_after?: string
+                include_monitors?: string
+                include_scorecards?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -10122,72 +9413,60 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
+                per_page?: unknown
+                starting_after?: string
+                include_monitors?: string
+                include_scorecards?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationRequestInput
             }
-            output: {
-              type: string
-              id: string
-              created_at: number
-              subject?: string | undefined
-              body: string
-              message_type: 'email' | 'inapp' | 'facebook' | 'twitter' | 'whatsapp'
-              conversation_id?: string | undefined
-              owner?: Admin | undefined
-              template?: string | undefined
-              external_id?: string | undefined
-              whatsapp_message_id?: string | undefined
-            }
+            output: Message
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -10198,149 +9477,139 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/:conversation_id': {
       $get:
         | {
-            input: { param: { conversation_id: number } } & {
+            input: { param: { conversation_id: unknown } } & {
               query: {
-                display_as?: string | undefined
-                include_translations?: boolean | undefined
-                include_email_history?: boolean | undefined
-                parts_created_after?: number | undefined
-                parts_created_before?: number | undefined
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
+                display_as?: string
+                include_translations?: string
+                include_email_history?: string
+                parts_created_after?: unknown
+                parts_created_before?: unknown
+                include_monitors?: string
+                include_scorecards?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Conversation
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { conversation_id: number } } & {
+            input: { param: { conversation_id: unknown } } & {
               query: {
-                display_as?: string | undefined
-                include_translations?: boolean | undefined
-                include_email_history?: boolean | undefined
-                parts_created_after?: number | undefined
-                parts_created_before?: number | undefined
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
+                display_as?: string
+                include_translations?: string
+                include_email_history?: string
+                parts_created_after?: unknown
+                parts_created_before?: unknown
+                include_monitors?: string
+                include_scorecards?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { conversation_id: number } } & {
+            input: { param: { conversation_id: unknown } } & {
               query: {
-                display_as?: string | undefined
-                include_translations?: boolean | undefined
-                include_email_history?: boolean | undefined
-                parts_created_after?: number | undefined
-                parts_created_before?: number | undefined
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
+                display_as?: string
+                include_translations?: string
+                include_email_history?: string
+                parts_created_after?: unknown
+                parts_created_before?: unknown
+                include_monitors?: string
+                include_scorecards?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { conversation_id: number } } & {
+            input: { param: { conversation_id: unknown } } & {
               query: {
-                display_as?: string | undefined
-                include_translations?: boolean | undefined
-                include_email_history?: boolean | undefined
-                parts_created_after?: number | undefined
-                parts_created_before?: number | undefined
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
+                display_as?: string
+                include_translations?: string
+                include_email_history?: string
+                parts_created_after?: unknown
+                parts_created_before?: unknown
+                include_monitors?: string
+                include_scorecards?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
           }
       $put:
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { display_as?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateConversationRequest
-            }
+            input: { param: { conversation_id: unknown } } & { query: { display_as?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationRequestInput }
             output: Conversation
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { display_as?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateConversationRequest
-            }
+            input: { param: { conversation_id: unknown } } & { query: { display_as?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { display_as?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateConversationRequest
-            }
+            input: { param: { conversation_id: unknown } } & { query: { display_as?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { display_as?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateConversationRequest
-            }
+            input: { param: { conversation_id: unknown } } & { query: { display_as?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { display_as?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateConversationRequest
-            }
+            input: { param: { conversation_id: unknown } } & { query: { display_as?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
       $delete:
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { retain_metrics?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { conversation_id: unknown } } & {
+              query: { retain_metrics?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: ConversationDeleted
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { retain_metrics?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { conversation_id: unknown } } & {
+              query: { retain_metrics?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { retain_metrics?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { conversation_id: unknown } } & {
+              query: { retain_metrics?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { conversation_id: number } } & {
-              query: { retain_metrics?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { conversation_id: unknown } } & {
+              query: { retain_metrics?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 403
@@ -10350,40 +9619,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/search': {
       $post:
         | {
-            input: {
-              query: {
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: SearchRequest
-            }
+            input: { query: { include_monitors?: string; include_scorecards?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: SearchRequestInput }
             output: ConversationList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: SearchRequest
-            }
+            input: { query: { include_monitors?: string; include_scorecards?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: SearchRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                include_monitors?: boolean | undefined
-                include_scorecards?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: SearchRequest
-            }
+            input: { query: { include_monitors?: string; include_scorecards?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: SearchRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -10394,48 +9648,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ReplyConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ReplyConversationRequestInput }
             output: Conversation
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ReplyConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ReplyConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ReplyConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ReplyConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ReplyConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ReplyConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ReplyConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ReplyConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ReplyConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ReplyConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -10446,13 +9700,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json:
-                | CloseConversationRequest
-                | SnoozeConversationRequest
-                | OpenConversationRequest
-                | AssignConversationRequest
+                | CloseConversationRequestInput
+                | SnoozeConversationRequestInput
+                | OpenConversationRequestInput
+                | AssignConversationRequestInput
             }
             output: Conversation
             outputFormat: 'json'
@@ -10460,13 +9714,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json:
-                | CloseConversationRequest
-                | SnoozeConversationRequest
-                | OpenConversationRequest
-                | AssignConversationRequest
+                | CloseConversationRequestInput
+                | SnoozeConversationRequestInput
+                | OpenConversationRequestInput
+                | AssignConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -10474,13 +9728,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json:
-                | CloseConversationRequest
-                | SnoozeConversationRequest
-                | OpenConversationRequest
-                | AssignConversationRequest
+                | CloseConversationRequestInput
+                | SnoozeConversationRequestInput
+                | OpenConversationRequestInput
+                | AssignConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -10488,13 +9742,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json:
-                | CloseConversationRequest
-                | SnoozeConversationRequest
-                | OpenConversationRequest
-                | AssignConversationRequest
+                | CloseConversationRequestInput
+                | SnoozeConversationRequestInput
+                | OpenConversationRequestInput
+                | AssignConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -10502,13 +9756,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json:
-                | CloseConversationRequest
-                | SnoozeConversationRequest
-                | OpenConversationRequest
-                | AssignConversationRequest
+                | CloseConversationRequestInput
+                | SnoozeConversationRequestInput
+                | OpenConversationRequestInput
+                | AssignConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -10516,13 +9770,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & {
               json:
-                | CloseConversationRequest
-                | SnoozeConversationRequest
-                | OpenConversationRequest
-                | AssignConversationRequest
+                | CloseConversationRequestInput
+                | SnoozeConversationRequestInput
+                | OpenConversationRequestInput
+                | AssignConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -10534,40 +9788,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: AttachContactToConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: AttachContactToConversationRequestInput }
             output: ConversationParticipantsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: AttachContactToConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: AttachContactToConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: AttachContactToConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: AttachContactToConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: AttachContactToConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: AttachContactToConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: AttachContactToConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: AttachContactToConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -10578,48 +9832,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { conversation_id: string; contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DetachContactFromConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DetachContactFromConversationRequestInput }
             output: ConversationParticipantsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { conversation_id: string; contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DetachContactFromConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DetachContactFromConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { conversation_id: string; contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DetachContactFromConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DetachContactFromConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { conversation_id: string; contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DetachContactFromConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DetachContactFromConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { conversation_id: string; contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DetachContactFromConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DetachContactFromConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { conversation_id: string; contact_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: DetachContactFromConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: DetachContactFromConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -10630,7 +9884,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: HandlingEventList
             outputFormat: 'json'
@@ -10638,7 +9892,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -10646,7 +9900,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -10658,7 +9912,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: HitlEventList
             outputFormat: 'json'
@@ -10666,7 +9920,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -10674,7 +9928,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -10685,25 +9939,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/:id/side_conversations': {
       $get:
         | {
-            input: { param: { id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { id: string } } & { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: SideConversationList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { id: string } } & { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { id: string } } & { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -10714,48 +9968,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: RateConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: RateConversationRequestInput }
             output: RatedConversation
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: RateConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: RateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: RateConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: RateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: RateConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: RateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: RateConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: RateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: RateConversationRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: RateConversationRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -10765,24 +10019,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/redact': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: RedactConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: RedactConversationRequestInput
             }
             output: Conversation
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: RedactConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: RedactConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: RedactConversationRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: RedactConversationRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -10794,40 +10048,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeConversationsRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeConversationsRequestInput }
             output: Conversation
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeConversationsRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeConversationsRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeConversationsRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeConversationsRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeConversationsRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeConversationsRequestInput }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: MergeConversationsRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: MergeConversationsRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -10837,17 +10091,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/:conversation_id/convert': {
       $post:
         | {
-            input: { param: { conversation_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ConvertConversationToTicketRequest }
+            input: { param: { conversation_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ConvertConversationToTicketRequestInput }
             output: Ticket
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { conversation_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ConvertConversationToTicketRequest }
+            input: { param: { conversation_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ConvertConversationToTicketRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -10857,49 +10111,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/deleted': {
       $get:
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; order?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: DeletedConversationList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; order?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; order?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                page?: number | undefined
-                per_page?: number | undefined
-                order?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { page?: unknown; per_page?: unknown; order?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 403
@@ -10909,40 +10147,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/stream/token': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationStreamTokenRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationStreamTokenRequestInput
             }
             output: ConversationStreamToken
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationStreamTokenRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationStreamTokenRequestInput
             }
             output: {}
             outputFormat: string
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationStreamTokenRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationStreamTokenRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationStreamTokenRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationStreamTokenRequestInput
             }
             output: {}
             outputFormat: string
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationStreamTokenRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationStreamTokenRequestInput
             }
             output: {}
             outputFormat: string
@@ -10951,7 +10189,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { query: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -10959,7 +10197,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -10967,7 +10205,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -10975,7 +10213,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -10983,7 +10221,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -10991,7 +10229,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -11002,16 +10240,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/attributes': {
       $get:
         | {
-            input: { query: { include_archived?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { include_archived?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ConversationAttributeList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { include_archived?: boolean | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { include_archived?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11019,24 +10257,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationAttributeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationAttributeRequestInput
             }
             output: ConversationAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationAttributeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationAttributeRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateConversationAttributeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateConversationAttributeRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -11047,24 +10285,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/attributes/:id': {
       $get:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ConversationAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11072,65 +10310,65 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateConversationAttributeRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationAttributeRequestInput }
             output: ConversationAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateConversationAttributeRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateConversationAttributeRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateConversationAttributeRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
           }
       $delete:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ConversationAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11141,33 +10379,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/attributes/:id/options': {
       $post:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateConversationAttributeOptionRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateConversationAttributeOptionRequestInput }
             output: ConversationAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateConversationAttributeOptionRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateConversationAttributeOptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateConversationAttributeOptionRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateConversationAttributeOptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateConversationAttributeOptionRequest }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateConversationAttributeOptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -11177,65 +10415,65 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/conversations/attributes/:id/options/:option_id': {
       $put:
         | {
-            input: { param: { id: number; option_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateConversationAttributeOptionRequest }
+            input: { param: { id: unknown; option_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationAttributeOptionRequestInput }
             output: ConversationAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number; option_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateConversationAttributeOptionRequest }
+            input: { param: { id: unknown; option_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationAttributeOptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number; option_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateConversationAttributeOptionRequest }
+            input: { param: { id: unknown; option_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationAttributeOptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number; option_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateConversationAttributeOptionRequest }
+            input: { param: { id: unknown; option_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateConversationAttributeOptionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
           }
       $delete:
         | {
-            input: { param: { id: number; option_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown; option_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: ConversationAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number; option_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown; option_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: number; option_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown; option_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number; option_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown; option_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11247,32 +10485,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { custom_object_type_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOrUpdateCustomObjectInstanceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOrUpdateCustomObjectInstanceRequestInput }
             output: CustomObjectInstance
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { custom_object_type_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOrUpdateCustomObjectInstanceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOrUpdateCustomObjectInstanceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { custom_object_type_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOrUpdateCustomObjectInstanceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOrUpdateCustomObjectInstanceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { custom_object_type_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateOrUpdateCustomObjectInstanceRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateOrUpdateCustomObjectInstanceRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11281,13 +10519,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { custom_object_type_identifier: string } } & {
               query: {
-                references_contact_id?: string | undefined
-                references_conversation_id?: string | undefined
-                external_id?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                references_contact_id?: string
+                references_conversation_id?: string
+                external_id?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output:
               | CustomObjectInstancesPaginatedList
               | CustomObjectInstance
@@ -11298,13 +10536,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { custom_object_type_identifier: string } } & {
               query: {
-                references_contact_id?: string | undefined
-                references_conversation_id?: string | undefined
-                external_id?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                references_contact_id?: string
+                references_conversation_id?: string
+                external_id?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -11312,13 +10550,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { custom_object_type_identifier: string } } & {
               query: {
-                references_contact_id?: string | undefined
-                references_conversation_id?: string | undefined
-                external_id?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                references_contact_id?: string
+                references_conversation_id?: string
+                external_id?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -11326,13 +10564,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { custom_object_type_identifier: string } } & {
               query: {
-                references_contact_id?: string | undefined
-                references_conversation_id?: string | undefined
-                external_id?: string | undefined
-                page?: number | undefined
-                per_page?: number | undefined
+                references_contact_id?: string
+                references_conversation_id?: string
+                external_id?: string
+                page?: unknown
+                per_page?: unknown
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11341,7 +10579,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { custom_object_type_identifier: string } } & {
               query: { external_id: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: CustomObjectInstanceDeleted
             outputFormat: 'json'
             status: 200
@@ -11349,7 +10587,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { custom_object_type_identifier: string } } & {
               query: { external_id: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -11357,7 +10595,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { custom_object_type_identifier: string } } & {
               query: { external_id: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11369,7 +10607,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { custom_object_instance_id: string; custom_object_type_identifier: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: CustomObjectInstance | CustomObjectInstanceNotFound
             outputFormat: 'json'
             status: 200
@@ -11377,7 +10615,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { custom_object_instance_id: string; custom_object_type_identifier: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -11385,7 +10623,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { custom_object_instance_id: string; custom_object_type_identifier: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11394,7 +10632,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { custom_object_instance_id: string; custom_object_type_identifier: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: CustomObjectInstanceDeleted
             outputFormat: 'json'
             status: 200
@@ -11402,7 +10640,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { custom_object_instance_id: string; custom_object_type_identifier: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -11410,7 +10648,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               param: { custom_object_instance_id: string; custom_object_type_identifier: string }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11420,66 +10658,57 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data_attributes': {
       $get:
         | {
-            input: {
-              query: {
-                model?: 'contact' | 'company' | undefined
-                include_archived?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { model?: 'contact' | 'company'; include_archived?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: DataAttributeList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                model?: 'contact' | 'company' | undefined
-                include_archived?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { model?: 'contact' | 'company'; include_archived?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                model?: 'contact' | 'company' | undefined
-                include_archived?: boolean | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { model?: 'contact' | 'company'; include_archived?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 422
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataAttributeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataAttributeRequestInput
             }
             output: DataAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataAttributeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataAttributeRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataAttributeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataAttributeRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataAttributeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataAttributeRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -11490,41 +10719,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data_attributes/:data_attribute_id': {
       $put:
         | {
-            input: { param: { data_attribute_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataAttributeRequest }
+            input: { param: { data_attribute_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataAttributeRequestInput }
             output: DataAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { data_attribute_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataAttributeRequest }
+            input: { param: { data_attribute_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { data_attribute_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataAttributeRequest }
+            input: { param: { data_attribute_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { data_attribute_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataAttributeRequest }
+            input: { param: { data_attribute_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { data_attribute_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataAttributeRequest }
+            input: { param: { data_attribute_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -11534,57 +10763,57 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data_connectors': {
       $get:
         | {
-            input: {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; starting_after?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: DataConnectorList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; starting_after?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { query: { per_page?: unknown; starting_after?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataConnectorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataConnectorRequestInput
             }
             output: DataConnectorDetail
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataConnectorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataConnectorRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataConnectorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataConnectorRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataConnectorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataConnectorRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -11595,33 +10824,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data_connectors/:id': {
       $get:
         | {
-            input: { param: { id: string } } & {
-              query: { state_version?: 'draft' | 'live' | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { id: string } } & { query: { state_version?: 'draft' | 'live' } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: DataConnectorDetail
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & {
-              query: { state_version?: 'draft' | 'live' | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { id: string } } & { query: { state_version?: 'draft' | 'live' } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & {
-              query: { state_version?: 'draft' | 'live' | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { id: string } } & { query: { state_version?: 'draft' | 'live' } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: string } } & {
-              query: { state_version?: 'draft' | 'live' | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { id: string } } & { query: { state_version?: 'draft' | 'live' } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11629,7 +10858,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedDataConnectorObject
             outputFormat: 'json'
@@ -11637,7 +10866,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11645,7 +10874,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11653,7 +10882,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11662,48 +10891,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorRequestInput }
             output: DataConnectorDetail
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorRequestInput }
             output: Error
             outputFormat: 'json'
             status: 409
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorRequestInput }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -11715,9 +10944,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { data_connector_id: string } } & {
               query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                success?: 'true' | 'false' | undefined
+                per_page?: unknown
+                starting_after?: string
+                success?: 'true' | 'false'
                 error_type?:
                   | 'request_configuration_error'
                   | 'faraday_error'
@@ -11732,12 +10961,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'client_side_action_error'
                   | 'code_block_transformation_error'
                   | 'otp_preview_not_supported_error'
-                  | undefined
-                start_ts?: number | undefined
-                end_ts?: number | undefined
-                include_bodies?: 'true' | 'false' | undefined
+                start_ts?: unknown
+                end_ts?: unknown
+                include_bodies?: 'true' | 'false'
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: DataConnectorExecutionResultList
             outputFormat: 'json'
             status: 200
@@ -11745,9 +10973,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { data_connector_id: string } } & {
               query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                success?: 'true' | 'false' | undefined
+                per_page?: unknown
+                starting_after?: string
+                success?: 'true' | 'false'
                 error_type?:
                   | 'request_configuration_error'
                   | 'faraday_error'
@@ -11762,12 +10990,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'client_side_action_error'
                   | 'code_block_transformation_error'
                   | 'otp_preview_not_supported_error'
-                  | undefined
-                start_ts?: number | undefined
-                end_ts?: number | undefined
-                include_bodies?: 'true' | 'false' | undefined
+                start_ts?: unknown
+                end_ts?: unknown
+                include_bodies?: 'true' | 'false'
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -11775,9 +11002,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { data_connector_id: string } } & {
               query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                success?: 'true' | 'false' | undefined
+                per_page?: unknown
+                starting_after?: string
+                success?: 'true' | 'false'
                 error_type?:
                   | 'request_configuration_error'
                   | 'faraday_error'
@@ -11792,12 +11019,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'client_side_action_error'
                   | 'code_block_transformation_error'
                   | 'otp_preview_not_supported_error'
-                  | undefined
-                start_ts?: number | undefined
-                end_ts?: number | undefined
-                include_bodies?: 'true' | 'false' | undefined
+                start_ts?: unknown
+                end_ts?: unknown
+                include_bodies?: 'true' | 'false'
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -11805,9 +11031,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { data_connector_id: string } } & {
               query: {
-                per_page?: number | undefined
-                starting_after?: string | undefined
-                success?: 'true' | 'false' | undefined
+                per_page?: unknown
+                starting_after?: string
+                success?: 'true' | 'false'
                 error_type?:
                   | 'request_configuration_error'
                   | 'faraday_error'
@@ -11822,12 +11048,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'client_side_action_error'
                   | 'code_block_transformation_error'
                   | 'otp_preview_not_supported_error'
-                  | undefined
-                start_ts?: number | undefined
-                end_ts?: number | undefined
-                include_bodies?: 'true' | 'false' | undefined
+                start_ts?: unknown
+                end_ts?: unknown
+                include_bodies?: 'true' | 'false'
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11838,7 +11063,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { data_connector_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DataConnectorExecutionResult
             outputFormat: 'json'
@@ -11846,7 +11071,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { data_connector_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11854,7 +11079,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { data_connector_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11866,32 +11091,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: DataConnectorVersionList
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { id: string } } & {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { id: string } } & {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { id: string } } & {
-              query: { per_page?: number | undefined; starting_after?: string | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11901,24 +11126,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/data_connectors/:id/versions/:version_id': {
       $get:
         | {
-            input: { param: { id: string; version_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: string; version_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DataConnectorVersion
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string; version_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: string; version_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: string; version_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: string; version_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -11926,33 +11151,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { id: string; version_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorVersionRequest }
+            input: { param: { id: string; version_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorVersionRequestInput }
             output: DataConnectorVersion
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string; version_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorVersionRequest }
+            input: { param: { id: string; version_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorVersionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string; version_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorVersionRequest }
+            input: { param: { id: string; version_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorVersionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: string; version_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateDataConnectorVersionRequest }
+            input: { param: { id: string; version_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateDataConnectorVersionRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -11962,40 +11187,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/events': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventRequestInput
             }
             output: {}
             outputFormat: string
             status: 202
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -12011,12 +11236,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | { email: string }
                   | { anonymous_id: string }
                 type: 'user' | 'lead'
-                per_page?: number | undefined
-                since?: bigint | undefined
-                before?: bigint | undefined
-                summary?: boolean | undefined
+                per_page?: unknown
+                since?: unknown
+                before?: unknown
+                summary?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: DataEventList | DataEventSummary
             outputFormat: 'json'
             status: 200
@@ -12030,12 +11255,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | { email: string }
                   | { anonymous_id: string }
                 type: 'user' | 'lead'
-                per_page?: number | undefined
-                since?: bigint | undefined
-                before?: bigint | undefined
-                summary?: boolean | undefined
+                per_page?: unknown
+                since?: unknown
+                before?: unknown
+                summary?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -12049,12 +11274,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | { email: string }
                   | { anonymous_id: string }
                 type: 'user' | 'lead'
-                per_page?: number | undefined
-                since?: bigint | undefined
-                before?: bigint | undefined
-                summary?: boolean | undefined
+                per_page?: unknown
+                since?: unknown
+                before?: unknown
+                summary?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -12068,12 +11293,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | { email: string }
                   | { anonymous_id: string }
                 type: 'user' | 'lead'
-                per_page?: number | undefined
-                since?: bigint | undefined
-                before?: bigint | undefined
-                summary?: boolean | undefined
+                per_page?: unknown
+                since?: unknown
+                before?: unknown
+                summary?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -12083,32 +11308,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/events/summaries': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventSummariesRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventSummariesRequestInput
             }
             output: {}
             outputFormat: string
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventSummariesRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventSummariesRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventSummariesRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventSummariesRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataEventSummariesRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataEventSummariesRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -12119,48 +11344,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/export/content/data': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataExportsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataExportsRequestInput
             }
             output: DataExport
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataExportsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataExportsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataExportsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataExportsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataExportsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataExportsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataExportsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataExportsRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateDataExportsRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateDataExportsRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -12172,7 +11397,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DataExport
             outputFormat: 'json'
@@ -12180,7 +11405,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12188,7 +11413,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12196,7 +11421,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DataExport
             outputFormat: 'json'
@@ -12208,7 +11433,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DataExport
             outputFormat: 'json'
@@ -12216,7 +11441,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12224,7 +11449,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12232,7 +11457,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12244,7 +11469,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -12252,7 +11477,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12260,7 +11485,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12268,7 +11493,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_identifier: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12280,7 +11505,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { job_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Jobs
             outputFormat: 'json'
@@ -12288,7 +11513,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12296,7 +11521,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { job_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12307,56 +11532,56 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/messages': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateMessageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateMessageRequestInput
             }
             output: Message
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateMessageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateMessageRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateMessageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateMessageRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateMessageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateMessageRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateMessageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateMessageRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateMessageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateMessageRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 422
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateMessageRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateMessageRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -12368,7 +11593,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { query: { message_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: WhatsappMessageStatus
             outputFormat: 'json'
@@ -12376,7 +11601,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { message_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12384,7 +11609,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { message_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12392,7 +11617,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { message_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12400,7 +11625,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { message_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12412,60 +11637,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: {
-              query: {
-                ruleset_id: string
-                per_page?: number | undefined
-                starting_after?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { ruleset_id: string; per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: WhatsappMessageStatusList
             outputFormat: 'json'
             status: 200
           }
         | {
             input: {
-              query: {
-                ruleset_id: string
-                per_page?: number | undefined
-                starting_after?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { ruleset_id: string; per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
-              query: {
-                ruleset_id: string
-                per_page?: number | undefined
-                starting_after?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { ruleset_id: string; per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
-              query: {
-                ruleset_id: string
-                per_page?: number | undefined
-                starting_after?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { ruleset_id: string; per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
-              query: {
-                ruleset_id: string
-                per_page?: number | undefined
-                starting_after?: string | undefined
-              }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { ruleset_id: string; per_page?: unknown; starting_after?: string }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 500
@@ -12475,32 +11680,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/news/news_items': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: PaginatedResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -12508,32 +11713,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: NewsItemRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: NewsItemRequestInput
             }
             output: NewsItem
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: NewsItemRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: NewsItemRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: NewsItemRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: NewsItemRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: NewsItemRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: NewsItemRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -12544,24 +11749,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/news/news_items/:news_item_id': {
       $get:
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: NewsItem
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12569,57 +11774,57 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateNewsItemRequest }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateNewsItemRequestInput }
             output: NewsItem
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateNewsItemRequest }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateNewsItemRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateNewsItemRequest }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateNewsItemRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateNewsItemRequest }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateNewsItemRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
           }
       $delete:
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedObject
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { news_item_id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { news_item_id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12631,32 +11836,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { newsfeed_id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: PaginatedResponse
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { newsfeed_id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { newsfeed_id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { newsfeed_id: string } } & {
-              query: { page?: number | undefined; per_page?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+              query: { page?: unknown; per_page?: unknown }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -12666,32 +11871,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/news/newsfeeds': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: PaginatedResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -12703,7 +11908,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { newsfeed_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Newsfeed
             outputFormat: 'json'
@@ -12711,7 +11916,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { newsfeed_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12719,7 +11924,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { newsfeed_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12731,7 +11936,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { note_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Note
             outputFormat: 'json'
@@ -12739,7 +11944,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { note_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12747,7 +11952,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { note_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12756,7 +11961,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { note_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: DeletedNoteObject
             outputFormat: 'json'
@@ -12764,7 +11969,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { note_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12772,7 +11977,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { note_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12780,7 +11985,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { note_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12791,16 +11996,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/segments': {
       $get:
         | {
-            input: { query: { include_count?: boolean | undefined; type?: string | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { include_count?: string; type?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: SegmentList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { include_count?: boolean | undefined; type?: string | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { include_count?: string; type?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12811,25 +12016,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/segments/:segment_id': {
       $get:
         | {
-            input: { param: { segment_id: string } } & {
-              query: { include_count?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { segment_id: string } } & { query: { include_count?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Segment
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { segment_id: string } } & {
-              query: { include_count?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { segment_id: string } } & { query: { include_count?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { segment_id: string } } & {
-              query: { include_count?: boolean | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { segment_id: string } } & { query: { include_count?: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -12839,13 +12044,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/subscription_types': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: SubscriptionTypeList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -12856,7 +12061,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: SubscriptionType
             outputFormat: 'json'
@@ -12864,7 +12069,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12872,7 +12077,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12883,32 +12088,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/phone_call_redirects': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreatePhoneSwitchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreatePhoneSwitchRequestInput
             }
             output: PhoneSwitch
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreatePhoneSwitchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreatePhoneSwitchRequestInput
             }
             output: {}
             outputFormat: string
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreatePhoneSwitchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreatePhoneSwitchRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreatePhoneSwitchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreatePhoneSwitchRequestInput
             }
             output: {}
             outputFormat: string
@@ -12919,24 +12124,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/calls': {
       $get:
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: CallList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { query: { page?: number | undefined; per_page?: number | undefined } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { query: { page?: unknown; per_page?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12948,7 +12153,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { call_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Call
             outputFormat: 'json'
@@ -12956,7 +12161,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { call_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12964,7 +12169,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { call_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12976,7 +12181,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { call_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -12984,7 +12189,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { call_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -12992,7 +12197,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { call_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13004,7 +12209,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: CallTranscriptTurn[]
             outputFormat: 'json'
@@ -13012,7 +12217,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13020,7 +12225,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13031,46 +12236,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/calls/search': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: { conversation_ids: string[] }
             }
             output: {
               type?: string | undefined
               data?:
-                | {
-                    type?: string | undefined
-                    id?: string | undefined
-                    conversation_id?: (string | null) | undefined
-                    admin_id?: (string | null) | undefined
-                    contact_id?: (string | null) | undefined
-                    state?: string | undefined
-                    initiated_at?: Datetime | undefined
-                    answered_at?: Datetime | undefined
-                    ended_at?: Datetime | undefined
-                    created_at?: Datetime | undefined
-                    updated_at?: Datetime | undefined
-                    recording_url?: (string | null) | undefined
-                    transcription_url?: (string | null) | undefined
-                    call_type?: string | undefined
-                    direction?: string | undefined
-                    ended_reason?: (string | null) | undefined
-                    phone?: (string | null) | undefined
-                    fin_recording_url?: (string | null) | undefined
-                    fin_transcription_url?: (string | null) | undefined
-                    duration?: (number | null) | undefined
-                    talk_time?: (number | null) | undefined
-                    queue_time?: (number | null) | undefined
-                    hold_time?: (number | null) | undefined
-                    transcript?: { [x: string]: unknown }[] | undefined
+                | (Call & {
+                    transcript?: { [key: string]: unknown }[] | undefined
                     transcript_status?: (string | null) | undefined
-                  }[]
+                  })[]
                 | undefined
             }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: { conversation_ids: string[] }
             }
             output: Error
@@ -13078,7 +12260,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json: { conversation_ids: string[] }
             }
             output: Error
@@ -13092,15 +12274,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                id?: string | undefined
-                taggable_type?: 'user' | 'company' | undefined
-                taggable_id?: string | undefined
-                user_id?: string | undefined
-                email?: string | undefined
-                company_id?: string | undefined
-                name?: string | undefined
+                id?: string
+                taggable_type?: 'user' | 'company'
+                taggable_id?: string
+                user_id?: string
+                email?: string
+                company_id?: string
+                name?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: TagList | TagBasic
             outputFormat: 'json'
             status: 200
@@ -13108,15 +12290,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                id?: string | undefined
-                taggable_type?: 'user' | 'company' | undefined
-                taggable_id?: string | undefined
-                user_id?: string | undefined
-                email?: string | undefined
-                company_id?: string | undefined
-                name?: string | undefined
+                id?: string
+                taggable_type?: 'user' | 'company'
+                taggable_id?: string
+                user_id?: string
+                email?: string
+                company_id?: string
+                name?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -13124,63 +12306,63 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                id?: string | undefined
-                taggable_type?: 'user' | 'company' | undefined
-                taggable_id?: string | undefined
-                user_id?: string | undefined
-                email?: string | undefined
-                company_id?: string | undefined
-                name?: string | undefined
+                id?: string
+                taggable_type?: 'user' | 'company'
+                taggable_id?: string
+                user_id?: string
+                email?: string
+                company_id?: string
+                name?: string
               }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            } & { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 404
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json:
-                | CreateOrUpdateTagRequest
-                | TagCompanyRequest
-                | UntagCompanyRequest
-                | TagMultipleUsersRequest
+                | CreateOrUpdateTagRequestInput
+                | TagCompanyRequestInput
+                | UntagCompanyRequestInput
+                | TagMultipleUsersRequestInput
             }
             output: TagCreateResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json:
-                | CreateOrUpdateTagRequest
-                | TagCompanyRequest
-                | UntagCompanyRequest
-                | TagMultipleUsersRequest
+                | CreateOrUpdateTagRequestInput
+                | TagCompanyRequestInput
+                | UntagCompanyRequestInput
+                | TagMultipleUsersRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json:
-                | CreateOrUpdateTagRequest
-                | TagCompanyRequest
-                | UntagCompanyRequest
-                | TagMultipleUsersRequest
+                | CreateOrUpdateTagRequestInput
+                | TagCompanyRequestInput
+                | UntagCompanyRequestInput
+                | TagMultipleUsersRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
               json:
-                | CreateOrUpdateTagRequest
-                | TagCompanyRequest
-                | UntagCompanyRequest
-                | TagMultipleUsersRequest
+                | CreateOrUpdateTagRequestInput
+                | TagCompanyRequestInput
+                | UntagCompanyRequestInput
+                | TagMultipleUsersRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -13192,7 +12374,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: TagBasic
             outputFormat: 'json'
@@ -13200,7 +12382,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13208,7 +12390,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13217,7 +12399,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: {}
             outputFormat: string
@@ -13225,7 +12407,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13233,7 +12415,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13241,7 +12423,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13252,13 +12434,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/teams': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: TeamList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -13269,7 +12451,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { team_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Team
             outputFormat: 'json'
@@ -13277,7 +12459,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { team_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13285,7 +12467,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { team_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13296,33 +12478,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/teams/:team_id/metrics': {
       $get:
         | {
-            input: { param: { team_id: string } } & {
-              query: { idle_threshold?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { team_id: string } } & { query: { idle_threshold?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: TeamMetricList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { team_id: string } } & {
-              query: { idle_threshold?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { team_id: string } } & { query: { idle_threshold?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { team_id: string } } & {
-              query: { idle_threshold?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { team_id: string } } & { query: { idle_threshold?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { team_id: string } } & {
-              query: { idle_threshold?: number | undefined }
-            } & { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { param: { team_id: string } } & { query: { idle_threshold?: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -13332,13 +12514,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/ticket_states': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: TicketStateList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -13349,24 +12531,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { ticket_type_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateTicketTypeAttributeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateTicketTypeAttributeRequestInput }
             output: TicketTypeAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { ticket_type_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateTicketTypeAttributeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateTicketTypeAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { ticket_type_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: CreateTicketTypeAttributeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: CreateTicketTypeAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -13377,16 +12559,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { ticket_type_id: string; attribute_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateTicketTypeAttributeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketTypeAttributeRequestInput }
             output: TicketTypeAttribute
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { ticket_type_id: string; attribute_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateTicketTypeAttributeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketTypeAttributeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -13396,37 +12578,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/ticket_types': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: TicketTypeList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateTicketTypeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketTypeRequestInput
             }
             output: TicketType
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateTicketTypeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketTypeRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: CreateTicketTypeRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketTypeRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -13438,7 +12620,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { ticket_type_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: TicketType
             outputFormat: 'json'
@@ -13446,7 +12628,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_type_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13454,7 +12636,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_type_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13463,16 +12645,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { ticket_type_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateTicketTypeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketTypeRequestInput }
             output: TicketType
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { ticket_type_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: UpdateTicketTypeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketTypeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -13483,32 +12665,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContactReplyTicketRequest | AdminReplyTicketRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContactReplyTicketRequestInput | AdminReplyTicketRequestInput }
             output: TicketReply
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContactReplyTicketRequest | AdminReplyTicketRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContactReplyTicketRequestInput | AdminReplyTicketRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContactReplyTicketRequest | AdminReplyTicketRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContactReplyTicketRequestInput | AdminReplyTicketRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ContactReplyTicketRequest | AdminReplyTicketRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ContactReplyTicketRequestInput | AdminReplyTicketRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -13519,7 +12701,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string; admin_id: string } }
             output: Tag
             outputFormat: 'json'
@@ -13527,7 +12709,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string; admin_id: string } }
             output: Error
             outputFormat: 'json'
@@ -13535,7 +12717,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { id: string; admin_id: string } }
             output: Error
             outputFormat: 'json'
@@ -13547,7 +12729,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { ticket_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { admin_id: string } }
             output: Tag
             outputFormat: 'json'
@@ -13555,7 +12737,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { admin_id: string } }
             output: Error
             outputFormat: 'json'
@@ -13563,7 +12745,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string; tag_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { admin_id: string } }
             output: Error
             outputFormat: 'json'
@@ -13575,7 +12757,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { conversation_id: string } }
             output: Conversation
             outputFormat: 'json'
@@ -13583,7 +12765,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { conversation_id: string } }
             output: Error
             outputFormat: 'json'
@@ -13591,7 +12773,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { conversation_id: string } }
             output: Error
             outputFormat: 'json'
@@ -13599,7 +12781,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             } & { json: { conversation_id: string } }
             output: Error
             outputFormat: 'json'
@@ -13611,7 +12793,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { ticket_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Conversation
             outputFormat: 'json'
@@ -13619,7 +12801,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13627,7 +12809,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13635,7 +12817,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string; id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13646,120 +12828,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/tickets': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Ticket
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Error
             outputFormat: 'json'
@@ -13770,96 +12872,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/tickets/enqueue': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Jobs
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: {
-                ticket_type_id: string
-                contacts?:
-                  | ({ id: string } | { external_id: string } | { email: string })[]
-                  | undefined
-                conversation_to_link_id?: string | undefined
-                company_id?: string | undefined
-                created_at?: number | undefined
-                ticket_attributes?: TicketRequestCustomAttributes | undefined
-                assignment?:
-                  | {
-                      admin_assignee_id?: string | undefined
-                      team_assignee_id?: string | undefined
-                    }
-                  | undefined
-                channel?: 'email' | undefined
-              }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: CreateTicketRequestInput & { skip_notifications?: boolean }
             }
             output: Error
             outputFormat: 'json'
@@ -13871,95 +12909,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $put:
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & {
-              json: {
-                ticket_attributes?: { [x: string]: unknown } | undefined
-                ticket_state_id?: string | undefined
-                company_id?: string | undefined
-                open?: boolean | undefined
-                is_shared?: boolean | undefined
-                snoozed_until?: number | undefined
-                admin_id?: number | undefined
-                assignee_id?: string | undefined
-              }
-            }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketRequestInput & { skip_notifications?: boolean } }
             output: Ticket
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & {
-              json: {
-                ticket_attributes?: { [x: string]: unknown } | undefined
-                ticket_state_id?: string | undefined
-                company_id?: string | undefined
-                open?: boolean | undefined
-                is_shared?: boolean | undefined
-                snoozed_until?: number | undefined
-                admin_id?: number | undefined
-                assignee_id?: string | undefined
-              }
-            }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketRequestInput & { skip_notifications?: boolean } }
             output: {}
             outputFormat: string
             status: 400
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & {
-              json: {
-                ticket_attributes?: { [x: string]: unknown } | undefined
-                ticket_state_id?: string | undefined
-                company_id?: string | undefined
-                open?: boolean | undefined
-                is_shared?: boolean | undefined
-                snoozed_until?: number | undefined
-                admin_id?: number | undefined
-                assignee_id?: string | undefined
-              }
-            }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketRequestInput & { skip_notifications?: boolean } }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & {
-              json: {
-                ticket_attributes?: { [x: string]: unknown } | undefined
-                ticket_state_id?: string | undefined
-                company_id?: string | undefined
-                open?: boolean | undefined
-                is_shared?: boolean | undefined
-                snoozed_until?: number | undefined
-                admin_id?: number | undefined
-                assignee_id?: string | undefined
-              }
-            }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketRequestInput & { skip_notifications?: boolean } }
             output: {}
             outputFormat: string
             status: 404
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & {
-              json: {
-                ticket_attributes?: { [x: string]: unknown } | undefined
-                ticket_state_id?: string | undefined
-                company_id?: string | undefined
-                open?: boolean | undefined
-                is_shared?: boolean | undefined
-                snoozed_until?: number | undefined
-                admin_id?: number | undefined
-                assignee_id?: string | undefined
-              }
-            }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: UpdateTicketRequestInput & { skip_notifications?: boolean } }
             output: Error
             outputFormat: 'json'
             status: 422
@@ -13967,7 +12950,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Ticket
             outputFormat: 'json'
@@ -13975,7 +12958,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13983,7 +12966,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -13992,7 +12975,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: TicketDeleted
             outputFormat: 'json'
@@ -14000,7 +12983,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14008,7 +12991,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14016,7 +12999,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14024,7 +13007,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14036,32 +13019,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ChangeTicketTypeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ChangeTicketTypeRequestInput }
             output: Ticket
             outputFormat: 'json'
             status: 200
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ChangeTicketTypeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ChangeTicketTypeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ChangeTicketTypeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ChangeTicketTypeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { ticket_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
-            } & { json: ChangeTicketTypeRequest }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
+            } & { json: ChangeTicketTypeRequestInput }
             output: Error
             outputFormat: 'json'
             status: 404
@@ -14071,16 +13054,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/tickets/search': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: SearchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: SearchRequestInput
             }
             output: TicketList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: SearchRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: SearchRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -14091,32 +13074,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/visitors': {
       $put:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateVisitorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateVisitorRequestInput
             }
             output: Visitor
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateVisitorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateVisitorRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateVisitorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateVisitorRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: UpdateVisitorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: UpdateVisitorRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -14125,7 +13108,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { query: { user_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Visitor
             outputFormat: 'json'
@@ -14133,7 +13116,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { user_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14141,7 +13124,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { user_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14152,32 +13135,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/visitors/convert': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ConvertVisitorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ConvertVisitorRequestInput
             }
             output: Contact
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ConvertVisitorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ConvertVisitorRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ConvertVisitorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ConvertVisitorRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: ConvertVisitorRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: ConvertVisitorRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -14188,13 +13171,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/brands': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: BrandList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -14205,7 +13188,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Brand
             outputFormat: 'json'
@@ -14213,7 +13196,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14221,7 +13204,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14232,13 +13215,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/emails': {
       $get:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: EmailList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } }
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -14249,7 +13232,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: EmailSetting
             outputFormat: 'json'
@@ -14257,7 +13240,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14265,7 +13248,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14276,32 +13259,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/fin_voice/register': {
       $post:
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: RegisterFinVoiceCallRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: RegisterFinVoiceCallRequestInput
             }
             output: AiCallResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: RegisterFinVoiceCallRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: RegisterFinVoiceCallRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: RegisterFinVoiceCallRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: RegisterFinVoiceCallRequestInput
             }
             output: Error
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
-              json: RegisterFinVoiceCallRequest
+            input: { header: { 'Intercom-Version'?: IntercomVersionInput } } & {
+              json: RegisterFinVoiceCallRequestInput
             }
             output: Error
             outputFormat: 'json'
@@ -14312,24 +13295,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/fin_voice/collect/:id': {
       $get:
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: AiCallResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: number } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            input: { param: { id: unknown } } & {
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14341,7 +13324,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: AiCallResponse
             outputFormat: 'json'
@@ -14349,7 +13332,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14357,7 +13340,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { external_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14369,7 +13352,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { phone_number: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: AiCallResponse
             outputFormat: 'json'
@@ -14377,7 +13360,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14385,7 +13368,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14393,7 +13376,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { phone_number: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14405,7 +13388,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: AiCallResponse[]
             outputFormat: 'json'
@@ -14413,7 +13396,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14421,7 +13404,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { conversation_id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14433,7 +13416,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: WorkflowExport
             outputFormat: 'json'
@@ -14441,7 +13424,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14449,7 +13432,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'
@@ -14457,7 +13440,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { id: string } } & {
-              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+              header: { 'Intercom-Version'?: IntercomVersionInput }
             }
             output: Error
             outputFormat: 'json'

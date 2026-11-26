@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getPlatformTeamsTeamIdRoute, postPlatformTeamsRoute } from '../routes'
+import type { postPlatformTeamsRoute, getPlatformTeamsTeamIdRoute } from '../routes'
 
 export const postPlatformTeamsRouteHandler: RouteHandler<typeof postPlatformTeamsRoute> = async (
   c,

@@ -174,8 +174,14 @@
     "sources": {
       "https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Hubdb/Rollouts/243927/2026-09/hubdb.json": {
         "etag": "W/\"e9eca1408730905b9fb06f45646adab8d6e640ae8d8fe7cd202377a6b27ff549\"",
-        "sha256": "564b7dad88335f52b0567d5c1a15d619ed94287e056bcab892250bcf8b15044b"
+        "sha256": "564b7dad88335f52b0567d5c1a15d619ed94287e056bcab892250bcf8b15044b",
+        "canonical": "40a7ad80ab33ed3b9319fdab863c35368695e8e0bb93ac3b57e53baee623aeb8"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.13",
+      "date": "2026-11-26",
+      "error": "Missing $ref pointer \"#/components/schemas/HubDbTableRowV3Wrapper\". Token \"HubDbTableRowV3Wrapper\" does not exist."
     }
   },
   "configs/cms-media-bridge.config.ts": {

@@ -11410,6 +11410,385 @@ export function useImmutableGetOrganizationsOrganizationIdDataProviders<TError =
   }
 }
 
+export function getGetOrganizationsOrganizationIdIssuerTrustsKey(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts']['$get']
+  >,
+) {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts', args] as const
+}
+
+export function useGetOrganizationsOrganizationIdIssuerTrusts<TError = unknown>(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts']['$get']
+  >,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$get']>
+            >
+          >
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetOrganizationsOrganizationIdIssuerTrustsKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWR<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$get']>
+            >
+          >
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () =>
+        parseResponse(
+          client.organizations[':organization_id'].issuer_trusts.$get(args, clientOptions),
+        ),
+      restSwrOptions,
+    ),
+  }
+}
+
+export function useImmutableGetOrganizationsOrganizationIdIssuerTrusts<TError = unknown>(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts']['$get']
+  >,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$get']>
+            >
+          >
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetOrganizationsOrganizationIdIssuerTrustsKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWRImmutable<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$get']>
+            >
+          >
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () =>
+        parseResponse(
+          client.organizations[':organization_id'].issuer_trusts.$get(args, clientOptions),
+        ),
+      restSwrOptions,
+    ),
+  }
+}
+
+export function getPostOrganizationsOrganizationIdIssuerTrustsKey() {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts', 'POST'] as const
+}
+
+export function usePostOrganizationsOrganizationIdIssuerTrusts<TError = unknown>(options?: {
+  mutation?: SWRMutationConfiguration<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$post']>
+          >
+        >
+      >
+    >,
+    TError,
+    Key,
+    InferRequestType<(typeof client.organizations)[':organization_id']['issuer_trusts']['$post']>
+  > & { swrKey?: Key; throwOnError?: boolean }
+  options?: ClientRequestOptions
+}) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, ...restMutationOptions } = mutationOptions ?? {}
+  const swrKey = customKey ?? getPostOrganizationsOrganizationIdIssuerTrustsKey()
+  return {
+    swrKey,
+    ...useSWRMutation(
+      swrKey,
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.organizations)[':organization_id']['issuer_trusts']['$post']
+          >
+        },
+      ) =>
+        parseResponse(
+          client.organizations[':organization_id'].issuer_trusts.$post(arg, clientOptions),
+        ),
+      restMutationOptions,
+    ),
+  }
+}
+
+export function getGetOrganizationsOrganizationIdIssuerTrustsIdKey(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+  >,
+) {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts/:id', args] as const
+}
+
+export function useGetOrganizationsOrganizationIdIssuerTrustsId<TError = unknown>(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+  >,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+              >
+            >
+          >
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetOrganizationsOrganizationIdIssuerTrustsIdKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWR<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+              >
+            >
+          >
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () =>
+        parseResponse(
+          client.organizations[':organization_id'].issuer_trusts[':id'].$get(args, clientOptions),
+        ),
+      restSwrOptions,
+    ),
+  }
+}
+
+export function useImmutableGetOrganizationsOrganizationIdIssuerTrustsId<TError = unknown>(
+  args: InferRequestType<
+    (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+  >,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+              >
+            >
+          >
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetOrganizationsOrganizationIdIssuerTrustsIdKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWRImmutable<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$get']
+              >
+            >
+          >
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () =>
+        parseResponse(
+          client.organizations[':organization_id'].issuer_trusts[':id'].$get(args, clientOptions),
+        ),
+      restSwrOptions,
+    ),
+  }
+}
+
+export function getDeleteOrganizationsOrganizationIdIssuerTrustsIdKey() {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts/:id', 'DELETE'] as const
+}
+
+export function useDeleteOrganizationsOrganizationIdIssuerTrustsId<TError = unknown>(options?: {
+  mutation?: SWRMutationConfiguration<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+              >
+            >
+          >
+        >
+      >
+    | undefined,
+    TError,
+    Key,
+    InferRequestType<
+      (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+    >
+  > & { swrKey?: Key; throwOnError?: boolean }
+  options?: ClientRequestOptions
+}) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, ...restMutationOptions } = mutationOptions ?? {}
+  const swrKey = customKey ?? getDeleteOrganizationsOrganizationIdIssuerTrustsIdKey()
+  return {
+    swrKey,
+    ...useSWRMutation(
+      swrKey,
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$delete']
+          >
+        },
+      ) =>
+        parseResponse(
+          client.organizations[':organization_id'].issuer_trusts[':id'].$delete(arg, clientOptions),
+        ),
+      restMutationOptions,
+    ),
+  }
+}
+
+export function getPatchOrganizationsOrganizationIdIssuerTrustsIdKey() {
+  return ['organizations', '/organizations/:organization_id/issuer_trusts/:id', 'PATCH'] as const
+}
+
+export function usePatchOrganizationsOrganizationIdIssuerTrustsId<TError = unknown>(options?: {
+  mutation?: SWRMutationConfiguration<
+    Awaited<
+      ReturnType<
+        typeof parseResponse<
+          Awaited<
+            ReturnType<
+              (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+            >
+          >
+        >
+      >
+    >,
+    TError,
+    Key,
+    InferRequestType<
+      (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+    >
+  > & { swrKey?: Key; throwOnError?: boolean }
+  options?: ClientRequestOptions
+}) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, ...restMutationOptions } = mutationOptions ?? {}
+  const swrKey = customKey ?? getPatchOrganizationsOrganizationIdIssuerTrustsIdKey()
+  return {
+    swrKey,
+    ...useSWRMutation(
+      swrKey,
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<
+            (typeof client.organizations)[':organization_id']['issuer_trusts'][':id']['$patch']
+          >
+        },
+      ) =>
+        parseResponse(
+          client.organizations[':organization_id'].issuer_trusts[':id'].$patch(arg, clientOptions),
+        ),
+      restMutationOptions,
+    ),
+  }
+}
+
 export function getGetOrganizationsOrganizationIdItContactsKey(
   args: InferRequestType<(typeof client.organizations)[':organization_id']['it_contacts']['$get']>,
 ) {
@@ -11984,6 +12363,90 @@ export function usePutRadarAttemptsId<TError = unknown>(options?: {
         { arg }: { arg: InferRequestType<(typeof client.radar.attempts)[':id']['$put']> },
       ) => parseResponse(client.radar.attempts[':id'].$put(arg, clientOptions)),
       restMutationOptions,
+    ),
+  }
+}
+
+export function getGetRadarDetectionsIdKey(
+  args: InferRequestType<(typeof client.radar.detections)[':id']['$get']>,
+) {
+  return ['radar', '/radar/detections/:id', args] as const
+}
+
+export function useGetRadarDetectionsId<TError = unknown>(
+  args: InferRequestType<(typeof client.radar.detections)[':id']['$get']>,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<Awaited<ReturnType<(typeof client.radar.detections)[':id']['$get']>>>
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetRadarDetectionsIdKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWR<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<Awaited<ReturnType<(typeof client.radar.detections)[':id']['$get']>>>
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () => parseResponse(client.radar.detections[':id'].$get(args, clientOptions)),
+      restSwrOptions,
+    ),
+  }
+}
+
+export function useImmutableGetRadarDetectionsId<TError = unknown>(
+  args: InferRequestType<(typeof client.radar.detections)[':id']['$get']>,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<Awaited<ReturnType<(typeof client.radar.detections)[':id']['$get']>>>
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetRadarDetectionsIdKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWRImmutable<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<Awaited<ReturnType<(typeof client.radar.detections)[':id']['$get']>>>
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () => parseResponse(client.radar.detections[':id'].$get(args, clientOptions)),
+      restSwrOptions,
     ),
   }
 }
@@ -12830,6 +13293,46 @@ export function usePostUserManagementCorsOrigins<TError = unknown>(options?: {
         _: Key,
         { arg }: { arg: InferRequestType<typeof client.user_management.cors_origins.$post> },
       ) => parseResponse(client.user_management.cors_origins.$post(arg, clientOptions)),
+      restMutationOptions,
+    ),
+  }
+}
+
+export function getDeleteUserManagementCorsOriginsIdKey() {
+  return ['user_management', '/user_management/cors_origins/:id', 'DELETE'] as const
+}
+
+export function useDeleteUserManagementCorsOriginsId<TError = unknown>(options?: {
+  mutation?: SWRMutationConfiguration<
+    | Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.user_management.cors_origins)[':id']['$delete']>>
+          >
+        >
+      >
+    | undefined,
+    TError,
+    Key,
+    InferRequestType<(typeof client.user_management.cors_origins)[':id']['$delete']>
+  > & { swrKey?: Key; throwOnError?: boolean }
+  options?: ClientRequestOptions
+}) {
+  const { mutation: mutationOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, ...restMutationOptions } = mutationOptions ?? {}
+  const swrKey = customKey ?? getDeleteUserManagementCorsOriginsIdKey()
+  return {
+    swrKey,
+    ...useSWRMutation(
+      swrKey,
+      async (
+        _: Key,
+        {
+          arg,
+        }: {
+          arg: InferRequestType<(typeof client.user_management.cors_origins)[':id']['$delete']>
+        },
+      ) => parseResponse(client.user_management.cors_origins[':id'].$delete(arg, clientOptions)),
       restMutationOptions,
     ),
   }
@@ -14981,6 +15484,126 @@ export function useImmutableGetUserManagementUsersExternalIdExternalId<TError = 
       async () =>
         parseResponse(
           client.user_management.users.external_id[':external_id'].$get(args, clientOptions),
+        ),
+      restSwrOptions,
+    ),
+  }
+}
+
+export function getGetUserManagementUsersIdentitiesProviderIdpIdKey(
+  args: InferRequestType<
+    (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+  >,
+) {
+  return ['user_management', '/user_management/users/identities/:provider/:idp_id', args] as const
+}
+
+export function useGetUserManagementUsersIdentitiesProviderIdpId<TError = unknown>(
+  args: InferRequestType<
+    (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+  >,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+              >
+            >
+          >
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetUserManagementUsersIdentitiesProviderIdpIdKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWR<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+              >
+            >
+          >
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () =>
+        parseResponse(
+          client.user_management.users.identities[':provider'][':idp_id'].$get(args, clientOptions),
+        ),
+      restSwrOptions,
+    ),
+  }
+}
+
+export function useImmutableGetUserManagementUsersIdentitiesProviderIdpId<TError = unknown>(
+  args: InferRequestType<
+    (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+  >,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+              >
+            >
+          >
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetUserManagementUsersIdentitiesProviderIdpIdKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWRImmutable<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<
+              ReturnType<
+                (typeof client.user_management.users.identities)[':provider'][':idp_id']['$get']
+              >
+            >
+          >
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () =>
+        parseResponse(
+          client.user_management.users.identities[':provider'][':idp_id'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -17718,6 +18341,98 @@ export function usePostWebhookEndpoints<TError = unknown>(options?: {
       async (_: Key, { arg }: { arg: InferRequestType<typeof client.webhook_endpoints.$post> }) =>
         parseResponse(client.webhook_endpoints.$post(arg, clientOptions)),
       restMutationOptions,
+    ),
+  }
+}
+
+export function getGetWebhookEndpointsIdKey(
+  args: InferRequestType<(typeof client.webhook_endpoints)[':id']['$get']>,
+) {
+  return ['webhook_endpoints', '/webhook_endpoints/:id', args] as const
+}
+
+export function useGetWebhookEndpointsId<TError = unknown>(
+  args: InferRequestType<(typeof client.webhook_endpoints)[':id']['$get']>,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.webhook_endpoints)[':id']['$get']>>
+          >
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetWebhookEndpointsIdKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWR<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.webhook_endpoints)[':id']['$get']>>
+          >
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () => parseResponse(client.webhook_endpoints[':id'].$get(args, clientOptions)),
+      restSwrOptions,
+    ),
+  }
+}
+
+export function useImmutableGetWebhookEndpointsId<TError = unknown>(
+  args: InferRequestType<(typeof client.webhook_endpoints)[':id']['$get']>,
+  options?: {
+    swr?: SWRConfiguration<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.webhook_endpoints)[':id']['$get']>>
+          >
+        >
+      >,
+      TError
+    > & { swrKey?: Key; enabled?: boolean }
+    options?: ClientRequestOptions
+  },
+) {
+  const { swr: swrOptions, options: clientOptions } = options ?? {}
+  const { swrKey: customKey, enabled, ...restSwrOptions } = swrOptions ?? {}
+  const swrKey =
+    enabled !== false
+      ? customKey === undefined
+        ? getGetWebhookEndpointsIdKey(args)
+        : customKey
+      : null
+  return {
+    swrKey,
+    ...useSWRImmutable<
+      Awaited<
+        ReturnType<
+          typeof parseResponse<
+            Awaited<ReturnType<(typeof client.webhook_endpoints)[':id']['$get']>>
+          >
+        >
+      >,
+      TError
+    >(
+      swrKey,
+      async () => parseResponse(client.webhook_endpoints[':id'].$get(args, clientOptions)),
+      restSwrOptions,
     ),
   }
 }

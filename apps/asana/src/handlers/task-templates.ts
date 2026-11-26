@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteTaskTemplatesTaskTemplateGidRoute,
   getTaskTemplatesRoute,
   getTaskTemplatesTaskTemplateGidRoute,
+  deleteTaskTemplatesTaskTemplateGidRoute,
   postTaskTemplatesTaskTemplateGidInstantiateTaskRoute,
 } from '../routes'
 

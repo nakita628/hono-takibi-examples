@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getTimePeriodsRoute, getTimePeriodsTimePeriodGidRoute } from '../routes'
+import type { getTimePeriodsTimePeriodGidRoute, getTimePeriodsRoute } from '../routes'
 
 export const getTimePeriodsTimePeriodGidRouteHandler: RouteHandler<
   typeof getTimePeriodsTimePeriodGidRoute

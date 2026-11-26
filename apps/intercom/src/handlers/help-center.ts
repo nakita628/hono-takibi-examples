@@ -1,16 +1,16 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteHelpCenterCollectionsCollectionIdRoute,
-  deleteHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute,
-  getHelpCenterCollectionsCollectionIdRoute,
-  getHelpCenterCollectionsRoute,
-  getHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute,
   getHelpCenterHelpCentersHelpCenterIdRedirectsRoute,
+  postHelpCenterHelpCentersHelpCenterIdRedirectsRoute,
+  getHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute,
+  deleteHelpCenterHelpCentersHelpCenterIdRedirectsIdRoute,
+  getHelpCenterCollectionsRoute,
+  postHelpCenterCollectionsRoute,
+  getHelpCenterCollectionsCollectionIdRoute,
+  putHelpCenterCollectionsCollectionIdRoute,
+  deleteHelpCenterCollectionsCollectionIdRoute,
   getHelpCenterHelpCentersHelpCenterIdRoute,
   getHelpCenterHelpCentersRoute,
-  postHelpCenterCollectionsRoute,
-  postHelpCenterHelpCentersHelpCenterIdRedirectsRoute,
-  putHelpCenterCollectionsCollectionIdRoute,
 } from '../routes'
 
 export const getHelpCenterHelpCentersHelpCenterIdRedirectsRouteHandler: RouteHandler<

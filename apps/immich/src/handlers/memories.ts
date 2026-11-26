@@ -1,13 +1,13 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteMemoriesIdAssetsRoute,
+  getMemoriesRoute,
+  postMemoriesRoute,
+  getMemoriesStatisticsRoute,
   deleteMemoriesIdRoute,
   getMemoriesIdRoute,
-  getMemoriesRoute,
-  getMemoriesStatisticsRoute,
-  postMemoriesRoute,
-  putMemoriesIdAssetsRoute,
   putMemoriesIdRoute,
+  deleteMemoriesIdAssetsRoute,
+  putMemoriesIdAssetsRoute,
 } from '../routes'
 
 export const getMemoriesRouteHandler: RouteHandler<typeof getMemoriesRoute> = async (c) => {

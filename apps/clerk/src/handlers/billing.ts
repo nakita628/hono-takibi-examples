@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteBillingSubscriptionItemsSubscriptionItemIdDiscountsDiscountIdRoute,
-  postBillingSubscriptionItemsSubscriptionItemIdDiscountsRoute,
   postBillingSubscriptionItemsSubscriptionItemIdExtendFreeTrialRoute,
   postBillingSubscriptionItemsSubscriptionItemIdPriceTransitionRoute,
+  postBillingSubscriptionItemsSubscriptionItemIdDiscountsRoute,
+  deleteBillingSubscriptionItemsSubscriptionItemIdDiscountsDiscountIdRoute,
 } from '../routes'
 
 export const postBillingSubscriptionItemsSubscriptionItemIdExtendFreeTrialRouteHandler: RouteHandler<

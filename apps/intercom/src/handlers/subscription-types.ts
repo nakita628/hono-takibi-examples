@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getSubscriptionTypesIdRoute, getSubscriptionTypesRoute } from '../routes'
+import type { getSubscriptionTypesRoute, getSubscriptionTypesIdRoute } from '../routes'
 
 export const getSubscriptionTypesRouteHandler: RouteHandler<
   typeof getSubscriptionTypesRoute

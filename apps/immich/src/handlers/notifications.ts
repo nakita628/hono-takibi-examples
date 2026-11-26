@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteNotificationsIdRoute,
   deleteNotificationsRoute,
-  getNotificationsIdRoute,
   getNotificationsRoute,
-  putNotificationsIdRoute,
   putNotificationsRoute,
+  deleteNotificationsIdRoute,
+  getNotificationsIdRoute,
+  putNotificationsIdRoute,
 } from '../routes'
 
 export const deleteNotificationsRouteHandler: RouteHandler<

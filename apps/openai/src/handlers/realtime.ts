@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  postRealtimeCallsRoute,
   postRealtimeCallsCallIdAcceptRoute,
   postRealtimeCallsCallIdHangupRoute,
   postRealtimeCallsCallIdReferRoute,
   postRealtimeCallsCallIdRejectRoute,
-  postRealtimeCallsRoute,
   postRealtimeClientSecretsRoute,
   postRealtimeSessionsRoute,
   postRealtimeTranscriptionSessionsRoute,

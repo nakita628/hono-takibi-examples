@@ -1,13 +1,13 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
-  getWorkflowsIntegrationsConnectionsRoute,
-  getWorkflowsIntegrationsIdRoute,
-  getWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
-  getWorkflowsIntegrationsIntegrationIdConnectionsRoute,
   getWorkflowsIntegrationsRoute,
-  patchWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+  getWorkflowsIntegrationsIdRoute,
+  getWorkflowsIntegrationsConnectionsRoute,
+  getWorkflowsIntegrationsIntegrationIdConnectionsRoute,
   postWorkflowsIntegrationsIntegrationIdConnectionsRoute,
+  getWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+  patchWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
+  deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
 } from '../routes'
 
 export const getWorkflowsIntegrationsRouteHandler: RouteHandler<

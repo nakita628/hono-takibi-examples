@@ -1,13 +1,13 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deletePasskeysIdRoute,
-  getPasskeysIdRoute,
   getPasskeysRoute,
-  patchPasskeysIdRoute,
   postPasskeysAuthenticationFinishRoute,
   postPasskeysAuthenticationStartRoute,
   postPasskeysRegistrationFinishRoute,
   postPasskeysRegistrationStartRoute,
+  deletePasskeysIdRoute,
+  getPasskeysIdRoute,
+  patchPasskeysIdRoute,
 } from '../routes'
 
 export const getPasskeysRouteHandler: RouteHandler<typeof getPasskeysRoute> = async (c) => {

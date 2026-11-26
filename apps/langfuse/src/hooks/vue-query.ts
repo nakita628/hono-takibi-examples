@@ -9658,25 +9658,25 @@ export function useApiPublicUnstableTopics<
   )
 }
 
-export function getApiPublicUnstableTopicsTopicIdQueryKey(
+export function getApiPublicUnstableTopicsTopicStableIdQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>
+    InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
   >,
 ) {
-  return ['api', '/api/public/unstable/topics/:topicId', toValue(args)] as const
+  return ['api', '/api/public/unstable/topics/:topicStableId', toValue(args)] as const
 }
 
-export function getApiPublicUnstableTopicsTopicIdQueryOptions(
+export function getApiPublicUnstableTopicsTopicStableIdQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>
+    InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
   return {
-    queryKey: computed(() => getApiPublicUnstableTopicsTopicIdQueryKey(args)),
+    queryKey: computed(() => getApiPublicUnstableTopicsTopicStableIdQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api.public.unstable.topics[':topicId'].$get(toValue(args), {
+        client.api.public.unstable.topics[':topicStableId'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -9685,18 +9685,18 @@ export function getApiPublicUnstableTopicsTopicIdQueryOptions(
   }
 }
 
-export function useApiPublicUnstableTopicsTopicId<
+export function useApiPublicUnstableTopicsTopicStableId<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+        Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>
+    InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -9705,7 +9705,9 @@ export function useApiPublicUnstableTopicsTopicId<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
+                >
               >
             >
           >,
@@ -9714,11 +9716,13 @@ export function useApiPublicUnstableTopicsTopicId<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>
+                >
               >
             >
           >,
-          ReturnType<typeof getApiPublicUnstableTopicsTopicIdQueryKey>
+          ReturnType<typeof getApiPublicUnstableTopicsTopicStableIdQueryKey>
         >,
         { queryKey: unknown }
       >,
@@ -9733,20 +9737,20 @@ export function useApiPublicUnstableTopicsTopicId<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>>
+          Awaited<ReturnType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>>
         >
       >
     >,
     TError,
     TData,
-    ReturnType<typeof getApiPublicUnstableTopicsTopicIdQueryKey>
+    ReturnType<typeof getApiPublicUnstableTopicsTopicStableIdQueryKey>
   >(
     {
       ...queryOptions,
-      queryKey: computed(() => getApiPublicUnstableTopicsTopicIdQueryKey(args)),
+      queryKey: computed(() => getApiPublicUnstableTopicsTopicStableIdQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api.public.unstable.topics[':topicId'].$get(toValue(args), {
+          client.api.public.unstable.topics[':topicStableId'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

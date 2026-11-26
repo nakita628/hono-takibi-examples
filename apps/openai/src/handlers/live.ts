@@ -1,12 +1,12 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getLiveSessionsSessionIdContentRoute,
   postLiveSessionsRoute,
   postLiveSessionsSessionIdAcceptRoute,
   postLiveSessionsSessionIdForkRoute,
   postLiveSessionsSessionIdHangupRoute,
   postLiveSessionsSessionIdReferRoute,
   postLiveSessionsSessionIdRejectRoute,
+  getLiveSessionsSessionIdContentRoute,
 } from '../routes'
 
 export const postLiveSessionsRouteHandler: RouteHandler<typeof postLiveSessionsRoute> = async (

@@ -1,74 +1,76 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteUserManagementAuthkitOauthResourcesIdRoute,
-  deleteUserManagementOrganizationMembershipsIdRoute,
-  deleteUserManagementRedirectUrisIdRoute,
-  deleteUserManagementUsersIdRoute,
-  deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRoute,
-  deleteUserManagementUsersUserIdConnectedAccountsSlugRoute,
-  deleteUserManagementWaitlistEntriesIdRoute,
-  getUserManagementAuthkitOauthResourcesRoute,
-  getUserManagementAuthorizeRoute,
-  getUserManagementCorsOriginsRoute,
-  getUserManagementEmailVerificationIdRoute,
-  getUserManagementInvitationsByTokenTokenRoute,
-  getUserManagementInvitationsIdRoute,
-  getUserManagementInvitationsRoute,
-  getUserManagementJwtTemplateRoute,
-  getUserManagementMagicAuthIdRoute,
-  getUserManagementOrganizationMembershipsIdRoute,
-  getUserManagementOrganizationMembershipsOmIdGroupsRoute,
-  getUserManagementOrganizationMembershipsRoute,
-  getUserManagementPasswordResetIdRoute,
-  getUserManagementRadarChallengesIdRoute,
-  getUserManagementRedirectUrisRoute,
-  getUserManagementSessionsLogoutRoute,
-  getUserManagementUsersExternalIdExternalIdRoute,
-  getUserManagementUsersIdIdentitiesRoute,
-  getUserManagementUsersIdRoute,
-  getUserManagementUsersIdSessionsRoute,
-  getUserManagementUsersRoute,
-  getUserManagementUsersUserIdApiKeysRoute,
-  getUserManagementUsersUserIdAuthorizedApplicationsRoute,
-  getUserManagementUsersUserIdConnectedAccountsSlugRoute,
-  getUserManagementUsersUserIdDataProvidersRoute,
-  getUserManagementUsersUserIdFeatureFlagsRoute,
-  getUserManagementUsersUserlandUserIdAuthFactorsRoute,
-  getUserManagementWaitlistsIdEntriesRoute,
-  getUserManagementWaitlistsIdRoute,
-  getUserManagementWaitlistsRoute,
   postUserManagementAuthenticateRoute,
   postUserManagementAuthkitOauthResourcesRoute,
+  getUserManagementAuthkitOauthResourcesRoute,
+  deleteUserManagementAuthkitOauthResourcesIdRoute,
+  getUserManagementAuthorizeRoute,
   postUserManagementAuthorizeDeviceRoute,
   postUserManagementCorsOriginsRoute,
+  getUserManagementCorsOriginsRoute,
+  deleteUserManagementCorsOriginsIdRoute,
+  getUserManagementEmailVerificationIdRoute,
+  getUserManagementInvitationsRoute,
+  postUserManagementInvitationsRoute,
+  getUserManagementInvitationsByTokenTokenRoute,
+  getUserManagementInvitationsIdRoute,
   postUserManagementInvitationsIdAcceptRoute,
   postUserManagementInvitationsIdResendRoute,
   postUserManagementInvitationsIdRevokeRoute,
-  postUserManagementInvitationsRoute,
+  getUserManagementJwtTemplateRoute,
+  putUserManagementJwtTemplateRoute,
   postUserManagementMagicAuthRoute,
+  getUserManagementMagicAuthIdRoute,
+  getUserManagementOrganizationMembershipsRoute,
   postUserManagementOrganizationMembershipsRoute,
-  postUserManagementPasswordResetConfirmRoute,
+  getUserManagementOrganizationMembershipsIdRoute,
+  deleteUserManagementOrganizationMembershipsIdRoute,
+  putUserManagementOrganizationMembershipsIdRoute,
+  putUserManagementOrganizationMembershipsIdDeactivateRoute,
+  putUserManagementOrganizationMembershipsIdReactivateRoute,
+  getUserManagementOrganizationMembershipsOmIdGroupsRoute,
   postUserManagementPasswordResetRoute,
+  postUserManagementPasswordResetConfirmRoute,
+  getUserManagementPasswordResetIdRoute,
   postUserManagementRadarChallengesRoute,
+  getUserManagementRadarChallengesIdRoute,
   postUserManagementRedirectUrisRoute,
+  getUserManagementRedirectUrisRoute,
+  deleteUserManagementRedirectUrisIdRoute,
+  getUserManagementSessionsLogoutRoute,
   postUserManagementSessionsRevokeRoute,
+  getUserManagementUsersRoute,
+  postUserManagementUsersRoute,
+  getUserManagementUsersExternalIdExternalIdRoute,
+  getUserManagementUsersIdentitiesProviderIdpIdRoute,
+  putUserManagementUsersIdRoute,
+  getUserManagementUsersIdRoute,
+  deleteUserManagementUsersIdRoute,
   postUserManagementUsersIdEmailChangeConfirmRoute,
   postUserManagementUsersIdEmailChangeSendRoute,
   postUserManagementUsersIdEmailVerificationConfirmRoute,
   postUserManagementUsersIdEmailVerificationSendRoute,
-  postUserManagementUsersRoute,
+  getUserManagementUsersIdIdentitiesRoute,
+  getUserManagementUsersIdSessionsRoute,
+  getUserManagementUsersUserIdApiKeysRoute,
   postUserManagementUsersUserIdApiKeysRoute,
+  getUserManagementUsersUserIdFeatureFlagsRoute,
+  getUserManagementUsersUserIdAuthorizedApplicationsRoute,
+  deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRoute,
+  getUserManagementUsersUserIdConnectedAccountsSlugRoute,
+  deleteUserManagementUsersUserIdConnectedAccountsSlugRoute,
   postUserManagementUsersUserIdConnectedAccountsSlugRoute,
+  putUserManagementUsersUserIdConnectedAccountsSlugRoute,
+  getUserManagementUsersUserIdDataProvidersRoute,
   postUserManagementUsersUserlandUserIdAuthFactorsRoute,
+  getUserManagementUsersUserlandUserIdAuthFactorsRoute,
+  deleteUserManagementWaitlistEntriesIdRoute,
   postUserManagementWaitlistEntriesIdApproveRoute,
   postUserManagementWaitlistEntriesIdDenyRoute,
+  getUserManagementWaitlistsRoute,
+  getUserManagementWaitlistsIdRoute,
+  getUserManagementWaitlistsIdEntriesRoute,
   postUserManagementWaitlistsIdEntriesRoute,
-  putUserManagementJwtTemplateRoute,
-  putUserManagementOrganizationMembershipsIdDeactivateRoute,
-  putUserManagementOrganizationMembershipsIdReactivateRoute,
-  putUserManagementOrganizationMembershipsIdRoute,
-  putUserManagementUsersIdRoute,
-  putUserManagementUsersUserIdConnectedAccountsSlugRoute,
 } from '../routes'
 
 export const postUserManagementAuthenticateRouteHandler: RouteHandler<
@@ -115,6 +117,12 @@ export const postUserManagementCorsOriginsRouteHandler: RouteHandler<
 
 export const getUserManagementCorsOriginsRouteHandler: RouteHandler<
   typeof getUserManagementCorsOriginsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserManagementCorsOriginsIdRouteHandler: RouteHandler<
+  typeof deleteUserManagementCorsOriginsIdRoute
 > = async (c) => {
   throw new Error('Not implemented')
 }
@@ -313,6 +321,12 @@ export const postUserManagementUsersRouteHandler: RouteHandler<
 
 export const getUserManagementUsersExternalIdExternalIdRouteHandler: RouteHandler<
   typeof getUserManagementUsersExternalIdExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersIdentitiesProviderIdpIdRouteHandler: RouteHandler<
+  typeof getUserManagementUsersIdentitiesProviderIdpIdRoute
 > = async (c) => {
   throw new Error('Not implemented')
 }

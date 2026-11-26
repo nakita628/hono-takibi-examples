@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteRedirectUrlsIdRoute,
-  getRedirectUrlsIdRoute,
   getRedirectUrlsRoute,
   postRedirectUrlsRoute,
+  getRedirectUrlsIdRoute,
+  deleteRedirectUrlsIdRoute,
 } from '../routes'
 
 export const getRedirectUrlsRouteHandler: RouteHandler<typeof getRedirectUrlsRoute> = async (c) => {

@@ -2,10 +2,10 @@ import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   getTemplatesTemplateTypeRoute,
   getTemplatesTemplateTypeSlugRoute,
-  postTemplatesTemplateTypeSlugPreviewRoute,
-  postTemplatesTemplateTypeSlugRevertRoute,
-  postTemplatesTemplateTypeSlugToggleDeliveryRoute,
   putTemplatesTemplateTypeSlugRoute,
+  postTemplatesTemplateTypeSlugRevertRoute,
+  postTemplatesTemplateTypeSlugPreviewRoute,
+  postTemplatesTemplateTypeSlugToggleDeliveryRoute,
 } from '../routes'
 
 export const getTemplatesTemplateTypeRouteHandler: RouteHandler<

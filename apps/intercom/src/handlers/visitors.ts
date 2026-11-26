@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getVisitorsRoute, postVisitorsConvertRoute, putVisitorsRoute } from '../routes'
+import type { putVisitorsRoute, getVisitorsRoute, postVisitorsConvertRoute } from '../routes'
 
 export const putVisitorsRouteHandler: RouteHandler<typeof putVisitorsRoute> = async (c) => {
   throw new Error('Not implemented')

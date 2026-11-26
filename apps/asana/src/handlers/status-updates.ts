@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  getStatusUpdatesStatusUpdateGidRoute,
   deleteStatusUpdatesStatusUpdateGidRoute,
   getStatusUpdatesRoute,
-  getStatusUpdatesStatusUpdateGidRoute,
   postStatusUpdatesRoute,
 } from '../routes'
 

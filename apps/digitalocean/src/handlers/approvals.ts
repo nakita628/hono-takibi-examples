@@ -1,7 +1,7 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  postApprovalsApprovalIdRoute,
   postApprovalsSessionSessionIdApprovalIdRoute,
+  postApprovalsApprovalIdRoute,
 } from '../routes'
 
 export const postApprovalsSessionSessionIdApprovalIdRouteHandler: RouteHandler<

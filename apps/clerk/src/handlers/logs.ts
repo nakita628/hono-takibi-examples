@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getLogsEventTimeAndIdRoute,
-  getLogsGroupsGroupIdEventsRoute,
   getLogsRoute,
   getLogsSchemasRoute,
   getLogsTypesRoute,
+  getLogsGroupsGroupIdEventsRoute,
+  getLogsEventTimeAndIdRoute,
 } from '../routes'
 
 export const getLogsRouteHandler: RouteHandler<typeof getLogsRoute> = async (c) => {

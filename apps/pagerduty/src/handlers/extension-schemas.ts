@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getExtensionSchemasIdRoute, getExtensionSchemasRoute } from '../routes'
+import type { getExtensionSchemasRoute, getExtensionSchemasIdRoute } from '../routes'
 
 export const getExtensionSchemasRouteHandler: RouteHandler<
   typeof getExtensionSchemasRoute

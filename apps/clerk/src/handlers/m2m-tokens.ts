@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  postM2mTokensRoute,
   getM2mTokensRoute,
   postM2mTokensM2mTokenIdRevokeRoute,
-  postM2mTokensRoute,
   postM2mTokensVerifyRoute,
 } from '../routes'
 

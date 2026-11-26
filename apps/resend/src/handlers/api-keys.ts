@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteApiKeysApiKeyIdRoute,
+  postApiKeysRoute,
   getApiKeysRoute,
   patchApiKeysApiKeyIdRoute,
-  postApiKeysRoute,
+  deleteApiKeysApiKeyIdRoute,
 } from '../routes'
 
 export const postApiKeysRouteHandler: RouteHandler<typeof postApiKeysRoute> = async (c) => {

@@ -1479,6 +1479,15 @@ const AgentManifestSchema = z
                     description: 'Write-only tenantSecret plaintext; never persisted or returned.',
                     example: 'sk-example',
                   }),
+                actor: z
+                  .string()
+                  .regex(/^[A-Za-z0-9._-]{1,64}$/)
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      "For source oauth only: the user_id of the provider connection the secret uses, instead of your team's connection for provider. Requires naming connections in secrets to be enabled for your team. Only a secret with actor can switch to another connection on a running session (see the session update operation).",
+                    example: 'github1',
+                  }),
                 env: z
                   .boolean()
                   .exactOptional()
@@ -1493,7 +1502,7 @@ const AgentManifestSchema = z
           .exactOptional()
           .openapi({
             description:
-              'Declared credential requirements. source tenantSecret is enforced today: value is write-only plaintext, extracted into Secrets Manager at create and never persisted or returned. source oauth requires provider, carries no value, and is accepted but not yet enforced. ref is legacy and ignored. env false keeps the resolved value out of the guest environment (mount-only slots).',
+              "Declared credential requirements. source tenantSecret is enforced today: value is write-only plaintext, extracted into Secrets Manager at create and never persisted or returned. source oauth requires provider and carries no value: at session create, the guest environment receives a token from your team's connection for provider, or from the connection that actor names, and session create fails if that connection isn't connected. ref is legacy and ignored. env false keeps the resolved value out of the guest environment (mount-only slots).",
           }),
         defaults: z
           .object({
@@ -1670,6 +1679,508 @@ const AgentConfigSchema = z
   .openapi('AgentConfig')
 
 type AgentConfigResponseType = { config?: z.infer<typeof AgentConfigSchema> }
+
+const AgentKindSchema = z
+  .enum([
+    'AGENT_KIND_UNSPECIFIED',
+    'AGENT_KIND_CLAUDE_CODE',
+    'AGENT_KIND_OPENCODE',
+    'AGENT_KIND_CODEX_CLI',
+    'AGENT_KIND_CURSOR_CLI',
+    'AGENT_KIND_NONE',
+    'AGENT_KIND_CUSTOM',
+    'AGENT_KIND_HERMES',
+    'AGENT_KIND_OPENAI_CODEX',
+    'AGENT_KIND_LANGGRAPH',
+    'AGENT_KIND_CREWAI',
+  ])
+  .default('AGENT_KIND_UNSPECIFIED')
+  .openapi({
+    description:
+      'AgentKind identifies what runs inside the session sandbox. CreateSession accepts CLAUDE_CODE, OPENCODE, CODEX_CLI, CURSOR_CLI, OPENAI_CODEX, LANGGRAPH, and CREWAI (the supported set is overridable via HARNESS_SUPPORTED_AGENT_KINDS); other values are rejected with 400. AGENT_KIND_OPENAI_CODEX is the OpenAI sandbox-provider kind (DO runs codex exec-server; the agent loop lives at OpenAI). AGENT_KIND_LANGGRAPH is the LangGraph framework adapter. AGENT_KIND_CREWAI is the CrewAI Crew framework adapter: like LANGGRAPH the template bakes no agent code, so spec.env must supply FRAMEWORK_REPO and FRAMEWORK_REPO_SHA; a Crew kickoff is one-shot and exposes no HITL surface. CREWAI is additionally gated per team and returns 400 for teams it is not enabled for.',
+    example: 'AGENT_KIND_UNSPECIFIED',
+  })
+  .openapi('AgentKind')
+
+const SessionStatusSchema = z
+  .enum([
+    'SESSION_STATUS_UNSPECIFIED',
+    'SESSION_STATUS_PROVISIONING',
+    'SESSION_STATUS_READY',
+    'SESSION_STATUS_DETACHED',
+    'SESSION_STATUS_DESTROYING',
+    'SESSION_STATUS_DESTROYED',
+    'SESSION_STATUS_FAILED',
+    'SESSION_STATUS_PAUSED',
+    'SESSION_STATUS_UPDATING',
+    'SESSION_STATUS_ALL',
+    'SESSION_STATUS_LOCKED',
+  ])
+  .default('SESSION_STATUS_UNSPECIFIED')
+  .openapi({
+    description:
+      'SessionStatus is the lifecycle state of the sandbox + agent pair. SESSION_STATUS_ALL is a ListSessions status-filter value only -- no session is ever actually in this status. SESSION_STATUS_LOCKED is reserved for internal use and never appears in an end-user-facing response. SESSION_STATUS_UPDATING is reported while a session settings update (PATCH with `manifest_yaml`) is being applied; poll the session until it leaves this status.',
+    example: 'SESSION_STATUS_UNSPECIFIED',
+  })
+  .openapi('SessionStatus')
+
+const SessionConfigUpdateStateSchema = z
+  .enum(['APPLYING', 'APPLIED', 'APPLIED_RESTARTED', 'FAILED'])
+  .openapi({
+    description:
+      'State of a session settings update. `APPLYING`: in progress. `APPLIED`: live. `APPLIED_RESTARTED`: live, and the agent was restarted to apply it (`env` and plain secret changes). `FAILED`: the update did not take effect; see `reverted` and `detail`.',
+    example: 'APPLIED',
+  })
+  .openapi('SessionConfigUpdateState')
+
+const SessionConfigSectionChangesSchema = z
+  .object({
+    added: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ example: ['jira'] }),
+    removed: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ example: ['docs'] }),
+    changed: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ example: ['github'] }),
+  })
+  .openapi({
+    description: 'Names of the entries added, removed, or changed in one manifest section.',
+    required: [],
+  })
+  .openapi('SessionConfigSectionChanges')
+
+const SessionConfigEgressChangesSchema = z
+  .object({
+    mode: z
+      .enum(['allowlist', 'unrestricted', 'deny_all'])
+      .exactOptional()
+      .openapi({
+        description: 'The new egress mode. Present only when the mode changed.',
+        example: 'allowlist',
+      }),
+    added: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ example: ['example.atlassian.net'] }),
+    removed: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ example: ['203.0.113.10'] }),
+  })
+  .openapi({
+    description:
+      'The hosts and IP addresses an `egress` change added or removed, and the new egress mode when it changed. Omitted when the egress policy is unchanged.',
+    required: [],
+  })
+  .openapi('SessionConfigEgressChanges')
+
+const SessionConfigPermissionsChangesSchema = z
+  .object({
+    default: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The new default action (`allow`, `ask`, or `deny`), when it changed. Empty when the default was removed.',
+        example: 'ask',
+      }),
+    rules: z
+      .object({
+        added: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ example: ['bash "npm test"'] }),
+        removed: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ example: ['bash "rm -rf *"'] }),
+        changed: z
+          .array(z.string())
+          .exactOptional()
+          .openapi({ example: ['do.actions/web_search'] }),
+      })
+      .exactOptional()
+      .openapi({
+        description:
+          'Names of the rules added, removed, or changed. `changed` covers a rule kept under the same tool and match with another action, or at another position. The last matching rule wins, so the order is part of the policy.',
+        required: [],
+      }),
+  })
+  .openapi({
+    description:
+      'Changes to the permission policy. A rule is named by its tool and match values, for example `bash "git *"` or `do.actions/web_search`. Omitted when the permissions are identical.',
+    required: [],
+  })
+  .openapi('SessionConfigPermissionsChanges')
+
+const SessionConfigChangesSchema = z
+  .object({
+    tools: SessionConfigSectionChangesSchema.exactOptional(),
+    env: SessionConfigSectionChangesSchema.exactOptional(),
+    secrets: SessionConfigSectionChangesSchema.exactOptional().openapi({
+      description:
+        "Secret names, never values. On an update, `changed` lists the secrets that got a new value, were bound to another URL or scheme, or were switched to another OAuth connection. On `config_diff`, `changed` lists only the secrets bound to a different URL or scheme than in the agent config; a switched OAuth connection isn't listed there.",
+    }),
+    egress: SessionConfigEgressChangesSchema.exactOptional(),
+    permissions: SessionConfigPermissionsChangesSchema.exactOptional(),
+    skills: SessionConfigSectionChangesSchema.exactOptional().openapi({
+      description:
+        'Skill names, never their content. `changed` lists the skills kept under the same name whose definition changed.',
+    }),
+  })
+  .openapi({
+    description: 'Changes made in each manifest section. Secret values are never included.',
+    required: [],
+  })
+  .openapi('SessionConfigChanges')
+
+const SessionConfigUpdateSchema = z
+  .object({
+    update_id: z
+      .string()
+      .exactOptional()
+      .openapi({ example: '019b0000-0000-7000-8000-000000000001' }),
+    session_id: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890' }),
+    kind: z.enum(['update', 'rollback']).exactOptional().openapi({ example: 'update' }),
+    state: SessionConfigUpdateStateSchema.exactOptional(),
+    sections: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({ description: 'Manifest sections this update touched.', example: ['tools'] }),
+    changes: SessionConfigChangesSchema.exactOptional(),
+    error: z
+      .enum(['update_failed', 'requires_new_session', 'interrupted'])
+      .exactOptional()
+      .openapi({
+        description: 'Failure class; present when state is FAILED.',
+        example: 'update_failed',
+      }),
+    reverted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description: 'True when a failed update was rolled back to the previous config.',
+      }),
+    detail: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Human-readable explanation, typically for a failed update.',
+        example: 'agent restart did not become healthy; reverted to previous config',
+      }),
+    manifest_hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Hash of the manifest after this update.', example: '9f2c1a7e' }),
+    previous_hash: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Hash of the manifest before this update.', example: '3b8d0e54' }),
+    user_uuid: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'User who requested the update.',
+        example: '4f3c2b1a-0000-4000-8000-000000000000',
+      }),
+    user_email: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'Email of the user who requested the update.',
+        example: 'user@example.com',
+      }),
+    started_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2026-11-11T12:00:00Z' }),
+    finished_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2026-11-11T12:00:20Z' }),
+  })
+  .openapi({
+    description:
+      'The most recent session settings update to the session, or the automatic rollback of a failed one.',
+    required: [],
+  })
+  .openapi('SessionConfigUpdate')
+
+const SessionMutabilitySchema = z
+  .strictObject({
+    model: z
+      .boolean()
+      .openapi({
+        description:
+          "The session's model can be changed, through `env.HARNESS_INFERENCE_MODEL` or, on a session with its own endpoint, the env key that endpoint reads its model from. Independent of `env`.",
+        example: true,
+      }),
+    env: z
+      .boolean()
+      .openapi({
+        description:
+          'A live update can change `env` keys other than the model keys. A patch that changes both needs both.',
+        example: true,
+      }),
+    secrets: z
+      .boolean()
+      .openapi({ description: 'A live update can change the `secrets` section.', example: true }),
+    tools: z
+      .boolean()
+      .openapi({
+        description:
+          'A live update can change the `tools` section: the Action Gateway (`do.actions`) entries. A custom MCP server also needs `custom_tools`.',
+        example: true,
+      }),
+    permissions: z
+      .boolean()
+      .openapi({
+        description:
+          "A live update can change `permissions`: the default and the rules of the types the session's agent enforces live. `filesystem` and `network` never change on a running session.",
+        example: true,
+      }),
+    egress: z
+      .boolean()
+      .openapi({
+        description:
+          'A live update can change the `egress` section: the destinations the session can reach.',
+        example: true,
+      }),
+    system_prompt: z
+      .boolean()
+      .openapi({
+        description: "The session's standing instruction can be replaced by a live update.",
+        example: false,
+      }),
+    custom_tools: z
+      .boolean()
+      .openapi({
+        description:
+          "A live update can add, modify, or remove a custom MCP server (`name` and `url`) in the `tools` section. It also needs `tools`. The agent restarts when the change alters its environment. A session reads `false` until its agent's custom-server update is supported, and keeps reading `false` after that if it was created earlier. A server with `auth` that is added, moved to another `url`, or given another secret slot must carry its secret's value in the same request, or use a URL-bound secret whose `url` covers the server's `url` (`400` otherwise). A new server host under an egress allowlist also needs `egress`.",
+        example: false,
+      }),
+    skills: z
+      .boolean()
+      .openapi({
+        description:
+          "A live update can change the `skills` section, the inline skill list, which is replaced as a whole. Only claude-code, codex and opencode can reload skills live. A session reads `false` until its agent's live skill update is supported, and keeps reading `false` after that if it was created earlier. While skills updates are enabled team by team, a team that has them can also change the skills of a claude-code, codex, or opencode session that reads `false`, unless the session was created before this field existed.",
+        example: false,
+      }),
+  })
+  .openapi({
+    description:
+      "Which manifest sections a live config update (`PATCH /v2/agents/sessions/{session_id}` with `manifest_yaml`) can change on this session. It describes what this session's agent can take, recorded when the session was created. A flag that is `false` answers `409` with `(update_unsupported)` when a PATCH tries to change what it covers. A session created before the field existed reads `false` for every key. A top-level `model` section in `manifest_yaml` returns `400` whatever this says.",
+    required: [
+      'model',
+      'env',
+      'secrets',
+      'tools',
+      'permissions',
+      'egress',
+      'system_prompt',
+      'custom_tools',
+      'skills',
+    ],
+  })
+  .openapi('SessionMutability')
+
+const DefinitionsSessionSchema = z
+  .object({
+    session_id: z
+      .string()
+      .exactOptional()
+      .openapi({ example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890' }),
+    name: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'User-assignable display name, unique per team among non-terminal sessions. Usable in place of session_id by clients (doctl / Console resolve it to the id via the ListSessions ?name= filter; the {session_id} path stays UUID-only). Supplied via the environment-spec metadata.name, or auto-generated ("session-<agent-type>-<date-time>") when omitted.',
+        example: 'demo-agent',
+      }),
+    parent_session_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Lineage: id of the session this one was forked from. Omitted/empty for root (non-fork) sessions.',
+        example: 'example',
+      }),
+    fork_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          "Lineage: branch label assigned when this session was created by ForkSession (or rollback's internal fork). Omitted/empty for root sessions.",
+        example: '11111111-2222-3333-4444-555555555555',
+      }),
+    fork_from_checkpoint_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Lineage: harness-api checkpoint id (cp_<hex>) the child booted from at fork time. Drives OHP inherited-history replay on attach. Omitted/empty for root sessions and legacy forks created before this field was persisted.',
+        example: 'example',
+      }),
+    agent_kind: AgentKindSchema.exactOptional(),
+    status: SessionStatusSchema.exactOptional(),
+    sandbox_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Sandbox identity for support / debugging. Informational; omitted until a sandbox is allocated.',
+        example: 'example',
+      }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({ example: '2026-08-01T12:00:00Z' }),
+    last_event_at: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          "Timestamp of the most recent event in this session's canonical stream. Drives the inactivity policy that pauses idle sessions.",
+        example: '2026-08-01T12:00:00Z',
+      }),
+    keep_warm: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Session is exempt from idle auto-pause (manifest keep_warm, or the agent-kind default: hermes sessions keep warm). It still accepts a manual pause. Omitted when false.',
+        example: false,
+      }),
+    resume_on_topoff: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "Session consents to being resumed automatically when the team's prepayment balance is restored after a low-balance pause. Defaults to false at create time; may be toggled later via PATCH /v2/harness-runtime/sessions/{session_id} (resume_on_topoff only). Only a session paused with reason low_balance whose latest run did not complete is ever resumed automatically - a session the customer paused themselves, or one that idled out, stays paused regardless. Not an environment-spec field, and forks do not inherit it. Omitted when false.",
+        example: false,
+      }),
+    pause_reason: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Why this session is paused. Present only when status is SESSION_STATUS_PAUSED; omitted otherwise. Known values: manual (the customer paused the session), idle (inactivity auto-pause), zero_balance (prepay gate; stored rows may still say low_balance), trigger (a reuse trigger paused the session after a firing). Clients should treat an unrecognized value as an opaque reason string.',
+        example: 'manual',
+      }),
+    idle_timeout_seconds: z
+      .preprocess(
+        (val) =>
+          typeof val === 'number' && Number.isSafeInteger(val)
+            ? BigInt(val)
+            : typeof val === 'string' && /^-?\d+$/.test(val)
+              ? BigInt(val)
+              : val,
+        z.int64(),
+      )
+      .exactOptional()
+      .openapi({
+        type: 'integer',
+        format: 'int64',
+        description:
+          "This session's own idle-pause timeout (manifest idle_timeout). Omitted when the session uses the deployment-wide default.",
+        example: 60,
+      }),
+    repo_hint: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional repository hint supplied at session creation (first spec.workspace.repos entry of the manifest). Not authoritative; the agent may change repos in-session.',
+        example: 'example',
+      }),
+    warnings: z
+      .array(z.string())
+      .exactOptional()
+      .openapi({
+        description:
+          'Non-fatal advisories computed from the manifest at create time: one entry per populated accepted-but-not-yet-enforced section (flat names: secrets, model, tools, memory, budget, max_lifetime, mounts; legacy manifests get the corresponding spec.* paths), a deprecation entry when a legacy-envelope manifest or an adapter alias (codex-cli, cursor-cli) is used, and a heuristic entry per credential-looking spec.env value. Populated on the CreateSession response only.',
+        example: [],
+      }),
+    config_id: z
+      .uuid()
+      .exactOptional()
+      .openapi({
+        description:
+          'Durable Environment Config UUID the session was created from (inline manifests persist a config too, named after the session). Persisted and returned on create/get/list; absent only for sessions created before config references were stored.',
+        example: '11111111-2222-3333-4444-555555555555',
+      }),
+    openai_session_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'OpenAI Agents API session id (sess_…) this DO sandbox hosts. Populated only for AGENT_KIND_OPENAI_CODEX sessions (empty otherwise). Non-secret correlation metadata; a client (doctl agents attach) reads it to bridge to the OpenAI session. See docs/design/openai-sandbox-provider.md.',
+        example: 'example',
+      }),
+    openai_environment_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'OpenAI Agents API environment id (env_…), captured from the resolved CODEX_ENVIRONMENT_ID guest env value. Populated only for AGENT_KIND_OPENAI_CODEX sessions. Non-secret correlation metadata.',
+        example: 'example',
+      }),
+    region: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'DO region slug the session lives in, e.g. ric1. Stamped once at create from the region whose API host served the request, and never changed. Returned only for teams on the regional routing rollout; omitted otherwise.',
+        example: 'ric1',
+      }),
+    workspace_id: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The persistent workspace attached to the session, mounted at `/workspace`. Empty when the session has none. Fork and rollback return 409 for a session that has a workspace.',
+        example: '019a2f4e-8c1d-7b3a-9e5f-2d6c8a1b4e70',
+      }),
+    update: SessionConfigUpdateSchema.exactOptional(),
+    config_drifted: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          "True when the running config differs from the manifest the session was created from, for example after a successful PATCH with `manifest_yaml`. Omitted when false. `config_diff` doesn't cover every kind of drift: after an update that only switched an OAuth connection, `config_drifted` is true and `config_diff` is omitted. `manifest` shows the new `actor`.",
+        example: true,
+      }),
+    config_diff: SessionConfigChangesSchema.exactOptional(),
+    manifest: z
+      .looseObject({})
+      .exactOptional()
+      .openapi({
+        description:
+          'The effective manifest of the session. Present only when `config_drifted` is true. Never contains secret values.',
+      }),
+    mutability: SessionMutabilitySchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Session is the user-facing record of a environment session + sandbox pair.',
+    required: [],
+  })
+  .openapi('DefinitionsSession')
+
+type DefinitionsListSessionsResponseType = {
+  sessions?: z.infer<typeof DefinitionsSessionSchema>[]
+  next_page_token?: string
+}
+
+type ForkSessionResponseType = { sessions?: z.infer<typeof DefinitionsSessionSchema>[] }
 
 const AppsDeploymentJobSchema = z
   .object({
@@ -10184,9 +10695,8 @@ const ProviderCredentialsListResponseSchema = z
 
 const ProviderCredentialCreateSchema = z
   .xor([
-    z
-      .any()
-      .refine(
+    (() => {
+      const Schema = z.any().refine(
         (val) =>
           !z
             .union([
@@ -10223,19 +10733,57 @@ const ProviderCredentialCreateSchema = z
             ])
             .safeParse(val).success,
       )
-      .openapi({
-        required: ['api_key'],
-        not: {
-          anyOf: [
-            { required: ['client_id'] },
-            { required: ['client_secret'] },
-            { required: ['redirect_url'] },
-          ],
-        },
-      }),
-    z
-      .any()
-      .refine(
+      return z
+        .transform((val: z.input<typeof Schema>) => val)
+        .check((ctx: z.core.ParsePayload) => {
+          const reported = ctx.issues.length
+          try {
+            return ((ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'api_key')) {
+                  ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                }
+                if (Object.hasOwn(val, 'kind')) {
+                  const Schema = z.literal('PROVIDER_CREDENTIAL_KIND_API_KEY')
+                  if (!Schema.safeParse(Reflect.get(val, 'kind')).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          } catch (error) {
+            if (!(error instanceof z.core.$ZodAsyncError)) throw error
+            ctx.issues.length = reported
+            return (async (ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'api_key')) {
+                  ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                }
+                if (Object.hasOwn(val, 'kind')) {
+                  const Schema = z.literal('PROVIDER_CREDENTIAL_KIND_API_KEY')
+                  if (!(await Schema.safeParseAsync(Reflect.get(val, 'kind'))).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          }
+        })
+        .pipe(Schema)
+    })().openapi({
+      required: ['api_key'],
+      not: {
+        anyOf: [
+          { required: ['client_id'] },
+          { required: ['client_secret'] },
+          { required: ['redirect_url'] },
+        ],
+      },
+    }),
+    (() => {
+      const Schema = z.any().refine(
         (val) =>
           !z
             .union([
@@ -10262,13 +10810,57 @@ const ProviderCredentialCreateSchema = z
             ])
             .safeParse(val).success,
       )
-      .openapi({
-        required: ['client_id', 'client_secret'],
-        not: { anyOf: [{ required: ['api_key'] }, { required: ['credential_parameters'] }] },
-      }),
-    z
-      .any()
-      .refine(
+      return z
+        .transform((val: z.input<typeof Schema>) => val)
+        .check((ctx: z.core.ParsePayload) => {
+          const reported = ctx.issues.length
+          try {
+            return ((ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'client_id')) {
+                  ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                }
+                if (!Object.hasOwn(val, 'client_secret')) {
+                  ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                }
+                if (Object.hasOwn(val, 'kind')) {
+                  const Schema = z.literal('PROVIDER_CREDENTIAL_KIND_OAUTH_CLIENT')
+                  if (!Schema.safeParse(Reflect.get(val, 'kind')).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          } catch (error) {
+            if (!(error instanceof z.core.$ZodAsyncError)) throw error
+            ctx.issues.length = reported
+            return (async (ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (!Object.hasOwn(val, 'client_id')) {
+                  ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                }
+                if (!Object.hasOwn(val, 'client_secret')) {
+                  ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                }
+                if (Object.hasOwn(val, 'kind')) {
+                  const Schema = z.literal('PROVIDER_CREDENTIAL_KIND_OAUTH_CLIENT')
+                  if (!(await Schema.safeParseAsync(Reflect.get(val, 'kind'))).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          }
+        })
+        .pipe(Schema)
+    })().openapi({
+      required: ['client_id', 'client_secret'],
+      not: { anyOf: [{ required: ['api_key'] }, { required: ['credential_parameters'] }] },
+    }),
+    (() => {
+      const Schema = z.any().refine(
         (val) =>
           !z
             .union([
@@ -10335,18 +10927,51 @@ const ProviderCredentialCreateSchema = z
             ])
             .safeParse(val).success,
       )
-      .openapi({
-        not: {
-          anyOf: [
-            { required: ['api_key'] },
-            { required: ['client_id'] },
-            { required: ['client_secret'] },
-            { required: ['redirect_url'] },
-            { required: ['base_url'] },
-            { required: ['credential_parameters'] },
-          ],
-        },
-      }),
+      return z
+        .transform((val: z.input<typeof Schema>) => val)
+        .check((ctx: z.core.ParsePayload) => {
+          const reported = ctx.issues.length
+          try {
+            return ((ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (Object.hasOwn(val, 'kind')) {
+                  const Schema = z.literal('PROVIDER_CREDENTIAL_KIND_NONE')
+                  if (!Schema.safeParse(Reflect.get(val, 'kind')).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          } catch (error) {
+            if (!(error instanceof z.core.$ZodAsyncError)) throw error
+            ctx.issues.length = reported
+            return (async (ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (Object.hasOwn(val, 'kind')) {
+                  const Schema = z.literal('PROVIDER_CREDENTIAL_KIND_NONE')
+                  if (!(await Schema.safeParseAsync(Reflect.get(val, 'kind'))).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          }
+        })
+        .pipe(Schema)
+    })().openapi({
+      not: {
+        anyOf: [
+          { required: ['api_key'] },
+          { required: ['client_id'] },
+          { required: ['client_secret'] },
+          { required: ['redirect_url'] },
+          { required: ['base_url'] },
+          { required: ['credential_parameters'] },
+        ],
+      },
+    }),
   ])
   .and(
     z
@@ -14994,350 +15619,7 @@ const AgentConfigCloneRequestSchema = z
   })
   .openapi('AgentConfigCloneRequest')
 
-const AgentKindSchema = z
-  .enum([
-    'AGENT_KIND_UNSPECIFIED',
-    'AGENT_KIND_CLAUDE_CODE',
-    'AGENT_KIND_OPENCODE',
-    'AGENT_KIND_CODEX_CLI',
-    'AGENT_KIND_CURSOR_CLI',
-    'AGENT_KIND_NONE',
-    'AGENT_KIND_CUSTOM',
-    'AGENT_KIND_HERMES',
-    'AGENT_KIND_OPENAI_CODEX',
-    'AGENT_KIND_LANGGRAPH',
-    'AGENT_KIND_CREWAI',
-  ])
-  .default('AGENT_KIND_UNSPECIFIED')
-  .openapi({
-    description:
-      'AgentKind identifies what runs inside the session sandbox. CreateSession accepts CLAUDE_CODE, OPENCODE, CODEX_CLI, CURSOR_CLI, OPENAI_CODEX, LANGGRAPH, and CREWAI (the supported set is overridable via HARNESS_SUPPORTED_AGENT_KINDS); other values are rejected with 400. AGENT_KIND_OPENAI_CODEX is the OpenAI sandbox-provider kind (DO runs codex exec-server; the agent loop lives at OpenAI). AGENT_KIND_LANGGRAPH is the LangGraph framework adapter. AGENT_KIND_CREWAI is the CrewAI Crew framework adapter: like LANGGRAPH the template bakes no agent code, so spec.env must supply FRAMEWORK_REPO and FRAMEWORK_REPO_SHA; a Crew kickoff is one-shot and exposes no HITL surface. CREWAI is additionally gated per team and returns 400 for teams it is not enabled for.',
-    example: 'AGENT_KIND_UNSPECIFIED',
-  })
-  .openapi('AgentKind')
-
-const SessionStatusSchema = z
-  .enum([
-    'SESSION_STATUS_UNSPECIFIED',
-    'SESSION_STATUS_PROVISIONING',
-    'SESSION_STATUS_READY',
-    'SESSION_STATUS_DETACHED',
-    'SESSION_STATUS_DESTROYING',
-    'SESSION_STATUS_DESTROYED',
-    'SESSION_STATUS_FAILED',
-    'SESSION_STATUS_PAUSED',
-    'SESSION_STATUS_UPDATING',
-    'SESSION_STATUS_ALL',
-    'SESSION_STATUS_LOCKED',
-  ])
-  .default('SESSION_STATUS_UNSPECIFIED')
-  .openapi({
-    description:
-      'SessionStatus is the lifecycle state of the sandbox + agent pair. SESSION_STATUS_ALL is a ListSessions status-filter value only -- no session is ever actually in this status. SESSION_STATUS_LOCKED is reserved for internal use and never appears in an end-user-facing response. SESSION_STATUS_UPDATING is reported while a session settings update (PATCH with `manifest_yaml`) is being applied; poll the session until it leaves this status.',
-    example: 'SESSION_STATUS_UNSPECIFIED',
-  })
-  .openapi('SessionStatus')
-
-const SessionConfigUpdateStateSchema = z
-  .enum(['APPLYING', 'APPLIED', 'APPLIED_RESTARTED', 'FAILED'])
-  .openapi({
-    description:
-      'State of a session settings update. `APPLYING`: in progress. `APPLIED`: live. `APPLIED_RESTARTED`: live, and the agent was restarted to apply it (`env` and `secrets` changes). `FAILED`: the update did not take effect; see `reverted` and `detail`.',
-    example: 'APPLIED',
-  })
-  .openapi('SessionConfigUpdateState')
-
-const SessionConfigSectionChangesSchema = z
-  .object({
-    added: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ example: ['jira'] }),
-    removed: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ example: ['docs'] }),
-    changed: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ example: ['github'] }),
-  })
-  .openapi({
-    description: 'Names of the entries added, removed, or changed in one manifest section.',
-    required: [],
-  })
-  .openapi('SessionConfigSectionChanges')
-
-const SessionConfigChangesSchema = z
-  .object({
-    tools: SessionConfigSectionChangesSchema.exactOptional(),
-    env: SessionConfigSectionChangesSchema.exactOptional(),
-    secrets: SessionConfigSectionChangesSchema.exactOptional(),
-  })
-  .openapi({
-    description: 'Changes made in each manifest section. Secret values are never included.',
-    required: [],
-  })
-  .openapi('SessionConfigChanges')
-
-const SessionConfigUpdateSchema = z
-  .object({
-    update_id: z
-      .string()
-      .exactOptional()
-      .openapi({ example: '019b0000-0000-7000-8000-000000000001' }),
-    session_id: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890' }),
-    kind: z.enum(['update', 'rollback']).exactOptional().openapi({ example: 'update' }),
-    state: SessionConfigUpdateStateSchema.exactOptional(),
-    sections: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({ description: 'Manifest sections this update touched.', example: ['tools'] }),
-    changes: SessionConfigChangesSchema.exactOptional(),
-    error: z
-      .enum(['update_failed', 'requires_new_session', 'interrupted'])
-      .exactOptional()
-      .openapi({
-        description: 'Failure class; present when state is FAILED.',
-        example: 'update_failed',
-      }),
-    reverted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description: 'True when a failed update was rolled back to the previous config.',
-      }),
-    detail: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Human-readable explanation, typically for a failed update.',
-        example: 'agent restart did not become healthy; reverted to previous config',
-      }),
-    manifest_hash: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Hash of the manifest after this update.', example: '9f2c1a7e' }),
-    previous_hash: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Hash of the manifest before this update.', example: '3b8d0e54' }),
-    user_uuid: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'User who requested the update.',
-        example: '4f3c2b1a-0000-4000-8000-000000000000',
-      }),
-    user_email: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'Email of the user who requested the update.',
-        example: 'user@example.com',
-      }),
-    started_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2026-11-11T12:00:00Z' }),
-    finished_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2026-11-11T12:00:20Z' }),
-  })
-  .openapi({
-    description:
-      'The most recent session settings update to the session, or the automatic rollback of a failed one.',
-    required: [],
-  })
-  .openapi('SessionConfigUpdate')
-
-const DefinitionsSessionSchema = z
-  .object({
-    session_id: z
-      .string()
-      .exactOptional()
-      .openapi({ example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890' }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'User-assignable display name, unique per team among non-terminal sessions. Usable in place of session_id by clients (doctl / Console resolve it to the id via the ListSessions ?name= filter; the {session_id} path stays UUID-only). Supplied via the environment-spec metadata.name, or auto-generated ("session-<agent-type>-<date-time>") when omitted.',
-        example: 'demo-agent',
-      }),
-    parent_session_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Lineage: id of the session this one was forked from. Omitted/empty for root (non-fork) sessions.',
-        example: 'example',
-      }),
-    fork_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          "Lineage: branch label assigned when this session was created by ForkSession (or rollback's internal fork). Omitted/empty for root sessions.",
-        example: '11111111-2222-3333-4444-555555555555',
-      }),
-    fork_from_checkpoint_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Lineage: harness-api checkpoint id (cp_<hex>) the child booted from at fork time. Drives OHP inherited-history replay on attach. Omitted/empty for root sessions and legacy forks created before this field was persisted.',
-        example: 'example',
-      }),
-    agent_kind: AgentKindSchema.exactOptional(),
-    status: SessionStatusSchema.exactOptional(),
-    sandbox_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Sandbox identity for support / debugging. Informational; omitted until a sandbox is allocated.',
-        example: 'example',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ example: '2026-08-01T12:00:00Z' }),
-    last_event_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          "Timestamp of the most recent event in this session's canonical stream. Drives the inactivity policy that pauses idle sessions.",
-        example: '2026-08-01T12:00:00Z',
-      }),
-    keep_warm: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Session is exempt from idle auto-pause (manifest keep_warm, or the agent-kind default: hermes sessions keep warm). It still accepts a manual pause. Omitted when false.',
-        example: false,
-      }),
-    resume_on_topoff: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          "Session consents to being resumed automatically when the team's prepayment balance is restored after a low-balance pause. Defaults to false at create time; may be toggled later via PATCH /v2/harness-runtime/sessions/{session_id} (resume_on_topoff only). Only a session paused with reason low_balance whose latest run did not complete is ever resumed automatically - a session the customer paused themselves, or one that idled out, stays paused regardless. Not an environment-spec field, and forks do not inherit it. Omitted when false.",
-        example: false,
-      }),
-    pause_reason: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Why this session is paused. Present only when status is SESSION_STATUS_PAUSED; omitted otherwise. Known values: manual (the customer paused the session), idle (inactivity auto-pause), zero_balance (prepay gate; stored rows may still say low_balance), trigger (a reuse trigger paused the session after a firing). Clients should treat an unrecognized value as an opaque reason string.',
-        example: 'manual',
-      }),
-    idle_timeout_seconds: z
-      .preprocess(
-        (val) =>
-          typeof val === 'number' && Number.isSafeInteger(val)
-            ? BigInt(val)
-            : typeof val === 'string' && /^-?\d+$/.test(val)
-              ? BigInt(val)
-              : val,
-        z.int64(),
-      )
-      .exactOptional()
-      .openapi({
-        type: 'integer',
-        format: 'int64',
-        description:
-          "This session's own idle-pause timeout (manifest idle_timeout). Omitted when the session uses the deployment-wide default.",
-        example: 60,
-      }),
-    repo_hint: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional repository hint supplied at session creation (first spec.workspace.repos entry of the manifest). Not authoritative; the agent may change repos in-session.',
-        example: 'example',
-      }),
-    warnings: z
-      .array(z.string())
-      .exactOptional()
-      .openapi({
-        description:
-          'Non-fatal advisories computed from the manifest at create time: one entry per populated accepted-but-not-yet-enforced section (flat names: secrets, model, tools, memory, budget, max_lifetime, mounts; legacy manifests get the corresponding spec.* paths), a deprecation entry when a legacy-envelope manifest or an adapter alias (codex-cli, cursor-cli) is used, and a heuristic entry per credential-looking spec.env value. Populated on the CreateSession response only.',
-        example: [],
-      }),
-    config_id: z
-      .uuid()
-      .exactOptional()
-      .openapi({
-        description:
-          'Durable Environment Config UUID the session was created from (inline manifests persist a config too, named after the session). Persisted and returned on create/get/list; absent only for sessions created before config references were stored.',
-        example: '11111111-2222-3333-4444-555555555555',
-      }),
-    openai_session_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'OpenAI Agents API session id (sess_…) this DO sandbox hosts. Populated only for AGENT_KIND_OPENAI_CODEX sessions (empty otherwise). Non-secret correlation metadata; a client (doctl agents attach) reads it to bridge to the OpenAI session. See docs/design/openai-sandbox-provider.md.',
-        example: 'example',
-      }),
-    openai_environment_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'OpenAI Agents API environment id (env_…), captured from the resolved CODEX_ENVIRONMENT_ID guest env value. Populated only for AGENT_KIND_OPENAI_CODEX sessions. Non-secret correlation metadata.',
-        example: 'example',
-      }),
-    region: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'DO region slug the session lives in, e.g. ric1. Stamped once at create from the region whose API host served the request, and never changed. Returned only for teams on the regional routing rollout; omitted otherwise.',
-        example: 'ric1',
-      }),
-    workspace_id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The persistent workspace attached to the session, mounted at `/workspace`. Empty when the session has none. Fork and rollback return 409 for a session that has a workspace.',
-        example: '019a2f4e-8c1d-7b3a-9e5f-2d6c8a1b4e70',
-      }),
-    update: SessionConfigUpdateSchema.exactOptional(),
-    config_drifted: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'True when the running config differs from the manifest the session was created from, for example after a successful PATCH with `manifest_yaml`. Omitted when false.',
-        example: true,
-      }),
-    config_diff: SessionConfigChangesSchema.exactOptional(),
-    manifest: z
-      .looseObject({})
-      .exactOptional()
-      .openapi({
-        description:
-          'The effective manifest of the session. Present only when `config_drifted` is true. Never contains secret values.',
-      }),
-  })
-  .openapi({
-    description: 'Session is the user-facing record of a environment session + sandbox pair.',
-    required: [],
-  })
-  .openapi('DefinitionsSession')
-
-const DefinitionsListSessionsResponseSchema = z
+const DefinitionsListSessionsResponseSchema: z.ZodType<DefinitionsListSessionsResponseType> = z
   .object({
     sessions: z.array(DefinitionsSessionSchema).exactOptional(),
     next_page_token: z
@@ -15634,7 +15916,7 @@ const PatchSessionRequestSchema = z
       .exactOptional()
       .openapi({
         description:
-          "A partial agent manifest, as a YAML string, that holds only the sections to change. Can't\nbe combined with `resume_on_topoff`. Requires session settings updates to be enabled for\nyour team (`403` otherwise).\n\nSupported sections are `tools`, `env`, and `secrets`. Sections you omit are not changed.\nAny other top-level key returns `400`, including `model` (to change the model, set\n`HARNESS_INFERENCE_MODEL` in `env`) and `permissions` (can't be changed on an existing\nsession).\n\nEach section you include replaces that section in full:\n\n- `tools`: the complete list of tools for the session. Only Action Gateway tools\n  (`do.actions` entries) can be added, removed, or changed. Custom MCP servers can't be\n  changed on an existing session: include the session's current custom MCP servers\n  exactly as they are. Adding, removing, or changing one returns `422`. To remove all Action Gateway tools from a session that has no custom\n  MCP servers, send `tools: []`. `tools: null` returns `400`.\n- `env`: the complete set of environment variables, as name-value pairs. A variable you\n  leave out is removed. `env: {}` removes all variables; `env: null` returns `400`.\n- `secrets`: the complete set of secrets, as name-value pairs. A secret you leave out is\n  removed. For each secret, set the value to a string to add or rotate it, or to `{}` to\n  keep its current value. A `null` value returns `400`.\n\n**Changing the model.** The only way to change a session's model is through `env`. Set\n`HARNESS_INFERENCE_MODEL` to a DigitalOcean Serverless Inference model ID, or to\n`router:<name>` for an inference router. This works\nonly on sessions created with `HARNESS_INFERENCE_MODEL` set and without their own\ninference endpoint. Adding, removing, or changing the key on any other session, or moving\na session to its own endpoint, returns `422`. A malformed value (empty, multi-line, or over\n256 bytes) returns `400`. Whether the model exists is not checked when you send the\nrequest; an unknown model fails on the agent's next turn.\n\n**Reserved keys.** `HARNESS_INFERENCE_API_KEY` and `HARNESS_INFERENCE_BASE_URL` are\nmanaged by the platform: include them with their current values, or the request returns\n`422`. Framework keys can't be changed either (`422`). Secrets that are not plain values\n(such as URL-bound or OAuth secrets) can't be changed on an existing session (`422`).\n\nExample that changes the model, keeps one secret, and rotates another. Because each\nsection is a full replacement, the example assumes the session has no other env\nvariables or secrets:\n\n```yaml\nenv:\n  HARNESS_INFERENCE_MODEL: llama3.3-70b-instruct\n  LOG_LEVEL: info\nsecrets:\n  GITHUB_TOKEN: {}\n  JIRA_API_TOKEN: new-token-value\n```",
+          "A partial agent manifest, as a YAML string, that holds only the sections to change. Can't\nbe combined with `resume_on_topoff`. Requires session settings updates to be enabled for\nyour team (`403` otherwise).\n\nSupported sections are `tools`, `env`, `secrets`, `egress`, `permissions`, and `skills`.\nSections you omit are not changed. Any other top-level key returns `400`, including `model`\n(set the model in `env` instead; see **Changing the model**).\n\nEach section you include replaces that section in full:\n\n- `tools`: the complete list of tools for the session. Action Gateway tools\n  (`do.actions` entries) can be added, removed, or changed. A custom MCP server can be\n  added, modified, or removed only where the session's `mutability.custom_tools` is\n  `true`; otherwise the request returns `409`. Include the session's current custom MCP\n  servers exactly as they are unless you are changing them. A server with `auth` that is\n  added, moved to another `url`, or given another secret slot needs its secret's value in\n  the same request, or a URL-bound secret that covers its `url`; otherwise the request\n  returns `400`. To remove all Action Gateway tools from a session that has no custom MCP\n  servers, send `tools: []`. `tools: null` returns `400`.\n- `env`: the complete set of environment variables, as name-value pairs. A variable you\n  leave out is removed. `env: {}` removes all variables; `env: null` returns `400`.\n- `secrets`: the complete set of secrets, as name-value pairs. A secret you leave out is\n  removed. For each secret, set the value to a string to add or rotate it, or to `{}` to\n  keep its current value. URL-bound and OAuth secrets also accept an object; see\n  **URL-bound secrets** and **Switching an OAuth connection**. A `null` value returns\n  `400`.\n- `egress`: the complete egress allowlist, as an object with `allow_hosts` (hostnames) and\n  `allow_ips` (exact IPv4 or IPv6 addresses, not CIDR ranges). Only this object form is\n  supported in an update. It replaces the session's\n  current allowlist: a host or IP address you leave out is removed. Leave out `vpc_uuid`\n  and `subnet_uuid` to keep the session's current VPC, or set them to their current values.\n  A different value returns `422`. See **Egress**.\n- `permissions`: the complete permission policy, `default` and the full `rules` list,\n  with the same fields as at session creation. A rule you leave out is removed.\n  `permissions: {}` removes the policy (the agent's built-in default applies);\n  `permissions: null` returns `400`. What can change depends on the session's agent, and\n  `permissions.filesystem` and `permissions.network` can't be changed. Removing a rule is\n  a change too: a rule of a type the agent can't change must be kept, so `{}` returns\n  `409` while the policy has one. If any change\n  can't be applied on the agent, the request returns `409` and nothing is applied; the\n  error message names the unsupported changes so you can remove them and send the update\n  again. Sessions created before live permissions updates were released return `409`.\n- `skills`: the complete list of inline skills, with the same fields and limits as at\n  session creation. A skill you leave out is removed. `skills: []` removes every skill;\n  `skills: null` returns `400`. The same skills in a different order are not a change.\n  Supported on `claude-code`, `codex`, and `opencode` sessions (`409` otherwise), and must\n  be enabled for your team (`403` otherwise). The agent reloads its skills without a\n  restart. If the agent refuses them (for example, a skill named like one the session's\n  repository already ships), the update ends in `FAILED` with `error` set to\n  `update_failed` and the session keeps its previous skills: rename the skill and send the\n  update again. Only an agent that can't reload skills on a running session ends with\n  `requires_new_session`.\n\n**URL-bound secrets.** The egress proxy sends a URL-bound secret only to requests that\nmatch its `url`; the agent never receives the value. An update to a URL-bound secret\ndoesn't restart the agent. In `secrets`, you can:\n\n- Rotate the value: set the secret to the new value as a string. Its `url` and `scheme`\n  don't change.\n- Move it to another URL or scheme: set it to `{value, url, scheme}`. A new host or path,\n  or a change to `scheme: raw`, requires `value` (`400` otherwise). Sending the current\n  `value`, `url`, and `scheme` again is not a change.\n- Add one: set it to `{value, url}`. `scheme` is optional and defaults to `bearer`\n  (`Authorization: Bearer <value>`); `raw` sends the value exactly as stored.\n- Bind an existing plain secret to a URL: set it to `{url}`. The secret keeps its current\n  value.\n- Keep one unchanged: set it to `{}`.\n- Remove one: leave it out of `secrets`.\n\n`url` must use `https://` and name an exact hostname (no wildcards, IP addresses, or\n`localhost`), with an optional path and no port, query, or fragment. A session can have up\nto 16 URL-bound secrets, fewer if it has storage mounts, which count toward the same limit. A URL-bound secret can't be changed back to a plain secret. If\nthe session has an egress allowlist, the secret's host is added to it. After a rollback or\nfork, a URL-bound secret that was moved off its agent config's URL can need its value\nagain: the request returns `409` until you send `value`.\n\n**Egress.** `egress` changes the hosts and IP addresses the session can reach. The new\nallowlist takes effect on the session's next outbound connection, without an agent\nrestart. Connections that are already open stay open, including connections to a host you\nremoved. Only `allow_hosts` and `allow_ips` can change; the VPC is fixed when the session\nis created. A session created with unrestricted egress and no URL-bound secrets can't gain\nan allowlist: the update ends in `FAILED` with `error` set to `requires_new_session`.\n\n**Switching an OAuth connection.** An OAuth secret that was created with `actor` can move\nto another connection of the same provider: set it to `{source: oauth, provider, actor}`\nwith the new connection's `user_id` as `actor`; leaving out `provider` or `actor` returns\n`400`. The connection must be active and owned by you, except when you switch back to the\nconnection the agent config names. Another team member's connection returns `400`.\nSwitching OAuth connections must be enabled for your team (`403` otherwise). The agent\nrestarts to read the new token. Sending the connection the secret already uses is not a\nchange. Adding or removing an OAuth secret, changing its provider, or switching one that\nwas created without `actor` returns `422`.\nThis example switches `GITHUB_TOKEN` to the connection `github2` and assumes the session\nhas no other secrets:\n\n```yaml\nsecrets:\n  GITHUB_TOKEN:\n    source: oauth\n    provider: github\n    actor: github2\n```\n\n**Changing the model.** You change a session's model through `env`. The key to set depends\non the model endpoint the session was created with:\n\n- DigitalOcean Serverless Inference (created with `HARNESS_INFERENCE_MODEL` and without\n  `OPENAI_BASE_URL`, `ANTHROPIC_BASE_URL`, or an `ANTHROPIC_API_KEY` secret): set\n  `HARNESS_INFERENCE_MODEL` to a Serverless Inference model ID, or to `router:<name>` for\n  an inference router. Removing the key, or moving the session to its own endpoint,\n  returns `422`. Adding the key to a session that was created without it also returns\n  `422`.\n- Your own OpenAI-compatible endpoint (created with `OPENAI_BASE_URL`): set `MODEL`. The\n  session reads `MODEL` before `OPENAI_MODEL`, so set `OPENAI_MODEL` only if the session\n  uses it and doesn't have `MODEL`.\n- Your own Anthropic endpoint (created with `ANTHROPIC_BASE_URL`), or the Anthropic API\n  (created with an `ANTHROPIC_API_KEY` secret and no base URL): set `ANTHROPIC_MODEL`. The\n  session reads `ANTHROPIC_MODEL` before `MODEL`.\n\nOn a session that uses its own endpoint, the following rules also apply:\n\n- Removing the model key makes the agent use its default model for that endpoint.\n- The model provider and the base URL (`OPENAI_BASE_URL` or `ANTHROPIC_BASE_URL`) can't be\n  changed (`422`). Include the base URL with its current value.\n- The provider API key (`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`) can only be rotated: set\n  it to the new value as a string, or to `{}` to keep it. Removing it, adding it to a\n  session that was created without it, or changing its `url` or `scheme` returns `422`.\n  If the key is URL-bound, rotating it follows the URL-bound secret rules: the agent isn't\n  restarted, and URL-bound secret updates must be enabled for your team (`403`\n  otherwise).\n\nA model name can't be empty, start or end with whitespace, span more than one line, be\nlonger than 256 bytes, or contain ` #` or `: ` (`400`). Whether the endpoint serves the\nmodel is not checked when you send the request; an unknown model fails on the agent's next\nturn.\n\n**Reserved keys.** `HARNESS_INFERENCE_API_KEY` and `HARNESS_INFERENCE_BASE_URL` are\nmanaged by the platform: include them with their current values, or the request returns\n`422`. Framework keys can't be changed either (`422`). Mount-only secrets (`env: false`)\ncan't be changed on an existing session: set them to `{}` (`422` otherwise). Set an OAuth\nsecret to `{}` unless you switch its connection.\n\nExample that changes the model, keeps one secret, and rotates another. Because each\nsection is a full replacement, the example assumes the session has no other env\nvariables or secrets:\n\n```yaml\nenv:\n  HARNESS_INFERENCE_MODEL: llama3.3-70b-instruct\n  LOG_LEVEL: info\nsecrets:\n  GITHUB_TOKEN: {}\n  JIRA_API_TOKEN: new-token-value\n```\n\nExample that changes the model and rotates the provider API key of a session that was\ncreated with its own OpenAI-compatible endpoint. The example assumes the session has no\nother env variables or secrets:\n\n```yaml\nenv:\n  OPENAI_BASE_URL: https://llm.example.com/v1\n  MODEL: my-model-v2\nsecrets:\n  OPENAI_API_KEY: new-api-key\n```\n\nExample that keeps one URL-bound secret, moves another to a new URL, and replaces the\negress allowlist. The example assumes the session has no other secrets:\n\n```yaml\nsecrets:\n  GITHUB_TOKEN: {}\n  JIRA_API_TOKEN:\n    value: new-token-value\n    url: https://example.atlassian.net/rest/api/3\negress:\n  allow_hosts:\n    - api.github.com\n    - example.atlassian.net\n  allow_ips:\n    - 203.0.113.10\n```",
         example: 'tools:\n  - do.actions:\n      tools: [toolbelt:read-only@1]\n',
       }),
   })
@@ -15844,7 +16126,7 @@ const ForkSessionRequestSchema = z
   .openapi({ required: [] })
   .openapi('ForkSessionRequest')
 
-const ForkSessionResponseSchema = z
+const ForkSessionResponseSchema: z.ZodType<ForkSessionResponseType> = z
   .object({
     sessions: z
       .array(DefinitionsSessionSchema)
@@ -75555,7 +75837,7 @@ export const patchV2HarnessRuntimeSessionsSessionIdRoute = createRoute({
   tags: ['Harness Runtime'],
   summary: "Update a session's settings.",
   description:
-    "Updates the settings of an existing session. Changes apply to this session only; the agent\nconfig the session was created from is not modified.\n\nEach request makes one of two kinds of update, and the two can't be combined:\n\n- **Session preferences**: set `resume_on_topoff`. Applied immediately; returns `200`.\n- **Session settings**: set `manifest_yaml` to a partial manifest that holds only the sections\n  to change. Applied in the background; returns `202`.\n\nAn empty body (`{}`) returns `400`.\n\n### Updatable session settings\n\n| Section | What it changes | Agent restart |\n| --- | --- | --- |\n| `tools` | The session's Action Gateway tools (`do.actions` entries). Custom MCP servers can't be changed. | No |\n| `env` | Environment variables (name and value). | Yes |\n| `env.HARNESS_INFERENCE_MODEL` | The model, for sessions that use DigitalOcean Serverless Inference. | Yes |\n| `secrets` | Plain secrets (name and value). | Yes |\n\nSections you omit are not changed. Each section you include replaces that section in full; see\n`manifest_yaml` for the exact rules.\n\nThe only way to change a session's model is to set `HARNESS_INFERENCE_MODEL` in `env`. This\nworks only for sessions that were created with a DigitalOcean Serverless Inference model;\nsessions that use a third-party model provider can't change their model. A top-level `model`\nsection returns `400`.\n\nThe following can't be changed on an existing session: custom MCP servers (`422`), egress rules,\nGitHub OAuth connections, URL-bound secrets, platform-managed model keys, and `permissions`\n(`400`). To use a different custom MCP server, create a new session.\n\n### Tracking an update\n\n1. A request that changes the session settings returns `202` with `outcome` set to `ACCEPTED`.\n   The session status becomes `SESSION_STATUS_UPDATING`.\n2. Poll [`GET /v2/harness-runtime/sessions/{session_id}`](#operation/harness_get_session)\n   every 2 to 5 seconds until the status is `SESSION_STATUS_READY`, or `SESSION_STATUS_PAUSED`\n   if the session was paused when you sent the update. The session returns to that status\n   whether the update succeeded or failed.\n3. Read `session.update.state`:\n   - `APPLIED`: the update is live.\n   - `APPLIED_RESTARTED`: the update is live and the agent was restarted to apply it.\n   - `FAILED`: the update did not take effect. `session.update.detail` explains why, and\n     `session.update.reverted` is `true` if the previous settings were restored.\n\nTool updates usually finish within a few seconds. Updates to `env` (including the model) or\n`secrets` restart the agent and can take up to about two minutes.\n\nIf the request matches the session's current settings, it returns `200` with `outcome` set to\n`UNCHANGED` and nothing is applied.\n\n### Versioning\n\nEach accepted update is recorded with its own `update_id` and the manifest hashes before and\nafter the change (`session.update.previous_hash` and `session.update.manifest_hash`). When an\nupdate fails, the session is rolled back to its previous settings and `session.update.reverted`\nis `true`. Once a session's settings differ from its agent config, the session reports\n`config_drifted: true`, `config_diff` lists the changed entries, and `manifest` holds the\nsettings the session now runs with (without secret values).\n\n### Requirements\n\n- The session status must be `SESSION_STATUS_READY`, `SESSION_STATUS_DETACHED`, or\n  `SESSION_STATUS_PAUSED`. A paused session is resumed to apply the update and paused again\n  afterwards, unless it was paused for zero balance. Any other status returns `409`, including\n  `SESSION_STATUS_PROVISIONING`, `SESSION_STATUS_UPDATING`, a session paused for zero balance,\n  and a destroyed or failed session. A locked session returns `423`.\n- The session must be idle: no agent turn running and no approval pending (`409`).\n- Session settings updates must be enabled for your team.\n- Not every agent runtime supports every section. An unsupported change returns `409`.",
+    "Updates the settings of an existing session. Changes apply to this session only; the agent\nconfig the session was created from is not modified.\n\nEach request makes one of two kinds of update, and the two can't be combined:\n\n- **Session preferences**: set `resume_on_topoff`. Applied immediately; returns `200`.\n- **Session settings**: set `manifest_yaml` to a partial manifest that holds only the sections\n  to change. Applied in the background; returns `202`.\n\nAn empty body (`{}`) returns `400`.\n\n### Updatable session settings\n\n| Section | What it changes | Agent restart |\n| --- | --- | --- |\n| `tools` | The session's Action Gateway tools (`do.actions` entries). Custom MCP servers too, where the session's `mutability.custom_tools` is `true`. | No (LangGraph: yes). A custom MCP server change: when it alters the agent's environment |\n| `env` | Environment variables (name and value). | Yes |\n| `env.HARNESS_INFERENCE_MODEL` | The model, for sessions that use DigitalOcean Serverless Inference. | Yes |\n| `env.MODEL`, `env.OPENAI_MODEL`, `env.ANTHROPIC_MODEL` | The model, for sessions that use their own OpenAI-compatible or Anthropic endpoint. | Yes |\n| `secrets` | Plain secrets (name and value). | Yes |\n| `secrets` (URL-bound) | URL-bound secrets: value, `url`, and `scheme`. | No |\n| `secrets` (OAuth) | The provider connection an OAuth secret uses (`actor`). | Yes |\n| `egress` | The hosts and IP addresses the session can reach (`allow_hosts` and `allow_ips`). | No |\n| `permissions` | The permission policy: the default action and the full rules list. What can change depends on the agent; see below. | No (LangGraph: yes for `do.actions` rules or `default`) |\n| `skills` | The full list of inline skills. Supported on `claude-code`, `codex`, and `opencode`; see below. | No |\n\nSections you omit are not changed. Each section you include replaces that section in full; see\n`manifest_yaml` for the exact rules.\n\n### Changing the model\n\nYou change a session's model through `env`; a top-level `model` section returns `400`. The key\nto set depends on the model endpoint the session was created with:\n\n| Session created with | Model endpoint | `env` key that sets the model |\n| --- | --- | --- |\n| `HARNESS_INFERENCE_MODEL`, and none of the keys below | DigitalOcean Serverless Inference | `HARNESS_INFERENCE_MODEL` |\n| `OPENAI_BASE_URL` | Your OpenAI-compatible endpoint | `MODEL`, or `OPENAI_MODEL` |\n| `ANTHROPIC_BASE_URL`, or an `ANTHROPIC_API_KEY` secret | Your Anthropic endpoint, or the Anthropic API | `ANTHROPIC_MODEL`, or `MODEL` |\n\nA session keeps the model endpoint it was created with. Its provider and base URL can't be\nchanged (`422`). The provider API key (`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`) can be rotated\nbut not added, removed, or moved to another URL or scheme (`422`). See `manifest_yaml` for the\nrules.\n\nThe following can't be changed on an existing session: the egress VPC (`vpc_uuid` and\n`subnet_uuid`, `422`) and platform-managed model keys. To use a different VPC, create a new\nsession.\n\n### Custom MCP servers\n\nA custom MCP server (`name` and `url`) in `tools` can be added, modified, or removed on a running\nsession only where the session's `mutability.custom_tools` is `true`, and `mutability.tools` is\n`true` too. Read `mutability` from the session (`GET /v2/agents/sessions/{session_id}`). Where\n`custom_tools` is `false`, the request returns `409` and the message ends with\n`(update_unsupported)`. The flag is `false` for every agent until its custom-server update is\nsupported, and a session created before an agent was enabled keeps reading `false`; create a new\nsession to change its custom MCP servers.\n\nInclude the session's other custom MCP servers exactly as they are, because `tools` replaces the\nwhole list. The agent restarts when the change alters its environment (a server added, removed or\nmoved, or a changed credential), and the update then ends `APPLIED_RESTARTED`. A change that\ndoesn't, such as editing the `tools` allowlist of an existing server, ends `APPLIED`.\n\nA server with `auth` that is added, moved to another `url`, or given another secret slot must carry\nits credential in the same request, so a credential never goes to a destination the request did\nnot name. Either send the secret's value in `secrets` (a plain secret), or use a URL-bound secret\nwhose `url` covers the server's URL: the same host, a path prefix of the server's path, and the\ndefault port. A URL-bound secret needs that coverage even when you send its value. Otherwise the\nrequest returns `400`. A server whose `url` differs only in the case of the scheme or host is the\nsame server. A new server host under an egress allowlist also needs `mutability.egress` to be\n`true`.\n\n### Switching an OAuth connection\n\nAn OAuth secret that names a provider connection with `actor` can move to another connection of\nthe same provider while the session runs. `actor` is the connection's `user_id`; see\n[`GET /v2/harness-runtime/auth/{provider}/connections`](#operation/harness_list_provider_connections).\nSend the secret with `source`, `provider`, and the new `actor`, and keep every other secret as\n`{}`. Leaving out `provider` or `actor` returns `400`. See `manifest_yaml` for an example.\n\nThe platform first checks that you can use the new connection: it must be active and owned by\nyou. Another team member's connection returns `400`, even when it is active. Switching back to\nthe connection the agent config names skips this check, so any team member can do it. If the\nplatform can't reach its connection service to check, the request returns `503`; retry it. The\nplatform then gives the session that connection's token and restarts the agent, so the next\n`git` operation uses the new connection. Sending the connection the secret already uses returns\n`200` with `outcome` set to `UNCHANGED`.\n\nThe switch applies to this session only:\n\n- New sessions from the same agent config still start on the connection the config names.\n- A rollback, or a fork from a checkpoint, uses the connection the session had when the\n  checkpoint was taken.\n- The switch changes only the token in the session. Action Gateway tools (`do.actions` entries)\n  keep using the connection Action Gateway picks for the session, so `git` and those tools can\n  act as different accounts.\n- A token the agent already read stays valid with the provider until the old connection is\n  revoked.\n\nSwitching OAuth connections must be enabled for your team (`403` otherwise). The following\nstill require a new session (`422`): adding or removing an OAuth secret, changing its provider,\nand switching an OAuth secret that was created without `actor`.\n\n### URL-bound secrets and egress\n\nURL-bound secret and `egress` changes take effect on the session's next outbound connection.\nAn update that changes only URL-bound secrets and `egress` doesn't restart the agent and ends in\n`APPLIED`. Connections that are already open stay open, including connections to a host that\nthe update removed.\n\nThese updates have the following additional requirements:\n\n- URL-bound secret and egress updates must be enabled for your team. Otherwise, the request\n  returns `403`.\n- The session must have been created with a URL-bound secret or an egress allowlist. A session\n  created with unrestricted egress and no URL-bound secrets can't gain either one: the update\n  ends in `FAILED` with `error` set to `requires_new_session`.\n- Changing `egress`, or adding a URL-bound secret for a host the session can't reach yet,\n  requires that the session's agent runtime supports egress updates. Sessions created before\n  egress updates were available don't support them (`409`).\n\nSee `manifest_yaml` for the format of each change.\n\n### Changing permissions\n\n`permissions` replaces the whole policy: `default` and the full `rules` list. A rule you leave\nout is removed. Use the same fields as when you create the session. `permissions: {}` removes\nthe policy, so the agent goes back to its built-in default, as long as every rule it removes is\none the agent can change (see below). `permissions: null` returns `400`.\n\nRules are checked in the order you list them, and the last rule that matches wins. The order is\npart of the policy, so moving a rule counts as a change and is applied like any other.\n\nThe agent is not restarted; the new rules apply from its next tool call once the update is\n`APPLIED`. On `langgraph`, a change to `do.actions/<tool>` rules or `default` restarts the\nagent, as a `tools` change does.\n\nOnly sessions created after live permissions updates were released can change `permissions`.\nAn older session returns `409`; create a new session instead.\n\nWhat can change depends on the session's agent:\n\n- `claude-code`, `opencode`: `default` and `bash`, `file.read`, `file.write`, `mcp`, and\n  `do.actions/<tool>` rules, with `allow`, `ask`, or `deny`.\n- `openhands`: `default` and `bash`, `file.read`, `file.write`, and `web.fetch` rules. Not\n  `mcp` or `do.actions/<tool>` rules. While the session uses `do.actions` tools, `default`\n  can't change: the change would move the session to a new Action Gateway endpoint, which\n  `openhands` can't pick up while running.\n- `codex`: `default` and `bash` and `do.actions/<tool>` rules, with `allow`, `ask`, or `deny`.\n  Not `file.read`, `file.write`, `web.fetch`, or `mcp` rules.\n- `hermes`, `langgraph`: `do.actions/<tool>` rules with `allow` or `deny`, and `default` set to\n  `allow` or `deny`. Not `ask`, and no other rule types.\n- `crewai`, `cursor`, and any other agent: nothing.\n\n`permissions.filesystem` and `permissions.network` can't be changed on any agent. If your\n`permissions` section leaves them out, the session keeps the ones it has; if it sets them to\nsomething different, the request returns `409`.\n\nOnly the differences from the current policy are checked: rules you add, remove, change, or\nmove, and a changed `default`. Rules you keep as they are never cause a refusal. A removed rule\nis checked like an added one, so a rule of a type the agent can't change can't be removed\neither: every `permissions` section you send has to keep it, and `permissions: {}` returns\n`409` while the policy has one. For example, `{}` returns `409` on a `codex` session with a\n`file.read` rule, or on a `hermes` session with a `bash` rule.\n\nIf any change can't be applied on the session's agent, the request returns `409` and nothing is\napplied, including changes to other sections. The error message names the unsupported changes\nand what the agent can change. Remove them and send the update again. For example:\n\n```\npermissions can't change live on hermes for: bash rule \"rm -rf *\" (only do.actions allow/deny rules and an allow or deny default action can change on this agent). Remove these changes and send the update again (update_unsupported)\n```\n\nIf the agent itself refuses a change after the request is accepted, the update ends `FAILED`\nwith `session.update.reverted` set to `true`, and `session.update.detail` says to remove the\npermission changes the agent can't take and send the update again.\n\n### Changing skills\n\n`skills` replaces the session's whole list of inline skills. Send every skill the session\nshould keep, with the same fields as when you create the session: `name`, `description`,\n`instructions`, and optionally `license`, `metadata`, and `allowed_tools`. A skill you leave\nout is removed. `skills: []` removes every skill, and `skills: null` returns `400`. The list is\nchecked with the same rules and limits as at session creation: at most 32 skills, and at most\n512 KiB for all skills together (`400` otherwise). `manifest_yaml` itself can be at most 1 MiB\nand the request body at most 2 MiB (`413` otherwise). The same skills in a different order are\nnot a change.\n\nThe agent is not restarted, so the conversation continues. The agent reloads its skills, and\nthe new list is in use once the update is `APPLIED`. `session.update.changes.skills` names the\nskills added, removed, or changed, never their content.\n\nChanging `skills` is supported on `claude-code`, `codex`, and `opencode` sessions. On any other\nagent, or on a session created before live updates were available, a manifest with a `skills`\nsection returns `409`, even if the list matches the session's skills. Changing `skills` must be\nenabled for your team (see Requirements below).\n\nIf the agent refuses the new skills after the request is accepted, the update ends `FAILED`\nwith `error` set to `update_failed` and `session.update.reverted` set to `true`, and the\nsession keeps its previous skills. This happens when a skill has the same name as one the\nsession's repository already provides: rename the skill and send the update again on the same\nsession. Only when the session's agent can't reload skills while it runs does the update end\nwith `error` set to `requires_new_session`. If the same update also changes\n`permissions`, the platform can't tell which of the two the agent refused: the update ends\n`FAILED` with `error` set to `update_failed`, and sending the `permissions` and `skills` changes\nas separate updates shows which one the agent can't take.\n\n### Tracking an update\n\n1. A request that changes the session settings returns `202` with `outcome` set to `ACCEPTED`.\n   The session status becomes `SESSION_STATUS_UPDATING`.\n2. Poll [`GET /v2/harness-runtime/sessions/{session_id}`](#operation/harness_get_session)\n   every 2 to 5 seconds until the status is `SESSION_STATUS_READY`, or `SESSION_STATUS_PAUSED`\n   if the session was paused when you sent the update. The session returns to that status\n   whether the update succeeded or failed.\n3. Read `session.update.state`:\n   - `APPLIED`: the update is live.\n   - `APPLIED_RESTARTED`: the update is live and the agent was restarted to apply it.\n   - `FAILED`: the update did not take effect. `session.update.detail` explains why, and\n     `session.update.reverted` is `true` if the previous settings were restored.\n\nTool, URL-bound secret, `egress`, `permissions`, and `skills` updates usually finish within a\nfew seconds, except on `langgraph`, where a `tools` update or a `permissions` change to\n`default` or `do.actions/<tool>` rules restarts the agent. Updates to `env` (including the\nmodel) or plain secrets, and OAuth connection switches, restart the agent and can take up to\nabout two minutes.\n\nIf the request matches the session's current settings, it returns `200` with `outcome` set to\n`UNCHANGED` and nothing is applied.\n\n### Versioning\n\nEach accepted update is recorded with its own `update_id` and the manifest hashes before and\nafter the change (`session.update.previous_hash` and `session.update.manifest_hash`). When an\nupdate fails, the session is rolled back to its previous settings and `session.update.reverted`\nis `true`. Once a session's settings differ from its agent config, the session reports\n`config_drifted: true`, `config_diff` lists the changed entries, and `manifest` holds the\nsettings the session now runs with (without secret values).\n\n### Requirements\n\n- The session status must be `SESSION_STATUS_READY`, `SESSION_STATUS_DETACHED`, or\n  `SESSION_STATUS_PAUSED`. A paused session is resumed to apply the update and paused again\n  afterwards, unless it was paused for zero balance. Any other status returns `409`, including\n  `SESSION_STATUS_PROVISIONING`, `SESSION_STATUS_UPDATING`, a session paused for zero balance,\n  and a destroyed or failed session. A locked session returns `423`.\n- The session must be idle: no agent turn running and no approval pending (`409`).\n- Session settings updates must be enabled for your team. Changing `permissions` must also be\n  enabled for your team; if it isn't, a request whose manifest includes a `permissions`\n  section returns `403`, even if the section matches the session's policy. Likewise, changing\n  `skills` must be enabled for your team; if it isn't, a request whose manifest includes a\n  `skills` section returns `403`, even if the list matches the session's skills.\n- Not every agent runtime supports every section, or every `permissions` change (see Changing\n  permissions above). An unsupported change returns `409`, and nothing is applied.",
   operationId: 'harness_update_session',
   request: {
     params: z.object({
@@ -75602,7 +75884,7 @@ export const patchV2HarnessRuntimeSessionsSessionIdRoute = createRoute({
     },
     400: {
       description:
-        "The request is invalid. For example: the body is empty or not valid JSON, `manifest_yaml` is not valid YAML, a field or manifest section is not recognized, a value is invalid, or both `resume_on_topoff` and `manifest_yaml` are set. A top-level `model` section (set `env.HARNESS_INFERENCE_MODEL` instead) and a `permissions` section (can't be changed on an existing session) also return `400`.",
+        "The request is invalid. For example: the body is empty or not valid JSON, `manifest_yaml` is not valid YAML, a field or manifest section is not recognized, a value is invalid, or both `resume_on_topoff` and `manifest_yaml` are set. A top-level `model` section (set the model in `env` instead), `permissions: null`, and `skills: null` also return `400`, as do a malformed model name and a `skills` list that isn't valid (for example, a duplicate or badly formed skill name, a missing `description` or `instructions`, more than 32 skills, or more than 512 KiB of skills in total). A URL-bound secret moved to a new host or path, or to `scheme: raw`, without `value` returns `400`. An OAuth secret switched to a connection you can't use also returns `400`: no connection has that `actor`, or the connection is pending, expired, revoked, or another team member's. So does an OAuth connection switch that leaves out `provider` or `actor`.",
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
         'ratelimit-limit': RatelimitLimitHeaderSchema,
@@ -75613,7 +75895,7 @@ export const patchV2HarnessRuntimeSessionsSessionIdRoute = createRoute({
     401: UnauthorizedResponse,
     403: {
       description:
-        "You don't have access to this session, or session settings updates are not enabled for your team (`manifest_yaml` only).",
+        "You don't have access to this session, or session settings updates are not enabled for your team (`manifest_yaml` only). A URL-bound secret or `egress` change also returns `403` when URL-bound secret and egress updates are not enabled for your team, a manifest with a `permissions` section returns `403` when permission updates are not enabled for your team, a manifest with a `skills` section returns `403` when skills updates are not enabled for your team, and an OAuth connection switch returns `403` when switching OAuth connections is not enabled for your team.",
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
         'ratelimit-limit': RatelimitLimitHeaderSchema,
@@ -75624,7 +75906,17 @@ export const patchV2HarnessRuntimeSessionsSessionIdRoute = createRoute({
     404: NotFoundResponse,
     409: {
       description:
-        "The session can't be updated right now. For example, it is still provisioning, already updating, running an agent turn, waiting on an approval, paused for zero balance, or destroyed, or its agent runtime doesn't support the change. The error message gives the reason.",
+        "The session can't be updated right now. For example, it is still provisioning, already updating, running an agent turn, waiting on an approval, paused for zero balance, or destroyed, or its agent runtime doesn't support the change (including an `egress` change on a session that doesn't support egress updates, and a custom MCP server change on a session whose `mutability.custom_tools` is `false`). After a rollback or fork, a URL-bound secret that was moved off its agent config's URL also returns `409` until you send its value again. For a `permissions` change the agent can't apply, the message names the unsupported changes and ends with `(update_unsupported)`; nothing is applied, so remove them and send the update again. A session created before live permissions updates were released can't change `permissions`; create a new session. A session forked from a checkpoint whose agent still reaches Action Gateway through its parent session can't take an update involving `do.actions` tools, including an OAuth connection switch on a session that has them; the message ends with `(fork_update_unsupported)`, and you need a new session. A manifest with a `skills` section on an agent that can't take skills while it runs, or on a session created before live updates were available, also returns `409` and ends with `(update_unsupported)`, even if the list matches the session's skills. The error message gives the reason.",
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'ratelimit-limit': RatelimitLimitHeaderSchema,
+        'ratelimit-remaining': RatelimitRemainingHeaderSchema,
+        'ratelimit-reset': RatelimitResetHeaderSchema,
+      }),
+    },
+    413: {
+      description:
+        'The request body exceeds 2 MiB, or `manifest_yaml` exceeds 1 MiB. A long `skills` list is the most likely cause; the error message gives the limit.',
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
         'ratelimit-limit': RatelimitLimitHeaderSchema,
@@ -75634,7 +75926,7 @@ export const patchV2HarnessRuntimeSessionsSessionIdRoute = createRoute({
     },
     422: {
       description:
-        "The change can only be made by creating a new session. For example: adding, removing, or changing a custom MCP server in `tools`, changing a reserved platform key or a secret that is not a plain value (such as a URL-bound or OAuth secret), or adding, removing, or changing `HARNESS_INFERENCE_MODEL` on a session that doesn't use DigitalOcean Serverless Inference.",
+        "The change can only be made by creating a new session. For example: changing a reserved platform key or a mount-only secret; adding or removing an OAuth secret, changing its provider, or switching one that was created without `actor`; changing `vpc_uuid` or `subnet_uuid` in `egress`; adding, removing, or changing `HARNESS_INFERENCE_MODEL` on a session that doesn't use DigitalOcean Serverless Inference; changing a session's model provider or base URL; or adding, removing, or moving the provider API key of a session that uses its own endpoint.",
       content: { 'application/json': { schema: ErrorSchema } },
       headers: z.object({
         'ratelimit-limit': RatelimitLimitHeaderSchema,
@@ -75653,6 +75945,16 @@ export const patchV2HarnessRuntimeSessionsSessionIdRoute = createRoute({
     },
     429: TooManyRequestsResponse,
     500: ServerErrorResponse,
+    503: {
+      description:
+        "A service the update depends on is unavailable. For example, an OAuth connection switch couldn't reach the connection service to check the new connection. The session wasn't changed; retry the request.",
+      content: { 'application/json': { schema: ErrorSchema } },
+      headers: z.object({
+        'ratelimit-limit': RatelimitLimitHeaderSchema,
+        'ratelimit-remaining': RatelimitRemainingHeaderSchema,
+        'ratelimit-reset': RatelimitResetHeaderSchema,
+      }),
+    },
     default: UnexpectedErrorResponse,
   },
   security: [{ bearer_auth: ['agent_harness_session:manage'] }],

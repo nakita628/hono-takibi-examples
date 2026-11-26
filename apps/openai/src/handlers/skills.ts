@@ -1,16 +1,16 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteSkillsSkillIdRoute,
-  deleteSkillsSkillIdVersionsVersionRoute,
-  getSkillsRoute,
-  getSkillsSkillIdContentRoute,
-  getSkillsSkillIdRoute,
-  getSkillsSkillIdVersionsRoute,
-  getSkillsSkillIdVersionsVersionContentRoute,
-  getSkillsSkillIdVersionsVersionRoute,
   postSkillsRoute,
+  getSkillsRoute,
+  deleteSkillsSkillIdRoute,
+  getSkillsSkillIdRoute,
   postSkillsSkillIdRoute,
+  getSkillsSkillIdContentRoute,
   postSkillsSkillIdVersionsRoute,
+  getSkillsSkillIdVersionsRoute,
+  getSkillsSkillIdVersionsVersionRoute,
+  deleteSkillsSkillIdVersionsVersionRoute,
+  getSkillsSkillIdVersionsVersionContentRoute,
 } from '../routes'
 
 export const postSkillsRouteHandler: RouteHandler<typeof postSkillsRoute> = async (c) => {

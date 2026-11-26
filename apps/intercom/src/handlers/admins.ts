@@ -1,12 +1,12 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAdminsRemoveRoute,
-  getAdminsActivityLogEventTypesRoute,
-  getAdminsActivityLogsRoute,
-  getAdminsAdminIdRoute,
-  getAdminsRoute,
-  postAdminsActivityLogsSearchRoute,
   putAdminsAdminIdAwayRoute,
+  getAdminsActivityLogsRoute,
+  postAdminsActivityLogsSearchRoute,
+  getAdminsActivityLogEventTypesRoute,
+  getAdminsRoute,
+  getAdminsAdminIdRoute,
+  deleteAdminsRemoveRoute,
 } from '../routes'
 
 export const putAdminsAdminIdAwayRouteHandler: RouteHandler<

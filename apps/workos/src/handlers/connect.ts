@@ -1,13 +1,13 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteConnectApplicationsIdRoute,
-  deleteConnectClientSecretsIdRoute,
-  getConnectApplicationsIdClientSecretsRoute,
-  getConnectApplicationsIdRoute,
   getConnectApplicationsRoute,
-  postConnectApplicationsIdClientSecretsRoute,
   postConnectApplicationsRoute,
+  getConnectApplicationsIdRoute,
   putConnectApplicationsIdRoute,
+  deleteConnectApplicationsIdRoute,
+  getConnectApplicationsIdClientSecretsRoute,
+  postConnectApplicationsIdClientSecretsRoute,
+  deleteConnectClientSecretsIdRoute,
 } from '../routes'
 
 export const getConnectApplicationsRouteHandler: RouteHandler<

@@ -1,14 +1,14 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteOauthApplicationsOauthApplicationIdRoute,
-  getOauthApplicationsOauthApplicationIdRoute,
   getOauthApplicationsRoute,
-  patchOauthApplicationsOauthApplicationIdRoute,
-  postOauthApplicationsAccessTokensVerifyRoute,
-  postOauthApplicationsOauthApplicationIdRevokeTokenRoute,
-  postOauthApplicationsOauthApplicationIdRotateSecretRoute,
   postOauthApplicationsRoute,
+  getOauthApplicationsOauthApplicationIdRoute,
+  patchOauthApplicationsOauthApplicationIdRoute,
+  deleteOauthApplicationsOauthApplicationIdRoute,
   putOauthApplicationsOauthApplicationIdLogoRoute,
+  postOauthApplicationsOauthApplicationIdRotateSecretRoute,
+  postOauthApplicationsOauthApplicationIdRevokeTokenRoute,
+  postOauthApplicationsAccessTokensVerifyRoute,
 } from '../routes'
 
 export const getOauthApplicationsRouteHandler: RouteHandler<

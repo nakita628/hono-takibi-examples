@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getTimesheetApprovalStatusesRoute,
   getTimesheetApprovalStatusesTimesheetApprovalStatusGidRoute,
-  postTimesheetApprovalStatusesRoute,
   putTimesheetApprovalStatusesTimesheetApprovalStatusGidRoute,
+  getTimesheetApprovalStatusesRoute,
+  postTimesheetApprovalStatusesRoute,
 } from '../routes'
 
 export const getTimesheetApprovalStatusesTimesheetApprovalStatusGidRouteHandler: RouteHandler<

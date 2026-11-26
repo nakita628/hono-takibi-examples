@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getPublicConfigDefaultsRoute, getPublicConfigRoute } from '../routes'
+import type { getPublicConfigRoute, getPublicConfigDefaultsRoute } from '../routes'
 
 export const getPublicConfigRouteHandler: RouteHandler<typeof getPublicConfigRoute> = async (c) => {
   throw new Error('Not implemented')

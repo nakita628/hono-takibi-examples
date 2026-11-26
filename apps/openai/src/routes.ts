@@ -6,7 +6,7 @@ const MetadataSchema = z
       .record(z.string(), z.string())
       .openapi({
         description:
-          'Set of 16 key-value pairs that can be attached to an object. This can be\nuseful for storing additional information about the object in a structured\nformat, and querying for objects via API or the dashboard.\n\nKeys are strings with a maximum length of 64 characters. Values are strings\nwith a maximum length of 512 characters.\n',
+          'Set of 16 key-value pairs that can be attached to an object. This can be\nuseful for storing additional information about the object in a structured\nformat.\n\nKeys are strings with a maximum length of 64 characters. Values are strings\nwith a maximum length of 512 characters.\n',
         'x-oaiTypeLabel': 'map',
       }),
     z.null().nullable(),
@@ -20,10 +20,7 @@ const ThreadObjectSchema = z
       .openapi({ description: 'The identifier, which can be referenced in API endpoints.' }),
     object: z
       .literal('thread')
-      .openapi({
-        description: 'The object type, which is always `thread`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `thread`.' }),
     created_at: z
       .int()
       .openapi({ description: 'The Unix timestamp (in seconds) for when the thread was created.' }),
@@ -89,7 +86,7 @@ const ThreadStreamEventSchema = z
           .boolean()
           .exactOptional()
           .openapi({ description: 'Whether to enable input audio transcription.' }),
-        event: z.literal('thread.created').openapi({ 'x-stainless-const': true }),
+        event: z.literal('thread.created'),
         data: ThreadObjectSchema,
       })
       .openapi({
@@ -117,7 +114,6 @@ const RunToolCallObjectSchema = z
       .openapi({
         description:
           'The type of tool call the output is required for. For now, this is always `function`.',
-        'x-stainless-const': true,
       }),
     function: z
       .object({
@@ -137,10 +133,7 @@ const AssistantToolsCodeSchema = z
   .object({
     type: z
       .literal('code_interpreter')
-      .openapi({
-        description: 'The type of tool being defined: `code_interpreter`',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of tool being defined: `code_interpreter`' }),
   })
   .openapi({ title: 'Code interpreter tool', required: ['type'] })
   .openapi('AssistantToolsCode')
@@ -177,10 +170,7 @@ const AssistantToolsFileSearchSchema = z
   .object({
     type: z
       .literal('file_search')
-      .openapi({
-        description: 'The type of tool being defined: `file_search`',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of tool being defined: `file_search`' }),
     file_search: z
       .object({
         max_num_results: z
@@ -244,10 +234,7 @@ const AssistantToolsFunctionSchema = z
   .object({
     type: z
       .literal('function')
-      .openapi({
-        description: 'The type of tool being defined: `function`',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of tool being defined: `function`' }),
     function: FunctionObjectSchema,
   })
   .openapi({ title: 'Function tool', required: ['type', 'function'] })
@@ -436,9 +423,7 @@ const ResponseFormatJsonSchemaSchema = z
 
 const AssistantsApiResponseFormatOptionSchema = z
   .xor([
-    z
-      .literal('auto')
-      .openapi({ description: '`auto` is the default value\n', 'x-stainless-const': true }),
+    z.literal('auto').openapi({ description: '`auto` is the default value\n' }),
     ResponseFormatTextSchema,
     ResponseFormatJsonObjectSchema,
     ResponseFormatJsonSchemaSchema,
@@ -456,10 +441,7 @@ const RunObjectSchema = z
       .openapi({ description: 'The identifier, which can be referenced in API endpoints.' }),
     object: z
       .literal('thread.run')
-      .openapi({
-        description: 'The object type, which is always `thread.run`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `thread.run`.' }),
     created_at: z
       .int()
       .openapi({ description: 'The Unix timestamp (in seconds) for when the run was created.' }),
@@ -495,10 +477,7 @@ const RunObjectSchema = z
       .object({
         type: z
           .literal('submit_tool_outputs')
-          .openapi({
-            description: 'For now, this is always `submit_tool_outputs`.',
-            'x-stainless-const': true,
-          }),
+          .openapi({ description: 'For now, this is always `submit_tool_outputs`.' }),
         submit_tool_outputs: z
           .object({
             tool_calls: z
@@ -673,10 +652,7 @@ const RunObjectSchema = z
 const RunStreamEventSchema = z
   .xor([
     z
-      .object({
-        event: z.literal('thread.run.created').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.created'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -687,10 +663,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.queued').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.queued'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -701,10 +674,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.in_progress').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.in_progress'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -715,10 +685,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.requires_action').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.requires_action'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -729,10 +696,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.completed').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.completed'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -743,10 +707,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.incomplete').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.incomplete'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -757,10 +718,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.failed').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.failed'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -771,10 +729,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.cancelling').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.cancelling'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -785,10 +740,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.cancelled').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.cancelled'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -799,10 +751,7 @@ const RunStreamEventSchema = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.expired').openapi({ 'x-stainless-const': true }),
-        data: RunObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.expired'), data: RunObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -817,9 +766,7 @@ const RunStreamEventSchema = z
 
 const RunStepDetailsMessageCreationObjectSchema = z
   .object({
-    type: z
-      .literal('message_creation')
-      .openapi({ description: 'Always `message_creation`.', 'x-stainless-const': true }),
+    type: z.literal('message_creation').openapi({ description: 'Always `message_creation`.' }),
     message_creation: z
       .object({
         message_id: z
@@ -837,7 +784,7 @@ const RunStepDetailsMessageCreationObjectSchema = z
 
 const RunStepDetailsToolCallsCodeOutputLogsObjectSchema = z
   .object({
-    type: z.literal('logs').openapi({ description: 'Always `logs`.', 'x-stainless-const': true }),
+    type: z.literal('logs').openapi({ description: 'Always `logs`.' }),
     logs: z
       .string()
       .openapi({ description: 'The text output from the Code Interpreter tool call.' }),
@@ -851,7 +798,7 @@ const RunStepDetailsToolCallsCodeOutputLogsObjectSchema = z
 
 const RunStepDetailsToolCallsCodeOutputImageObjectSchema = z
   .object({
-    type: z.literal('image').openapi({ description: 'Always `image`.', 'x-stainless-const': true }),
+    type: z.literal('image').openapi({ description: 'Always `image`.' }),
     image: z
       .object({
         file_id: z
@@ -874,7 +821,6 @@ const RunStepDetailsToolCallsCodeObjectSchema = z
       .openapi({
         description:
           'The type of tool call. This is always going to be `code_interpreter` for this type of tool call.',
-        'x-stainless-const': true,
       }),
     code_interpreter: z
       .object({
@@ -943,7 +889,7 @@ const RunStepDetailsToolCallsFileSearchResultObjectSchema = z
             type: z
               .literal('text')
               .exactOptional()
-              .openapi({ description: 'The type of the content.', 'x-stainless-const': true }),
+              .openapi({ description: 'The type of the content.' }),
             text: z
               .string()
               .exactOptional()
@@ -973,7 +919,6 @@ const RunStepDetailsToolCallsFileSearchObjectSchema = z
       .openapi({
         description:
           'The type of tool call. This is always going to be `file_search` for this type of tool call.',
-        'x-stainless-const': true,
       }),
     file_search: z
       .object({
@@ -1001,7 +946,6 @@ const RunStepDetailsToolCallsFunctionObjectSchema = z
       .openapi({
         description:
           'The type of tool call. This is always going to be `function` for this type of tool call.',
-        'x-stainless-const': true,
       }),
     function: z
       .object({
@@ -1036,9 +980,7 @@ type RunStepDetailsToolCallsObjectType = {
 
 const RunStepDetailsToolCallsObjectSchema: z.ZodType<RunStepDetailsToolCallsObjectType> = z
   .object({
-    type: z
-      .literal('tool_calls')
-      .openapi({ description: 'Always `tool_calls`.', 'x-stainless-const': true }),
+    type: z.literal('tool_calls').openapi({ description: 'Always `tool_calls`.' }),
     tool_calls: z
       .array(
         z.xor([
@@ -1116,10 +1058,7 @@ const RunStepObjectSchema: z.ZodType<RunStepObjectType> = z
       }),
     object: z
       .literal('thread.run.step')
-      .openapi({
-        description: 'The object type, which is always `thread.run.step`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `thread.run.step`.' }),
     created_at: z
       .int()
       .openapi({
@@ -1241,9 +1180,7 @@ const RunStepObjectSchema: z.ZodType<RunStepObjectType> = z
 
 const RunStepDeltaStepDetailsMessageCreationObjectSchema = z
   .object({
-    type: z
-      .literal('message_creation')
-      .openapi({ description: 'Always `message_creation`.', 'x-stainless-const': true }),
+    type: z.literal('message_creation').openapi({ description: 'Always `message_creation`.' }),
     message_creation: z
       .object({
         message_id: z
@@ -1264,7 +1201,7 @@ const RunStepDeltaStepDetailsMessageCreationObjectSchema = z
 const RunStepDeltaStepDetailsToolCallsCodeOutputLogsObjectSchema = z
   .object({
     index: z.int().openapi({ description: 'The index of the output in the outputs array.' }),
-    type: z.literal('logs').openapi({ description: 'Always `logs`.', 'x-stainless-const': true }),
+    type: z.literal('logs').openapi({ description: 'Always `logs`.' }),
     logs: z
       .string()
       .exactOptional()
@@ -1280,7 +1217,7 @@ const RunStepDeltaStepDetailsToolCallsCodeOutputLogsObjectSchema = z
 const RunStepDeltaStepDetailsToolCallsCodeOutputImageObjectSchema = z
   .object({
     index: z.int().openapi({ description: 'The index of the output in the outputs array.' }),
-    type: z.literal('image').openapi({ description: 'Always `image`.', 'x-stainless-const': true }),
+    type: z.literal('image').openapi({ description: 'Always `image`.' }),
     image: z
       .object({
         file_id: z
@@ -1306,7 +1243,6 @@ const RunStepDeltaStepDetailsToolCallsCodeObjectSchema = z
       .openapi({
         description:
           'The type of tool call. This is always going to be `code_interpreter` for this type of tool call.',
-        'x-stainless-const': true,
       }),
     code_interpreter: z
       .object({
@@ -1346,7 +1282,6 @@ const RunStepDeltaStepDetailsToolCallsFileSearchObjectSchema = z
       .openapi({
         description:
           'The type of tool call. This is always going to be `file_search` for this type of tool call.',
-        'x-stainless-const': true,
       }),
     file_search: z
       .looseObject({})
@@ -1367,7 +1302,6 @@ const RunStepDeltaStepDetailsToolCallsFunctionObjectSchema = z
       .openapi({
         description:
           'The type of tool call. This is always going to be `function` for this type of tool call.',
-        'x-stainless-const': true,
       }),
     function: z
       .object({
@@ -1396,9 +1330,7 @@ const RunStepDeltaStepDetailsToolCallsFunctionObjectSchema = z
 
 const RunStepDeltaStepDetailsToolCallsObjectSchema = z
   .object({
-    type: z
-      .literal('tool_calls')
-      .openapi({ description: 'Always `tool_calls`.', 'x-stainless-const': true }),
+    type: z.literal('tool_calls').openapi({ description: 'Always `tool_calls`.' }),
     tool_calls: z
       .array(
         z.xor([
@@ -1435,10 +1367,7 @@ const RunStepDeltaObjectSchema: z.ZodType<RunStepDeltaObjectType> = z
       }),
     object: z
       .literal('thread.run.step.delta')
-      .openapi({
-        description: 'The object type, which is always `thread.run.step.delta`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `thread.run.step.delta`.' }),
     delta: z
       .object({
         step_details: z
@@ -1480,10 +1409,7 @@ type RunStepStreamEventType =
 const RunStepStreamEventSchema: z.ZodType<RunStepStreamEventType> = z
   .xor([
     z
-      .object({
-        event: z.literal('thread.run.step.created').openapi({ 'x-stainless-const': true }),
-        data: RunStepObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.step.created'), data: RunStepObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -1494,10 +1420,7 @@ const RunStepStreamEventSchema: z.ZodType<RunStepStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.step.in_progress').openapi({ 'x-stainless-const': true }),
-        data: RunStepObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.step.in_progress'), data: RunStepObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -1508,10 +1431,7 @@ const RunStepStreamEventSchema: z.ZodType<RunStepStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.step.delta').openapi({ 'x-stainless-const': true }),
-        data: RunStepDeltaObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.step.delta'), data: RunStepDeltaObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -1522,10 +1442,7 @@ const RunStepStreamEventSchema: z.ZodType<RunStepStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.step.completed').openapi({ 'x-stainless-const': true }),
-        data: RunStepObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.step.completed'), data: RunStepObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -1536,10 +1453,7 @@ const RunStepStreamEventSchema: z.ZodType<RunStepStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.step.failed').openapi({ 'x-stainless-const': true }),
-        data: RunStepObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.step.failed'), data: RunStepObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -1550,10 +1464,7 @@ const RunStepStreamEventSchema: z.ZodType<RunStepStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.step.cancelled').openapi({ 'x-stainless-const': true }),
-        data: RunStepObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.step.cancelled'), data: RunStepObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -1564,10 +1475,7 @@ const RunStepStreamEventSchema: z.ZodType<RunStepStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.run.step.expired').openapi({ 'x-stainless-const': true }),
-        data: RunStepObjectSchema,
-      })
+      .object({ event: z.literal('thread.run.step.expired'), data: RunStepObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -1582,9 +1490,7 @@ const RunStepStreamEventSchema: z.ZodType<RunStepStreamEventType> = z
 
 const MessageContentImageFileObjectSchema = z
   .object({
-    type: z
-      .literal('image_file')
-      .openapi({ description: 'Always `image_file`.', 'x-stainless-const': true }),
+    type: z.literal('image_file').openapi({ description: 'Always `image_file`.' }),
     image_file: z
       .object({
         file_id: z
@@ -1614,9 +1520,7 @@ const MessageContentImageFileObjectSchema = z
 
 const MessageContentImageUrlObjectSchema = z
   .object({
-    type: z
-      .literal('image_url')
-      .openapi({ description: 'The type of the content part.', 'x-stainless-const': true }),
+    type: z.literal('image_url').openapi({ description: 'The type of the content part.' }),
     image_url: z
       .object({
         url: z
@@ -1645,9 +1549,7 @@ const MessageContentImageUrlObjectSchema = z
 
 const MessageContentTextAnnotationsFileCitationObjectSchema = z
   .object({
-    type: z
-      .literal('file_citation')
-      .openapi({ description: 'Always `file_citation`.', 'x-stainless-const': true }),
+    type: z.literal('file_citation').openapi({ description: 'Always `file_citation`.' }),
     text: z
       .string()
       .openapi({ description: 'The text in the message content that needs to be replaced.' }),
@@ -1671,9 +1573,7 @@ const MessageContentTextAnnotationsFileCitationObjectSchema = z
 
 const MessageContentTextAnnotationsFilePathObjectSchema = z
   .object({
-    type: z
-      .literal('file_path')
-      .openapi({ description: 'Always `file_path`.', 'x-stainless-const': true }),
+    type: z.literal('file_path').openapi({ description: 'Always `file_path`.' }),
     text: z
       .string()
       .openapi({ description: 'The text in the message content that needs to be replaced.' }),
@@ -1695,7 +1595,7 @@ const MessageContentTextAnnotationsFilePathObjectSchema = z
 
 const MessageContentTextObjectSchema = z
   .object({
-    type: z.literal('text').openapi({ description: 'Always `text`.', 'x-stainless-const': true }),
+    type: z.literal('text').openapi({ description: 'Always `text`.' }),
     text: z
       .object({
         value: z.string().openapi({ description: 'The data that makes up the text.' }),
@@ -1717,9 +1617,7 @@ const MessageContentTextObjectSchema = z
 
 const MessageContentRefusalObjectSchema = z
   .object({
-    type: z
-      .literal('refusal')
-      .openapi({ description: 'Always `refusal`.', 'x-stainless-const': true }),
+    type: z.literal('refusal').openapi({ description: 'Always `refusal`.' }),
     refusal: z.string(),
   })
   .openapi({
@@ -1733,10 +1631,7 @@ const AssistantToolsFileSearchTypeOnlySchema = z
   .object({
     type: z
       .literal('file_search')
-      .openapi({
-        description: 'The type of tool being defined: `file_search`',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of tool being defined: `file_search`' }),
   })
   .openapi({ title: 'FileSearch tool', required: ['type'] })
   .openapi('AssistantToolsFileSearchTypeOnly')
@@ -1748,10 +1643,7 @@ const MessageObjectSchema = z
       .openapi({ description: 'The identifier, which can be referenced in API endpoints.' }),
     object: z
       .literal('thread.message')
-      .openapi({
-        description: 'The object type, which is always `thread.message`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `thread.message`.' }),
     created_at: z
       .int()
       .openapi({
@@ -1887,9 +1779,7 @@ const MessageObjectSchema = z
 const MessageDeltaContentImageFileObjectSchema = z
   .object({
     index: z.int().openapi({ description: 'The index of the content part in the message.' }),
-    type: z
-      .literal('image_file')
-      .openapi({ description: 'Always `image_file`.', 'x-stainless-const': true }),
+    type: z.literal('image_file').openapi({ description: 'Always `image_file`.' }),
     image_file: z
       .object({
         file_id: z
@@ -1924,9 +1814,7 @@ const MessageDeltaContentTextAnnotationsFileCitationObjectSchema = z
     index: z
       .int()
       .openapi({ description: 'The index of the annotation in the text content part.' }),
-    type: z
-      .literal('file_citation')
-      .openapi({ description: 'Always `file_citation`.', 'x-stainless-const': true }),
+    type: z.literal('file_citation').openapi({ description: 'Always `file_citation`.' }),
     text: z
       .string()
       .exactOptional()
@@ -1960,9 +1848,7 @@ const MessageDeltaContentTextAnnotationsFilePathObjectSchema = z
     index: z
       .int()
       .openapi({ description: 'The index of the annotation in the text content part.' }),
-    type: z
-      .literal('file_path')
-      .openapi({ description: 'Always `file_path`.', 'x-stainless-const': true }),
+    type: z.literal('file_path').openapi({ description: 'Always `file_path`.' }),
     text: z
       .string()
       .exactOptional()
@@ -1990,7 +1876,7 @@ const MessageDeltaContentTextAnnotationsFilePathObjectSchema = z
 const MessageDeltaContentTextObjectSchema = z
   .object({
     index: z.int().openapi({ description: 'The index of the content part in the message.' }),
-    type: z.literal('text').openapi({ description: 'Always `text`.', 'x-stainless-const': true }),
+    type: z.literal('text').openapi({ description: 'Always `text`.' }),
     text: z
       .object({
         value: z
@@ -2019,9 +1905,7 @@ const MessageDeltaContentTextObjectSchema = z
 const MessageDeltaContentRefusalObjectSchema = z
   .object({
     index: z.int().openapi({ description: 'The index of the refusal part in the message.' }),
-    type: z
-      .literal('refusal')
-      .openapi({ description: 'Always `refusal`.', 'x-stainless-const': true }),
+    type: z.literal('refusal').openapi({ description: 'Always `refusal`.' }),
     refusal: z.string().exactOptional(),
   })
   .openapi({
@@ -2034,9 +1918,7 @@ const MessageDeltaContentRefusalObjectSchema = z
 const MessageDeltaContentImageUrlObjectSchema = z
   .object({
     index: z.int().openapi({ description: 'The index of the content part in the message.' }),
-    type: z
-      .literal('image_url')
-      .openapi({ description: 'Always `image_url`.', 'x-stainless-const': true }),
+    type: z.literal('image_url').openapi({ description: 'Always `image_url`.' }),
     image_url: z
       .object({
         url: z
@@ -2088,10 +1970,7 @@ const MessageDeltaObjectSchema: z.ZodType<MessageDeltaObjectType> = z
       }),
     object: z
       .literal('thread.message.delta')
-      .openapi({
-        description: 'The object type, which is always `thread.message.delta`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `thread.message.delta`.' }),
     delta: z
       .object({
         role: z
@@ -2141,10 +2020,7 @@ type MessageStreamEventType =
 const MessageStreamEventSchema: z.ZodType<MessageStreamEventType> = z
   .xor([
     z
-      .object({
-        event: z.literal('thread.message.created').openapi({ 'x-stainless-const': true }),
-        data: MessageObjectSchema,
-      })
+      .object({ event: z.literal('thread.message.created'), data: MessageObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -2155,10 +2031,7 @@ const MessageStreamEventSchema: z.ZodType<MessageStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.message.in_progress').openapi({ 'x-stainless-const': true }),
-        data: MessageObjectSchema,
-      })
+      .object({ event: z.literal('thread.message.in_progress'), data: MessageObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -2169,10 +2042,7 @@ const MessageStreamEventSchema: z.ZodType<MessageStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.message.delta').openapi({ 'x-stainless-const': true }),
-        data: MessageDeltaObjectSchema,
-      })
+      .object({ event: z.literal('thread.message.delta'), data: MessageDeltaObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -2183,10 +2053,7 @@ const MessageStreamEventSchema: z.ZodType<MessageStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.message.completed').openapi({ 'x-stainless-const': true }),
-        data: MessageObjectSchema,
-      })
+      .object({ event: z.literal('thread.message.completed'), data: MessageObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -2197,10 +2064,7 @@ const MessageStreamEventSchema: z.ZodType<MessageStreamEventType> = z
         },
       }),
     z
-      .object({
-        event: z.literal('thread.message.incomplete').openapi({ 'x-stainless-const': true }),
-        data: MessageObjectSchema,
-      })
+      .object({ event: z.literal('thread.message.incomplete'), data: MessageObjectSchema })
       .openapi({
         required: ['event', 'data'],
         description:
@@ -2286,7 +2150,7 @@ const ErrorSchema = z
   .openapi('Error')
 
 const ErrorEventSchema = z
-  .object({ event: z.literal('error').openapi({ 'x-stainless-const': true }), data: ErrorSchema })
+  .object({ event: z.literal('error'), data: ErrorSchema })
   .openapi({
     required: ['event', 'data'],
     description:
@@ -2299,10 +2163,7 @@ const ErrorEventSchema = z
   .openapi('ErrorEvent')
 
 const DoneEventSchema = z
-  .object({
-    event: z.literal('done').openapi({ 'x-stainless-const': true }),
-    data: z.literal('[DONE]').openapi({ 'x-stainless-const': true }),
-  })
+  .object({ event: z.literal('done'), data: z.literal('[DONE]') })
   .openapi({
     required: ['event', 'data'],
     description: 'Occurs when a stream ends.',
@@ -3041,10 +2902,7 @@ const FilePathSchema = z
   .object({
     type: z
       .literal('file_path')
-      .openapi({
-        description: 'The type of the file path. Always `file_path`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the file path. Always `file_path`.\n' }),
     file_id: z.string().openapi({ description: 'The ID of the file.\n' }),
     index: z.int().openapi({ description: 'The index of the file in the list of files.\n' }),
   })
@@ -3600,7 +3458,6 @@ const FileSearchToolCallSchema = z
       .literal('file_search_call')
       .openapi({
         description: 'The type of the file search tool call. Always `file_search_call`.\n',
-        'x-stainless-const': true,
       }),
     status: z
       .enum(['in_progress', 'searching', 'completed', 'incomplete', 'failed'])
@@ -4885,7 +4742,6 @@ const CodeInterpreterToolSchema = z
       .literal('code_interpreter')
       .openapi({
         description: 'The type of the code interpreter tool. Always `code_interpreter`.\n',
-        'x-stainless-const': true,
       }),
     container: z
       .xor([
@@ -4978,7 +4834,6 @@ const ImageGenToolSchema = z
       .literal('image_generation')
       .openapi({
         description: 'The type of the image generation tool. Always `image_generation`.\n',
-        'x-stainless-const': true,
       }),
     model: z
       .union([
@@ -5769,10 +5624,7 @@ const TextResponseFormatJsonSchemaSchema = z
   .object({
     type: z
       .literal('json_schema')
-      .openapi({
-        description: 'The type of response format being defined. Always `json_schema`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of response format being defined. Always `json_schema`.' }),
     description: z
       .string()
       .exactOptional()
@@ -5862,10 +5714,7 @@ const ReasoningItemSchema = z
   .object({
     type: z
       .literal('reasoning')
-      .openapi({
-        description: 'The type of the object. Always `reasoning`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the object. Always `reasoning`.\n' }),
     id: z.string().openapi({ description: 'The unique identifier of the reasoning content.\n' }),
     encrypted_content: z
       .union([
@@ -6011,7 +5860,6 @@ const CodeInterpreterToolCallSchema = z
       .literal('code_interpreter_call')
       .default('code_interpreter_call')
       .openapi({
-        'x-stainless-const': true,
         description:
           'The type of the code interpreter tool call. Always `code_interpreter_call`.\n',
       }),
@@ -6100,10 +5948,7 @@ const LocalShellToolCallSchema = z
   .object({
     type: z
       .literal('local_shell_call')
-      .openapi({
-        description: 'The type of the local shell call. Always `local_shell_call`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the local shell call. Always `local_shell_call`.\n' }),
     id: z.string().openapi({ description: 'The unique ID of the local shell call.\n' }),
     call_id: z
       .string()
@@ -6129,7 +5974,6 @@ const LocalShellToolCallOutputSchema = z
       .openapi({
         description:
           'The type of the local shell tool call output. Always `local_shell_call_output`.\n',
-        'x-stainless-const': true,
       }),
     id: z
       .string()
@@ -6741,10 +6585,7 @@ const CustomToolCallSchema = z
   .object({
     type: z
       .literal('custom_tool_call')
-      .openapi({
-        'x-stainless-const': true,
-        description: 'The type of the custom tool call. Always `custom_tool_call`.\n',
-      }),
+      .openapi({ description: 'The type of the custom tool call. Always `custom_tool_call`.\n' }),
     id: z
       .string()
       .exactOptional()
@@ -6780,7 +6621,6 @@ const CustomToolCallOutputSchema = z
     type: z
       .literal('custom_tool_call_output')
       .openapi({
-        'x-stainless-const': true,
         description: 'The type of the custom tool call output. Always `custom_tool_call_output`.\n',
       }),
     id: z
@@ -7035,10 +6875,7 @@ const CreateEvalCustomDataSourceConfigSchema = z
     type: z
       .literal('custom')
       .default('custom')
-      .openapi({
-        description: 'The type of data source. Always `custom`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of data source. Always `custom`.' }),
     item_schema: z
       .looseObject({})
       .openapi({
@@ -7074,10 +6911,7 @@ const CreateEvalLogsDataSourceConfigSchema = z
     type: z
       .literal('logs')
       .default('logs')
-      .openapi({
-        description: 'The type of data source. Always `logs`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of data source. Always `logs`.' }),
     metadata: z
       .looseObject({})
       .exactOptional()
@@ -7105,10 +6939,7 @@ const CreateEvalStoredCompletionsDataSourceConfigSchema = z
     type: z
       .literal('stored_completions')
       .default('stored_completions')
-      .openapi({
-        description: 'The type of data source. Always `stored_completions`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of data source. Always `stored_completions`.' }),
     metadata: z
       .looseObject({})
       .exactOptional()
@@ -7140,10 +6971,7 @@ const EvalItemContentOutputTextSchema = z
   .object({
     type: z
       .literal('output_text')
-      .openapi({
-        description: 'The type of the output text. Always `output_text`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the output text. Always `output_text`.\n' }),
     text: z.string().openapi({ description: 'The text output from the model.\n' }),
   })
   .openapi({
@@ -7157,10 +6985,7 @@ const EvalItemInputImageSchema = z
   .object({
     type: z
       .literal('input_image')
-      .openapi({
-        description: 'The type of the image input. Always `input_image`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the image input. Always `input_image`.\n' }),
     image_url: z.url().openapi({ description: 'The URL of the image input.\n' }),
     detail: z
       .string()
@@ -7245,10 +7070,7 @@ const EvalItemSchema = z
     type: z
       .literal('message')
       .exactOptional()
-      .openapi({
-        description: 'The type of the message input. Always `message`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the message input. Always `message`.\n' }),
   })
   .openapi({
     title: 'Eval message object',
@@ -7284,10 +7106,7 @@ const CreateEvalLabelModelGraderSchema = z
   .object({
     type: z
       .literal('label_model')
-      .openapi({
-        description: 'The object type, which is always `label_model`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `label_model`.' }),
     name: z.string().openapi({ description: 'The name of the grader.' }),
     model: z
       .string()
@@ -7327,10 +7146,7 @@ const GraderStringCheckSchema = z
   .object({
     type: z
       .literal('string_check')
-      .openapi({
-        description: 'The object type, which is always `string_check`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `string_check`.' }),
     name: z.string().openapi({ description: 'The name of the grader.' }),
     input: z
       .string()
@@ -7368,7 +7184,7 @@ const GraderTextSimilaritySchema = z
     type: z
       .literal('text_similarity')
       .default('text_similarity')
-      .openapi({ description: 'The type of grader.', 'x-stainless-const': true }),
+      .openapi({ description: 'The type of grader.' }),
     name: z.string().openapi({ description: 'The name of the grader.' }),
     input: z.string().openapi({ description: 'The text being graded.' }),
     reference: z.string().openapi({ description: 'The text being graded against.' }),
@@ -7424,10 +7240,7 @@ const GraderPythonSchema = z
   .object({
     type: z
       .literal('python')
-      .openapi({
-        description: 'The object type, which is always `python`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `python`.' }),
     name: z.string().openapi({ description: 'The name of the grader.' }),
     source: z.string().openapi({ description: 'The source code of the python script.' }),
     image_tag: z
@@ -7473,10 +7286,7 @@ const GraderScoreModelSchema = z
   .object({
     type: z
       .literal('score_model')
-      .openapi({
-        description: 'The object type, which is always `score_model`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `score_model`.' }),
     name: z.string().openapi({ description: 'The name of the grader.' }),
     model: z.string().openapi({ description: 'The model to use for the evaluation.' }),
     sampling_params: z
@@ -7604,10 +7414,7 @@ const EvalJsonlFileContentSourceSchema = z
     type: z
       .literal('file_content')
       .default('file_content')
-      .openapi({
-        description: 'The type of jsonl source. Always `file_content`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of jsonl source. Always `file_content`.' }),
     content: z
       .array(
         z
@@ -7624,10 +7431,7 @@ const EvalJsonlFileIdSourceSchema = z
     type: z
       .literal('file_id')
       .default('file_id')
-      .openapi({
-        description: 'The type of jsonl source. Always `file_id`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of jsonl source. Always `file_id`.' }),
     id: z.string().openapi({ description: 'The identifier of the file.' }),
   })
   .openapi({ title: 'EvalJsonlFileIdSource', required: ['type', 'id'] })
@@ -7790,10 +7594,7 @@ const CreateEvalJsonlRunDataSourceSchema = z
     type: z
       .literal('jsonl')
       .default('jsonl')
-      .openapi({
-        description: 'The type of data source. Always `jsonl`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of data source. Always `jsonl`.' }),
     source: z
       .xor([EvalJsonlFileContentSourceSchema, EvalJsonlFileIdSourceSchema])
       .openapi({
@@ -7861,10 +7662,7 @@ const EasyInputMessageSchema = z
     type: z
       .literal('message')
       .exactOptional()
-      .openapi({
-        description: 'The type of the message input. Always `message`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the message input. Always `message`.\n' }),
   })
   .openapi({
     title: 'Input message',
@@ -7893,10 +7691,7 @@ const EvalStoredCompletionsSourceSchema = z
     type: z
       .literal('stored_completions')
       .default('stored_completions')
-      .openapi({
-        description: 'The type of source. Always `stored_completions`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of source. Always `stored_completions`.' }),
     metadata: MetadataSchema.exactOptional(),
     model: z
       .union([
@@ -8278,10 +8073,7 @@ const GraderLabelModelSchema = z
   .object({
     type: z
       .literal('label_model')
-      .openapi({
-        description: 'The object type, which is always `label_model`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `label_model`.' }),
     name: z.string().openapi({ description: 'The name of the grader.' }),
     model: z
       .string()
@@ -8331,10 +8123,7 @@ const GraderMultiSchema: z.ZodType<GraderMultiType> = z
     type: z
       .literal('multi')
       .default('multi')
-      .openapi({
-        description: 'The object type, which is always `multi`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `multi`.' }),
     name: z.string().openapi({ description: 'The name of the grader.' }),
     graders: z
       .record(
@@ -9048,6 +8837,10 @@ const ModelIdsResponsesSchema = z
         'gpt-rosalind-research',
         'gpt-6-rosalind',
         'gpt-6.2-astra-law',
+        'gpt-6-astra-healthcare',
+        'gpt-6.1-sol-healthcare',
+        'gpt-6.2-astra-healthcare',
+        'gpt-6.2-sol-healthcare',
       ])
       .openapi({
         title: 'ResponsesOnlyModel',
@@ -9160,10 +8953,7 @@ const ToolChoiceAllowedSchema = z
   .object({
     type: z
       .literal('allowed_tools')
-      .openapi({
-        description: 'Allowed tool configuration type. Always `allowed_tools`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'Allowed tool configuration type. Always `allowed_tools`.' }),
     mode: z
       .enum(['auto', 'required'])
       .openapi({
@@ -9221,10 +9011,7 @@ const ToolChoiceFunctionSchema = z
   .object({
     type: z
       .literal('function')
-      .openapi({
-        description: 'For function calling, the type is always `function`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'For function calling, the type is always `function`.' }),
     name: z.string().openapi({ description: 'The name of the function to call.' }),
   })
   .openapi({
@@ -9236,12 +9023,7 @@ const ToolChoiceFunctionSchema = z
 
 const ToolChoiceMCPSchema = z
   .object({
-    type: z
-      .literal('mcp')
-      .openapi({
-        description: 'For MCP tools, the type is always `mcp`.',
-        'x-stainless-const': true,
-      }),
+    type: z.literal('mcp').openapi({ description: 'For MCP tools, the type is always `mcp`.' }),
     server_label: z.string().openapi({ description: 'The label of the MCP server to use.\n' }),
     name: z
       .union([
@@ -9262,10 +9044,7 @@ const ToolChoiceCustomSchema = z
   .object({
     type: z
       .literal('custom')
-      .openapi({
-        description: 'For custom tool calling, the type is always `custom`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'For custom tool calling, the type is always `custom`.' }),
     name: z.string().openapi({ description: 'The name of the custom tool to call.' }),
   })
   .openapi({
@@ -11181,7 +10960,7 @@ type CreateResponseType = z.infer<typeof CreateModelResponsePropertiesSchema> &
 
 const MessageRequestContentTextObjectSchema = z
   .object({
-    type: z.literal('text').openapi({ description: 'Always `text`.', 'x-stainless-const': true }),
+    type: z.literal('text').openapi({ description: 'Always `text`.' }),
     text: z.string().openapi({ description: 'Text content to be sent to the model' }),
   })
   .openapi({
@@ -11327,10 +11106,7 @@ const CreateThreadRequestSchema = z
                                   .strictObject({
                                     type: z
                                       .literal('auto')
-                                      .openapi({
-                                        description: 'Always `auto`.',
-                                        'x-stainless-const': true,
-                                      }),
+                                      .openapi({ description: 'Always `auto`.' }),
                                   })
                                   .openapi({
                                     title: 'Auto Chunking Strategy',
@@ -11342,10 +11118,7 @@ const CreateThreadRequestSchema = z
                                   .strictObject({
                                     type: z
                                       .literal('static')
-                                      .openapi({
-                                        description: 'Always `static`.',
-                                        'x-stainless-const': true,
-                                      }),
+                                      .openapi({ description: 'Always `static`.' }),
                                     static: z
                                       .strictObject({
                                         max_chunk_size_tokens: z
@@ -11482,10 +11255,7 @@ const EvalCustomDataSourceConfigSchema = z
     type: z
       .literal('custom')
       .default('custom')
-      .openapi({
-        description: 'The type of data source. Always `custom`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of data source. Always `custom`.' }),
     schema: z
       .looseObject({})
       .openapi({
@@ -11523,10 +11293,7 @@ const EvalLogsDataSourceConfigSchema = z
     type: z
       .literal('logs')
       .default('logs')
-      .openapi({
-        description: 'The type of data source. Always `logs`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of data source. Always `logs`.' }),
     metadata: MetadataSchema.exactOptional(),
     schema: z
       .looseObject({})
@@ -11554,10 +11321,7 @@ const EvalStoredCompletionsDataSourceConfigSchema = z
     type: z
       .literal('stored_completions')
       .default('stored_completions')
-      .openapi({
-        description: 'The type of data source. Always `stored_completions`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of data source. Always `stored_completions`.' }),
     metadata: MetadataSchema.exactOptional(),
     schema: z
       .looseObject({})
@@ -11605,10 +11369,7 @@ type EvalType = {
 
 const EvalSchema: z.ZodType<EvalType> = z
   .object({
-    object: z
-      .literal('eval')
-      .default('eval')
-      .openapi({ description: 'The object type.', 'x-stainless-const': true }),
+    object: z.literal('eval').default('eval').openapi({ description: 'The object type.' }),
     id: z.string().openapi({ description: 'Unique identifier for the evaluation.' }),
     name: z
       .string()
@@ -11723,10 +11484,7 @@ const EvalRunSchema: z.ZodType<EvalRunType> = z
     object: z
       .literal('eval.run')
       .default('eval.run')
-      .openapi({
-        description: 'The type of the object. Always "eval.run".',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the object. Always "eval.run".' }),
     id: z.string().openapi({ description: 'Unique identifier for the evaluation run.' }),
     eval_id: z.string().openapi({ description: 'The identifier of the associated evaluation.' }),
     status: z.string().openapi({ description: 'The status of the evaluation run.' }),
@@ -15472,7 +15230,7 @@ const IdleTimeoutSSchema = z
   .max(60)
   .openapi({
     description:
-      'Whole seconds of inactivity after which a Live WebRTC session with a speech wake policy pauses inference. The connection and conversation history are retained. Omit to keep inference active after the first wake until the session ends.',
+      'Whole seconds of inactivity after which a Live WebRTC or SIP session with a speech wake policy pauses inference. The connection and conversation history are retained. Omit to keep inference active after the first wake until the session ends.',
   })
   .openapi('IdleTimeoutS')
 
@@ -21511,6 +21269,7 @@ type ValidateGraderResponseType = {
 
 type CreateConversationBodyType = {
   metadata?: z.infer<typeof MetadataSchema> | null
+  safety_identifier?: string | null
   items?: z.infer<typeof InputItemSchema>[] | null
 }
 
@@ -21577,6 +21336,7 @@ type CompactResponseMethodPublicBodyType = {
   input?: (string | z.infer<typeof InputItemSchema>[]) | null
   previous_response_id?: string | null
   instructions?: string | null
+  safety_identifier?: string | null
   image?: z.infer<typeof ImageOptionsParamSchema>
   prompt_cache_key?: string | null
   prompt_cache_retention?: z.infer<typeof PromptCacheRetentionEnumSchema> | null
@@ -21656,8 +21416,10 @@ type CompactResourceType = {
   image?: z.infer<typeof ResolvedImageOptionsSchema>
   id: string
   object: 'response.compaction'
+  safety_identifier?: string | null
   output: z.infer<typeof ItemFieldSchema>[]
   created_at: number
+  service_tier?: string
   usage: z.infer<typeof ResponseUsageSchema>
 }
 
@@ -27839,10 +27601,7 @@ const BetaEasyInputMessageSchema = z
     type: z
       .literal('message')
       .exactOptional()
-      .openapi({
-        description: 'The type of the message input. Always `message`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the message input. Always `message`.\n' }),
   })
   .openapi({
     title: 'Input message',
@@ -27982,10 +27741,7 @@ const BetaFilePathSchema = z
   .object({
     type: z
       .literal('file_path')
-      .openapi({
-        description: 'The type of the file path. Always `file_path`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the file path. Always `file_path`.\n' }),
     file_id: z.string().openapi({ description: 'The ID of the file.\n' }),
     index: z.int().openapi({ description: 'The index of the file in the list of files.\n' }),
   })
@@ -28143,7 +27899,6 @@ const BetaFileSearchToolCallSchema = z
       .literal('file_search_call')
       .openapi({
         description: 'The type of the file search tool call. Always `file_search_call`.\n',
-        'x-stainless-const': true,
       }),
     status: z
       .enum(['in_progress', 'searching', 'completed', 'incomplete', 'failed'])
@@ -30015,7 +29770,6 @@ const BetaCodeInterpreterToolSchema = z
       .literal('code_interpreter')
       .openapi({
         description: 'The type of the code interpreter tool. Always `code_interpreter`.\n',
-        'x-stainless-const': true,
       }),
     container: z
       .xor([
@@ -30112,7 +29866,6 @@ const BetaImageGenToolSchema = z
       .literal('image_generation')
       .openapi({
         description: 'The type of the image generation tool. Always `image_generation`.\n',
-        'x-stainless-const': true,
       }),
     model: z
       .union([
@@ -31096,10 +30849,7 @@ const BetaTextResponseFormatJsonSchemaSchema = z
   .object({
     type: z
       .literal('json_schema')
-      .openapi({
-        description: 'The type of response format being defined. Always `json_schema`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of response format being defined. Always `json_schema`.' }),
     description: z
       .string()
       .exactOptional()
@@ -31242,10 +30992,7 @@ const BetaReasoningItemSchema = z
       .openapi({ description: 'The agent that produced this item.' }),
     type: z
       .literal('reasoning')
-      .openapi({
-        description: 'The type of the object. Always `reasoning`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the object. Always `reasoning`.\n' }),
     id: z.string().openapi({ description: 'The unique identifier of the reasoning content.\n' }),
     encrypted_content: z
       .union([
@@ -31502,7 +31249,6 @@ const BetaCodeInterpreterToolCallSchema = z
       .literal('code_interpreter_call')
       .default('code_interpreter_call')
       .openapi({
-        'x-stainless-const': true,
         description:
           'The type of the code interpreter tool call. Always `code_interpreter_call`.\n',
       }),
@@ -31595,10 +31341,7 @@ const BetaLocalShellToolCallSchema = z
       .openapi({ description: 'The agent that produced this item.' }),
     type: z
       .literal('local_shell_call')
-      .openapi({
-        description: 'The type of the local shell call. Always `local_shell_call`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the local shell call. Always `local_shell_call`.\n' }),
     id: z.string().openapi({ description: 'The unique ID of the local shell call.\n' }),
     call_id: z
       .string()
@@ -31628,7 +31371,6 @@ const BetaLocalShellToolCallOutputSchema = z
       .openapi({
         description:
           'The type of the local shell tool call output. Always `local_shell_call_output`.\n',
-        'x-stainless-const': true,
       }),
     id: z
       .string()
@@ -32357,7 +32099,6 @@ const BetaCustomToolCallOutputSchema = z
     type: z
       .literal('custom_tool_call_output')
       .openapi({
-        'x-stainless-const': true,
         description: 'The type of the custom tool call output. Always `custom_tool_call_output`.\n',
       }),
     id: z
@@ -32408,10 +32149,7 @@ const BetaCustomToolCallSchema = z
       .openapi({ description: 'The agent that produced this item.' }),
     type: z
       .literal('custom_tool_call')
-      .openapi({
-        'x-stainless-const': true,
-        description: 'The type of the custom tool call. Always `custom_tool_call`.\n',
-      }),
+      .openapi({ description: 'The type of the custom tool call. Always `custom_tool_call`.\n' }),
     id: z
       .string()
       .exactOptional()
@@ -32821,10 +32559,7 @@ const BetaToolChoiceAllowedSchema = z
   .object({
     type: z
       .literal('allowed_tools')
-      .openapi({
-        description: 'Allowed tool configuration type. Always `allowed_tools`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'Allowed tool configuration type. Always `allowed_tools`.' }),
     mode: z
       .enum(['auto', 'required'])
       .openapi({
@@ -32882,10 +32617,7 @@ const BetaToolChoiceFunctionSchema = z
   .object({
     type: z
       .literal('function')
-      .openapi({
-        description: 'For function calling, the type is always `function`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'For function calling, the type is always `function`.' }),
     name: z.string().openapi({ description: 'The name of the function to call.' }),
   })
   .openapi({
@@ -32897,12 +32629,7 @@ const BetaToolChoiceFunctionSchema = z
 
 const BetaToolChoiceMCPSchema = z
   .object({
-    type: z
-      .literal('mcp')
-      .openapi({
-        description: 'For MCP tools, the type is always `mcp`.',
-        'x-stainless-const': true,
-      }),
+    type: z.literal('mcp').openapi({ description: 'For MCP tools, the type is always `mcp`.' }),
     server_label: z.string().openapi({ description: 'The label of the MCP server to use.\n' }),
     name: z
       .union([
@@ -32923,10 +32650,7 @@ const BetaToolChoiceCustomSchema = z
   .object({
     type: z
       .literal('custom')
-      .openapi({
-        description: 'For custom tool calling, the type is always `custom`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'For custom tool calling, the type is always `custom`.' }),
     name: z.string().openapi({ description: 'The name of the custom tool to call.' }),
   })
   .openapi({
@@ -33441,6 +33165,10 @@ const BetaModelIdsResponsesSchema = z
         'gpt-rosalind-research',
         'gpt-6-rosalind',
         'gpt-6.2-astra-law',
+        'gpt-6-astra-healthcare',
+        'gpt-6.1-sol-healthcare',
+        'gpt-6.2-astra-healthcare',
+        'gpt-6.2-sol-healthcare',
       ])
       .openapi({
         title: 'ResponsesOnlyModel',
@@ -33567,6 +33295,7 @@ type BetaCompactResponseMethodPublicBodyType = {
   input?: (string | z.infer<typeof BetaInputItemSchema>[]) | null
   previous_response_id?: string | null
   instructions?: string | null
+  safety_identifier?: string | null
   image?: z.infer<typeof BetaImageOptionsParamSchema>
   prompt_cache_key?: string | null
   prompt_cache_retention?: z.infer<typeof BetaPromptCacheRetentionEnumSchema> | null
@@ -34969,8 +34698,10 @@ type BetaCompactResourceType = {
   image?: z.infer<typeof BetaResolvedImageOptionsSchema>
   id: string
   object: 'response.compaction'
+  safety_identifier?: string | null
   output: z.infer<typeof BetaItemFieldSchema>[]
   created_at: number
+  service_tier?: string
   usage: z.infer<typeof BetaResponseUsageSchema>
 }
 
@@ -34980,7 +34711,7 @@ const BetaMetadataSchema = z
       .record(z.string(), z.string())
       .openapi({
         description:
-          'Set of 16 key-value pairs that can be attached to an object. This can be\nuseful for storing additional information about the object in a structured\nformat, and querying for objects via API or the dashboard.\n\nKeys are strings with a maximum length of 64 characters. Values are strings\nwith a maximum length of 512 characters.\n',
+          'Set of 16 key-value pairs that can be attached to an object. This can be\nuseful for storing additional information about the object in a structured\nformat.\n\nKeys are strings with a maximum length of 64 characters. Values are strings\nwith a maximum length of 512 characters.\n',
         'x-oaiTypeLabel': 'map',
       }),
     z.null().nullable(),
@@ -39524,10 +39255,7 @@ const AssistantObjectSchema = z
       .openapi({ description: 'The identifier, which can be referenced in API endpoints.' }),
     object: z
       .literal('assistant')
-      .openapi({
-        description: 'The object type, which is always `assistant`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `assistant`.' }),
     created_at: z
       .int()
       .openapi({
@@ -42295,10 +42023,7 @@ const CodeInterpreterFileOutputSchema = z
   .object({
     type: z
       .literal('files')
-      .openapi({
-        description: 'The type of the code interpreter file output. Always `files`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the code interpreter file output. Always `files`.\n' }),
     files: z.array(
       z
         .object({
@@ -42319,10 +42044,7 @@ const CodeInterpreterTextOutputSchema = z
   .object({
     type: z
       .literal('logs')
-      .openapi({
-        description: 'The type of the code interpreter text output. Always `logs`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the code interpreter text output. Always `logs`.\n' }),
     logs: z.string().openapi({ description: 'The logs of the code interpreter tool call.\n' }),
   })
   .openapi({
@@ -42492,7 +42214,7 @@ const CostsResultSchema = z
         description:
           'When grouped by `api_source`, `agents_api` identifies attributed Agents API activity and `unlabeled` includes all records without published source attribution, including historical and unknown origins. Unlabeled does not imply direct API usage. Without source grouping, this field is null.',
       }),
-    object: z.literal('organization.costs.result').openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.costs.result'),
     amount: z
       .object({
         value: z
@@ -42724,10 +42446,7 @@ const CreateAssistantRequestSchema = z
                                   .strictObject({
                                     type: z
                                       .literal('auto')
-                                      .openapi({
-                                        description: 'Always `auto`.',
-                                        'x-stainless-const': true,
-                                      }),
+                                      .openapi({ description: 'Always `auto`.' }),
                                   })
                                   .openapi({
                                     title: 'Auto Chunking Strategy',
@@ -42739,10 +42458,7 @@ const CreateAssistantRequestSchema = z
                                   .strictObject({
                                     type: z
                                       .literal('static')
-                                      .openapi({
-                                        description: 'Always `static`.',
-                                        'x-stainless-const': true,
-                                      }),
+                                      .openapi({ description: 'Always `static`.' }),
                                     static: z
                                       .strictObject({
                                         max_chunk_size_tokens: z
@@ -42991,7 +42707,6 @@ const PredictionContentSchema = z
       .openapi({
         description:
           'The type of the predicted content you want to provide. This type is\ncurrently always `content`.\n',
-        'x-stainless-const': true,
       }),
     content: z
       .xor([
@@ -43048,10 +42763,7 @@ const CustomToolChatCompletionsSchema = z
               .strictObject({
                 type: z
                   .literal('text')
-                  .openapi({
-                    description: 'Unconstrained text format. Always `text`.',
-                    'x-stainless-const': true,
-                  }),
+                  .openapi({ description: 'Unconstrained text format. Always `text`.' }),
               })
               .openapi({
                 title: 'Text format',
@@ -43062,10 +42774,7 @@ const CustomToolChatCompletionsSchema = z
               .strictObject({
                 type: z
                   .literal('grammar')
-                  .openapi({
-                    description: 'Grammar format. Always `grammar`.',
-                    'x-stainless-const': true,
-                  }),
+                  .openapi({ description: 'Grammar format. Always `grammar`.' }),
                 grammar: z
                   .object({
                     definition: z.string().openapi({ description: 'The grammar definition.' }),
@@ -44002,7 +43711,6 @@ const FileExpirationAfterSchema = z
       .openapi({
         description:
           'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.',
-        'x-stainless-const': true,
       }),
     seconds: z
       .preprocess(
@@ -45898,10 +45606,7 @@ const TranscriptionDiarizedSegmentSchema = z
   .object({
     type: z
       .literal('transcript.text.segment')
-      .openapi({
-        description: 'The type of the segment. Always `transcript.text.segment`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the segment. Always `transcript.text.segment`.\n' }),
     id: z.string().openapi({ description: 'Unique identifier for the segment.' }),
     start: z.float64().openapi({ description: 'Start timestamp of the segment in seconds.' }),
     end: z.float64().openapi({ description: 'End timestamp of the segment in seconds.' }),
@@ -45923,10 +45628,7 @@ const TranscriptTextUsageTokensSchema = z
   .object({
     type: z
       .literal('tokens')
-      .openapi({
-        description: 'The type of the usage object. Always `tokens` for this variant.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the usage object. Always `tokens` for this variant.' }),
     input_tokens: z
       .int()
       .openapi({ description: 'Number of input tokens billed for this request.' }),
@@ -45962,7 +45664,6 @@ const TranscriptTextUsageDurationSchema = z
       .literal('duration')
       .openapi({
         description: 'The type of the usage object. Always `duration` for this variant.',
-        'x-stainless-const': true,
       }),
     seconds: z.float64().openapi({ description: 'Duration of the input audio in seconds.' }),
   })
@@ -45977,10 +45678,7 @@ const CreateTranscriptionResponseDiarizedJsonSchema = z
   .object({
     task: z
       .literal('transcribe')
-      .openapi({
-        description: 'The type of task that was run. Always `transcribe`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of task that was run. Always `transcribe`.' }),
     duration: z.float64().openapi({ description: 'Duration of the input audio in seconds.' }),
     text: z
       .string()
@@ -46080,10 +45778,7 @@ const TranscriptTextSegmentEventSchema = z
   .object({
     type: z
       .literal('transcript.text.segment')
-      .openapi({
-        description: 'The type of the event. Always `transcript.text.segment`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the event. Always `transcript.text.segment`.' }),
     id: z.string().openapi({ description: 'Unique identifier for the segment.' }),
     start: z.float64().openapi({ description: 'Start timestamp of the segment in seconds.' }),
     end: z.float64().openapi({ description: 'End timestamp of the segment in seconds.' }),
@@ -46107,10 +45802,7 @@ const TranscriptTextDeltaEventSchema = z
   .object({
     type: z
       .literal('transcript.text.delta')
-      .openapi({
-        description: 'The type of the event. Always `transcript.text.delta`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the event. Always `transcript.text.delta`.\n' }),
     delta: z
       .string()
       .openapi({ description: 'The text delta that was additionally transcribed.\n' }),
@@ -46166,10 +45858,7 @@ const TranscriptTextDoneEventSchema = z
   .object({
     type: z
       .literal('transcript.text.done')
-      .openapi({
-        description: 'The type of the event. Always `transcript.text.done`.\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the event. Always `transcript.text.done`.\n' }),
     text: z.string().openapi({ description: 'The text that was transcribed.\n' }),
     languages: z
       .array(TranscriptionLanguageSchema)
@@ -46327,7 +46016,7 @@ const CreateTranslationRequestSchema = z
         'x-oaiTypeLabel': 'file',
       }),
     model: z
-      .union([z.string(), z.literal('whisper-1').openapi({ 'x-stainless-const': true })])
+      .union([z.string(), z.literal('whisper-1')])
       .openapi({
         description:
           'ID of the model to use. Only `whisper-1` (which is powered by our open source Whisper V2 model) is currently available.\n',
@@ -46639,11 +46328,7 @@ const CreateVoiceRequestSchema = z
   .openapi('CreateVoiceRequest')
 
 const DeleteAssistantResponseSchema = z
-  .object({
-    id: z.string(),
-    deleted: z.boolean(),
-    object: z.literal('assistant.deleted').openapi({ 'x-stainless-const': true }),
-  })
+  .object({ id: z.string(), deleted: z.boolean(), object: z.literal('assistant.deleted') })
   .openapi({ required: ['id', 'object', 'deleted'] })
   .openapi('DeleteAssistantResponse')
 
@@ -46682,11 +46367,7 @@ const DeleteFineTuningCheckpointPermissionResponseSchema = z
   .openapi('DeleteFineTuningCheckpointPermissionResponse')
 
 const DeleteMessageResponseSchema = z
-  .object({
-    id: z.string(),
-    deleted: z.boolean(),
-    object: z.literal('thread.message.deleted').openapi({ 'x-stainless-const': true }),
-  })
+  .object({ id: z.string(), deleted: z.boolean(), object: z.literal('thread.message.deleted') })
   .openapi({ required: ['id', 'object', 'deleted'] })
   .openapi('DeleteMessageResponse')
 
@@ -46696,11 +46377,7 @@ const DeleteModelResponseSchema = z
   .openapi('DeleteModelResponse')
 
 const DeleteThreadResponseSchema = z
-  .object({
-    id: z.string(),
-    deleted: z.boolean(),
-    object: z.literal('thread.deleted').openapi({ 'x-stainless-const': true }),
-  })
+  .object({ id: z.string(), deleted: z.boolean(), object: z.literal('thread.deleted') })
   .openapi({ required: ['id', 'object', 'deleted'] })
   .openapi('DeleteThreadResponse')
 
@@ -46797,38 +46474,15 @@ const ImageRefParamSchema = (() => {
           })
           .openapi({ required: [] }),
       )
-    return z.preprocess((val: z.input<typeof Schema>, ctx) => {
-      const reported = ctx.issues.length
-      try {
-        ;((ctx) => {
-          const val = ctx.value
-          if (
-            z
-              .unknown()
-              .superRefine((val, ctx) => {
-                if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-                  if (!Object.hasOwn(val, 'image_url')) {
-                    ctx.addIssue({ code: 'custom' })
-                  }
-                  if (!Object.hasOwn(val, 'file_id')) {
-                    ctx.addIssue({ code: 'custom' })
-                  }
-                }
-              })
-              .openapi({ required: ['image_url', 'file_id'] })
-              .safeParse(val).success
-          ) {
-            ctx.issues.push({ code: 'custom', input: val })
-          }
-        })(ctx)
-      } catch (error) {
-        if (!(error instanceof z.core.$ZodAsyncError)) throw error
-        ctx.issues.length = reported
-        return (async (ctx) => {
-          const val = ctx.value
-          if (
-            (
-              await z
+    return z
+      .transform((val: z.input<typeof Schema>) => val)
+      .check((ctx: z.core.ParsePayload) => {
+        const reported = ctx.issues.length
+        try {
+          return ((ctx) => {
+            const val = ctx.value
+            if (
+              z
                 .unknown()
                 .superRefine((val, ctx) => {
                   if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
@@ -46841,15 +46495,40 @@ const ImageRefParamSchema = (() => {
                   }
                 })
                 .openapi({ required: ['image_url', 'file_id'] })
-                .safeParseAsync(val)
-            ).success
-          ) {
-            ctx.issues.push({ code: 'custom', input: val })
-          }
-        })(ctx).then(() => val)
-      }
-      return val
-    }, Schema)
+                .safeParse(val).success
+            ) {
+              ctx.issues.push({ code: 'custom', input: val })
+            }
+          })(ctx)
+        } catch (error) {
+          if (!(error instanceof z.core.$ZodAsyncError)) throw error
+          ctx.issues.length = reported
+          return (async (ctx) => {
+            const val = ctx.value
+            if (
+              (
+                await z
+                  .unknown()
+                  .superRefine((val, ctx) => {
+                    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                      if (!Object.hasOwn(val, 'image_url')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                      if (!Object.hasOwn(val, 'file_id')) {
+                        ctx.addIssue({ code: 'custom' })
+                      }
+                    }
+                  })
+                  .openapi({ required: ['image_url', 'file_id'] })
+                  .safeParseAsync(val)
+              ).success
+            ) {
+              ctx.issues.push({ code: 'custom', input: val })
+            }
+          })(ctx)
+        }
+      })
+      .pipe(Schema)
   })()
   return z.preprocess((val: z.input<typeof Schema>, ctx) => {
     ;((ctx) => {
@@ -47044,10 +46723,7 @@ const EvalListSchema: z.ZodType<EvalListType> = z
     object: z
       .literal('list')
       .default('list')
-      .openapi({
-        description: 'The type of this object. It is always set to "list".\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of this object. It is always set to "list".\n' }),
     data: z.array(EvalSchema).openapi({ description: 'An array of eval objects.\n' }),
     first_id: z
       .string()
@@ -47077,10 +46753,7 @@ const EvalRunListSchema: z.ZodType<EvalRunListType> = z
     object: z
       .literal('list')
       .default('list')
-      .openapi({
-        description: 'The type of this object. It is always set to "list".\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of this object. It is always set to "list".\n' }),
     data: z.array(EvalRunSchema).openapi({ description: 'An array of eval run objects.\n' }),
     first_id: z
       .string()
@@ -47133,10 +46806,7 @@ const EvalRunOutputItemSchema = z
     object: z
       .literal('eval.run.output_item')
       .default('eval.run.output_item')
-      .openapi({
-        description: 'The type of the object. Always "eval.run.output_item".',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of the object. Always "eval.run.output_item".' }),
     id: z
       .string()
       .openapi({ description: 'Unique identifier for the evaluation run output item.' }),
@@ -47265,10 +46935,7 @@ const EvalRunOutputItemListSchema = z
     object: z
       .literal('list')
       .default('list')
-      .openapi({
-        description: 'The type of this object. It is always set to "list".\n',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The type of this object. It is always set to "list".\n' }),
     data: z
       .array(EvalRunOutputItemSchema)
       .openapi({ description: 'An array of eval run output item objects.\n' }),
@@ -47455,9 +47122,7 @@ const FineTuningJobEventSchema = z
 
 const GroupSchema = z
   .object({
-    object: z
-      .literal('group')
-      .openapi({ description: 'Always `group`.', 'x-stainless-const': true }),
+    object: z.literal('group').openapi({ description: 'Always `group`.' }),
     id: z.string().openapi({ description: 'Identifier for the group.' }),
     name: z.string().openapi({ description: 'Display name of the group.' }),
     created_at: z
@@ -47480,9 +47145,7 @@ const GroupSchema = z
 
 const GroupDeletedResourceSchema = z
   .object({
-    object: z
-      .literal('group.deleted')
-      .openapi({ description: 'Always `group.deleted`.', 'x-stainless-const': true }),
+    object: z.literal('group.deleted').openapi({ description: 'Always `group.deleted`.' }),
     id: z.string().openapi({ description: 'Identifier of the deleted group.' }),
     deleted: z.boolean().openapi({ description: 'Whether the group was deleted.' }),
   })
@@ -47526,7 +47189,7 @@ const GroupResponseSchema = z
 
 const GroupListResourceSchema = z
   .object({
-    object: z.literal('list').openapi({ description: 'Always `list`.', 'x-stainless-const': true }),
+    object: z.literal('list').openapi({ description: 'Always `list`.' }),
     data: z
       .array(GroupResponseSchema)
       .openapi({ description: 'Groups returned in the current page.' }),
@@ -47603,7 +47266,7 @@ const GroupResourceWithSuccessSchema = z
 
 const RoleSchema = z
   .object({
-    object: z.literal('role').openapi({ description: 'Always `role`.', 'x-stainless-const': true }),
+    object: z.literal('role').openapi({ description: 'Always `role`.' }),
     id: z.string().openapi({ description: 'Identifier for the role.' }),
     name: z.string().openapi({ description: 'Unique name for the role.' }),
     description: z
@@ -47641,9 +47304,7 @@ const RoleSchema = z
 
 const GroupRoleAssignmentSchema = z
   .object({
-    object: z
-      .literal('group.role')
-      .openapi({ description: 'Always `group.role`.', 'x-stainless-const': true }),
+    object: z.literal('group.role').openapi({ description: 'Always `group.role`.' }),
     group: GroupSchema,
     role: RoleSchema,
   })
@@ -47676,9 +47337,7 @@ const GroupUserSchema = z
 
 const GroupUserAssignmentSchema = z
   .object({
-    object: z
-      .literal('group.user')
-      .openapi({ description: 'Always `group.user`.', 'x-stainless-const': true }),
+    object: z.literal('group.user').openapi({ description: 'Always `group.user`.' }),
     user_id: z.string().openapi({ description: 'Identifier of the user that was added.' }),
     group_id: z.string().openapi({ description: 'Identifier of the group the user was added to.' }),
   })
@@ -47697,7 +47356,7 @@ const GroupUserDeletedResourceSchema = z
   .object({
     object: z
       .literal('group.user.deleted')
-      .openapi({ description: 'Always `group.user.deleted`.', 'x-stainless-const': true }),
+      .openapi({ description: 'Always `group.user.deleted`.' }),
     deleted: z.boolean().openapi({ description: 'Whether the group membership was removed.' }),
   })
   .openapi({
@@ -50327,7 +49986,7 @@ const PublicCreateOrganizationRoleBodySchema = z
 
 const PublicRoleListResourceSchema = z
   .object({
-    object: z.literal('list').openapi({ description: 'Always `list`.', 'x-stainless-const': true }),
+    object: z.literal('list').openapi({ description: 'Always `list`.' }),
     data: z.array(RoleSchema).openapi({ description: 'Roles returned in the current page.' }),
     has_more: z
       .boolean()
@@ -51518,15 +51177,50 @@ const RealtimeTranscriptionSessionCreateRequestSchema = z
           'Configuration for turn detection. Can be set to `null` to turn off. Server VAD means that the model will detect the start and end of speech based on audio volume and respond at the end of user speech.\n',
         required: [],
       }),
-    input_audio_noise_reduction: z
-      .any()
-      .refine(
-        (val) =>
-          !Array.isArray(val) &&
-          typeof val !== 'string' &&
-          typeof val !== 'number' &&
-          typeof val !== 'boolean',
-      )
+    input_audio_noise_reduction: (() => {
+      const Schema = z
+        .any()
+        .refine(
+          (val) =>
+            !Array.isArray(val) &&
+            typeof val !== 'string' &&
+            typeof val !== 'number' &&
+            typeof val !== 'boolean',
+        )
+      return z
+        .transform((val: z.input<typeof Schema>) => val)
+        .check((ctx: z.core.ParsePayload) => {
+          const reported = ctx.issues.length
+          try {
+            return ((ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (Object.hasOwn(val, 'type')) {
+                  const Schema = NoiseReductionTypeSchema
+                  if (!Schema.safeParse(Reflect.get(val, 'type')).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          } catch (error) {
+            if (!(error instanceof z.core.$ZodAsyncError)) throw error
+            ctx.issues.length = reported
+            return (async (ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (Object.hasOwn(val, 'type')) {
+                  const Schema = NoiseReductionTypeSchema
+                  if (!(await Schema.safeParseAsync(Reflect.get(val, 'type'))).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          }
+        })
+        .pipe(Schema)
+    })()
       .nullable()
       .default(null)
       .exactOptional()
@@ -53156,15 +52850,50 @@ const RealtimeSessionSchema = z
       ])
       .exactOptional(),
     turn_detection: RealtimeTurnDetectionSchema.exactOptional(),
-    input_audio_noise_reduction: z
-      .any()
-      .refine(
-        (val) =>
-          !Array.isArray(val) &&
-          typeof val !== 'string' &&
-          typeof val !== 'number' &&
-          typeof val !== 'boolean',
-      )
+    input_audio_noise_reduction: (() => {
+      const Schema = z
+        .any()
+        .refine(
+          (val) =>
+            !Array.isArray(val) &&
+            typeof val !== 'string' &&
+            typeof val !== 'number' &&
+            typeof val !== 'boolean',
+        )
+      return z
+        .transform((val: z.input<typeof Schema>) => val)
+        .check((ctx: z.core.ParsePayload) => {
+          const reported = ctx.issues.length
+          try {
+            return ((ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (Object.hasOwn(val, 'type')) {
+                  const Schema = NoiseReductionTypeSchema
+                  if (!Schema.safeParse(Reflect.get(val, 'type')).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          } catch (error) {
+            if (!(error instanceof z.core.$ZodAsyncError)) throw error
+            ctx.issues.length = reported
+            return (async (ctx) => {
+              const val = ctx.value
+              if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                if (Object.hasOwn(val, 'type')) {
+                  const Schema = NoiseReductionTypeSchema
+                  if (!(await Schema.safeParseAsync(Reflect.get(val, 'type'))).success) {
+                    ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                  }
+                }
+              }
+            })(ctx)
+          }
+        })
+        .pipe(Schema)
+    })()
       .nullable()
       .default(null)
       .exactOptional()
@@ -53460,6 +53189,17 @@ const RealtimeBetaServerEventTranscriptionSessionUpdatedSchema = z
   })
   .openapi('RealtimeBetaServerEventTranscriptionSessionUpdated')
 
+const RealtimeNoiseReductionStrengthSchema = z
+  .number()
+  .min(0)
+  .max(1)
+  .default(1)
+  .openapi({
+    description:
+      'Input noise suppression strength. Higher values apply more suppression.\nDefaults to 1 when noise reduction is first enabled. Omitting strength\nfrom a session update preserves the current strength.\n',
+  })
+  .openapi('RealtimeNoiseReductionStrength')
+
 const RealtimeReasoningEffortSchema = z
   .enum(['minimal', 'low', 'medium', 'high', 'xhigh'])
   .default('low')
@@ -53570,15 +53310,64 @@ const RealtimeSessionCreateRequestGASchema = z
               description:
                 'Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n',
             }),
-            noise_reduction: z
-              .any()
-              .refine(
-                (val) =>
-                  !Array.isArray(val) &&
-                  typeof val !== 'string' &&
-                  typeof val !== 'number' &&
-                  typeof val !== 'boolean',
-              )
+            noise_reduction: (() => {
+              const Schema = z
+                .any()
+                .refine(
+                  (val) =>
+                    !Array.isArray(val) &&
+                    typeof val !== 'string' &&
+                    typeof val !== 'number' &&
+                    typeof val !== 'boolean',
+                )
+              return z
+                .transform((val: z.input<typeof Schema>) => val)
+                .check((ctx: z.core.ParsePayload) => {
+                  const reported = ctx.issues.length
+                  try {
+                    return ((ctx) => {
+                      const val = ctx.value
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (Object.hasOwn(val, 'type')) {
+                          const Schema = NoiseReductionTypeSchema
+                          if (!Schema.safeParse(Reflect.get(val, 'type')).success) {
+                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                          }
+                        }
+                        if (Object.hasOwn(val, 'strength')) {
+                          const Schema = RealtimeNoiseReductionStrengthSchema
+                          if (!Schema.safeParse(Reflect.get(val, 'strength')).success) {
+                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                          }
+                        }
+                      }
+                    })(ctx)
+                  } catch (error) {
+                    if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                    ctx.issues.length = reported
+                    return (async (ctx) => {
+                      const val = ctx.value
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (Object.hasOwn(val, 'type')) {
+                          const Schema = NoiseReductionTypeSchema
+                          if (!(await Schema.safeParseAsync(Reflect.get(val, 'type'))).success) {
+                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                          }
+                        }
+                        if (Object.hasOwn(val, 'strength')) {
+                          const Schema = RealtimeNoiseReductionStrengthSchema
+                          if (
+                            !(await Schema.safeParseAsync(Reflect.get(val, 'strength'))).success
+                          ) {
+                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                          }
+                        }
+                      }
+                    })(ctx)
+                  }
+                })
+                .pipe(Schema)
+            })()
               .nullable()
               .default(null)
               .exactOptional()
@@ -54493,15 +54282,64 @@ const RealtimeTranscriptionSessionCreateRequestGASchema = z
               description:
                 'Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n',
             }),
-            noise_reduction: z
-              .any()
-              .refine(
-                (val) =>
-                  !Array.isArray(val) &&
-                  typeof val !== 'string' &&
-                  typeof val !== 'number' &&
-                  typeof val !== 'boolean',
-              )
+            noise_reduction: (() => {
+              const Schema = z
+                .any()
+                .refine(
+                  (val) =>
+                    !Array.isArray(val) &&
+                    typeof val !== 'string' &&
+                    typeof val !== 'number' &&
+                    typeof val !== 'boolean',
+                )
+              return z
+                .transform((val: z.input<typeof Schema>) => val)
+                .check((ctx: z.core.ParsePayload) => {
+                  const reported = ctx.issues.length
+                  try {
+                    return ((ctx) => {
+                      const val = ctx.value
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (Object.hasOwn(val, 'type')) {
+                          const Schema = NoiseReductionTypeSchema
+                          if (!Schema.safeParse(Reflect.get(val, 'type')).success) {
+                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                          }
+                        }
+                        if (Object.hasOwn(val, 'strength')) {
+                          const Schema = RealtimeNoiseReductionStrengthSchema
+                          if (!Schema.safeParse(Reflect.get(val, 'strength')).success) {
+                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                          }
+                        }
+                      }
+                    })(ctx)
+                  } catch (error) {
+                    if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                    ctx.issues.length = reported
+                    return (async (ctx) => {
+                      const val = ctx.value
+                      if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+                        if (Object.hasOwn(val, 'type')) {
+                          const Schema = NoiseReductionTypeSchema
+                          if (!(await Schema.safeParseAsync(Reflect.get(val, 'type'))).success) {
+                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                          }
+                        }
+                        if (Object.hasOwn(val, 'strength')) {
+                          const Schema = RealtimeNoiseReductionStrengthSchema
+                          if (
+                            !(await Schema.safeParseAsync(Reflect.get(val, 'strength'))).success
+                          ) {
+                            ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                          }
+                        }
+                      }
+                    })(ctx)
+                  }
+                })
+                .pipe(Schema)
+            })()
               .nullable()
               .default(null)
               .exactOptional()
@@ -54797,17 +54635,6 @@ const RealtimeCreateClientSecretRequestSchema = z
     required: [],
   })
   .openapi('RealtimeCreateClientSecretRequest')
-
-const RealtimeNoiseReductionStrengthSchema = z
-  .number()
-  .min(0)
-  .max(1)
-  .default(1)
-  .openapi({
-    description:
-      'Input noise suppression strength. Higher values apply more suppression.\nDefaults to 1 when noise reduction is first enabled. Omitting strength\nfrom a session update preserves the current strength.\n',
-  })
-  .openapi('RealtimeNoiseReductionStrength')
 
 const RealtimeSessionCreateResponseGASchema = z
   .object({
@@ -58858,9 +58685,7 @@ const ResponsesWebSocketStreamEventSchema: z.ZodType<ResponsesWebSocketStreamEve
 
 const RoleDeletedResourceSchema = z
   .object({
-    object: z
-      .literal('role.deleted')
-      .openapi({ description: 'Always `role.deleted`.', 'x-stainless-const': true }),
+    object: z.literal('role.deleted').openapi({ description: 'Always `role.deleted`.' }),
     id: z.string().openapi({ description: 'Identifier of the deleted role.' }),
     deleted: z.boolean().openapi({ description: 'Whether the role was deleted.' }),
   })
@@ -58877,7 +58702,7 @@ const RoleDeletedResourceSchema = z
 
 const RoleListResourceSchema = z
   .object({
-    object: z.literal('list').openapi({ description: 'Always `list`.', 'x-stainless-const': true }),
+    object: z.literal('list').openapi({ description: 'Always `list`.' }),
     data: z
       .array(AssignedRoleDetailsSchema)
       .openapi({ description: 'Role assignments returned in the current page.' }),
@@ -59247,9 +59072,7 @@ const UploadPartSchema = z
 
 const UsageAudioSpeechesResultSchema = z
   .object({
-    object: z
-      .literal('organization.usage.audio_speeches.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.audio_speeches.result'),
     characters: z.int().openapi({ description: 'The number of characters processed.' }),
     num_model_requests: z
       .int()
@@ -59312,9 +59135,7 @@ const UsageAudioSpeechesResultSchema = z
 
 const UsageAudioTranscriptionsResultSchema = z
   .object({
-    object: z
-      .literal('organization.usage.audio_transcriptions.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.audio_transcriptions.result'),
     seconds: z
       .preprocess(
         (val) =>
@@ -59391,9 +59212,7 @@ const UsageAudioTranscriptionsResultSchema = z
 
 const UsageCodeInterpreterSessionsResultSchema = z
   .object({
-    object: z
-      .literal('organization.usage.code_interpreter_sessions.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.code_interpreter_sessions.result'),
     num_sessions: z.int().openapi({ description: 'The number of code interpreter sessions.' }),
     project_id: z
       .union([
@@ -59428,9 +59247,7 @@ const UsageCompletionsResultSchema = z
         description:
           'When grouped by `api_source`, `agents_api` identifies attributed Agents API activity and `unlabeled` includes all records without published source attribution, including historical and unknown origins. Unlabeled does not imply direct API usage. Without source grouping, this field is null.',
       }),
-    object: z
-      .literal('organization.usage.completions.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.completions.result'),
     input_tokens: z
       .int()
       .openapi({
@@ -59604,9 +59421,7 @@ const UsageCompletionsResultSchema = z
 
 const UsageEmbeddingsResultSchema = z
   .object({
-    object: z
-      .literal('organization.usage.embeddings.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.embeddings.result'),
     input_tokens: z.int().openapi({ description: 'The aggregated number of input tokens used.' }),
     num_model_requests: z
       .int()
@@ -59669,9 +59484,7 @@ const UsageEmbeddingsResultSchema = z
 
 const UsageFileSearchCallsResultSchema = z
   .object({
-    object: z
-      .literal('organization.usage.file_searches.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.file_searches.result'),
     num_requests: z.int().openapi({ description: 'The count of file search calls.' }),
     project_id: z
       .union([
@@ -59731,7 +59544,7 @@ const UsageFileSearchCallsResultSchema = z
 
 const UsageImagesResultSchema = z
   .object({
-    object: z.literal('organization.usage.images.result').openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.images.result'),
     images: z.int().openapi({ description: 'The number of images processed.' }),
     num_model_requests: z
       .int()
@@ -59816,9 +59629,7 @@ const UsageImagesResultSchema = z
 
 const UsageModerationsResultSchema = z
   .object({
-    object: z
-      .literal('organization.usage.moderations.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.moderations.result'),
     input_tokens: z.int().openapi({ description: 'The aggregated number of input tokens used.' }),
     num_model_requests: z
       .int()
@@ -59881,9 +59692,7 @@ const UsageModerationsResultSchema = z
 
 const UsageVectorStoresResultSchema = z
   .object({
-    object: z
-      .literal('organization.usage.vector_stores.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.vector_stores.result'),
     usage_bytes: z.int().openapi({ description: 'The vector stores usage in bytes.' }),
     project_id: z
       .union([
@@ -59917,9 +59726,7 @@ const UsageWebSearchCallsResultSchema = z
         description:
           'When grouped by `api_source`, `agents_api` identifies attributed Agents API activity and `unlabeled` includes all records without published source attribution, including historical and unknown origins. Unlabeled does not imply direct API usage. Without source grouping, this field is null.',
       }),
-    object: z
-      .literal('organization.usage.web_searches.result')
-      .openapi({ 'x-stainless-const': true }),
+    object: z.literal('organization.usage.web_searches.result'),
     num_model_requests: z.int().openapi({ description: 'The count of model requests.' }),
     num_requests: z.int().openapi({ description: 'The count of web search calls.' }),
     project_id: z
@@ -59991,7 +59798,7 @@ const UsageWebSearchCallsResultSchema = z
 
 const UsageTimeBucketSchema = z
   .object({
-    object: z.literal('bucket').openapi({ 'x-stainless-const': true }),
+    object: z.literal('bucket'),
     start_time: z.int(),
     end_time: z.int(),
     results: z.array(
@@ -60017,7 +59824,7 @@ const UsageTimeBucketSchema = z
 
 const UsageResponseSchema = z
   .object({
-    object: z.literal('page').openapi({ 'x-stainless-const': true }),
+    object: z.literal('page'),
     data: z.array(UsageTimeBucketSchema),
     has_more: z.boolean(),
     next_page: z.union([z.string(), z.null().nullable()]),
@@ -60029,10 +59836,7 @@ const UserSchema = z
   .object({
     object: z
       .literal('organization.user')
-      .openapi({
-        description: 'The object type, which is always `organization.user`',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `organization.user`' }),
     id: z
       .string()
       .openapi({ description: 'The identifier, which can be referenced in API endpoints' }),
@@ -60061,7 +59865,7 @@ const UserSchema = z
       .openapi({ description: 'The Unix timestamp (in seconds) of when the user was created.' }),
     user: z
       .object({
-        object: z.literal('user').openapi({ 'x-stainless-const': true }),
+        object: z.literal('user'),
         id: z.string(),
         email: z.union([z.string(), z.null().nullable()]).exactOptional(),
         name: z.union([z.string(), z.null().nullable()]).exactOptional(),
@@ -60102,7 +59906,7 @@ const UserSchema = z
       .union([
         z
           .object({
-            object: z.literal('list').openapi({ 'x-stainless-const': true }),
+            object: z.literal('list'),
             data: z.array(
               z
                 .object({
@@ -60131,17 +59935,13 @@ const UserSchema = z
   .openapi('User')
 
 const UserDeleteResponseSchema = z
-  .object({
-    object: z.literal('organization.user.deleted').openapi({ 'x-stainless-const': true }),
-    id: z.string(),
-    deleted: z.boolean(),
-  })
+  .object({ object: z.literal('organization.user.deleted'), id: z.string(), deleted: z.boolean() })
   .openapi({ required: ['object', 'id', 'deleted'] })
   .openapi('UserDeleteResponse')
 
 const UserListResourceSchema = z
   .object({
-    object: z.literal('list').openapi({ description: 'Always `list`.', 'x-stainless-const': true }),
+    object: z.literal('list').openapi({ description: 'Always `list`.' }),
     data: z.array(GroupUserSchema).openapi({ description: 'Users in the current page.' }),
     has_more: z
       .boolean()
@@ -60166,7 +59966,7 @@ const UserListResourceSchema = z
 
 const UserListResponseSchema = z
   .object({
-    object: z.literal('list').openapi({ 'x-stainless-const': true }),
+    object: z.literal('list'),
     data: z.array(UserSchema),
     first_id: z.union([z.string(), z.null().nullable()]).exactOptional(),
     last_id: z.union([z.string(), z.null().nullable()]).exactOptional(),
@@ -60177,9 +59977,7 @@ const UserListResponseSchema = z
 
 const UserRoleAssignmentSchema = z
   .object({
-    object: z
-      .literal('user.role')
-      .openapi({ description: 'Always `user.role`.', 'x-stainless-const': true }),
+    object: z.literal('user.role').openapi({ description: 'Always `user.role`.' }),
     user: UserSchema,
     role: RoleSchema,
   })
@@ -60440,7 +60238,7 @@ const VoiceConsentDeletedResourceSchema = z
     id: z
       .string()
       .openapi({ description: 'The consent recording identifier.', example: 'cons_1234' }),
-    object: z.literal('audio.voice_consent').openapi({ 'x-stainless-const': true }),
+    object: z.literal('audio.voice_consent'),
     deleted: z.boolean(),
   })
   .openapi({
@@ -60457,10 +60255,7 @@ const VoiceConsentResourceSchema = z
   .strictObject({
     object: z
       .literal('audio.voice_consent')
-      .openapi({
-        description: 'The object type, which is always `audio.voice_consent`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `audio.voice_consent`.' }),
     id: z
       .string()
       .openapi({ description: 'The consent recording identifier.', example: 'cons_1234' }),
@@ -60492,7 +60287,7 @@ const VoiceConsentResourceSchema = z
 
 const VoiceConsentListResourceSchema = z
   .strictObject({
-    object: z.literal('list').openapi({ 'x-stainless-const': true }),
+    object: z.literal('list'),
     data: z.array(VoiceConsentResourceSchema),
     first_id: z.union([z.string(), z.null().nullable()]).exactOptional(),
     last_id: z.union([z.string(), z.null().nullable()]).exactOptional(),
@@ -60513,10 +60308,7 @@ const VoiceDeletedResourceSchema = z
     id: z.string().openapi({ description: 'The voice identifier.', example: 'voice_1234' }),
     object: z
       .literal('audio.voice.deleted')
-      .openapi({
-        'x-stainless-const': true,
-        description: 'The object type, which is always `audio.voice.deleted`.',
-      }),
+      .openapi({ description: 'The object type, which is always `audio.voice.deleted`.' }),
     deleted: z.boolean().openapi({ description: 'Whether the voice was deleted.' }),
   })
   .openapi({
@@ -60533,10 +60325,7 @@ const VoiceResourceSchema = z
   .strictObject({
     object: z
       .literal('audio.voice')
-      .openapi({
-        description: 'The object type, which is always `audio.voice`.',
-        'x-stainless-const': true,
-      }),
+      .openapi({ description: 'The object type, which is always `audio.voice`.' }),
     id: z
       .string()
       .openapi({ description: 'The voice identifier, which can be referenced in API endpoints.' }),
@@ -61877,6 +61666,17 @@ const CreateConversationBodySchema: z.ZodType<CreateConversationBodyType> = z
           description:
             'Set of 16 key-value pairs that can be attached to an object. This can be         useful for storing additional information about the object in a structured         format, and querying for objects via API or the dashboard.\n        Keys are strings with a maximum length of 64 characters. Values are strings         with a maximum length of 512 characters.',
         }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
+    safety_identifier: z
+      .union([
+        z
+          .string()
+          .max(128)
+          .openapi({
+            description: 'A stable identifier used for safety monitoring and abuse detection.',
+          }),
         z.null().nullable(),
       ])
       .exactOptional(),
@@ -63982,6 +63782,17 @@ const CompactResponseMethodPublicBodySchema: z.ZodType<CompactResponseMethodPubl
         z.null().nullable(),
       ])
       .exactOptional(),
+    safety_identifier: z
+      .union([
+        z
+          .string()
+          .max(128)
+          .openapi({
+            description: 'A stable identifier used for safety monitoring and abuse detection.',
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
     image: ImageOptionsParamSchema.exactOptional().openapi({
       description: 'Request level image options.',
     }),
@@ -64032,6 +63843,17 @@ const CompactResourceSchema: z.ZodType<CompactResourceType> = z
         description: 'The object type. Always `response.compaction`.',
         'x-stainless-const': true,
       }),
+    safety_identifier: z
+      .union([
+        z
+          .string()
+          .openapi({
+            description:
+              'A stable identifier that was used for safety monitoring and abuse detection.',
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
     output: z
       .array(ItemFieldSchema)
       .openapi({ description: 'The compacted list of output items.' }),
@@ -64040,6 +63862,10 @@ const CompactResourceSchema: z.ZodType<CompactResourceType> = z
       .openapi({
         description: 'Unix timestamp (in seconds) when the compacted conversation was created.',
       }),
+    service_tier: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The service tier used for compaction, when reported.' }),
     usage: ResponseUsageSchema.openapi({
       description:
         'Token accounting for the compaction pass, including cached, reasoning, and total tokens.',
@@ -64051,6 +63877,7 @@ const CompactResourceSchema: z.ZodType<CompactResourceType> = z
     example: {
       id: 'resp_001',
       object: 'response.compaction',
+      safety_identifier: 'compact-review-example-001',
       image: { context_compression: 'disabled' },
       output: [
         {
@@ -66241,7 +66068,7 @@ const SessionAgentConfigParamSchema = z
       .exactOptional()
       .openapi({
         description:
-          'Tools available to the agent. Omit to inherit, or pass null to clear them. The resolved tool list must fit within 3 MiB (3,145,728 bytes) of compact UTF-8 JSON.',
+          'Tools available to the agent. Omit to inherit, or pass null to clear them. The resolved tool list must fit within 8 MiB (8,388,608 bytes) of compact UTF-8 JSON.',
       }),
   })
   .openapi({
@@ -71672,6 +71499,17 @@ const BetaCompactResponseMethodPublicBodySchema: z.ZodType<BetaCompactResponseMe
           z.null().nullable(),
         ])
         .exactOptional(),
+      safety_identifier: z
+        .union([
+          z
+            .string()
+            .max(128)
+            .openapi({
+              description: 'A stable identifier used for safety monitoring and abuse detection.',
+            }),
+          z.null().nullable(),
+        ])
+        .exactOptional(),
       image: BetaImageOptionsParamSchema.exactOptional().openapi({
         description: 'Request level image options.',
       }),
@@ -71762,6 +71600,17 @@ const BetaCompactResourceSchema: z.ZodType<BetaCompactResourceType> = z
         description: 'The object type. Always `response.compaction`.',
         'x-stainless-const': true,
       }),
+    safety_identifier: z
+      .union([
+        z
+          .string()
+          .openapi({
+            description:
+              'A stable identifier that was used for safety monitoring and abuse detection.',
+          }),
+        z.null().nullable(),
+      ])
+      .exactOptional(),
     output: z
       .array(BetaItemFieldSchema)
       .openapi({ description: 'The compacted list of output items.' }),
@@ -71770,6 +71619,10 @@ const BetaCompactResourceSchema: z.ZodType<BetaCompactResourceType> = z
       .openapi({
         description: 'Unix timestamp (in seconds) when the compacted conversation was created.',
       }),
+    service_tier: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The service tier used for compaction, when reported.' }),
     usage: BetaResponseUsageSchema.openapi({
       description:
         'Token accounting for the compaction pass, including cached, reasoning, and total tokens.',
@@ -71781,6 +71634,7 @@ const BetaCompactResourceSchema: z.ZodType<BetaCompactResourceType> = z
     example: {
       id: 'resp_001',
       object: 'response.compaction',
+      safety_identifier: 'compact-review-example-001',
       image: { context_compression: 'disabled' },
       output: [
         {
@@ -73693,7 +73547,7 @@ export const postAudioTranslationsRoute = createRoute({
                   'x-oaiTypeLabel': 'file',
                 }),
               model: z
-                .union([z.string(), z.literal('whisper-1').openapi({ 'x-stainless-const': true })])
+                .union([z.string(), z.literal('whisper-1')])
                 .openapi({
                   description:
                     'ID of the model to use. Only `whisper-1` (which is powered by our open source Whisper V2 model) is currently available.\n',
@@ -76359,7 +76213,6 @@ export const postFilesRoute = createRoute({
                     .openapi({
                       description:
                         'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.',
-                      'x-stainless-const': true,
                     }),
                   seconds: z
                     .preprocess((val) => {
@@ -87117,15 +86970,99 @@ export const postRealtimeCallsRoute = createRoute({
                             description:
                               'Configuration for input audio transcription, defaults to off and can be set to `null` to turn off once on. Input audio transcription is not native to the model, since the model consumes audio directly. Transcription runs asynchronously through [the /audio/transcriptions endpoint](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) and should be treated as guidance of input audio content rather than precisely what the model heard. The client can optionally set the language and prompt for transcription, these offer additional guidance to the transcription service.\n',
                           }),
-                          noise_reduction: z
-                            .any()
-                            .refine(
-                              (val) =>
-                                !Array.isArray(val) &&
-                                typeof val !== 'string' &&
-                                typeof val !== 'number' &&
-                                typeof val !== 'boolean',
-                            )
+                          noise_reduction: (() => {
+                            const Schema = z
+                              .any()
+                              .refine(
+                                (val) =>
+                                  !Array.isArray(val) &&
+                                  typeof val !== 'string' &&
+                                  typeof val !== 'number' &&
+                                  typeof val !== 'boolean',
+                              )
+                            return z
+                              .transform((val: z.input<typeof Schema>) => val)
+                              .check((ctx: z.core.ParsePayload) => {
+                                const reported = ctx.issues.length
+                                try {
+                                  return ((ctx) => {
+                                    const val = ctx.value
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      if (Object.hasOwn(val, 'type')) {
+                                        const Schema = NoiseReductionTypeSchema
+                                        if (!Schema.safeParse(Reflect.get(val, 'type')).success) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                      if (Object.hasOwn(val, 'strength')) {
+                                        const Schema = z.preprocess(
+                                          (val) =>
+                                            typeof val === 'string' &&
+                                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                            (!/^-?\d+$/.test(val) ||
+                                              Number.isSafeInteger(Number(val)))
+                                              ? Number(val)
+                                              : val,
+                                          RealtimeNoiseReductionStrengthSchema,
+                                        )
+                                        if (
+                                          !Schema.safeParse(Reflect.get(val, 'strength')).success
+                                        ) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
+                                  })(ctx)
+                                } catch (error) {
+                                  if (!(error instanceof z.core.$ZodAsyncError)) throw error
+                                  ctx.issues.length = reported
+                                  return (async (ctx) => {
+                                    const val = ctx.value
+                                    if (
+                                      typeof val === 'object' &&
+                                      val !== null &&
+                                      !Array.isArray(val)
+                                    ) {
+                                      if (Object.hasOwn(val, 'type')) {
+                                        const Schema = NoiseReductionTypeSchema
+                                        if (
+                                          !(await Schema.safeParseAsync(Reflect.get(val, 'type')))
+                                            .success
+                                        ) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                      if (Object.hasOwn(val, 'strength')) {
+                                        const Schema = z.preprocess(
+                                          (val) =>
+                                            typeof val === 'string' &&
+                                            /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                                            (!/^-?\d+$/.test(val) ||
+                                              Number.isSafeInteger(Number(val)))
+                                              ? Number(val)
+                                              : val,
+                                          RealtimeNoiseReductionStrengthSchema,
+                                        )
+                                        if (
+                                          !(
+                                            await Schema.safeParseAsync(
+                                              Reflect.get(val, 'strength'),
+                                            )
+                                          ).success
+                                        ) {
+                                          ctx.issues.push({ ...{ code: 'custom' }, input: val })
+                                        }
+                                      }
+                                    }
+                                  })(ctx)
+                                }
+                              })
+                              .pipe(Schema)
+                          })()
                             .nullable()
                             .default(null)
                             .exactOptional()
@@ -94297,6 +94234,10 @@ export const getAgentsAutomationsRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -94348,6 +94289,10 @@ export const postAgentsAutomationsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -94407,6 +94352,10 @@ export const getAgentsAutomationsAutomationIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -94472,6 +94421,10 @@ export const postAgentsAutomationsAutomationIdRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -94530,6 +94483,10 @@ export const deleteAgentsAutomationsAutomationIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -94591,6 +94548,10 @@ export const postAgentsAutomationsAutomationIdPauseRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -94649,6 +94610,10 @@ export const postAgentsAutomationsAutomationIdResumeRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -94820,6 +94785,10 @@ export const getAgentsAutomationsAutomationIdInvocationsRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -94881,6 +94850,10 @@ export const postAgentsAutomationsAutomationIdInvocationsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -94952,6 +94925,10 @@ export const getAgentsAutomationsAutomationIdInvocationsInvocationIdRoute = crea
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -95077,6 +95054,10 @@ export const getAgentsEnvironmentsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current environment state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: 'The request exceeded a rate or capacity limit.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -95211,6 +95192,10 @@ export const getAgentsEnvironmentsEnvironmentIdRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -95335,6 +95320,10 @@ export const getAgentsEnvironmentsEnvironmentIdFilesRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -95398,7 +95387,8 @@ export const postAgentsEnvironmentsEnvironmentIdFilesRoute = createRoute({
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     429: {
-      description: 'The Files API rate limit for your user has been exceeded.',
+      description:
+        'The Files API rate limit for your user has been exceeded. This status also applies to the endpoint rate limit.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -95572,6 +95562,10 @@ export const getAgentsSessionsSessionIdSubagentsRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -95644,6 +95638,10 @@ export const getAgentsSessionsSessionIdSubagentsSubagentIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -95782,6 +95780,10 @@ export const getAgentsSessionsSessionIdSubagentsSubagentIdItemsRoute = createRou
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -95928,6 +95930,10 @@ export const getAgentsSessionsSessionIdSubagentsSubagentIdTurnsRoute = createRou
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -96013,6 +96019,10 @@ export const getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdRoute = cre
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -96166,6 +96176,10 @@ export const getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdItemsRoute 
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -96280,6 +96294,10 @@ export const getAgentsRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -96323,6 +96341,10 @@ export const postAgentsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -96384,6 +96406,10 @@ export const getAgentsAgentIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -96448,6 +96474,10 @@ export const postAgentsAgentIdRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -96507,6 +96537,10 @@ export const deleteAgentsAgentIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -96621,6 +96655,10 @@ export const getAgentsEnvironmentsTemplatesRoute = createRoute({
       description: 'The requested environment definition was not found.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -96662,6 +96700,10 @@ export const postAgentsEnvironmentsTemplatesRoute = createRoute({
     },
     404: {
       description: 'The requested environment definition was not found.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -96719,6 +96761,10 @@ export const getAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute = createRo
     },
     404: {
       description: 'The requested environment definition was not found.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -96783,6 +96829,10 @@ export const postAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute = createR
       description: 'The request conflicted with the current environment state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -96842,6 +96892,10 @@ export const deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute = creat
     },
     409: {
       description: 'The request conflicted with the current environment state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -97107,6 +97161,10 @@ export const getAgentsSessionsRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -97158,7 +97216,8 @@ export const postAgentsSessionsRoute = createRoute({
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     429: {
-      description: 'The Files API rate limit for your user has been exceeded.',
+      description:
+        'The Files API rate limit for your user has been exceeded. This status also applies to the endpoint rate limit.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -97220,6 +97279,10 @@ export const getAgentsSessionsSessionIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -97284,6 +97347,10 @@ export const postAgentsSessionsSessionIdRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -97343,6 +97410,10 @@ export const deleteAgentsSessionsSessionIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -97490,6 +97561,10 @@ export const getAgentsSessionsSessionIdArtifactsRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -97564,6 +97639,10 @@ export const getAgentsSessionsSessionIdArtifactsArtifactIdRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -97636,6 +97715,10 @@ export const deleteAgentsSessionsSessionIdArtifactsArtifactIdRoute = createRoute
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -97716,6 +97799,10 @@ export const getAgentsSessionsSessionIdArtifactsArtifactIdContentRoute = createR
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -97793,6 +97880,10 @@ export const getAgentsSessionsSessionIdEventsRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -97867,6 +97958,10 @@ export const postAgentsSessionsSessionIdEventsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -97992,6 +98087,10 @@ export const getAgentsSessionsSessionIdItemsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -98125,6 +98224,10 @@ export const getAgentsSessionsSessionIdTracesRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -98256,6 +98359,10 @@ export const getAgentsSessionsSessionIdTurnsRoute = createRoute({
       description: 'The request conflicted with the current session state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -98328,6 +98435,10 @@ export const getAgentsSessionsSessionIdTurnsTurnIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -98466,6 +98577,10 @@ export const getAgentsSessionsSessionIdTurnsTurnIdItemsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current session state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -98724,6 +98839,10 @@ export const getVaultsRoute = createRoute({
       description: 'The request conflicted with the current vault state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -98767,6 +98886,10 @@ export const postVaultsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current vault state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -98828,6 +98951,10 @@ export const getVaultsVaultIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current vault state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -98892,6 +99019,10 @@ export const postVaultsVaultIdRoute = createRoute({
       description: 'The request conflicted with the current vault state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -98951,6 +99082,10 @@ export const deleteVaultsVaultIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current vault state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -99226,6 +99361,10 @@ export const getVaultsVaultIdCredentialsRoute = createRoute({
       description: 'The request conflicted with the current vault state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -99286,6 +99425,10 @@ export const postVaultsVaultIdCredentialsRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current vault state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -99360,6 +99503,10 @@ export const getVaultsVaultIdCredentialsCredentialIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current vault state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {
@@ -99445,6 +99592,10 @@ export const postVaultsVaultIdCredentialsCredentialIdRoute = createRoute({
       description: 'The request conflicted with the current vault state.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
     500: {
       description: 'An internal error occurred.',
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
@@ -99517,6 +99668,10 @@ export const deleteVaultsVaultIdCredentialsCredentialIdRoute = createRoute({
     },
     409: {
       description: 'The request conflicted with the current vault state.',
+      content: { 'application/json': { schema: ErrorResponse_2Schema } },
+    },
+    429: {
+      description: "The request exceeded this endpoint's rate limit.",
       content: { 'application/json': { schema: ErrorResponse_2Schema } },
     },
     500: {

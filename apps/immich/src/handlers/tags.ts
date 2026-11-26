@@ -1,14 +1,14 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteTagsIdAssetsRoute,
-  deleteTagsIdRoute,
-  getTagsIdRoute,
   getTagsRoute,
   postTagsRoute,
-  putTagsAssetsRoute,
-  putTagsIdAssetsRoute,
-  putTagsIdRoute,
   putTagsRoute,
+  putTagsAssetsRoute,
+  deleteTagsIdRoute,
+  getTagsIdRoute,
+  putTagsIdRoute,
+  deleteTagsIdAssetsRoute,
+  putTagsIdAssetsRoute,
 } from '../routes'
 
 export const getTagsRouteHandler: RouteHandler<typeof getTagsRoute> = async (c) => {

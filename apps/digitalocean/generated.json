@@ -1,13 +1,13 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
     "generated": true,
     "config": "fa6ef363fb89b31fdf0696d95f91bd7e76521dd020b433db16c5cb53052795e9",
     "sources": {
       "https://api-engineering.nyc3.digitaloceanspaces.com/spec-ci/DigitalOcean-public.v2.yaml": {
-        "etag": "\"86e28addd65a163b5ab530dd2ae8ea8c\"",
-        "sha256": "e189e92287de70680d11b4a79a594cad66eaf5e869a500b8975384f22dc9c133"
+        "etag": "\"21e20ea9efbf0d08dc264b1420102412\"",
+        "sha256": "8eff4d8892395e4d76d618844d37ae8599346c16363fb97865996251b4bdcf3b"
       }
     },
     "typecheck": {

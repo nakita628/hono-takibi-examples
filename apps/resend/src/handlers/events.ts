@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteEventsIdentifierRoute,
-  getEventsIdentifierRoute,
-  getEventsRoute,
-  patchEventsIdentifierRoute,
   postEventsRoute,
+  getEventsRoute,
   postEventsSendRoute,
+  getEventsIdentifierRoute,
+  patchEventsIdentifierRoute,
+  deleteEventsIdentifierRoute,
 } from '../routes'
 
 export const postEventsRouteHandler: RouteHandler<typeof postEventsRoute> = async (c) => {

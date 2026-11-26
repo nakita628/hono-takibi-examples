@@ -1,0 +1,1511 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  getV2PromptsRoute,
+  postV2PromptsRoute,
+  getV2PromptsPromptIdRoute,
+  deleteV2PromptsPromptIdRoute,
+  patchV2PromptsPromptIdRoute,
+  getV2PromptsPromptIdVersionsRoute,
+  postV2PromptsPromptIdVersionsRoute,
+  getV2PromptsPromptIdVersionsVersionRoute,
+  patchV2PromptsPromptIdVersionsVersionRoute,
+  getV2SkillsRoute,
+  postV2SkillsRoute,
+  getV2SkillsSkillIdRoute,
+  deleteV2SkillsSkillIdRoute,
+  patchV2SkillsSkillIdRoute,
+  getV2SkillsSkillIdVersionsRoute,
+  postV2SkillsSkillIdVersionsRoute,
+  getV2SkillsSkillIdVersionsVersionRoute,
+  patchV2SkillsSkillIdVersionsVersionRoute,
+  postV1AudioSpeechRoute,
+  getV1ModelsRoute,
+  getV1ModelsModelIdRoute,
+  deleteV1ModelsModelIdRoute,
+  postV1ResponsesRoute,
+  postV1ResponsesInputTokensRoute,
+  postV1ClientSessionsRoute,
+  postV1ServiceAccountsRoute,
+  getV1ServiceAccountsRoute,
+  getV1ServiceAccountsAssignableRolesRoute,
+  getV1ServiceAccountsServiceAccountIdRoute,
+  patchV1ServiceAccountsServiceAccountIdRoute,
+  deleteV1ServiceAccountsServiceAccountIdRoute,
+  putV1ServiceAccountsServiceAccountIdRolesRoute,
+  getV1ServiceAccountsServiceAccountIdRolesRoute,
+  postV1ConversationsRoute,
+  getV1ConversationsRoute,
+  getV1ConversationsConversationIdRoute,
+  deleteV1ConversationsConversationIdRoute,
+  postV1ConversationsConversationIdRoute,
+  getV1ConversationsConversationIdHistoryRoute,
+  getV1ConversationsConversationIdMessagesRoute,
+  postV1ConversationsConversationIdRestartRoute,
+  postV1AgentsRoute,
+  getV1AgentsRoute,
+  getV1AgentsPagesRoute,
+  getV1AgentsAgentIdRoute,
+  patchV1AgentsAgentIdRoute,
+  deleteV1AgentsAgentIdRoute,
+  patchV1AgentsAgentIdVersionRoute,
+  getV1AgentsAgentIdVersionsRoute,
+  getV1AgentsAgentIdVersionsVersionRoute,
+  putV1AgentsAgentIdAliasesRoute,
+  getV1AgentsAgentIdAliasesRoute,
+  deleteV1AgentsAgentIdAliasesRoute,
+  postV1ConversationsStreamRoute,
+  postV1ConversationsConversationIdStreamRoute,
+  postV1ConversationsConversationIdRestartStreamRoute,
+  postV1FilesRoute,
+  getV1FilesRoute,
+  getV1FilesFileIdRoute,
+  deleteV1FilesFileIdRoute,
+  getV1FilesFileIdContentRoute,
+  getV1FilesFileIdUrlRoute,
+  patchV1FineTuningModelsModelIdRoute,
+  postV1FineTuningModelsModelIdArchiveRoute,
+  deleteV1FineTuningModelsModelIdArchiveRoute,
+  getV1BatchJobsRoute,
+  postV1BatchJobsRoute,
+  getV1BatchJobsJobIdRoute,
+  deleteV1BatchJobsJobIdRoute,
+  postV1BatchJobsJobIdCancelRoute,
+  postV1ChatCompletionsRoute,
+  postV1FimCompletionsRoute,
+  postV1AgentsCompletionsRoute,
+  postV1EmbeddingsRoute,
+  postV1ModerationsRoute,
+  postV1ChatModerationsRoute,
+  postV1OcrRoute,
+  postV1ClassificationsRoute,
+  postV1ChatClassificationsRoute,
+  postV1AudioTranscriptionsRoute,
+  postV1AudioTranscriptionsStreamRoute,
+  getV1LibrariesRoute,
+  postV1LibrariesRoute,
+  getV1LibrariesLibraryIdRoute,
+  deleteV1LibrariesLibraryIdRoute,
+  patchV1LibrariesLibraryIdRoute,
+  putV1LibrariesLibraryIdRoute,
+  getV1LibrariesLibraryIdDocumentsRoute,
+  postV1LibrariesLibraryIdDocumentsRoute,
+  getV1LibrariesLibraryIdDocumentsDocumentIdRoute,
+  patchV1LibrariesLibraryIdDocumentsDocumentIdRoute,
+  putV1LibrariesLibraryIdDocumentsDocumentIdRoute,
+  deleteV1LibrariesLibraryIdDocumentsDocumentIdRoute,
+  getV1LibrariesLibraryIdDocumentsDocumentIdTextContentRoute,
+  getV1LibrariesLibraryIdDocumentsDocumentIdStatusRoute,
+  getV1LibrariesLibraryIdDocumentsDocumentIdSignedUrlRoute,
+  getV1LibrariesLibraryIdDocumentsDocumentIdExtractedTextSignedUrlRoute,
+  postV1LibrariesLibraryIdDocumentsDocumentIdReprocessRoute,
+  getV1LibrariesLibraryIdShareRoute,
+  putV1LibrariesLibraryIdShareRoute,
+  deleteV1LibrariesLibraryIdShareRoute,
+  postV1ObservabilityDatasetsRoute,
+  getV1ObservabilityDatasetsRoute,
+  getV1ObservabilityDatasetsDatasetIdRoute,
+  deleteV1ObservabilityDatasetsDatasetIdRoute,
+  patchV1ObservabilityDatasetsDatasetIdRoute,
+  getV1ObservabilityDatasetsDatasetIdRecordsRoute,
+  postV1ObservabilityDatasetsDatasetIdRecordsRoute,
+  postV1ObservabilityDatasetsDatasetIdRecordsBulkRoute,
+  postV1ObservabilityDatasetsDatasetIdImportsFromFileRoute,
+  postV1ObservabilityDatasetsDatasetIdImportsFromSpansRoute,
+  postV1ObservabilityDatasetsDatasetIdImportsFromDatasetRoute,
+  getV1ObservabilityDatasetsDatasetIdExportsToJsonlRoute,
+  getV1ObservabilityDatasetsDatasetIdTasksTaskIdRoute,
+  getV1ObservabilityDatasetsDatasetIdTasksRoute,
+  getV1ObservabilityDatasetRecordsDatasetRecordIdRoute,
+  deleteV1ObservabilityDatasetRecordsDatasetRecordIdRoute,
+  postV1ObservabilityDatasetRecordsBulkDeleteRoute,
+  putV1ObservabilityDatasetRecordsDatasetRecordIdPayloadRoute,
+  putV1ObservabilityDatasetRecordsDatasetRecordIdPropertiesRoute,
+  postV1ObservabilityPipelinesRoute,
+  getV1ObservabilityPipelinesRoute,
+  getV1ObservabilityPipelinesPipelineIdRoute,
+  putV1ObservabilityPipelinesPipelineIdRoute,
+  deleteV1ObservabilityPipelinesPipelineIdRoute,
+  postV1ObservabilityLogsSearchRoute,
+  postV1ObservabilityTracesSearchRoute,
+  postV1ObservabilityTracesAggregateRoute,
+  postV1ObservabilitySpansSearchRoute,
+  postV1ObservabilitySpansAggregateRoute,
+  postV1ObservabilitySpansEvaluationsAggregateRoute,
+  postV1ObservabilitySpansEvaluationsSearchRoute,
+  postV1ObservabilitySpansEvaluationsSearchLatestRoute,
+  postV1ObservabilityPipelineResultsSearchRoute,
+  getV1ObservabilityPipelinesPipelineIdResultsFieldsRoute,
+  getV1ObservabilityTracesFieldsRoute,
+  getV1ObservabilityTracesTraceIdRoute,
+  getV1ObservabilityTracesTraceIdSpansRoute,
+  getV1ObservabilityLogsFieldsRoute,
+  getV1ObservabilitySpansFieldsRoute,
+  getV1ObservabilitySpansEvaluationsFieldsRoute,
+  getV1ObservabilityTracesFieldsFieldNameOptionsRoute,
+  getV1ObservabilityLogsFieldsFieldNameOptionsRoute,
+  getV1ObservabilitySpansFieldsFieldNameOptionsRoute,
+  getV1ObservabilitySpansEvaluationsFieldsFieldNameOptionsRoute,
+  getV1ObservabilityTracesTraceIdSpansSpanIdRoute,
+  getV1ObservabilityProjectsRoute,
+  getV1ObservabilityProjectsProjectSlugRoute,
+  getV1ObservabilityProjectsProjectSlugEvaluationsV2Route,
+  getV1ObservabilityEvaluationsV2EvaluationSlugRoute,
+  postV1ObservabilityEvaluationsV2EvaluationSlugRunsSearchRoute,
+  postV1ObservabilityEvaluationRunsV2SearchRoute,
+  getV1ObservabilityEvaluationRunsV2RunIdRoute,
+  getV1ObservabilityEvaluationRunsV2RunIdStatisticsRoute,
+  postV1ObservabilityEvaluationRunsV2RunIdStatisticsComputeRoute,
+  getV1ObservabilityEvaluationRunsV2RunIdRecordsRecordIdRoute,
+  postV1ObservabilityEvaluationRunsV2RunIdRecordsSearchRoute,
+  getV1ObservabilityOptimizationsRoute,
+  getV1ObservabilityOptimizationsOptimizationIdRoute,
+  getV1ObservabilityOptimizationsOptimizationIdTrialsRoute,
+  getV1ObservabilityScorersRoute,
+  postV1ObservabilityScorersRoute,
+  getV1ObservabilityScorersScorerSlugRoute,
+  patchV1ObservabilityScorersScorerSlugRoute,
+  postV1ConnectorsRoute,
+  getV1ConnectorsRoute,
+  getV1ConnectorsConnectorIdOrNameAuthUrlRoute,
+  putV1ConnectorsConnectorIdShareRoute,
+  deleteV1ConnectorsConnectorIdShareRoute,
+  putV1ConnectorsConnectorIdOrganizationShareRoute,
+  deleteV1ConnectorsConnectorIdOrganizationShareRoute,
+  postV1ConnectorsConnectorIdConsumerScopeActivateRoute,
+  postV1ConnectorsConnectorIdConsumerScopeDeactivateRoute,
+  postV1ConnectorsConnectorIdOrNameToolsToolNameCallRoute,
+  getV1ConnectorsConnectorIdOrNameToolsRoute,
+  getV1ConnectorsConnectorIdOrNameAuthenticationMethodsRoute,
+  getV1ConnectorsConnectorIdOrNameOrganizationCredentialsRoute,
+  getV1ConnectorsConnectorIdOrNameWorkspaceCredentialsRoute,
+  getV1ConnectorsConnectorIdOrNameUserCredentialsRoute,
+  deleteV1ConnectorsConnectorIdOrNameUserCredentialsRoute,
+  postV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsRoute,
+  patchV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsRoute,
+  deleteV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsCredentialsNameRoute,
+  getV1ConnectorsConnectorIdOrNameIdOrNameRoute,
+  patchV1ConnectorsConnectorIdIdRoute,
+  deleteV1ConnectorsConnectorIdIdRoute,
+  getV1AudioVoicesRoute,
+  postV1AudioVoicesRoute,
+  deleteV1AudioVoicesVoiceIdRoute,
+  patchV1AudioVoicesVoiceIdRoute,
+  getV1AudioVoicesVoiceIdRoute,
+  getV1AudioVoicesVoiceIdSampleRoute,
+  postV1AudioSessionsRoute,
+  getV1AudioSessionsSessionIdRoute,
+  patchV1AudioSessionsSessionIdRoute,
+  deleteV1AudioSessionsSessionIdRoute,
+  getV1AudioAgentsRoute,
+  postV1AudioAgentsRoute,
+  getV1AudioAgentsAgentIdRoute,
+  putV1AudioAgentsAgentIdRoute,
+  deleteV1AudioAgentsAgentIdRoute,
+  getV1AudioAgentsAgentIdVersionsRoute,
+  getV1AudioAgentsAgentIdSessionsRoute,
+  getV2AudioVoicesRoute,
+  getV1WorkflowsExecutionsExecutionIdRoute,
+  getV1WorkflowsExecutionsExecutionIdHistoryRoute,
+  postV1WorkflowsExecutionsExecutionIdSignalsRoute,
+  postV1WorkflowsExecutionsExecutionIdQueriesRoute,
+  postV1WorkflowsExecutionsExecutionIdTerminateRoute,
+  postV1WorkflowsExecutionsTerminateRoute,
+  postV1WorkflowsExecutionsExecutionIdCancelRoute,
+  postV1WorkflowsExecutionsCancelRoute,
+  postV1WorkflowsExecutionsExecutionIdResetRoute,
+  postV1WorkflowsExecutionsExecutionIdUpdatesRoute,
+  getV1WorkflowsExecutionsExecutionIdTraceInfoRoute,
+  getV1WorkflowsExecutionsExecutionIdTraceOtelRoute,
+  getV1WorkflowsExecutionsExecutionIdTraceSummaryRoute,
+  getV1WorkflowsExecutionsExecutionIdTraceEventsRoute,
+  getV1WorkflowsExecutionsExecutionIdStreamRoute,
+  getV1WorkflowsExecutionsExecutionIdLogsRoute,
+  getV1WorkflowsExecutionsExecutionIdLogsStreamRoute,
+  getV1WorkflowsWorkflowNameMetricsRoute,
+  getV1WorkflowsRunsRoute,
+  getV1WorkflowsRunsRunIdRoute,
+  getV1WorkflowsRunsRunIdHistoryRoute,
+  getV1WorkflowsSchedulesRoute,
+  postV1WorkflowsSchedulesRoute,
+  getV1WorkflowsSchedulesScheduleIdRoute,
+  deleteV1WorkflowsSchedulesScheduleIdRoute,
+  patchV1WorkflowsSchedulesScheduleIdRoute,
+  postV1WorkflowsSchedulesScheduleIdPauseRoute,
+  postV1WorkflowsSchedulesScheduleIdResumeRoute,
+  postV1WorkflowsSchedulesScheduleIdTriggerRoute,
+  getV1WorkflowsEventsStreamRoute,
+  getV1WorkflowsEventsListRoute,
+  postV1WorkflowsDeploymentsDeploymentIdUnhardenRoute,
+  getV1WorkflowsDeploymentsRoute,
+  postV1WorkflowsDeploymentsRoute,
+  patchV1WorkflowsDeploymentsNameRoute,
+  deleteV1WorkflowsDeploymentsNameRoute,
+  getV1WorkflowsDeploymentsNameRoute,
+  postV1WorkflowsDeploymentsNameStopRoute,
+  postV1WorkflowsDeploymentsNameStartRoute,
+  postV1WorkflowsDeploymentsNameRestartRoute,
+  getV1WorkflowsDeploymentsNameWorkersRoute,
+  getV1WorkflowsDeploymentsNameArchiveRoute,
+  postV1WorkflowsDeploymentsArchivesRoute,
+  getV1WorkflowsDeploymentsNameLogsRoute,
+  getV1WorkflowsDeploymentsNameLogsStreamRoute,
+  getV1WorkflowsRoute,
+  getV1WorkflowsRegistrationsRoute,
+  postV1WorkflowsWorkflowIdentifierExecuteRoute,
+  postV1WorkflowsRegistrationsWorkflowRegistrationIdExecuteRoute,
+  getV1WorkflowsWorkflowIdentifierRoute,
+  putV1WorkflowsWorkflowIdentifierRoute,
+  getV1WorkflowsRegistrationsWorkflowRegistrationIdRoute,
+  putV1WorkflowsArchiveRoute,
+  putV1WorkflowsUnarchiveRoute,
+  postV1WorkflowsWorkflowIdentifierTagsRoute,
+  putV1WorkflowsWorkflowIdentifierArchiveRoute,
+  putV1WorkflowsWorkflowIdentifierUnarchiveRoute,
+  getV1RagIngestionPipelineConfigurationsRoute,
+  putV1RagIngestionPipelineConfigurationsRoute,
+  putV1RagIngestionPipelineConfigurationsIdRunInfoRoute,
+  postV1ContextSearchIndexesRoute,
+  getV1ContextSearchIndexesRoute,
+  getV1ContextSearchIndexesIndexNameRoute,
+  putV1ContextSearchIndexesIndexNameRoute,
+  deleteV1ContextSearchIndexesIndexNameRoute,
+  postV1ContextSearchIndexesIndexNameDocumentsRoute,
+  deleteV1ContextSearchIndexesIndexNameDocumentsRoute,
+  postV1ContextSearchIndexesIndexNameSearchRoute,
+  postV1ContextSearchIndexesIndexNameNavigateRoute,
+  postV1ContextSearchIndexesIndexNameReadRoute,
+  postV1ContextSearchIndexesIndexNameGrepRoute,
+  getV1ContextSearchIndexesIndexNameChunksChunkIdRoute,
+  getV1ContextSearchIndexesIndexNameSummaryFieldLanguageRoute,
+  postV1ContextSearchIndexesIndexNameSummaryFieldLanguageRoute,
+  putV1ContextSearchIndexesIndexNameSummaryFieldLanguageRoute,
+  postV1TriggersRoute,
+  getV1TriggersRoute,
+  getV1TriggersTriggerIdRoute,
+  deleteV1TriggersTriggerIdRoute,
+  getV1TriggersTriggerIdEventsRoute,
+  getV1WebhooksRoute,
+  postV1WebhooksRoute,
+  getV1WebhooksWebhookIdRoute,
+  deleteV1WebhooksWebhookIdRoute,
+  getV1WebhooksWebhookIdSigningSecretRoute,
+  getV1UsersMeRoute,
+  getV1UsersMeOrganizationsRoute,
+  getV1UsersMeWorkspacesRoute,
+  getV1WhoamiRoute,
+  getV1BillingBudgetRoute,
+  getV1BillingSubscriptionRoute,
+  postV1AdminUsageQueryRoute,
+  getV1AdminUsersRoute,
+  postV1AdminUsersRoute,
+  postV1AdminUsersInviteRoute,
+  getV1AdminUsersInviteRoute,
+  deleteV1AdminUsersInviteInviteUuidRoute,
+  patchV1AdminUsersUserIdRoute,
+  deleteV1AdminUsersUserIdRoute,
+  getV1AdminUsersUserIdRoute,
+  postV1AdminUsersUserIdDeactivateRoute,
+  postV1AdminUsersUserIdReactivateRoute,
+  getV1AdminUsersUserIdWorkspacesRoute,
+  getV1AdminRolesRoute,
+  getV1AdminWorkspacesRoute,
+  postV1AdminWorkspacesRoute,
+  patchV1AdminWorkspacesWorkspaceUuidRoute,
+  deleteV1AdminWorkspacesWorkspaceUuidRoute,
+  getV1AdminWorkspacesWorkspaceUuidUsersRoute,
+  patchV1AdminWorkspacesWorkspaceUuidUsersRoute,
+  postV1AdminWorkspacesWorkspaceUuidAddUsersRoute,
+  deleteV1AdminWorkspacesWorkspaceUuidRemoveUsersRoute,
+  getV1AdminRateLimitRoute,
+  getV1AdminSpendLimitRoute,
+  postV1AdminSpendLimitRoute,
+  getV1AdminUsageRoute,
+  getV1AdminAuditLogsRoute,
+  getV1AdminUserGroupsRoute,
+  postV1AdminUserGroupsRoute,
+  postV1AdminUserGroupsProvisionWorkspaceRoute,
+  getV1AdminUserGroupsGroupUuidRoute,
+  patchV1AdminUserGroupsGroupUuidRoute,
+  deleteV1AdminUserGroupsGroupUuidRoute,
+  getV1AdminUserGroupsGroupUuidMembersRoute,
+  postV1AdminUserGroupsGroupUuidMembersRoute,
+  deleteV1AdminUserGroupsGroupUuidMembersRoute,
+  getV1AdminUserGroupsGroupUuidWorkspacesRoute,
+  postV1AdminUserGroupsGroupUuidWorkspacesRoute,
+  patchV1AdminUserGroupsGroupUuidWorkspacesWorkspaceUuidRoute,
+  deleteV1AdminUserGroupsGroupUuidWorkspacesWorkspaceUuidRoute,
+  patchV1AdminUserGroupsGroupUuidOrganizationRoleRoute,
+  getV1AdminApiKeysRoute,
+  postV1AdminApiKeysRoute,
+  deleteV1AdminApiKeysKeyIdRoute,
+  postV1AdminScimSyncRoute,
+  getV1AdminScimSyncRunIdRoute,
+  getV1AdminAnalyticsVibeWorkUsageByUserStatsRoute,
+  getV1AdminAnalyticsVibeWorkUsageByAgentStatsRoute,
+  getV1AdminAnalyticsVibeWorkUsageByTimeStatsRoute,
+  getV1AdminAnalyticsVibeCodeUsageByWorkspaceRoute,
+  getV1AdminAnalyticsVibeCodeUsageByOrganizationRoute,
+} from './routes'
+import {
+  getV2PromptsRouteHandler,
+  postV2PromptsRouteHandler,
+  getV2PromptsPromptIdRouteHandler,
+  deleteV2PromptsPromptIdRouteHandler,
+  patchV2PromptsPromptIdRouteHandler,
+  getV2PromptsPromptIdVersionsRouteHandler,
+  postV2PromptsPromptIdVersionsRouteHandler,
+  getV2PromptsPromptIdVersionsVersionRouteHandler,
+  patchV2PromptsPromptIdVersionsVersionRouteHandler,
+  getV2SkillsRouteHandler,
+  postV2SkillsRouteHandler,
+  getV2SkillsSkillIdRouteHandler,
+  deleteV2SkillsSkillIdRouteHandler,
+  patchV2SkillsSkillIdRouteHandler,
+  getV2SkillsSkillIdVersionsRouteHandler,
+  postV2SkillsSkillIdVersionsRouteHandler,
+  getV2SkillsSkillIdVersionsVersionRouteHandler,
+  patchV2SkillsSkillIdVersionsVersionRouteHandler,
+  postV1AudioSpeechRouteHandler,
+  getV1ModelsRouteHandler,
+  getV1ModelsModelIdRouteHandler,
+  deleteV1ModelsModelIdRouteHandler,
+  postV1ResponsesRouteHandler,
+  postV1ResponsesInputTokensRouteHandler,
+  postV1ClientSessionsRouteHandler,
+  postV1ServiceAccountsRouteHandler,
+  getV1ServiceAccountsRouteHandler,
+  getV1ServiceAccountsAssignableRolesRouteHandler,
+  getV1ServiceAccountsServiceAccountIdRouteHandler,
+  patchV1ServiceAccountsServiceAccountIdRouteHandler,
+  deleteV1ServiceAccountsServiceAccountIdRouteHandler,
+  putV1ServiceAccountsServiceAccountIdRolesRouteHandler,
+  getV1ServiceAccountsServiceAccountIdRolesRouteHandler,
+  postV1ConversationsRouteHandler,
+  getV1ConversationsRouteHandler,
+  getV1ConversationsConversationIdRouteHandler,
+  deleteV1ConversationsConversationIdRouteHandler,
+  postV1ConversationsConversationIdRouteHandler,
+  getV1ConversationsConversationIdHistoryRouteHandler,
+  getV1ConversationsConversationIdMessagesRouteHandler,
+  postV1ConversationsConversationIdRestartRouteHandler,
+  postV1AgentsRouteHandler,
+  getV1AgentsRouteHandler,
+  getV1AgentsPagesRouteHandler,
+  getV1AgentsAgentIdRouteHandler,
+  patchV1AgentsAgentIdRouteHandler,
+  deleteV1AgentsAgentIdRouteHandler,
+  patchV1AgentsAgentIdVersionRouteHandler,
+  getV1AgentsAgentIdVersionsRouteHandler,
+  getV1AgentsAgentIdVersionsVersionRouteHandler,
+  putV1AgentsAgentIdAliasesRouteHandler,
+  getV1AgentsAgentIdAliasesRouteHandler,
+  deleteV1AgentsAgentIdAliasesRouteHandler,
+  postV1ConversationsStreamRouteHandler,
+  postV1ConversationsConversationIdStreamRouteHandler,
+  postV1ConversationsConversationIdRestartStreamRouteHandler,
+  postV1FilesRouteHandler,
+  getV1FilesRouteHandler,
+  getV1FilesFileIdRouteHandler,
+  deleteV1FilesFileIdRouteHandler,
+  getV1FilesFileIdContentRouteHandler,
+  getV1FilesFileIdUrlRouteHandler,
+  patchV1FineTuningModelsModelIdRouteHandler,
+  postV1FineTuningModelsModelIdArchiveRouteHandler,
+  deleteV1FineTuningModelsModelIdArchiveRouteHandler,
+  getV1BatchJobsRouteHandler,
+  postV1BatchJobsRouteHandler,
+  getV1BatchJobsJobIdRouteHandler,
+  deleteV1BatchJobsJobIdRouteHandler,
+  postV1BatchJobsJobIdCancelRouteHandler,
+  postV1ChatCompletionsRouteHandler,
+  postV1FimCompletionsRouteHandler,
+  postV1AgentsCompletionsRouteHandler,
+  postV1EmbeddingsRouteHandler,
+  postV1ModerationsRouteHandler,
+  postV1ChatModerationsRouteHandler,
+  postV1OcrRouteHandler,
+  postV1ClassificationsRouteHandler,
+  postV1ChatClassificationsRouteHandler,
+  postV1AudioTranscriptionsRouteHandler,
+  postV1AudioTranscriptionsStreamRouteHandler,
+  getV1LibrariesRouteHandler,
+  postV1LibrariesRouteHandler,
+  getV1LibrariesLibraryIdRouteHandler,
+  deleteV1LibrariesLibraryIdRouteHandler,
+  patchV1LibrariesLibraryIdRouteHandler,
+  putV1LibrariesLibraryIdRouteHandler,
+  getV1LibrariesLibraryIdDocumentsRouteHandler,
+  postV1LibrariesLibraryIdDocumentsRouteHandler,
+  getV1LibrariesLibraryIdDocumentsDocumentIdRouteHandler,
+  patchV1LibrariesLibraryIdDocumentsDocumentIdRouteHandler,
+  putV1LibrariesLibraryIdDocumentsDocumentIdRouteHandler,
+  deleteV1LibrariesLibraryIdDocumentsDocumentIdRouteHandler,
+  getV1LibrariesLibraryIdDocumentsDocumentIdTextContentRouteHandler,
+  getV1LibrariesLibraryIdDocumentsDocumentIdStatusRouteHandler,
+  getV1LibrariesLibraryIdDocumentsDocumentIdSignedUrlRouteHandler,
+  getV1LibrariesLibraryIdDocumentsDocumentIdExtractedTextSignedUrlRouteHandler,
+  postV1LibrariesLibraryIdDocumentsDocumentIdReprocessRouteHandler,
+  getV1LibrariesLibraryIdShareRouteHandler,
+  putV1LibrariesLibraryIdShareRouteHandler,
+  deleteV1LibrariesLibraryIdShareRouteHandler,
+  postV1ObservabilityDatasetsRouteHandler,
+  getV1ObservabilityDatasetsRouteHandler,
+  getV1ObservabilityDatasetsDatasetIdRouteHandler,
+  deleteV1ObservabilityDatasetsDatasetIdRouteHandler,
+  patchV1ObservabilityDatasetsDatasetIdRouteHandler,
+  getV1ObservabilityDatasetsDatasetIdRecordsRouteHandler,
+  postV1ObservabilityDatasetsDatasetIdRecordsRouteHandler,
+  postV1ObservabilityDatasetsDatasetIdRecordsBulkRouteHandler,
+  postV1ObservabilityDatasetsDatasetIdImportsFromFileRouteHandler,
+  postV1ObservabilityDatasetsDatasetIdImportsFromSpansRouteHandler,
+  postV1ObservabilityDatasetsDatasetIdImportsFromDatasetRouteHandler,
+  getV1ObservabilityDatasetsDatasetIdExportsToJsonlRouteHandler,
+  getV1ObservabilityDatasetsDatasetIdTasksTaskIdRouteHandler,
+  getV1ObservabilityDatasetsDatasetIdTasksRouteHandler,
+  getV1ObservabilityDatasetRecordsDatasetRecordIdRouteHandler,
+  deleteV1ObservabilityDatasetRecordsDatasetRecordIdRouteHandler,
+  postV1ObservabilityDatasetRecordsBulkDeleteRouteHandler,
+  putV1ObservabilityDatasetRecordsDatasetRecordIdPayloadRouteHandler,
+  putV1ObservabilityDatasetRecordsDatasetRecordIdPropertiesRouteHandler,
+  postV1ObservabilityPipelinesRouteHandler,
+  getV1ObservabilityPipelinesRouteHandler,
+  getV1ObservabilityPipelinesPipelineIdRouteHandler,
+  putV1ObservabilityPipelinesPipelineIdRouteHandler,
+  deleteV1ObservabilityPipelinesPipelineIdRouteHandler,
+  postV1ObservabilityLogsSearchRouteHandler,
+  postV1ObservabilityTracesSearchRouteHandler,
+  postV1ObservabilityTracesAggregateRouteHandler,
+  postV1ObservabilitySpansSearchRouteHandler,
+  postV1ObservabilitySpansAggregateRouteHandler,
+  postV1ObservabilitySpansEvaluationsAggregateRouteHandler,
+  postV1ObservabilitySpansEvaluationsSearchRouteHandler,
+  postV1ObservabilitySpansEvaluationsSearchLatestRouteHandler,
+  postV1ObservabilityPipelineResultsSearchRouteHandler,
+  getV1ObservabilityPipelinesPipelineIdResultsFieldsRouteHandler,
+  getV1ObservabilityTracesFieldsRouteHandler,
+  getV1ObservabilityTracesTraceIdRouteHandler,
+  getV1ObservabilityTracesTraceIdSpansRouteHandler,
+  getV1ObservabilityLogsFieldsRouteHandler,
+  getV1ObservabilitySpansFieldsRouteHandler,
+  getV1ObservabilitySpansEvaluationsFieldsRouteHandler,
+  getV1ObservabilityTracesFieldsFieldNameOptionsRouteHandler,
+  getV1ObservabilityLogsFieldsFieldNameOptionsRouteHandler,
+  getV1ObservabilitySpansFieldsFieldNameOptionsRouteHandler,
+  getV1ObservabilitySpansEvaluationsFieldsFieldNameOptionsRouteHandler,
+  getV1ObservabilityTracesTraceIdSpansSpanIdRouteHandler,
+  getV1ObservabilityProjectsRouteHandler,
+  getV1ObservabilityProjectsProjectSlugRouteHandler,
+  getV1ObservabilityProjectsProjectSlugEvaluationsV2RouteHandler,
+  getV1ObservabilityEvaluationsV2EvaluationSlugRouteHandler,
+  postV1ObservabilityEvaluationsV2EvaluationSlugRunsSearchRouteHandler,
+  postV1ObservabilityEvaluationRunsV2SearchRouteHandler,
+  getV1ObservabilityEvaluationRunsV2RunIdRouteHandler,
+  getV1ObservabilityEvaluationRunsV2RunIdStatisticsRouteHandler,
+  postV1ObservabilityEvaluationRunsV2RunIdStatisticsComputeRouteHandler,
+  getV1ObservabilityEvaluationRunsV2RunIdRecordsRecordIdRouteHandler,
+  postV1ObservabilityEvaluationRunsV2RunIdRecordsSearchRouteHandler,
+  getV1ObservabilityOptimizationsRouteHandler,
+  getV1ObservabilityOptimizationsOptimizationIdRouteHandler,
+  getV1ObservabilityOptimizationsOptimizationIdTrialsRouteHandler,
+  getV1ObservabilityScorersRouteHandler,
+  postV1ObservabilityScorersRouteHandler,
+  getV1ObservabilityScorersScorerSlugRouteHandler,
+  patchV1ObservabilityScorersScorerSlugRouteHandler,
+  postV1ConnectorsRouteHandler,
+  getV1ConnectorsRouteHandler,
+  getV1ConnectorsConnectorIdOrNameAuthUrlRouteHandler,
+  putV1ConnectorsConnectorIdShareRouteHandler,
+  deleteV1ConnectorsConnectorIdShareRouteHandler,
+  putV1ConnectorsConnectorIdOrganizationShareRouteHandler,
+  deleteV1ConnectorsConnectorIdOrganizationShareRouteHandler,
+  postV1ConnectorsConnectorIdConsumerScopeActivateRouteHandler,
+  postV1ConnectorsConnectorIdConsumerScopeDeactivateRouteHandler,
+  postV1ConnectorsConnectorIdOrNameToolsToolNameCallRouteHandler,
+  getV1ConnectorsConnectorIdOrNameToolsRouteHandler,
+  getV1ConnectorsConnectorIdOrNameAuthenticationMethodsRouteHandler,
+  getV1ConnectorsConnectorIdOrNameOrganizationCredentialsRouteHandler,
+  getV1ConnectorsConnectorIdOrNameWorkspaceCredentialsRouteHandler,
+  getV1ConnectorsConnectorIdOrNameUserCredentialsRouteHandler,
+  deleteV1ConnectorsConnectorIdOrNameUserCredentialsRouteHandler,
+  postV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsRouteHandler,
+  patchV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsRouteHandler,
+  deleteV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsCredentialsNameRouteHandler,
+  getV1ConnectorsConnectorIdOrNameIdOrNameRouteHandler,
+  patchV1ConnectorsConnectorIdIdRouteHandler,
+  deleteV1ConnectorsConnectorIdIdRouteHandler,
+  getV1AudioVoicesRouteHandler,
+  postV1AudioVoicesRouteHandler,
+  deleteV1AudioVoicesVoiceIdRouteHandler,
+  patchV1AudioVoicesVoiceIdRouteHandler,
+  getV1AudioVoicesVoiceIdRouteHandler,
+  getV1AudioVoicesVoiceIdSampleRouteHandler,
+  postV1AudioSessionsRouteHandler,
+  getV1AudioSessionsSessionIdRouteHandler,
+  patchV1AudioSessionsSessionIdRouteHandler,
+  deleteV1AudioSessionsSessionIdRouteHandler,
+  getV1AudioAgentsRouteHandler,
+  postV1AudioAgentsRouteHandler,
+  getV1AudioAgentsAgentIdRouteHandler,
+  putV1AudioAgentsAgentIdRouteHandler,
+  deleteV1AudioAgentsAgentIdRouteHandler,
+  getV1AudioAgentsAgentIdVersionsRouteHandler,
+  getV1AudioAgentsAgentIdSessionsRouteHandler,
+  getV2AudioVoicesRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdHistoryRouteHandler,
+  postV1WorkflowsExecutionsExecutionIdSignalsRouteHandler,
+  postV1WorkflowsExecutionsExecutionIdQueriesRouteHandler,
+  postV1WorkflowsExecutionsExecutionIdTerminateRouteHandler,
+  postV1WorkflowsExecutionsTerminateRouteHandler,
+  postV1WorkflowsExecutionsExecutionIdCancelRouteHandler,
+  postV1WorkflowsExecutionsCancelRouteHandler,
+  postV1WorkflowsExecutionsExecutionIdResetRouteHandler,
+  postV1WorkflowsExecutionsExecutionIdUpdatesRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdTraceInfoRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdTraceOtelRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdTraceSummaryRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdTraceEventsRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdStreamRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdLogsRouteHandler,
+  getV1WorkflowsExecutionsExecutionIdLogsStreamRouteHandler,
+  getV1WorkflowsWorkflowNameMetricsRouteHandler,
+  getV1WorkflowsRunsRouteHandler,
+  getV1WorkflowsRunsRunIdRouteHandler,
+  getV1WorkflowsRunsRunIdHistoryRouteHandler,
+  getV1WorkflowsSchedulesRouteHandler,
+  postV1WorkflowsSchedulesRouteHandler,
+  getV1WorkflowsSchedulesScheduleIdRouteHandler,
+  deleteV1WorkflowsSchedulesScheduleIdRouteHandler,
+  patchV1WorkflowsSchedulesScheduleIdRouteHandler,
+  postV1WorkflowsSchedulesScheduleIdPauseRouteHandler,
+  postV1WorkflowsSchedulesScheduleIdResumeRouteHandler,
+  postV1WorkflowsSchedulesScheduleIdTriggerRouteHandler,
+  getV1WorkflowsEventsStreamRouteHandler,
+  getV1WorkflowsEventsListRouteHandler,
+  postV1WorkflowsDeploymentsDeploymentIdUnhardenRouteHandler,
+  getV1WorkflowsDeploymentsRouteHandler,
+  postV1WorkflowsDeploymentsRouteHandler,
+  patchV1WorkflowsDeploymentsNameRouteHandler,
+  deleteV1WorkflowsDeploymentsNameRouteHandler,
+  getV1WorkflowsDeploymentsNameRouteHandler,
+  postV1WorkflowsDeploymentsNameStopRouteHandler,
+  postV1WorkflowsDeploymentsNameStartRouteHandler,
+  postV1WorkflowsDeploymentsNameRestartRouteHandler,
+  getV1WorkflowsDeploymentsNameWorkersRouteHandler,
+  getV1WorkflowsDeploymentsNameArchiveRouteHandler,
+  postV1WorkflowsDeploymentsArchivesRouteHandler,
+  getV1WorkflowsDeploymentsNameLogsRouteHandler,
+  getV1WorkflowsDeploymentsNameLogsStreamRouteHandler,
+  getV1WorkflowsRouteHandler,
+  getV1WorkflowsRegistrationsRouteHandler,
+  postV1WorkflowsWorkflowIdentifierExecuteRouteHandler,
+  postV1WorkflowsRegistrationsWorkflowRegistrationIdExecuteRouteHandler,
+  getV1WorkflowsWorkflowIdentifierRouteHandler,
+  putV1WorkflowsWorkflowIdentifierRouteHandler,
+  getV1WorkflowsRegistrationsWorkflowRegistrationIdRouteHandler,
+  putV1WorkflowsArchiveRouteHandler,
+  putV1WorkflowsUnarchiveRouteHandler,
+  postV1WorkflowsWorkflowIdentifierTagsRouteHandler,
+  putV1WorkflowsWorkflowIdentifierArchiveRouteHandler,
+  putV1WorkflowsWorkflowIdentifierUnarchiveRouteHandler,
+  getV1RagIngestionPipelineConfigurationsRouteHandler,
+  putV1RagIngestionPipelineConfigurationsRouteHandler,
+  putV1RagIngestionPipelineConfigurationsIdRunInfoRouteHandler,
+  postV1ContextSearchIndexesRouteHandler,
+  getV1ContextSearchIndexesRouteHandler,
+  getV1ContextSearchIndexesIndexNameRouteHandler,
+  putV1ContextSearchIndexesIndexNameRouteHandler,
+  deleteV1ContextSearchIndexesIndexNameRouteHandler,
+  postV1ContextSearchIndexesIndexNameDocumentsRouteHandler,
+  deleteV1ContextSearchIndexesIndexNameDocumentsRouteHandler,
+  postV1ContextSearchIndexesIndexNameSearchRouteHandler,
+  postV1ContextSearchIndexesIndexNameNavigateRouteHandler,
+  postV1ContextSearchIndexesIndexNameReadRouteHandler,
+  postV1ContextSearchIndexesIndexNameGrepRouteHandler,
+  getV1ContextSearchIndexesIndexNameChunksChunkIdRouteHandler,
+  getV1ContextSearchIndexesIndexNameSummaryFieldLanguageRouteHandler,
+  postV1ContextSearchIndexesIndexNameSummaryFieldLanguageRouteHandler,
+  putV1ContextSearchIndexesIndexNameSummaryFieldLanguageRouteHandler,
+  postV1TriggersRouteHandler,
+  getV1TriggersRouteHandler,
+  getV1TriggersTriggerIdRouteHandler,
+  deleteV1TriggersTriggerIdRouteHandler,
+  getV1TriggersTriggerIdEventsRouteHandler,
+  getV1WebhooksRouteHandler,
+  postV1WebhooksRouteHandler,
+  getV1WebhooksWebhookIdRouteHandler,
+  deleteV1WebhooksWebhookIdRouteHandler,
+  getV1WebhooksWebhookIdSigningSecretRouteHandler,
+  getV1UsersMeRouteHandler,
+  getV1UsersMeOrganizationsRouteHandler,
+  getV1UsersMeWorkspacesRouteHandler,
+  getV1WhoamiRouteHandler,
+  getV1BillingBudgetRouteHandler,
+  getV1BillingSubscriptionRouteHandler,
+  postV1AdminUsageQueryRouteHandler,
+  getV1AdminUsersRouteHandler,
+  postV1AdminUsersRouteHandler,
+  postV1AdminUsersInviteRouteHandler,
+  getV1AdminUsersInviteRouteHandler,
+  deleteV1AdminUsersInviteInviteUuidRouteHandler,
+  patchV1AdminUsersUserIdRouteHandler,
+  deleteV1AdminUsersUserIdRouteHandler,
+  getV1AdminUsersUserIdRouteHandler,
+  postV1AdminUsersUserIdDeactivateRouteHandler,
+  postV1AdminUsersUserIdReactivateRouteHandler,
+  getV1AdminUsersUserIdWorkspacesRouteHandler,
+  getV1AdminRolesRouteHandler,
+  getV1AdminWorkspacesRouteHandler,
+  postV1AdminWorkspacesRouteHandler,
+  patchV1AdminWorkspacesWorkspaceUuidRouteHandler,
+  deleteV1AdminWorkspacesWorkspaceUuidRouteHandler,
+  getV1AdminWorkspacesWorkspaceUuidUsersRouteHandler,
+  patchV1AdminWorkspacesWorkspaceUuidUsersRouteHandler,
+  postV1AdminWorkspacesWorkspaceUuidAddUsersRouteHandler,
+  deleteV1AdminWorkspacesWorkspaceUuidRemoveUsersRouteHandler,
+  getV1AdminRateLimitRouteHandler,
+  getV1AdminSpendLimitRouteHandler,
+  postV1AdminSpendLimitRouteHandler,
+  getV1AdminUsageRouteHandler,
+  getV1AdminAuditLogsRouteHandler,
+  getV1AdminUserGroupsRouteHandler,
+  postV1AdminUserGroupsRouteHandler,
+  postV1AdminUserGroupsProvisionWorkspaceRouteHandler,
+  getV1AdminUserGroupsGroupUuidRouteHandler,
+  patchV1AdminUserGroupsGroupUuidRouteHandler,
+  deleteV1AdminUserGroupsGroupUuidRouteHandler,
+  getV1AdminUserGroupsGroupUuidMembersRouteHandler,
+  postV1AdminUserGroupsGroupUuidMembersRouteHandler,
+  deleteV1AdminUserGroupsGroupUuidMembersRouteHandler,
+  getV1AdminUserGroupsGroupUuidWorkspacesRouteHandler,
+  postV1AdminUserGroupsGroupUuidWorkspacesRouteHandler,
+  patchV1AdminUserGroupsGroupUuidWorkspacesWorkspaceUuidRouteHandler,
+  deleteV1AdminUserGroupsGroupUuidWorkspacesWorkspaceUuidRouteHandler,
+  patchV1AdminUserGroupsGroupUuidOrganizationRoleRouteHandler,
+  getV1AdminApiKeysRouteHandler,
+  postV1AdminApiKeysRouteHandler,
+  deleteV1AdminApiKeysKeyIdRouteHandler,
+  postV1AdminScimSyncRouteHandler,
+  getV1AdminScimSyncRunIdRouteHandler,
+  getV1AdminAnalyticsVibeWorkUsageByUserStatsRouteHandler,
+  getV1AdminAnalyticsVibeWorkUsageByAgentStatsRouteHandler,
+  getV1AdminAnalyticsVibeWorkUsageByTimeStatsRouteHandler,
+  getV1AdminAnalyticsVibeCodeUsageByWorkspaceRouteHandler,
+  getV1AdminAnalyticsVibeCodeUsageByOrganizationRouteHandler,
+} from './handlers'
+
+const app = new OpenAPIHono()
+
+export const api = app
+  .openapi(getV2PromptsRoute, getV2PromptsRouteHandler)
+  .openapi(postV2PromptsRoute, postV2PromptsRouteHandler)
+  .openapi(getV2PromptsPromptIdRoute, getV2PromptsPromptIdRouteHandler)
+  .openapi(deleteV2PromptsPromptIdRoute, deleteV2PromptsPromptIdRouteHandler)
+  .openapi(patchV2PromptsPromptIdRoute, patchV2PromptsPromptIdRouteHandler)
+  .openapi(getV2PromptsPromptIdVersionsRoute, getV2PromptsPromptIdVersionsRouteHandler)
+  .openapi(postV2PromptsPromptIdVersionsRoute, postV2PromptsPromptIdVersionsRouteHandler)
+  .openapi(
+    getV2PromptsPromptIdVersionsVersionRoute,
+    getV2PromptsPromptIdVersionsVersionRouteHandler,
+  )
+  .openapi(
+    patchV2PromptsPromptIdVersionsVersionRoute,
+    patchV2PromptsPromptIdVersionsVersionRouteHandler,
+  )
+  .openapi(getV2SkillsRoute, getV2SkillsRouteHandler)
+  .openapi(postV2SkillsRoute, postV2SkillsRouteHandler)
+  .openapi(getV2SkillsSkillIdRoute, getV2SkillsSkillIdRouteHandler)
+  .openapi(deleteV2SkillsSkillIdRoute, deleteV2SkillsSkillIdRouteHandler)
+  .openapi(patchV2SkillsSkillIdRoute, patchV2SkillsSkillIdRouteHandler)
+  .openapi(getV2SkillsSkillIdVersionsRoute, getV2SkillsSkillIdVersionsRouteHandler)
+  .openapi(postV2SkillsSkillIdVersionsRoute, postV2SkillsSkillIdVersionsRouteHandler)
+  .openapi(getV2SkillsSkillIdVersionsVersionRoute, getV2SkillsSkillIdVersionsVersionRouteHandler)
+  .openapi(
+    patchV2SkillsSkillIdVersionsVersionRoute,
+    patchV2SkillsSkillIdVersionsVersionRouteHandler,
+  )
+  .openapi(postV1AudioSpeechRoute, postV1AudioSpeechRouteHandler)
+  .openapi(getV1ModelsRoute, getV1ModelsRouteHandler)
+  .openapi(getV1ModelsModelIdRoute, getV1ModelsModelIdRouteHandler)
+  .openapi(deleteV1ModelsModelIdRoute, deleteV1ModelsModelIdRouteHandler)
+  .openapi(postV1ResponsesRoute, postV1ResponsesRouteHandler)
+  .openapi(postV1ResponsesInputTokensRoute, postV1ResponsesInputTokensRouteHandler)
+  .openapi(postV1ClientSessionsRoute, postV1ClientSessionsRouteHandler)
+  .openapi(postV1ServiceAccountsRoute, postV1ServiceAccountsRouteHandler)
+  .openapi(getV1ServiceAccountsRoute, getV1ServiceAccountsRouteHandler)
+  .openapi(
+    getV1ServiceAccountsAssignableRolesRoute,
+    getV1ServiceAccountsAssignableRolesRouteHandler,
+  )
+  .openapi(
+    getV1ServiceAccountsServiceAccountIdRoute,
+    getV1ServiceAccountsServiceAccountIdRouteHandler,
+  )
+  .openapi(
+    patchV1ServiceAccountsServiceAccountIdRoute,
+    patchV1ServiceAccountsServiceAccountIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ServiceAccountsServiceAccountIdRoute,
+    deleteV1ServiceAccountsServiceAccountIdRouteHandler,
+  )
+  .openapi(
+    putV1ServiceAccountsServiceAccountIdRolesRoute,
+    putV1ServiceAccountsServiceAccountIdRolesRouteHandler,
+  )
+  .openapi(
+    getV1ServiceAccountsServiceAccountIdRolesRoute,
+    getV1ServiceAccountsServiceAccountIdRolesRouteHandler,
+  )
+  .openapi(postV1ConversationsRoute, postV1ConversationsRouteHandler)
+  .openapi(getV1ConversationsRoute, getV1ConversationsRouteHandler)
+  .openapi(getV1ConversationsConversationIdRoute, getV1ConversationsConversationIdRouteHandler)
+  .openapi(
+    deleteV1ConversationsConversationIdRoute,
+    deleteV1ConversationsConversationIdRouteHandler,
+  )
+  .openapi(postV1ConversationsConversationIdRoute, postV1ConversationsConversationIdRouteHandler)
+  .openapi(
+    getV1ConversationsConversationIdHistoryRoute,
+    getV1ConversationsConversationIdHistoryRouteHandler,
+  )
+  .openapi(
+    getV1ConversationsConversationIdMessagesRoute,
+    getV1ConversationsConversationIdMessagesRouteHandler,
+  )
+  .openapi(
+    postV1ConversationsConversationIdRestartRoute,
+    postV1ConversationsConversationIdRestartRouteHandler,
+  )
+  .openapi(postV1AgentsRoute, postV1AgentsRouteHandler)
+  .openapi(getV1AgentsRoute, getV1AgentsRouteHandler)
+  .openapi(getV1AgentsPagesRoute, getV1AgentsPagesRouteHandler)
+  .openapi(getV1AgentsAgentIdRoute, getV1AgentsAgentIdRouteHandler)
+  .openapi(patchV1AgentsAgentIdRoute, patchV1AgentsAgentIdRouteHandler)
+  .openapi(deleteV1AgentsAgentIdRoute, deleteV1AgentsAgentIdRouteHandler)
+  .openapi(patchV1AgentsAgentIdVersionRoute, patchV1AgentsAgentIdVersionRouteHandler)
+  .openapi(getV1AgentsAgentIdVersionsRoute, getV1AgentsAgentIdVersionsRouteHandler)
+  .openapi(getV1AgentsAgentIdVersionsVersionRoute, getV1AgentsAgentIdVersionsVersionRouteHandler)
+  .openapi(putV1AgentsAgentIdAliasesRoute, putV1AgentsAgentIdAliasesRouteHandler)
+  .openapi(getV1AgentsAgentIdAliasesRoute, getV1AgentsAgentIdAliasesRouteHandler)
+  .openapi(deleteV1AgentsAgentIdAliasesRoute, deleteV1AgentsAgentIdAliasesRouteHandler)
+  .openapi(postV1ConversationsStreamRoute, postV1ConversationsStreamRouteHandler)
+  .openapi(
+    postV1ConversationsConversationIdStreamRoute,
+    postV1ConversationsConversationIdStreamRouteHandler,
+  )
+  .openapi(
+    postV1ConversationsConversationIdRestartStreamRoute,
+    postV1ConversationsConversationIdRestartStreamRouteHandler,
+  )
+  .openapi(postV1FilesRoute, postV1FilesRouteHandler)
+  .openapi(getV1FilesRoute, getV1FilesRouteHandler)
+  .openapi(getV1FilesFileIdRoute, getV1FilesFileIdRouteHandler)
+  .openapi(deleteV1FilesFileIdRoute, deleteV1FilesFileIdRouteHandler)
+  .openapi(getV1FilesFileIdContentRoute, getV1FilesFileIdContentRouteHandler)
+  .openapi(getV1FilesFileIdUrlRoute, getV1FilesFileIdUrlRouteHandler)
+  .openapi(patchV1FineTuningModelsModelIdRoute, patchV1FineTuningModelsModelIdRouteHandler)
+  .openapi(
+    postV1FineTuningModelsModelIdArchiveRoute,
+    postV1FineTuningModelsModelIdArchiveRouteHandler,
+  )
+  .openapi(
+    deleteV1FineTuningModelsModelIdArchiveRoute,
+    deleteV1FineTuningModelsModelIdArchiveRouteHandler,
+  )
+  .openapi(getV1BatchJobsRoute, getV1BatchJobsRouteHandler)
+  .openapi(postV1BatchJobsRoute, postV1BatchJobsRouteHandler)
+  .openapi(getV1BatchJobsJobIdRoute, getV1BatchJobsJobIdRouteHandler)
+  .openapi(deleteV1BatchJobsJobIdRoute, deleteV1BatchJobsJobIdRouteHandler)
+  .openapi(postV1BatchJobsJobIdCancelRoute, postV1BatchJobsJobIdCancelRouteHandler)
+  .openapi(postV1ChatCompletionsRoute, postV1ChatCompletionsRouteHandler)
+  .openapi(postV1FimCompletionsRoute, postV1FimCompletionsRouteHandler)
+  .openapi(postV1AgentsCompletionsRoute, postV1AgentsCompletionsRouteHandler)
+  .openapi(postV1EmbeddingsRoute, postV1EmbeddingsRouteHandler)
+  .openapi(postV1ModerationsRoute, postV1ModerationsRouteHandler)
+  .openapi(postV1ChatModerationsRoute, postV1ChatModerationsRouteHandler)
+  .openapi(postV1OcrRoute, postV1OcrRouteHandler)
+  .openapi(postV1ClassificationsRoute, postV1ClassificationsRouteHandler)
+  .openapi(postV1ChatClassificationsRoute, postV1ChatClassificationsRouteHandler)
+  .openapi(postV1AudioTranscriptionsRoute, postV1AudioTranscriptionsRouteHandler)
+  .openapi(postV1AudioTranscriptionsStreamRoute, postV1AudioTranscriptionsStreamRouteHandler)
+  .openapi(getV1LibrariesRoute, getV1LibrariesRouteHandler)
+  .openapi(postV1LibrariesRoute, postV1LibrariesRouteHandler)
+  .openapi(getV1LibrariesLibraryIdRoute, getV1LibrariesLibraryIdRouteHandler)
+  .openapi(deleteV1LibrariesLibraryIdRoute, deleteV1LibrariesLibraryIdRouteHandler)
+  .openapi(patchV1LibrariesLibraryIdRoute, patchV1LibrariesLibraryIdRouteHandler)
+  .openapi(putV1LibrariesLibraryIdRoute, putV1LibrariesLibraryIdRouteHandler)
+  .openapi(getV1LibrariesLibraryIdDocumentsRoute, getV1LibrariesLibraryIdDocumentsRouteHandler)
+  .openapi(postV1LibrariesLibraryIdDocumentsRoute, postV1LibrariesLibraryIdDocumentsRouteHandler)
+  .openapi(
+    getV1LibrariesLibraryIdDocumentsDocumentIdRoute,
+    getV1LibrariesLibraryIdDocumentsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchV1LibrariesLibraryIdDocumentsDocumentIdRoute,
+    patchV1LibrariesLibraryIdDocumentsDocumentIdRouteHandler,
+  )
+  .openapi(
+    putV1LibrariesLibraryIdDocumentsDocumentIdRoute,
+    putV1LibrariesLibraryIdDocumentsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteV1LibrariesLibraryIdDocumentsDocumentIdRoute,
+    deleteV1LibrariesLibraryIdDocumentsDocumentIdRouteHandler,
+  )
+  .openapi(
+    getV1LibrariesLibraryIdDocumentsDocumentIdTextContentRoute,
+    getV1LibrariesLibraryIdDocumentsDocumentIdTextContentRouteHandler,
+  )
+  .openapi(
+    getV1LibrariesLibraryIdDocumentsDocumentIdStatusRoute,
+    getV1LibrariesLibraryIdDocumentsDocumentIdStatusRouteHandler,
+  )
+  .openapi(
+    getV1LibrariesLibraryIdDocumentsDocumentIdSignedUrlRoute,
+    getV1LibrariesLibraryIdDocumentsDocumentIdSignedUrlRouteHandler,
+  )
+  .openapi(
+    getV1LibrariesLibraryIdDocumentsDocumentIdExtractedTextSignedUrlRoute,
+    getV1LibrariesLibraryIdDocumentsDocumentIdExtractedTextSignedUrlRouteHandler,
+  )
+  .openapi(
+    postV1LibrariesLibraryIdDocumentsDocumentIdReprocessRoute,
+    postV1LibrariesLibraryIdDocumentsDocumentIdReprocessRouteHandler,
+  )
+  .openapi(getV1LibrariesLibraryIdShareRoute, getV1LibrariesLibraryIdShareRouteHandler)
+  .openapi(putV1LibrariesLibraryIdShareRoute, putV1LibrariesLibraryIdShareRouteHandler)
+  .openapi(deleteV1LibrariesLibraryIdShareRoute, deleteV1LibrariesLibraryIdShareRouteHandler)
+  .openapi(postV1ObservabilityDatasetsRoute, postV1ObservabilityDatasetsRouteHandler)
+  .openapi(getV1ObservabilityDatasetsRoute, getV1ObservabilityDatasetsRouteHandler)
+  .openapi(
+    getV1ObservabilityDatasetsDatasetIdRoute,
+    getV1ObservabilityDatasetsDatasetIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ObservabilityDatasetsDatasetIdRoute,
+    deleteV1ObservabilityDatasetsDatasetIdRouteHandler,
+  )
+  .openapi(
+    patchV1ObservabilityDatasetsDatasetIdRoute,
+    patchV1ObservabilityDatasetsDatasetIdRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityDatasetsDatasetIdRecordsRoute,
+    getV1ObservabilityDatasetsDatasetIdRecordsRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityDatasetsDatasetIdRecordsRoute,
+    postV1ObservabilityDatasetsDatasetIdRecordsRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityDatasetsDatasetIdRecordsBulkRoute,
+    postV1ObservabilityDatasetsDatasetIdRecordsBulkRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityDatasetsDatasetIdImportsFromFileRoute,
+    postV1ObservabilityDatasetsDatasetIdImportsFromFileRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityDatasetsDatasetIdImportsFromSpansRoute,
+    postV1ObservabilityDatasetsDatasetIdImportsFromSpansRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityDatasetsDatasetIdImportsFromDatasetRoute,
+    postV1ObservabilityDatasetsDatasetIdImportsFromDatasetRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityDatasetsDatasetIdExportsToJsonlRoute,
+    getV1ObservabilityDatasetsDatasetIdExportsToJsonlRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityDatasetsDatasetIdTasksTaskIdRoute,
+    getV1ObservabilityDatasetsDatasetIdTasksTaskIdRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityDatasetsDatasetIdTasksRoute,
+    getV1ObservabilityDatasetsDatasetIdTasksRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityDatasetRecordsDatasetRecordIdRoute,
+    getV1ObservabilityDatasetRecordsDatasetRecordIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ObservabilityDatasetRecordsDatasetRecordIdRoute,
+    deleteV1ObservabilityDatasetRecordsDatasetRecordIdRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityDatasetRecordsBulkDeleteRoute,
+    postV1ObservabilityDatasetRecordsBulkDeleteRouteHandler,
+  )
+  .openapi(
+    putV1ObservabilityDatasetRecordsDatasetRecordIdPayloadRoute,
+    putV1ObservabilityDatasetRecordsDatasetRecordIdPayloadRouteHandler,
+  )
+  .openapi(
+    putV1ObservabilityDatasetRecordsDatasetRecordIdPropertiesRoute,
+    putV1ObservabilityDatasetRecordsDatasetRecordIdPropertiesRouteHandler,
+  )
+  .openapi(postV1ObservabilityPipelinesRoute, postV1ObservabilityPipelinesRouteHandler)
+  .openapi(getV1ObservabilityPipelinesRoute, getV1ObservabilityPipelinesRouteHandler)
+  .openapi(
+    getV1ObservabilityPipelinesPipelineIdRoute,
+    getV1ObservabilityPipelinesPipelineIdRouteHandler,
+  )
+  .openapi(
+    putV1ObservabilityPipelinesPipelineIdRoute,
+    putV1ObservabilityPipelinesPipelineIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ObservabilityPipelinesPipelineIdRoute,
+    deleteV1ObservabilityPipelinesPipelineIdRouteHandler,
+  )
+  .openapi(postV1ObservabilityLogsSearchRoute, postV1ObservabilityLogsSearchRouteHandler)
+  .openapi(postV1ObservabilityTracesSearchRoute, postV1ObservabilityTracesSearchRouteHandler)
+  .openapi(postV1ObservabilityTracesAggregateRoute, postV1ObservabilityTracesAggregateRouteHandler)
+  .openapi(postV1ObservabilitySpansSearchRoute, postV1ObservabilitySpansSearchRouteHandler)
+  .openapi(postV1ObservabilitySpansAggregateRoute, postV1ObservabilitySpansAggregateRouteHandler)
+  .openapi(
+    postV1ObservabilitySpansEvaluationsAggregateRoute,
+    postV1ObservabilitySpansEvaluationsAggregateRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilitySpansEvaluationsSearchRoute,
+    postV1ObservabilitySpansEvaluationsSearchRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilitySpansEvaluationsSearchLatestRoute,
+    postV1ObservabilitySpansEvaluationsSearchLatestRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityPipelineResultsSearchRoute,
+    postV1ObservabilityPipelineResultsSearchRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityPipelinesPipelineIdResultsFieldsRoute,
+    getV1ObservabilityPipelinesPipelineIdResultsFieldsRouteHandler,
+  )
+  .openapi(getV1ObservabilityTracesFieldsRoute, getV1ObservabilityTracesFieldsRouteHandler)
+  .openapi(getV1ObservabilityTracesTraceIdRoute, getV1ObservabilityTracesTraceIdRouteHandler)
+  .openapi(
+    getV1ObservabilityTracesTraceIdSpansRoute,
+    getV1ObservabilityTracesTraceIdSpansRouteHandler,
+  )
+  .openapi(getV1ObservabilityLogsFieldsRoute, getV1ObservabilityLogsFieldsRouteHandler)
+  .openapi(getV1ObservabilitySpansFieldsRoute, getV1ObservabilitySpansFieldsRouteHandler)
+  .openapi(
+    getV1ObservabilitySpansEvaluationsFieldsRoute,
+    getV1ObservabilitySpansEvaluationsFieldsRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityTracesFieldsFieldNameOptionsRoute,
+    getV1ObservabilityTracesFieldsFieldNameOptionsRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityLogsFieldsFieldNameOptionsRoute,
+    getV1ObservabilityLogsFieldsFieldNameOptionsRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilitySpansFieldsFieldNameOptionsRoute,
+    getV1ObservabilitySpansFieldsFieldNameOptionsRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilitySpansEvaluationsFieldsFieldNameOptionsRoute,
+    getV1ObservabilitySpansEvaluationsFieldsFieldNameOptionsRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityTracesTraceIdSpansSpanIdRoute,
+    getV1ObservabilityTracesTraceIdSpansSpanIdRouteHandler,
+  )
+  .openapi(getV1ObservabilityProjectsRoute, getV1ObservabilityProjectsRouteHandler)
+  .openapi(
+    getV1ObservabilityProjectsProjectSlugRoute,
+    getV1ObservabilityProjectsProjectSlugRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityProjectsProjectSlugEvaluationsV2Route,
+    getV1ObservabilityProjectsProjectSlugEvaluationsV2RouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityEvaluationsV2EvaluationSlugRoute,
+    getV1ObservabilityEvaluationsV2EvaluationSlugRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityEvaluationsV2EvaluationSlugRunsSearchRoute,
+    postV1ObservabilityEvaluationsV2EvaluationSlugRunsSearchRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityEvaluationRunsV2SearchRoute,
+    postV1ObservabilityEvaluationRunsV2SearchRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityEvaluationRunsV2RunIdRoute,
+    getV1ObservabilityEvaluationRunsV2RunIdRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityEvaluationRunsV2RunIdStatisticsRoute,
+    getV1ObservabilityEvaluationRunsV2RunIdStatisticsRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityEvaluationRunsV2RunIdStatisticsComputeRoute,
+    postV1ObservabilityEvaluationRunsV2RunIdStatisticsComputeRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityEvaluationRunsV2RunIdRecordsRecordIdRoute,
+    getV1ObservabilityEvaluationRunsV2RunIdRecordsRecordIdRouteHandler,
+  )
+  .openapi(
+    postV1ObservabilityEvaluationRunsV2RunIdRecordsSearchRoute,
+    postV1ObservabilityEvaluationRunsV2RunIdRecordsSearchRouteHandler,
+  )
+  .openapi(getV1ObservabilityOptimizationsRoute, getV1ObservabilityOptimizationsRouteHandler)
+  .openapi(
+    getV1ObservabilityOptimizationsOptimizationIdRoute,
+    getV1ObservabilityOptimizationsOptimizationIdRouteHandler,
+  )
+  .openapi(
+    getV1ObservabilityOptimizationsOptimizationIdTrialsRoute,
+    getV1ObservabilityOptimizationsOptimizationIdTrialsRouteHandler,
+  )
+  .openapi(getV1ObservabilityScorersRoute, getV1ObservabilityScorersRouteHandler)
+  .openapi(postV1ObservabilityScorersRoute, postV1ObservabilityScorersRouteHandler)
+  .openapi(
+    getV1ObservabilityScorersScorerSlugRoute,
+    getV1ObservabilityScorersScorerSlugRouteHandler,
+  )
+  .openapi(
+    patchV1ObservabilityScorersScorerSlugRoute,
+    patchV1ObservabilityScorersScorerSlugRouteHandler,
+  )
+  .openapi(postV1ConnectorsRoute, postV1ConnectorsRouteHandler)
+  .openapi(getV1ConnectorsRoute, getV1ConnectorsRouteHandler)
+  .openapi(
+    getV1ConnectorsConnectorIdOrNameAuthUrlRoute,
+    getV1ConnectorsConnectorIdOrNameAuthUrlRouteHandler,
+  )
+  .openapi(putV1ConnectorsConnectorIdShareRoute, putV1ConnectorsConnectorIdShareRouteHandler)
+  .openapi(deleteV1ConnectorsConnectorIdShareRoute, deleteV1ConnectorsConnectorIdShareRouteHandler)
+  .openapi(
+    putV1ConnectorsConnectorIdOrganizationShareRoute,
+    putV1ConnectorsConnectorIdOrganizationShareRouteHandler,
+  )
+  .openapi(
+    deleteV1ConnectorsConnectorIdOrganizationShareRoute,
+    deleteV1ConnectorsConnectorIdOrganizationShareRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorsConnectorIdConsumerScopeActivateRoute,
+    postV1ConnectorsConnectorIdConsumerScopeActivateRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorsConnectorIdConsumerScopeDeactivateRoute,
+    postV1ConnectorsConnectorIdConsumerScopeDeactivateRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorsConnectorIdOrNameToolsToolNameCallRoute,
+    postV1ConnectorsConnectorIdOrNameToolsToolNameCallRouteHandler,
+  )
+  .openapi(
+    getV1ConnectorsConnectorIdOrNameToolsRoute,
+    getV1ConnectorsConnectorIdOrNameToolsRouteHandler,
+  )
+  .openapi(
+    getV1ConnectorsConnectorIdOrNameAuthenticationMethodsRoute,
+    getV1ConnectorsConnectorIdOrNameAuthenticationMethodsRouteHandler,
+  )
+  .openapi(
+    getV1ConnectorsConnectorIdOrNameOrganizationCredentialsRoute,
+    getV1ConnectorsConnectorIdOrNameOrganizationCredentialsRouteHandler,
+  )
+  .openapi(
+    getV1ConnectorsConnectorIdOrNameWorkspaceCredentialsRoute,
+    getV1ConnectorsConnectorIdOrNameWorkspaceCredentialsRouteHandler,
+  )
+  .openapi(
+    getV1ConnectorsConnectorIdOrNameUserCredentialsRoute,
+    getV1ConnectorsConnectorIdOrNameUserCredentialsRouteHandler,
+  )
+  .openapi(
+    deleteV1ConnectorsConnectorIdOrNameUserCredentialsRoute,
+    deleteV1ConnectorsConnectorIdOrNameUserCredentialsRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsRoute,
+    postV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsRouteHandler,
+  )
+  .openapi(
+    patchV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsRoute,
+    patchV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsRouteHandler,
+  )
+  .openapi(
+    deleteV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsCredentialsNameRoute,
+    deleteV1ConnectorsConnectorIdOrNameConsumerScopeCredentialsCredentialsNameRouteHandler,
+  )
+  .openapi(
+    getV1ConnectorsConnectorIdOrNameIdOrNameRoute,
+    getV1ConnectorsConnectorIdOrNameIdOrNameRouteHandler,
+  )
+  .openapi(patchV1ConnectorsConnectorIdIdRoute, patchV1ConnectorsConnectorIdIdRouteHandler)
+  .openapi(deleteV1ConnectorsConnectorIdIdRoute, deleteV1ConnectorsConnectorIdIdRouteHandler)
+  .openapi(getV1AudioVoicesRoute, getV1AudioVoicesRouteHandler)
+  .openapi(postV1AudioVoicesRoute, postV1AudioVoicesRouteHandler)
+  .openapi(deleteV1AudioVoicesVoiceIdRoute, deleteV1AudioVoicesVoiceIdRouteHandler)
+  .openapi(patchV1AudioVoicesVoiceIdRoute, patchV1AudioVoicesVoiceIdRouteHandler)
+  .openapi(getV1AudioVoicesVoiceIdRoute, getV1AudioVoicesVoiceIdRouteHandler)
+  .openapi(getV1AudioVoicesVoiceIdSampleRoute, getV1AudioVoicesVoiceIdSampleRouteHandler)
+  .openapi(postV1AudioSessionsRoute, postV1AudioSessionsRouteHandler)
+  .openapi(getV1AudioSessionsSessionIdRoute, getV1AudioSessionsSessionIdRouteHandler)
+  .openapi(patchV1AudioSessionsSessionIdRoute, patchV1AudioSessionsSessionIdRouteHandler)
+  .openapi(deleteV1AudioSessionsSessionIdRoute, deleteV1AudioSessionsSessionIdRouteHandler)
+  .openapi(getV1AudioAgentsRoute, getV1AudioAgentsRouteHandler)
+  .openapi(postV1AudioAgentsRoute, postV1AudioAgentsRouteHandler)
+  .openapi(getV1AudioAgentsAgentIdRoute, getV1AudioAgentsAgentIdRouteHandler)
+  .openapi(putV1AudioAgentsAgentIdRoute, putV1AudioAgentsAgentIdRouteHandler)
+  .openapi(deleteV1AudioAgentsAgentIdRoute, deleteV1AudioAgentsAgentIdRouteHandler)
+  .openapi(getV1AudioAgentsAgentIdVersionsRoute, getV1AudioAgentsAgentIdVersionsRouteHandler)
+  .openapi(getV1AudioAgentsAgentIdSessionsRoute, getV1AudioAgentsAgentIdSessionsRouteHandler)
+  .openapi(getV2AudioVoicesRoute, getV2AudioVoicesRouteHandler)
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdRoute,
+    getV1WorkflowsExecutionsExecutionIdRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdHistoryRoute,
+    getV1WorkflowsExecutionsExecutionIdHistoryRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsExecutionsExecutionIdSignalsRoute,
+    postV1WorkflowsExecutionsExecutionIdSignalsRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsExecutionsExecutionIdQueriesRoute,
+    postV1WorkflowsExecutionsExecutionIdQueriesRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsExecutionsExecutionIdTerminateRoute,
+    postV1WorkflowsExecutionsExecutionIdTerminateRouteHandler,
+  )
+  .openapi(postV1WorkflowsExecutionsTerminateRoute, postV1WorkflowsExecutionsTerminateRouteHandler)
+  .openapi(
+    postV1WorkflowsExecutionsExecutionIdCancelRoute,
+    postV1WorkflowsExecutionsExecutionIdCancelRouteHandler,
+  )
+  .openapi(postV1WorkflowsExecutionsCancelRoute, postV1WorkflowsExecutionsCancelRouteHandler)
+  .openapi(
+    postV1WorkflowsExecutionsExecutionIdResetRoute,
+    postV1WorkflowsExecutionsExecutionIdResetRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsExecutionsExecutionIdUpdatesRoute,
+    postV1WorkflowsExecutionsExecutionIdUpdatesRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdTraceInfoRoute,
+    getV1WorkflowsExecutionsExecutionIdTraceInfoRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdTraceOtelRoute,
+    getV1WorkflowsExecutionsExecutionIdTraceOtelRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdTraceSummaryRoute,
+    getV1WorkflowsExecutionsExecutionIdTraceSummaryRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdTraceEventsRoute,
+    getV1WorkflowsExecutionsExecutionIdTraceEventsRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdStreamRoute,
+    getV1WorkflowsExecutionsExecutionIdStreamRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdLogsRoute,
+    getV1WorkflowsExecutionsExecutionIdLogsRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsExecutionsExecutionIdLogsStreamRoute,
+    getV1WorkflowsExecutionsExecutionIdLogsStreamRouteHandler,
+  )
+  .openapi(getV1WorkflowsWorkflowNameMetricsRoute, getV1WorkflowsWorkflowNameMetricsRouteHandler)
+  .openapi(getV1WorkflowsRunsRoute, getV1WorkflowsRunsRouteHandler)
+  .openapi(getV1WorkflowsRunsRunIdRoute, getV1WorkflowsRunsRunIdRouteHandler)
+  .openapi(getV1WorkflowsRunsRunIdHistoryRoute, getV1WorkflowsRunsRunIdHistoryRouteHandler)
+  .openapi(getV1WorkflowsSchedulesRoute, getV1WorkflowsSchedulesRouteHandler)
+  .openapi(postV1WorkflowsSchedulesRoute, postV1WorkflowsSchedulesRouteHandler)
+  .openapi(getV1WorkflowsSchedulesScheduleIdRoute, getV1WorkflowsSchedulesScheduleIdRouteHandler)
+  .openapi(
+    deleteV1WorkflowsSchedulesScheduleIdRoute,
+    deleteV1WorkflowsSchedulesScheduleIdRouteHandler,
+  )
+  .openapi(
+    patchV1WorkflowsSchedulesScheduleIdRoute,
+    patchV1WorkflowsSchedulesScheduleIdRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsSchedulesScheduleIdPauseRoute,
+    postV1WorkflowsSchedulesScheduleIdPauseRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsSchedulesScheduleIdResumeRoute,
+    postV1WorkflowsSchedulesScheduleIdResumeRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsSchedulesScheduleIdTriggerRoute,
+    postV1WorkflowsSchedulesScheduleIdTriggerRouteHandler,
+  )
+  .openapi(getV1WorkflowsEventsStreamRoute, getV1WorkflowsEventsStreamRouteHandler)
+  .openapi(getV1WorkflowsEventsListRoute, getV1WorkflowsEventsListRouteHandler)
+  .openapi(
+    postV1WorkflowsDeploymentsDeploymentIdUnhardenRoute,
+    postV1WorkflowsDeploymentsDeploymentIdUnhardenRouteHandler,
+  )
+  .openapi(getV1WorkflowsDeploymentsRoute, getV1WorkflowsDeploymentsRouteHandler)
+  .openapi(postV1WorkflowsDeploymentsRoute, postV1WorkflowsDeploymentsRouteHandler)
+  .openapi(patchV1WorkflowsDeploymentsNameRoute, patchV1WorkflowsDeploymentsNameRouteHandler)
+  .openapi(deleteV1WorkflowsDeploymentsNameRoute, deleteV1WorkflowsDeploymentsNameRouteHandler)
+  .openapi(getV1WorkflowsDeploymentsNameRoute, getV1WorkflowsDeploymentsNameRouteHandler)
+  .openapi(postV1WorkflowsDeploymentsNameStopRoute, postV1WorkflowsDeploymentsNameStopRouteHandler)
+  .openapi(
+    postV1WorkflowsDeploymentsNameStartRoute,
+    postV1WorkflowsDeploymentsNameStartRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsDeploymentsNameRestartRoute,
+    postV1WorkflowsDeploymentsNameRestartRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsDeploymentsNameWorkersRoute,
+    getV1WorkflowsDeploymentsNameWorkersRouteHandler,
+  )
+  .openapi(
+    getV1WorkflowsDeploymentsNameArchiveRoute,
+    getV1WorkflowsDeploymentsNameArchiveRouteHandler,
+  )
+  .openapi(postV1WorkflowsDeploymentsArchivesRoute, postV1WorkflowsDeploymentsArchivesRouteHandler)
+  .openapi(getV1WorkflowsDeploymentsNameLogsRoute, getV1WorkflowsDeploymentsNameLogsRouteHandler)
+  .openapi(
+    getV1WorkflowsDeploymentsNameLogsStreamRoute,
+    getV1WorkflowsDeploymentsNameLogsStreamRouteHandler,
+  )
+  .openapi(getV1WorkflowsRoute, getV1WorkflowsRouteHandler)
+  .openapi(getV1WorkflowsRegistrationsRoute, getV1WorkflowsRegistrationsRouteHandler)
+  .openapi(
+    postV1WorkflowsWorkflowIdentifierExecuteRoute,
+    postV1WorkflowsWorkflowIdentifierExecuteRouteHandler,
+  )
+  .openapi(
+    postV1WorkflowsRegistrationsWorkflowRegistrationIdExecuteRoute,
+    postV1WorkflowsRegistrationsWorkflowRegistrationIdExecuteRouteHandler,
+  )
+  .openapi(getV1WorkflowsWorkflowIdentifierRoute, getV1WorkflowsWorkflowIdentifierRouteHandler)
+  .openapi(putV1WorkflowsWorkflowIdentifierRoute, putV1WorkflowsWorkflowIdentifierRouteHandler)
+  .openapi(
+    getV1WorkflowsRegistrationsWorkflowRegistrationIdRoute,
+    getV1WorkflowsRegistrationsWorkflowRegistrationIdRouteHandler,
+  )
+  .openapi(putV1WorkflowsArchiveRoute, putV1WorkflowsArchiveRouteHandler)
+  .openapi(putV1WorkflowsUnarchiveRoute, putV1WorkflowsUnarchiveRouteHandler)
+  .openapi(
+    postV1WorkflowsWorkflowIdentifierTagsRoute,
+    postV1WorkflowsWorkflowIdentifierTagsRouteHandler,
+  )
+  .openapi(
+    putV1WorkflowsWorkflowIdentifierArchiveRoute,
+    putV1WorkflowsWorkflowIdentifierArchiveRouteHandler,
+  )
+  .openapi(
+    putV1WorkflowsWorkflowIdentifierUnarchiveRoute,
+    putV1WorkflowsWorkflowIdentifierUnarchiveRouteHandler,
+  )
+  .openapi(
+    getV1RagIngestionPipelineConfigurationsRoute,
+    getV1RagIngestionPipelineConfigurationsRouteHandler,
+  )
+  .openapi(
+    putV1RagIngestionPipelineConfigurationsRoute,
+    putV1RagIngestionPipelineConfigurationsRouteHandler,
+  )
+  .openapi(
+    putV1RagIngestionPipelineConfigurationsIdRunInfoRoute,
+    putV1RagIngestionPipelineConfigurationsIdRunInfoRouteHandler,
+  )
+  .openapi(postV1ContextSearchIndexesRoute, postV1ContextSearchIndexesRouteHandler)
+  .openapi(getV1ContextSearchIndexesRoute, getV1ContextSearchIndexesRouteHandler)
+  .openapi(getV1ContextSearchIndexesIndexNameRoute, getV1ContextSearchIndexesIndexNameRouteHandler)
+  .openapi(putV1ContextSearchIndexesIndexNameRoute, putV1ContextSearchIndexesIndexNameRouteHandler)
+  .openapi(
+    deleteV1ContextSearchIndexesIndexNameRoute,
+    deleteV1ContextSearchIndexesIndexNameRouteHandler,
+  )
+  .openapi(
+    postV1ContextSearchIndexesIndexNameDocumentsRoute,
+    postV1ContextSearchIndexesIndexNameDocumentsRouteHandler,
+  )
+  .openapi(
+    deleteV1ContextSearchIndexesIndexNameDocumentsRoute,
+    deleteV1ContextSearchIndexesIndexNameDocumentsRouteHandler,
+  )
+  .openapi(
+    postV1ContextSearchIndexesIndexNameSearchRoute,
+    postV1ContextSearchIndexesIndexNameSearchRouteHandler,
+  )
+  .openapi(
+    postV1ContextSearchIndexesIndexNameNavigateRoute,
+    postV1ContextSearchIndexesIndexNameNavigateRouteHandler,
+  )
+  .openapi(
+    postV1ContextSearchIndexesIndexNameReadRoute,
+    postV1ContextSearchIndexesIndexNameReadRouteHandler,
+  )
+  .openapi(
+    postV1ContextSearchIndexesIndexNameGrepRoute,
+    postV1ContextSearchIndexesIndexNameGrepRouteHandler,
+  )
+  .openapi(
+    getV1ContextSearchIndexesIndexNameChunksChunkIdRoute,
+    getV1ContextSearchIndexesIndexNameChunksChunkIdRouteHandler,
+  )
+  .openapi(
+    getV1ContextSearchIndexesIndexNameSummaryFieldLanguageRoute,
+    getV1ContextSearchIndexesIndexNameSummaryFieldLanguageRouteHandler,
+  )
+  .openapi(
+    postV1ContextSearchIndexesIndexNameSummaryFieldLanguageRoute,
+    postV1ContextSearchIndexesIndexNameSummaryFieldLanguageRouteHandler,
+  )
+  .openapi(
+    putV1ContextSearchIndexesIndexNameSummaryFieldLanguageRoute,
+    putV1ContextSearchIndexesIndexNameSummaryFieldLanguageRouteHandler,
+  )
+  .openapi(postV1TriggersRoute, postV1TriggersRouteHandler)
+  .openapi(getV1TriggersRoute, getV1TriggersRouteHandler)
+  .openapi(getV1TriggersTriggerIdRoute, getV1TriggersTriggerIdRouteHandler)
+  .openapi(deleteV1TriggersTriggerIdRoute, deleteV1TriggersTriggerIdRouteHandler)
+  .openapi(getV1TriggersTriggerIdEventsRoute, getV1TriggersTriggerIdEventsRouteHandler)
+  .openapi(getV1WebhooksRoute, getV1WebhooksRouteHandler)
+  .openapi(postV1WebhooksRoute, postV1WebhooksRouteHandler)
+  .openapi(getV1WebhooksWebhookIdRoute, getV1WebhooksWebhookIdRouteHandler)
+  .openapi(deleteV1WebhooksWebhookIdRoute, deleteV1WebhooksWebhookIdRouteHandler)
+  .openapi(
+    getV1WebhooksWebhookIdSigningSecretRoute,
+    getV1WebhooksWebhookIdSigningSecretRouteHandler,
+  )
+  .openapi(getV1UsersMeRoute, getV1UsersMeRouteHandler)
+  .openapi(getV1UsersMeOrganizationsRoute, getV1UsersMeOrganizationsRouteHandler)
+  .openapi(getV1UsersMeWorkspacesRoute, getV1UsersMeWorkspacesRouteHandler)
+  .openapi(getV1WhoamiRoute, getV1WhoamiRouteHandler)
+  .openapi(getV1BillingBudgetRoute, getV1BillingBudgetRouteHandler)
+  .openapi(getV1BillingSubscriptionRoute, getV1BillingSubscriptionRouteHandler)
+  .openapi(postV1AdminUsageQueryRoute, postV1AdminUsageQueryRouteHandler)
+  .openapi(getV1AdminUsersRoute, getV1AdminUsersRouteHandler)
+  .openapi(postV1AdminUsersRoute, postV1AdminUsersRouteHandler)
+  .openapi(postV1AdminUsersInviteRoute, postV1AdminUsersInviteRouteHandler)
+  .openapi(getV1AdminUsersInviteRoute, getV1AdminUsersInviteRouteHandler)
+  .openapi(deleteV1AdminUsersInviteInviteUuidRoute, deleteV1AdminUsersInviteInviteUuidRouteHandler)
+  .openapi(patchV1AdminUsersUserIdRoute, patchV1AdminUsersUserIdRouteHandler)
+  .openapi(deleteV1AdminUsersUserIdRoute, deleteV1AdminUsersUserIdRouteHandler)
+  .openapi(getV1AdminUsersUserIdRoute, getV1AdminUsersUserIdRouteHandler)
+  .openapi(postV1AdminUsersUserIdDeactivateRoute, postV1AdminUsersUserIdDeactivateRouteHandler)
+  .openapi(postV1AdminUsersUserIdReactivateRoute, postV1AdminUsersUserIdReactivateRouteHandler)
+  .openapi(getV1AdminUsersUserIdWorkspacesRoute, getV1AdminUsersUserIdWorkspacesRouteHandler)
+  .openapi(getV1AdminRolesRoute, getV1AdminRolesRouteHandler)
+  .openapi(getV1AdminWorkspacesRoute, getV1AdminWorkspacesRouteHandler)
+  .openapi(postV1AdminWorkspacesRoute, postV1AdminWorkspacesRouteHandler)
+  .openapi(
+    patchV1AdminWorkspacesWorkspaceUuidRoute,
+    patchV1AdminWorkspacesWorkspaceUuidRouteHandler,
+  )
+  .openapi(
+    deleteV1AdminWorkspacesWorkspaceUuidRoute,
+    deleteV1AdminWorkspacesWorkspaceUuidRouteHandler,
+  )
+  .openapi(
+    getV1AdminWorkspacesWorkspaceUuidUsersRoute,
+    getV1AdminWorkspacesWorkspaceUuidUsersRouteHandler,
+  )
+  .openapi(
+    patchV1AdminWorkspacesWorkspaceUuidUsersRoute,
+    patchV1AdminWorkspacesWorkspaceUuidUsersRouteHandler,
+  )
+  .openapi(
+    postV1AdminWorkspacesWorkspaceUuidAddUsersRoute,
+    postV1AdminWorkspacesWorkspaceUuidAddUsersRouteHandler,
+  )
+  .openapi(
+    deleteV1AdminWorkspacesWorkspaceUuidRemoveUsersRoute,
+    deleteV1AdminWorkspacesWorkspaceUuidRemoveUsersRouteHandler,
+  )
+  .openapi(getV1AdminRateLimitRoute, getV1AdminRateLimitRouteHandler)
+  .openapi(getV1AdminSpendLimitRoute, getV1AdminSpendLimitRouteHandler)
+  .openapi(postV1AdminSpendLimitRoute, postV1AdminSpendLimitRouteHandler)
+  .openapi(getV1AdminUsageRoute, getV1AdminUsageRouteHandler)
+  .openapi(getV1AdminAuditLogsRoute, getV1AdminAuditLogsRouteHandler)
+  .openapi(getV1AdminUserGroupsRoute, getV1AdminUserGroupsRouteHandler)
+  .openapi(postV1AdminUserGroupsRoute, postV1AdminUserGroupsRouteHandler)
+  .openapi(
+    postV1AdminUserGroupsProvisionWorkspaceRoute,
+    postV1AdminUserGroupsProvisionWorkspaceRouteHandler,
+  )
+  .openapi(getV1AdminUserGroupsGroupUuidRoute, getV1AdminUserGroupsGroupUuidRouteHandler)
+  .openapi(patchV1AdminUserGroupsGroupUuidRoute, patchV1AdminUserGroupsGroupUuidRouteHandler)
+  .openapi(deleteV1AdminUserGroupsGroupUuidRoute, deleteV1AdminUserGroupsGroupUuidRouteHandler)
+  .openapi(
+    getV1AdminUserGroupsGroupUuidMembersRoute,
+    getV1AdminUserGroupsGroupUuidMembersRouteHandler,
+  )
+  .openapi(
+    postV1AdminUserGroupsGroupUuidMembersRoute,
+    postV1AdminUserGroupsGroupUuidMembersRouteHandler,
+  )
+  .openapi(
+    deleteV1AdminUserGroupsGroupUuidMembersRoute,
+    deleteV1AdminUserGroupsGroupUuidMembersRouteHandler,
+  )
+  .openapi(
+    getV1AdminUserGroupsGroupUuidWorkspacesRoute,
+    getV1AdminUserGroupsGroupUuidWorkspacesRouteHandler,
+  )
+  .openapi(
+    postV1AdminUserGroupsGroupUuidWorkspacesRoute,
+    postV1AdminUserGroupsGroupUuidWorkspacesRouteHandler,
+  )
+  .openapi(
+    patchV1AdminUserGroupsGroupUuidWorkspacesWorkspaceUuidRoute,
+    patchV1AdminUserGroupsGroupUuidWorkspacesWorkspaceUuidRouteHandler,
+  )
+  .openapi(
+    deleteV1AdminUserGroupsGroupUuidWorkspacesWorkspaceUuidRoute,
+    deleteV1AdminUserGroupsGroupUuidWorkspacesWorkspaceUuidRouteHandler,
+  )
+  .openapi(
+    patchV1AdminUserGroupsGroupUuidOrganizationRoleRoute,
+    patchV1AdminUserGroupsGroupUuidOrganizationRoleRouteHandler,
+  )
+  .openapi(getV1AdminApiKeysRoute, getV1AdminApiKeysRouteHandler)
+  .openapi(postV1AdminApiKeysRoute, postV1AdminApiKeysRouteHandler)
+  .openapi(deleteV1AdminApiKeysKeyIdRoute, deleteV1AdminApiKeysKeyIdRouteHandler)
+  .openapi(postV1AdminScimSyncRoute, postV1AdminScimSyncRouteHandler)
+  .openapi(getV1AdminScimSyncRunIdRoute, getV1AdminScimSyncRunIdRouteHandler)
+  .openapi(
+    getV1AdminAnalyticsVibeWorkUsageByUserStatsRoute,
+    getV1AdminAnalyticsVibeWorkUsageByUserStatsRouteHandler,
+  )
+  .openapi(
+    getV1AdminAnalyticsVibeWorkUsageByAgentStatsRoute,
+    getV1AdminAnalyticsVibeWorkUsageByAgentStatsRouteHandler,
+  )
+  .openapi(
+    getV1AdminAnalyticsVibeWorkUsageByTimeStatsRoute,
+    getV1AdminAnalyticsVibeWorkUsageByTimeStatsRouteHandler,
+  )
+  .openapi(
+    getV1AdminAnalyticsVibeCodeUsageByWorkspaceRoute,
+    getV1AdminAnalyticsVibeCodeUsageByWorkspaceRouteHandler,
+  )
+  .openapi(
+    getV1AdminAnalyticsVibeCodeUsageByOrganizationRoute,
+    getV1AdminAnalyticsVibeCodeUsageByOrganizationRouteHandler,
+  )
+
+export default app

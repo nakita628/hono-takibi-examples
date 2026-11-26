@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteMaintenanceWindowsIdRoute,
-  getMaintenanceWindowsIdRoute,
   getMaintenanceWindowsRoute,
   postMaintenanceWindowsRoute,
+  getMaintenanceWindowsIdRoute,
+  deleteMaintenanceWindowsIdRoute,
   putMaintenanceWindowsIdRoute,
 } from '../routes'
 

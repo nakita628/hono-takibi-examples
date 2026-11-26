@@ -12,8 +12,8 @@
       }
     },
     "failed": {
-      "hono-takibi": "0.35.6",
-      "date": "2026-11-24",
+      "hono-takibi": "0.35.13",
+      "date": "2026-11-26",
       "error": "Missing $ref pointer \"#/components/schemas/ExposedEntity_NotIncludingNotListable\". Token \"ExposedEntity_NotIncludingNotListable\" does not exist."
     }
   }

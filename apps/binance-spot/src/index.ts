@@ -1,0 +1,1322 @@
+import { OpenAPIHono } from '@hono/zod-openapi'
+import {
+  getApiV3PingRoute,
+  getApiV3TimeRoute,
+  getApiV3ExchangeInfoRoute,
+  getApiV3DepthRoute,
+  getApiV3TradesRoute,
+  getApiV3HistoricalTradesRoute,
+  getApiV3AggTradesRoute,
+  getApiV3KlinesRoute,
+  getApiV3UiKlinesRoute,
+  getApiV3AvgPriceRoute,
+  getApiV3Ticker24hrRoute,
+  getApiV3TickerTradingDayRoute,
+  getApiV3TickerPriceRoute,
+  getApiV3TickerBookTickerRoute,
+  getApiV3TickerRoute,
+  postApiV3OrderTestRoute,
+  getApiV3OrderRoute,
+  postApiV3OrderRoute,
+  deleteApiV3OrderRoute,
+  postApiV3OrderCancelReplaceRoute,
+  getApiV3OpenOrdersRoute,
+  deleteApiV3OpenOrdersRoute,
+  getApiV3AllOrdersRoute,
+  postApiV3OrderListOcoRoute,
+  postApiV3OrderListOtoRoute,
+  postApiV3OrderListOtocoRoute,
+  getApiV3OrderListRoute,
+  deleteApiV3OrderListRoute,
+  getApiV3AllOrderListRoute,
+  getApiV3OpenOrderListRoute,
+  postApiV3SorOrderRoute,
+  postApiV3SorOrderTestRoute,
+  getApiV3AccountRoute,
+  getApiV3MyTradesRoute,
+  getApiV3RateLimitOrderRoute,
+  getApiV3MyPreventedMatchesRoute,
+  getApiV3MyAllocationsRoute,
+  getApiV3AccountCommissionRoute,
+  postSapiV1MarginBorrowRepayRoute,
+  getSapiV1MarginBorrowRepayRoute,
+  getSapiV1MarginTransferRoute,
+  getSapiV1MarginAllAssetsRoute,
+  getSapiV1MarginAllPairsRoute,
+  getSapiV1MarginPriceIndexRoute,
+  getSapiV1MarginOrderRoute,
+  postSapiV1MarginOrderRoute,
+  deleteSapiV1MarginOrderRoute,
+  getSapiV1MarginInterestHistoryRoute,
+  getSapiV1MarginForceLiquidationRecRoute,
+  getSapiV1MarginAccountRoute,
+  getSapiV1MarginOpenOrdersRoute,
+  deleteSapiV1MarginOpenOrdersRoute,
+  getSapiV1MarginAllOrdersRoute,
+  postSapiV1MarginOrderOcoRoute,
+  getSapiV1MarginOrderListRoute,
+  deleteSapiV1MarginOrderListRoute,
+  getSapiV1MarginAllOrderListRoute,
+  getSapiV1MarginOpenOrderListRoute,
+  getSapiV1MarginMyTradesRoute,
+  getSapiV1MarginMaxBorrowableRoute,
+  getSapiV1MarginMaxTransferableRoute,
+  getSapiV1MarginTradeCoeffRoute,
+  getSapiV1MarginIsolatedAccountRoute,
+  deleteSapiV1MarginIsolatedAccountRoute,
+  postSapiV1MarginIsolatedAccountRoute,
+  getSapiV1MarginIsolatedAccountLimitRoute,
+  getSapiV1MarginIsolatedAllPairsRoute,
+  postSapiV1BnbBurnRoute,
+  getSapiV1BnbBurnRoute,
+  getSapiV1MarginInterestRateHistoryRoute,
+  getSapiV1MarginCrossMarginDataRoute,
+  getSapiV1MarginIsolatedMarginDataRoute,
+  getSapiV1MarginIsolatedMarginTierRoute,
+  getSapiV1MarginRateLimitOrderRoute,
+  getSapiV1MarginCrossMarginCollateralRatioRoute,
+  getSapiV1MarginExchangeSmallLiabilityRoute,
+  getSapiV1MarginExchangeSmallLiabilityHistoryRoute,
+  getSapiV1MarginNextHourlyInterestRateRoute,
+  getSapiV1MarginCapitalFlowRoute,
+  getSapiV1MarginDelistScheduleRoute,
+  getSapiV1MarginAvailableInventoryRoute,
+  postSapiV1MarginManualLiquidationRoute,
+  postSapiV1MarginOrderOtoRoute,
+  postSapiV1MarginOrderOtocoRoute,
+  postSapiV1MarginMaxLeverageRoute,
+  getSapiV1MarginLeverageBracketRoute,
+  getSapiV1SystemStatusRoute,
+  getSapiV1CapitalConfigGetallRoute,
+  getSapiV1AccountSnapshotRoute,
+  postSapiV1AccountDisableFastWithdrawSwitchRoute,
+  postSapiV1AccountEnableFastWithdrawSwitchRoute,
+  postSapiV1CapitalWithdrawApplyRoute,
+  getSapiV1CapitalDepositHisrecRoute,
+  getSapiV1CapitalWithdrawHistoryRoute,
+  getSapiV1CapitalDepositAddressRoute,
+  getSapiV1AccountStatusRoute,
+  getSapiV1AccountApiTradingStatusRoute,
+  getSapiV1AssetDribbletRoute,
+  postSapiV1AssetDustBtcRoute,
+  postSapiV1AssetDustRoute,
+  getSapiV1AssetAssetDividendRoute,
+  getSapiV1AssetAssetDetailRoute,
+  getSapiV1AssetTradeFeeRoute,
+  getSapiV1AssetTransferRoute,
+  postSapiV1AssetTransferRoute,
+  postSapiV1AssetGetFundingAssetRoute,
+  postSapiV3AssetGetUserAssetRoute,
+  postSapiV1AssetConvertTransferRoute,
+  getSapiV1AssetConvertTransferQueryByPageRoute,
+  getSapiV1AssetLedgerTransferCloudMiningQueryByPageRoute,
+  getSapiV1AccountApiRestrictionsRoute,
+  getSapiV1CapitalContractConvertibleCoinsRoute,
+  postSapiV1CapitalContractConvertibleCoinsRoute,
+  postSapiV1SubAccountVirtualSubAccountRoute,
+  getSapiV1SubAccountListRoute,
+  getSapiV1SubAccountSubTransferHistoryRoute,
+  getSapiV1SubAccountFuturesInternalTransferRoute,
+  postSapiV1SubAccountFuturesInternalTransferRoute,
+  getSapiV3SubAccountAssetsRoute,
+  getSapiV1SubAccountSpotSummaryRoute,
+  getSapiV1CapitalDepositSubAddressRoute,
+  getSapiV1CapitalDepositSubHisrecRoute,
+  postSapiV1CapitalDepositCreditApplyRoute,
+  getSapiV1AssetWalletBalanceRoute,
+  getSapiV1AssetCustodyTransferHistoryRoute,
+  getSapiV1CapitalDepositAddressListRoute,
+  getSapiV1SpotDelistScheduleRoute,
+  getSapiV1CapitalWithdrawAddressListRoute,
+  getSapiV1AccountInfoRoute,
+  getSapiV1SubAccountStatusRoute,
+  postSapiV1SubAccountMarginEnableRoute,
+  getSapiV1SubAccountMarginAccountRoute,
+  getSapiV1SubAccountMarginAccountSummaryRoute,
+  postSapiV1SubAccountFuturesEnableRoute,
+  getSapiV1SubAccountFuturesAccountRoute,
+  getSapiV1SubAccountFuturesAccountSummaryRoute,
+  getSapiV1SubAccountFuturesPositionRiskRoute,
+  postSapiV1SubAccountFuturesTransferRoute,
+  postSapiV1SubAccountMarginTransferRoute,
+  postSapiV1SubAccountTransferSubToSubRoute,
+  postSapiV1SubAccountTransferSubToMasterRoute,
+  getSapiV1SubAccountTransferSubUserHistoryRoute,
+  getSapiV1SubAccountUniversalTransferRoute,
+  postSapiV1SubAccountUniversalTransferRoute,
+  getSapiV2SubAccountFuturesAccountRoute,
+  getSapiV2SubAccountFuturesAccountSummaryRoute,
+  getSapiV2SubAccountFuturesPositionRiskRoute,
+  postSapiV1SubAccountBlvtEnableRoute,
+  postSapiV1ManagedSubaccountDepositRoute,
+  getSapiV1ManagedSubaccountAssetRoute,
+  postSapiV1ManagedSubaccountWithdrawRoute,
+  getSapiV1ManagedSubaccountAccountSnapshotRoute,
+  getSapiV1ManagedSubaccountQueryTransLogForInvestorRoute,
+  getSapiV1ManagedSubaccountQueryTransLogForTradeParentRoute,
+  getSapiV1ManagedSubaccountFetchFutureAssetRoute,
+  getSapiV1ManagedSubaccountMarginAssetRoute,
+  getSapiV1ManagedSubaccountInfoRoute,
+  getSapiV1ManagedSubaccountDepositAddressRoute,
+  getSapiV1ManagedSubaccountQueryTransLogRoute,
+  getSapiV1SubAccountSubAccountApiIpRestrictionRoute,
+  deleteSapiV1SubAccountSubAccountApiIpRestrictionIpListRoute,
+  getSapiV1SubAccountTransactionStatisticsRoute,
+  postSapiV1SubAccountEoptionsEnableRoute,
+  postSapiV2SubAccountSubAccountApiIpRestrictionRoute,
+  getSapiV4SubAccountAssetsRoute,
+  postApiV3UserDataStreamRoute,
+  putApiV3UserDataStreamRoute,
+  deleteApiV3UserDataStreamRoute,
+  postSapiV1UserDataStreamRoute,
+  putSapiV1UserDataStreamRoute,
+  deleteSapiV1UserDataStreamRoute,
+  postSapiV1UserDataStreamIsolatedRoute,
+  putSapiV1UserDataStreamIsolatedRoute,
+  deleteSapiV1UserDataStreamIsolatedRoute,
+  getSapiV1FiatOrdersRoute,
+  getSapiV1FiatPaymentsRoute,
+  getSapiV1LendingProjectListRoute,
+  postSapiV1LendingCustomizedFixedPurchaseRoute,
+  getSapiV1LendingProjectPositionListRoute,
+  postSapiV1LendingPositionChangedRoute,
+  getSapiV1MiningPubAlgoListRoute,
+  getSapiV1MiningPubCoinListRoute,
+  getSapiV1MiningWorkerDetailRoute,
+  getSapiV1MiningWorkerListRoute,
+  getSapiV1MiningPaymentListRoute,
+  getSapiV1MiningPaymentOtherRoute,
+  getSapiV1MiningHashTransferConfigDetailsListRoute,
+  getSapiV1MiningHashTransferProfitDetailsRoute,
+  postSapiV1MiningHashTransferConfigRoute,
+  postSapiV1MiningHashTransferConfigCancelRoute,
+  getSapiV1MiningStatisticsUserStatusRoute,
+  getSapiV1MiningStatisticsUserListRoute,
+  getSapiV1MiningPaymentUidRoute,
+  postSapiV1FuturesTransferRoute,
+  getSapiV1FuturesTransferRoute,
+  getSapiV1FuturesHistDataLinkRoute,
+  postSapiV1AlgoFuturesNewOrderVpRoute,
+  postSapiV1AlgoFuturesNewOrderTwapRoute,
+  deleteSapiV1AlgoFuturesOrderRoute,
+  getSapiV1AlgoFuturesOpenOrdersRoute,
+  getSapiV1AlgoFuturesHistoricalOrdersRoute,
+  getSapiV1AlgoFuturesSubOrdersRoute,
+  postSapiV1AlgoSpotNewOrderTwapRoute,
+  deleteSapiV1AlgoSpotOrderRoute,
+  getSapiV1AlgoSpotOpenOrdersRoute,
+  getSapiV1AlgoSpotHistoricalOrdersRoute,
+  getSapiV1AlgoSpotSubOrdersRoute,
+  getSapiV1PortfolioAccountRoute,
+  getSapiV1PortfolioCollateralRateRoute,
+  getSapiV2PortfolioCollateralRateRoute,
+  getSapiV1PortfolioPmLoanRoute,
+  postSapiV1PortfolioRepayRoute,
+  getSapiV1PortfolioInterestHistoryRoute,
+  getSapiV1PortfolioAssetIndexPriceRoute,
+  postSapiV1PortfolioAutoCollectionRoute,
+  postSapiV1PortfolioBnbTransferRoute,
+  postSapiV1PortfolioRepayFuturesSwitchRoute,
+  getSapiV1PortfolioRepayFuturesSwitchRoute,
+  postSapiV1PortfolioRepayFuturesNegativeBalanceRoute,
+  getSapiV1PortfolioMarginAssetLeverageRoute,
+  postSapiV1PortfolioAssetCollectionRoute,
+  getSapiV1BlvtTokenInfoRoute,
+  postSapiV1BlvtSubscribeRoute,
+  getSapiV1BlvtSubscribeRecordRoute,
+  postSapiV1BlvtRedeemRoute,
+  getSapiV1BlvtRedeemRecordRoute,
+  getSapiV1BlvtUserLimitRoute,
+  getSapiV1C2cOrderMatchListUserOrderHistoryRoute,
+  getSapiV1LoanVipOngoingOrdersRoute,
+  postSapiV1LoanVipRepayRoute,
+  getSapiV1LoanVipRepayHistoryRoute,
+  getSapiV1LoanVipCollateralAccountRoute,
+  postSapiV1LoanVipBorrowRoute,
+  getSapiV1LoanVipLoanableDataRoute,
+  getSapiV1LoanVipCollateralDataRoute,
+  getSapiV1LoanVipRequestDataRoute,
+  getSapiV1LoanVipRequestInterestRateRoute,
+  postSapiV1LoanVipRenewRoute,
+  getSapiV1LoanIncomeRoute,
+  postSapiV1LoanBorrowRoute,
+  getSapiV1LoanBorrowHistoryRoute,
+  getSapiV1LoanOngoingOrdersRoute,
+  postSapiV1LoanRepayRoute,
+  getSapiV1LoanRepayHistoryRoute,
+  postSapiV1LoanAdjustLtvRoute,
+  getSapiV1LoanLtvAdjustmentHistoryRoute,
+  getSapiV1LoanLoanableDataRoute,
+  getSapiV1LoanCollateralDataRoute,
+  getSapiV1LoanRepayCollateralRateRoute,
+  postSapiV1LoanCustomizeMarginCallRoute,
+  postSapiV2LoanFlexibleBorrowRoute,
+  getSapiV2LoanFlexibleOngoingOrdersRoute,
+  getSapiV2LoanFlexibleBorrowHistoryRoute,
+  postSapiV2LoanFlexibleRepayRoute,
+  getSapiV2LoanFlexibleRepayHistoryRoute,
+  postSapiV2LoanFlexibleAdjustLtvRoute,
+  getSapiV2LoanFlexibleLtvAdjustmentHistoryRoute,
+  getSapiV2LoanFlexibleLoanableDataRoute,
+  getSapiV2LoanFlexibleCollateralDataRoute,
+  getSapiV1PayTransactionsRoute,
+  getSapiV1ConvertExchangeInfoRoute,
+  getSapiV1ConvertAssetInfoRoute,
+  postSapiV1ConvertGetQuoteRoute,
+  postSapiV1ConvertAcceptQuoteRoute,
+  getSapiV1ConvertOrderStatusRoute,
+  postSapiV1ConvertLimitPlaceOrderRoute,
+  postSapiV1ConvertLimitCancelOrderRoute,
+  getSapiV1ConvertLimitQueryOpenOrdersRoute,
+  getSapiV1ConvertTradeFlowRoute,
+  getSapiV1RebateTaxQueryRoute,
+  getSapiV1NftHistoryTransactionsRoute,
+  getSapiV1NftHistoryDepositRoute,
+  getSapiV1NftHistoryWithdrawRoute,
+  getSapiV1NftUserGetAssetRoute,
+  postSapiV1GiftcardCreateCodeRoute,
+  postSapiV1GiftcardRedeemCodeRoute,
+  getSapiV1GiftcardVerifyRoute,
+  getSapiV1GiftcardCryptographyRsaPublicKeyRoute,
+  postSapiV1GiftcardBuyCodeRoute,
+  getSapiV1GiftcardBuyCodeTokenLimitRoute,
+  getSapiV1LendingAutoInvestTargetAssetListRoute,
+  getSapiV1LendingAutoInvestTargetAssetRoiListRoute,
+  getSapiV1LendingAutoInvestAllAssetRoute,
+  getSapiV1LendingAutoInvestSourceAssetListRoute,
+  postSapiV1LendingAutoInvestPlanAddRoute,
+  postSapiV1LendingAutoInvestPlanEditRoute,
+  postSapiV1LendingAutoInvestPlanEditStatusRoute,
+  getSapiV1LendingAutoInvestPlanListRoute,
+  getSapiV1LendingAutoInvestPlanIdRoute,
+  getSapiV1LendingAutoInvestHistoryListRoute,
+  getSapiV1LendingAutoInvestIndexInfoRoute,
+  getSapiV1LendingAutoInvestIndexUserSummaryRoute,
+  postSapiV1LendingAutoInvestOneOffRoute,
+  getSapiV1LendingAutoInvestOneOffStatusRoute,
+  postSapiV1LendingAutoInvestRedeemRoute,
+  getSapiV1LendingAutoInvestRedeemHistoryRoute,
+  getSapiV1LendingAutoInvestRebalanceHistoryRoute,
+  postSapiV2EthStakingEthStakeRoute,
+  postSapiV1EthStakingEthRedeemRoute,
+  getSapiV1EthStakingEthHistoryStakingHistoryRoute,
+  getSapiV1EthStakingEthHistoryRedemptionHistoryRoute,
+  getSapiV1EthStakingEthHistoryRewardsHistoryRoute,
+  getSapiV1EthStakingEthQuotaRoute,
+  getSapiV1EthStakingEthHistoryRateHistoryRoute,
+  getSapiV2EthStakingAccountRoute,
+  postSapiV1EthStakingWbethWrapRoute,
+  getSapiV1EthStakingWbethHistoryWrapHistoryRoute,
+  getSapiV1EthStakingWbethHistoryUnwrapHistoryRoute,
+  getSapiV1EthStakingEthHistoryWbethRewardsHistoryRoute,
+  getSapiV1CopyTradingFuturesUserStatusRoute,
+  getSapiV1CopyTradingFuturesLeadSymbolRoute,
+  getSapiV1SimpleEarnFlexibleListRoute,
+  getSapiV1SimpleEarnLockedListRoute,
+  postSapiV1SimpleEarnFlexibleSubscribeRoute,
+  postSapiV1SimpleEarnLockedSubscribeRoute,
+  postSapiV1SimpleEarnFlexibleRedeemRoute,
+  postSapiV1SimpleEarnLockedRedeemRoute,
+  getSapiV1SimpleEarnFlexiblePositionRoute,
+  getSapiV1SimpleEarnLockedPositionRoute,
+  getSapiV1SimpleEarnAccountRoute,
+  getSapiV1SimpleEarnFlexibleHistorySubscriptionRecordRoute,
+  getSapiV1SimpleEarnLockedHistorySubscriptionRecordRoute,
+  getSapiV1SimpleEarnFlexibleHistoryRedemptionRecordRoute,
+  getSapiV1SimpleEarnLockedHistoryRedemptionRecordRoute,
+  getSapiV1SimpleEarnFlexibleHistoryRewardsRecordRoute,
+  getSapiV1SimpleEarnLockedHistoryRewardsRecordRoute,
+  postSapiV1SimpleEarnFlexibleSetAutoSubscribeRoute,
+  postSapiV1SimpleEarnLockedSetAutoSubscribeRoute,
+  getSapiV1SimpleEarnFlexiblePersonalLeftQuotaRoute,
+  getSapiV1SimpleEarnLockedPersonalLeftQuotaRoute,
+  getSapiV1SimpleEarnFlexibleSubscriptionPreviewRoute,
+  getSapiV1SimpleEarnLockedSubscriptionPreviewRoute,
+  getSapiV1SimpleEarnLockedSetRedeemOptionRoute,
+  getSapiV1SimpleEarnFlexibleHistoryRateHistoryRoute,
+  getSapiV1SimpleEarnFlexibleHistoryCollateralRecordRoute,
+  getSapiV1DciProductListRoute,
+  postSapiV1DciProductSubscribeRoute,
+  getSapiV1DciProductPositionsRoute,
+  getSapiV1DciProductAccountsRoute,
+  postSapiV1DciProductAutoCompoundEditStatusRoute,
+} from './routes'
+import {
+  getApiV3PingRouteHandler,
+  getApiV3TimeRouteHandler,
+  getApiV3ExchangeInfoRouteHandler,
+  getApiV3DepthRouteHandler,
+  getApiV3TradesRouteHandler,
+  getApiV3HistoricalTradesRouteHandler,
+  getApiV3AggTradesRouteHandler,
+  getApiV3KlinesRouteHandler,
+  getApiV3UiKlinesRouteHandler,
+  getApiV3AvgPriceRouteHandler,
+  getApiV3Ticker24hrRouteHandler,
+  getApiV3TickerTradingDayRouteHandler,
+  getApiV3TickerPriceRouteHandler,
+  getApiV3TickerBookTickerRouteHandler,
+  getApiV3TickerRouteHandler,
+  postApiV3OrderTestRouteHandler,
+  getApiV3OrderRouteHandler,
+  postApiV3OrderRouteHandler,
+  deleteApiV3OrderRouteHandler,
+  postApiV3OrderCancelReplaceRouteHandler,
+  getApiV3OpenOrdersRouteHandler,
+  deleteApiV3OpenOrdersRouteHandler,
+  getApiV3AllOrdersRouteHandler,
+  postApiV3OrderListOcoRouteHandler,
+  postApiV3OrderListOtoRouteHandler,
+  postApiV3OrderListOtocoRouteHandler,
+  getApiV3OrderListRouteHandler,
+  deleteApiV3OrderListRouteHandler,
+  getApiV3AllOrderListRouteHandler,
+  getApiV3OpenOrderListRouteHandler,
+  postApiV3SorOrderRouteHandler,
+  postApiV3SorOrderTestRouteHandler,
+  getApiV3AccountRouteHandler,
+  getApiV3MyTradesRouteHandler,
+  getApiV3RateLimitOrderRouteHandler,
+  getApiV3MyPreventedMatchesRouteHandler,
+  getApiV3MyAllocationsRouteHandler,
+  getApiV3AccountCommissionRouteHandler,
+  postSapiV1MarginBorrowRepayRouteHandler,
+  getSapiV1MarginBorrowRepayRouteHandler,
+  getSapiV1MarginTransferRouteHandler,
+  getSapiV1MarginAllAssetsRouteHandler,
+  getSapiV1MarginAllPairsRouteHandler,
+  getSapiV1MarginPriceIndexRouteHandler,
+  getSapiV1MarginOrderRouteHandler,
+  postSapiV1MarginOrderRouteHandler,
+  deleteSapiV1MarginOrderRouteHandler,
+  getSapiV1MarginInterestHistoryRouteHandler,
+  getSapiV1MarginForceLiquidationRecRouteHandler,
+  getSapiV1MarginAccountRouteHandler,
+  getSapiV1MarginOpenOrdersRouteHandler,
+  deleteSapiV1MarginOpenOrdersRouteHandler,
+  getSapiV1MarginAllOrdersRouteHandler,
+  postSapiV1MarginOrderOcoRouteHandler,
+  getSapiV1MarginOrderListRouteHandler,
+  deleteSapiV1MarginOrderListRouteHandler,
+  getSapiV1MarginAllOrderListRouteHandler,
+  getSapiV1MarginOpenOrderListRouteHandler,
+  getSapiV1MarginMyTradesRouteHandler,
+  getSapiV1MarginMaxBorrowableRouteHandler,
+  getSapiV1MarginMaxTransferableRouteHandler,
+  getSapiV1MarginTradeCoeffRouteHandler,
+  getSapiV1MarginIsolatedAccountRouteHandler,
+  deleteSapiV1MarginIsolatedAccountRouteHandler,
+  postSapiV1MarginIsolatedAccountRouteHandler,
+  getSapiV1MarginIsolatedAccountLimitRouteHandler,
+  getSapiV1MarginIsolatedAllPairsRouteHandler,
+  postSapiV1BnbBurnRouteHandler,
+  getSapiV1BnbBurnRouteHandler,
+  getSapiV1MarginInterestRateHistoryRouteHandler,
+  getSapiV1MarginCrossMarginDataRouteHandler,
+  getSapiV1MarginIsolatedMarginDataRouteHandler,
+  getSapiV1MarginIsolatedMarginTierRouteHandler,
+  getSapiV1MarginRateLimitOrderRouteHandler,
+  getSapiV1MarginCrossMarginCollateralRatioRouteHandler,
+  getSapiV1MarginExchangeSmallLiabilityRouteHandler,
+  getSapiV1MarginExchangeSmallLiabilityHistoryRouteHandler,
+  getSapiV1MarginNextHourlyInterestRateRouteHandler,
+  getSapiV1MarginCapitalFlowRouteHandler,
+  getSapiV1MarginDelistScheduleRouteHandler,
+  getSapiV1MarginAvailableInventoryRouteHandler,
+  postSapiV1MarginManualLiquidationRouteHandler,
+  postSapiV1MarginOrderOtoRouteHandler,
+  postSapiV1MarginOrderOtocoRouteHandler,
+  postSapiV1MarginMaxLeverageRouteHandler,
+  getSapiV1MarginLeverageBracketRouteHandler,
+  getSapiV1SystemStatusRouteHandler,
+  getSapiV1CapitalConfigGetallRouteHandler,
+  getSapiV1AccountSnapshotRouteHandler,
+  postSapiV1AccountDisableFastWithdrawSwitchRouteHandler,
+  postSapiV1AccountEnableFastWithdrawSwitchRouteHandler,
+  postSapiV1CapitalWithdrawApplyRouteHandler,
+  getSapiV1CapitalDepositHisrecRouteHandler,
+  getSapiV1CapitalWithdrawHistoryRouteHandler,
+  getSapiV1CapitalDepositAddressRouteHandler,
+  getSapiV1AccountStatusRouteHandler,
+  getSapiV1AccountApiTradingStatusRouteHandler,
+  getSapiV1AssetDribbletRouteHandler,
+  postSapiV1AssetDustBtcRouteHandler,
+  postSapiV1AssetDustRouteHandler,
+  getSapiV1AssetAssetDividendRouteHandler,
+  getSapiV1AssetAssetDetailRouteHandler,
+  getSapiV1AssetTradeFeeRouteHandler,
+  getSapiV1AssetTransferRouteHandler,
+  postSapiV1AssetTransferRouteHandler,
+  postSapiV1AssetGetFundingAssetRouteHandler,
+  postSapiV3AssetGetUserAssetRouteHandler,
+  postSapiV1AssetConvertTransferRouteHandler,
+  getSapiV1AssetConvertTransferQueryByPageRouteHandler,
+  getSapiV1AssetLedgerTransferCloudMiningQueryByPageRouteHandler,
+  getSapiV1AccountApiRestrictionsRouteHandler,
+  getSapiV1CapitalContractConvertibleCoinsRouteHandler,
+  postSapiV1CapitalContractConvertibleCoinsRouteHandler,
+  postSapiV1SubAccountVirtualSubAccountRouteHandler,
+  getSapiV1SubAccountListRouteHandler,
+  getSapiV1SubAccountSubTransferHistoryRouteHandler,
+  getSapiV1SubAccountFuturesInternalTransferRouteHandler,
+  postSapiV1SubAccountFuturesInternalTransferRouteHandler,
+  getSapiV3SubAccountAssetsRouteHandler,
+  getSapiV1SubAccountSpotSummaryRouteHandler,
+  getSapiV1CapitalDepositSubAddressRouteHandler,
+  getSapiV1CapitalDepositSubHisrecRouteHandler,
+  postSapiV1CapitalDepositCreditApplyRouteHandler,
+  getSapiV1AssetWalletBalanceRouteHandler,
+  getSapiV1AssetCustodyTransferHistoryRouteHandler,
+  getSapiV1CapitalDepositAddressListRouteHandler,
+  getSapiV1SpotDelistScheduleRouteHandler,
+  getSapiV1CapitalWithdrawAddressListRouteHandler,
+  getSapiV1AccountInfoRouteHandler,
+  getSapiV1SubAccountStatusRouteHandler,
+  postSapiV1SubAccountMarginEnableRouteHandler,
+  getSapiV1SubAccountMarginAccountRouteHandler,
+  getSapiV1SubAccountMarginAccountSummaryRouteHandler,
+  postSapiV1SubAccountFuturesEnableRouteHandler,
+  getSapiV1SubAccountFuturesAccountRouteHandler,
+  getSapiV1SubAccountFuturesAccountSummaryRouteHandler,
+  getSapiV1SubAccountFuturesPositionRiskRouteHandler,
+  postSapiV1SubAccountFuturesTransferRouteHandler,
+  postSapiV1SubAccountMarginTransferRouteHandler,
+  postSapiV1SubAccountTransferSubToSubRouteHandler,
+  postSapiV1SubAccountTransferSubToMasterRouteHandler,
+  getSapiV1SubAccountTransferSubUserHistoryRouteHandler,
+  getSapiV1SubAccountUniversalTransferRouteHandler,
+  postSapiV1SubAccountUniversalTransferRouteHandler,
+  getSapiV2SubAccountFuturesAccountRouteHandler,
+  getSapiV2SubAccountFuturesAccountSummaryRouteHandler,
+  getSapiV2SubAccountFuturesPositionRiskRouteHandler,
+  postSapiV1SubAccountBlvtEnableRouteHandler,
+  postSapiV1ManagedSubaccountDepositRouteHandler,
+  getSapiV1ManagedSubaccountAssetRouteHandler,
+  postSapiV1ManagedSubaccountWithdrawRouteHandler,
+  getSapiV1ManagedSubaccountAccountSnapshotRouteHandler,
+  getSapiV1ManagedSubaccountQueryTransLogForInvestorRouteHandler,
+  getSapiV1ManagedSubaccountQueryTransLogForTradeParentRouteHandler,
+  getSapiV1ManagedSubaccountFetchFutureAssetRouteHandler,
+  getSapiV1ManagedSubaccountMarginAssetRouteHandler,
+  getSapiV1ManagedSubaccountInfoRouteHandler,
+  getSapiV1ManagedSubaccountDepositAddressRouteHandler,
+  getSapiV1ManagedSubaccountQueryTransLogRouteHandler,
+  getSapiV1SubAccountSubAccountApiIpRestrictionRouteHandler,
+  deleteSapiV1SubAccountSubAccountApiIpRestrictionIpListRouteHandler,
+  getSapiV1SubAccountTransactionStatisticsRouteHandler,
+  postSapiV1SubAccountEoptionsEnableRouteHandler,
+  postSapiV2SubAccountSubAccountApiIpRestrictionRouteHandler,
+  getSapiV4SubAccountAssetsRouteHandler,
+  postApiV3UserDataStreamRouteHandler,
+  putApiV3UserDataStreamRouteHandler,
+  deleteApiV3UserDataStreamRouteHandler,
+  postSapiV1UserDataStreamRouteHandler,
+  putSapiV1UserDataStreamRouteHandler,
+  deleteSapiV1UserDataStreamRouteHandler,
+  postSapiV1UserDataStreamIsolatedRouteHandler,
+  putSapiV1UserDataStreamIsolatedRouteHandler,
+  deleteSapiV1UserDataStreamIsolatedRouteHandler,
+  getSapiV1FiatOrdersRouteHandler,
+  getSapiV1FiatPaymentsRouteHandler,
+  getSapiV1LendingProjectListRouteHandler,
+  postSapiV1LendingCustomizedFixedPurchaseRouteHandler,
+  getSapiV1LendingProjectPositionListRouteHandler,
+  postSapiV1LendingPositionChangedRouteHandler,
+  getSapiV1MiningPubAlgoListRouteHandler,
+  getSapiV1MiningPubCoinListRouteHandler,
+  getSapiV1MiningWorkerDetailRouteHandler,
+  getSapiV1MiningWorkerListRouteHandler,
+  getSapiV1MiningPaymentListRouteHandler,
+  getSapiV1MiningPaymentOtherRouteHandler,
+  getSapiV1MiningHashTransferConfigDetailsListRouteHandler,
+  getSapiV1MiningHashTransferProfitDetailsRouteHandler,
+  postSapiV1MiningHashTransferConfigRouteHandler,
+  postSapiV1MiningHashTransferConfigCancelRouteHandler,
+  getSapiV1MiningStatisticsUserStatusRouteHandler,
+  getSapiV1MiningStatisticsUserListRouteHandler,
+  getSapiV1MiningPaymentUidRouteHandler,
+  postSapiV1FuturesTransferRouteHandler,
+  getSapiV1FuturesTransferRouteHandler,
+  getSapiV1FuturesHistDataLinkRouteHandler,
+  postSapiV1AlgoFuturesNewOrderVpRouteHandler,
+  postSapiV1AlgoFuturesNewOrderTwapRouteHandler,
+  deleteSapiV1AlgoFuturesOrderRouteHandler,
+  getSapiV1AlgoFuturesOpenOrdersRouteHandler,
+  getSapiV1AlgoFuturesHistoricalOrdersRouteHandler,
+  getSapiV1AlgoFuturesSubOrdersRouteHandler,
+  postSapiV1AlgoSpotNewOrderTwapRouteHandler,
+  deleteSapiV1AlgoSpotOrderRouteHandler,
+  getSapiV1AlgoSpotOpenOrdersRouteHandler,
+  getSapiV1AlgoSpotHistoricalOrdersRouteHandler,
+  getSapiV1AlgoSpotSubOrdersRouteHandler,
+  getSapiV1PortfolioAccountRouteHandler,
+  getSapiV1PortfolioCollateralRateRouteHandler,
+  getSapiV2PortfolioCollateralRateRouteHandler,
+  getSapiV1PortfolioPmLoanRouteHandler,
+  postSapiV1PortfolioRepayRouteHandler,
+  getSapiV1PortfolioInterestHistoryRouteHandler,
+  getSapiV1PortfolioAssetIndexPriceRouteHandler,
+  postSapiV1PortfolioAutoCollectionRouteHandler,
+  postSapiV1PortfolioBnbTransferRouteHandler,
+  postSapiV1PortfolioRepayFuturesSwitchRouteHandler,
+  getSapiV1PortfolioRepayFuturesSwitchRouteHandler,
+  postSapiV1PortfolioRepayFuturesNegativeBalanceRouteHandler,
+  getSapiV1PortfolioMarginAssetLeverageRouteHandler,
+  postSapiV1PortfolioAssetCollectionRouteHandler,
+  getSapiV1BlvtTokenInfoRouteHandler,
+  postSapiV1BlvtSubscribeRouteHandler,
+  getSapiV1BlvtSubscribeRecordRouteHandler,
+  postSapiV1BlvtRedeemRouteHandler,
+  getSapiV1BlvtRedeemRecordRouteHandler,
+  getSapiV1BlvtUserLimitRouteHandler,
+  getSapiV1C2cOrderMatchListUserOrderHistoryRouteHandler,
+  getSapiV1LoanVipOngoingOrdersRouteHandler,
+  postSapiV1LoanVipRepayRouteHandler,
+  getSapiV1LoanVipRepayHistoryRouteHandler,
+  getSapiV1LoanVipCollateralAccountRouteHandler,
+  postSapiV1LoanVipBorrowRouteHandler,
+  getSapiV1LoanVipLoanableDataRouteHandler,
+  getSapiV1LoanVipCollateralDataRouteHandler,
+  getSapiV1LoanVipRequestDataRouteHandler,
+  getSapiV1LoanVipRequestInterestRateRouteHandler,
+  postSapiV1LoanVipRenewRouteHandler,
+  getSapiV1LoanIncomeRouteHandler,
+  postSapiV1LoanBorrowRouteHandler,
+  getSapiV1LoanBorrowHistoryRouteHandler,
+  getSapiV1LoanOngoingOrdersRouteHandler,
+  postSapiV1LoanRepayRouteHandler,
+  getSapiV1LoanRepayHistoryRouteHandler,
+  postSapiV1LoanAdjustLtvRouteHandler,
+  getSapiV1LoanLtvAdjustmentHistoryRouteHandler,
+  getSapiV1LoanLoanableDataRouteHandler,
+  getSapiV1LoanCollateralDataRouteHandler,
+  getSapiV1LoanRepayCollateralRateRouteHandler,
+  postSapiV1LoanCustomizeMarginCallRouteHandler,
+  postSapiV2LoanFlexibleBorrowRouteHandler,
+  getSapiV2LoanFlexibleOngoingOrdersRouteHandler,
+  getSapiV2LoanFlexibleBorrowHistoryRouteHandler,
+  postSapiV2LoanFlexibleRepayRouteHandler,
+  getSapiV2LoanFlexibleRepayHistoryRouteHandler,
+  postSapiV2LoanFlexibleAdjustLtvRouteHandler,
+  getSapiV2LoanFlexibleLtvAdjustmentHistoryRouteHandler,
+  getSapiV2LoanFlexibleLoanableDataRouteHandler,
+  getSapiV2LoanFlexibleCollateralDataRouteHandler,
+  getSapiV1PayTransactionsRouteHandler,
+  getSapiV1ConvertExchangeInfoRouteHandler,
+  getSapiV1ConvertAssetInfoRouteHandler,
+  postSapiV1ConvertGetQuoteRouteHandler,
+  postSapiV1ConvertAcceptQuoteRouteHandler,
+  getSapiV1ConvertOrderStatusRouteHandler,
+  postSapiV1ConvertLimitPlaceOrderRouteHandler,
+  postSapiV1ConvertLimitCancelOrderRouteHandler,
+  getSapiV1ConvertLimitQueryOpenOrdersRouteHandler,
+  getSapiV1ConvertTradeFlowRouteHandler,
+  getSapiV1RebateTaxQueryRouteHandler,
+  getSapiV1NftHistoryTransactionsRouteHandler,
+  getSapiV1NftHistoryDepositRouteHandler,
+  getSapiV1NftHistoryWithdrawRouteHandler,
+  getSapiV1NftUserGetAssetRouteHandler,
+  postSapiV1GiftcardCreateCodeRouteHandler,
+  postSapiV1GiftcardRedeemCodeRouteHandler,
+  getSapiV1GiftcardVerifyRouteHandler,
+  getSapiV1GiftcardCryptographyRsaPublicKeyRouteHandler,
+  postSapiV1GiftcardBuyCodeRouteHandler,
+  getSapiV1GiftcardBuyCodeTokenLimitRouteHandler,
+  getSapiV1LendingAutoInvestTargetAssetListRouteHandler,
+  getSapiV1LendingAutoInvestTargetAssetRoiListRouteHandler,
+  getSapiV1LendingAutoInvestAllAssetRouteHandler,
+  getSapiV1LendingAutoInvestSourceAssetListRouteHandler,
+  postSapiV1LendingAutoInvestPlanAddRouteHandler,
+  postSapiV1LendingAutoInvestPlanEditRouteHandler,
+  postSapiV1LendingAutoInvestPlanEditStatusRouteHandler,
+  getSapiV1LendingAutoInvestPlanListRouteHandler,
+  getSapiV1LendingAutoInvestPlanIdRouteHandler,
+  getSapiV1LendingAutoInvestHistoryListRouteHandler,
+  getSapiV1LendingAutoInvestIndexInfoRouteHandler,
+  getSapiV1LendingAutoInvestIndexUserSummaryRouteHandler,
+  postSapiV1LendingAutoInvestOneOffRouteHandler,
+  getSapiV1LendingAutoInvestOneOffStatusRouteHandler,
+  postSapiV1LendingAutoInvestRedeemRouteHandler,
+  getSapiV1LendingAutoInvestRedeemHistoryRouteHandler,
+  getSapiV1LendingAutoInvestRebalanceHistoryRouteHandler,
+  postSapiV2EthStakingEthStakeRouteHandler,
+  postSapiV1EthStakingEthRedeemRouteHandler,
+  getSapiV1EthStakingEthHistoryStakingHistoryRouteHandler,
+  getSapiV1EthStakingEthHistoryRedemptionHistoryRouteHandler,
+  getSapiV1EthStakingEthHistoryRewardsHistoryRouteHandler,
+  getSapiV1EthStakingEthQuotaRouteHandler,
+  getSapiV1EthStakingEthHistoryRateHistoryRouteHandler,
+  getSapiV2EthStakingAccountRouteHandler,
+  postSapiV1EthStakingWbethWrapRouteHandler,
+  getSapiV1EthStakingWbethHistoryWrapHistoryRouteHandler,
+  getSapiV1EthStakingWbethHistoryUnwrapHistoryRouteHandler,
+  getSapiV1EthStakingEthHistoryWbethRewardsHistoryRouteHandler,
+  getSapiV1CopyTradingFuturesUserStatusRouteHandler,
+  getSapiV1CopyTradingFuturesLeadSymbolRouteHandler,
+  getSapiV1SimpleEarnFlexibleListRouteHandler,
+  getSapiV1SimpleEarnLockedListRouteHandler,
+  postSapiV1SimpleEarnFlexibleSubscribeRouteHandler,
+  postSapiV1SimpleEarnLockedSubscribeRouteHandler,
+  postSapiV1SimpleEarnFlexibleRedeemRouteHandler,
+  postSapiV1SimpleEarnLockedRedeemRouteHandler,
+  getSapiV1SimpleEarnFlexiblePositionRouteHandler,
+  getSapiV1SimpleEarnLockedPositionRouteHandler,
+  getSapiV1SimpleEarnAccountRouteHandler,
+  getSapiV1SimpleEarnFlexibleHistorySubscriptionRecordRouteHandler,
+  getSapiV1SimpleEarnLockedHistorySubscriptionRecordRouteHandler,
+  getSapiV1SimpleEarnFlexibleHistoryRedemptionRecordRouteHandler,
+  getSapiV1SimpleEarnLockedHistoryRedemptionRecordRouteHandler,
+  getSapiV1SimpleEarnFlexibleHistoryRewardsRecordRouteHandler,
+  getSapiV1SimpleEarnLockedHistoryRewardsRecordRouteHandler,
+  postSapiV1SimpleEarnFlexibleSetAutoSubscribeRouteHandler,
+  postSapiV1SimpleEarnLockedSetAutoSubscribeRouteHandler,
+  getSapiV1SimpleEarnFlexiblePersonalLeftQuotaRouteHandler,
+  getSapiV1SimpleEarnLockedPersonalLeftQuotaRouteHandler,
+  getSapiV1SimpleEarnFlexibleSubscriptionPreviewRouteHandler,
+  getSapiV1SimpleEarnLockedSubscriptionPreviewRouteHandler,
+  getSapiV1SimpleEarnLockedSetRedeemOptionRouteHandler,
+  getSapiV1SimpleEarnFlexibleHistoryRateHistoryRouteHandler,
+  getSapiV1SimpleEarnFlexibleHistoryCollateralRecordRouteHandler,
+  getSapiV1DciProductListRouteHandler,
+  postSapiV1DciProductSubscribeRouteHandler,
+  getSapiV1DciProductPositionsRouteHandler,
+  getSapiV1DciProductAccountsRouteHandler,
+  postSapiV1DciProductAutoCompoundEditStatusRouteHandler,
+} from './handlers'
+
+const app = new OpenAPIHono()
+
+export const api = app
+  .openapi(getApiV3PingRoute, getApiV3PingRouteHandler)
+  .openapi(getApiV3TimeRoute, getApiV3TimeRouteHandler)
+  .openapi(getApiV3ExchangeInfoRoute, getApiV3ExchangeInfoRouteHandler)
+  .openapi(getApiV3DepthRoute, getApiV3DepthRouteHandler)
+  .openapi(getApiV3TradesRoute, getApiV3TradesRouteHandler)
+  .openapi(getApiV3HistoricalTradesRoute, getApiV3HistoricalTradesRouteHandler)
+  .openapi(getApiV3AggTradesRoute, getApiV3AggTradesRouteHandler)
+  .openapi(getApiV3KlinesRoute, getApiV3KlinesRouteHandler)
+  .openapi(getApiV3UiKlinesRoute, getApiV3UiKlinesRouteHandler)
+  .openapi(getApiV3AvgPriceRoute, getApiV3AvgPriceRouteHandler)
+  .openapi(getApiV3Ticker24hrRoute, getApiV3Ticker24hrRouteHandler)
+  .openapi(getApiV3TickerTradingDayRoute, getApiV3TickerTradingDayRouteHandler)
+  .openapi(getApiV3TickerPriceRoute, getApiV3TickerPriceRouteHandler)
+  .openapi(getApiV3TickerBookTickerRoute, getApiV3TickerBookTickerRouteHandler)
+  .openapi(getApiV3TickerRoute, getApiV3TickerRouteHandler)
+  .openapi(postApiV3OrderTestRoute, postApiV3OrderTestRouteHandler)
+  .openapi(getApiV3OrderRoute, getApiV3OrderRouteHandler)
+  .openapi(postApiV3OrderRoute, postApiV3OrderRouteHandler)
+  .openapi(deleteApiV3OrderRoute, deleteApiV3OrderRouteHandler)
+  .openapi(postApiV3OrderCancelReplaceRoute, postApiV3OrderCancelReplaceRouteHandler)
+  .openapi(getApiV3OpenOrdersRoute, getApiV3OpenOrdersRouteHandler)
+  .openapi(deleteApiV3OpenOrdersRoute, deleteApiV3OpenOrdersRouteHandler)
+  .openapi(getApiV3AllOrdersRoute, getApiV3AllOrdersRouteHandler)
+  .openapi(postApiV3OrderListOcoRoute, postApiV3OrderListOcoRouteHandler)
+  .openapi(postApiV3OrderListOtoRoute, postApiV3OrderListOtoRouteHandler)
+  .openapi(postApiV3OrderListOtocoRoute, postApiV3OrderListOtocoRouteHandler)
+  .openapi(getApiV3OrderListRoute, getApiV3OrderListRouteHandler)
+  .openapi(deleteApiV3OrderListRoute, deleteApiV3OrderListRouteHandler)
+  .openapi(getApiV3AllOrderListRoute, getApiV3AllOrderListRouteHandler)
+  .openapi(getApiV3OpenOrderListRoute, getApiV3OpenOrderListRouteHandler)
+  .openapi(postApiV3SorOrderRoute, postApiV3SorOrderRouteHandler)
+  .openapi(postApiV3SorOrderTestRoute, postApiV3SorOrderTestRouteHandler)
+  .openapi(getApiV3AccountRoute, getApiV3AccountRouteHandler)
+  .openapi(getApiV3MyTradesRoute, getApiV3MyTradesRouteHandler)
+  .openapi(getApiV3RateLimitOrderRoute, getApiV3RateLimitOrderRouteHandler)
+  .openapi(getApiV3MyPreventedMatchesRoute, getApiV3MyPreventedMatchesRouteHandler)
+  .openapi(getApiV3MyAllocationsRoute, getApiV3MyAllocationsRouteHandler)
+  .openapi(getApiV3AccountCommissionRoute, getApiV3AccountCommissionRouteHandler)
+  .openapi(postSapiV1MarginBorrowRepayRoute, postSapiV1MarginBorrowRepayRouteHandler)
+  .openapi(getSapiV1MarginBorrowRepayRoute, getSapiV1MarginBorrowRepayRouteHandler)
+  .openapi(getSapiV1MarginTransferRoute, getSapiV1MarginTransferRouteHandler)
+  .openapi(getSapiV1MarginAllAssetsRoute, getSapiV1MarginAllAssetsRouteHandler)
+  .openapi(getSapiV1MarginAllPairsRoute, getSapiV1MarginAllPairsRouteHandler)
+  .openapi(getSapiV1MarginPriceIndexRoute, getSapiV1MarginPriceIndexRouteHandler)
+  .openapi(getSapiV1MarginOrderRoute, getSapiV1MarginOrderRouteHandler)
+  .openapi(postSapiV1MarginOrderRoute, postSapiV1MarginOrderRouteHandler)
+  .openapi(deleteSapiV1MarginOrderRoute, deleteSapiV1MarginOrderRouteHandler)
+  .openapi(getSapiV1MarginInterestHistoryRoute, getSapiV1MarginInterestHistoryRouteHandler)
+  .openapi(getSapiV1MarginForceLiquidationRecRoute, getSapiV1MarginForceLiquidationRecRouteHandler)
+  .openapi(getSapiV1MarginAccountRoute, getSapiV1MarginAccountRouteHandler)
+  .openapi(getSapiV1MarginOpenOrdersRoute, getSapiV1MarginOpenOrdersRouteHandler)
+  .openapi(deleteSapiV1MarginOpenOrdersRoute, deleteSapiV1MarginOpenOrdersRouteHandler)
+  .openapi(getSapiV1MarginAllOrdersRoute, getSapiV1MarginAllOrdersRouteHandler)
+  .openapi(postSapiV1MarginOrderOcoRoute, postSapiV1MarginOrderOcoRouteHandler)
+  .openapi(getSapiV1MarginOrderListRoute, getSapiV1MarginOrderListRouteHandler)
+  .openapi(deleteSapiV1MarginOrderListRoute, deleteSapiV1MarginOrderListRouteHandler)
+  .openapi(getSapiV1MarginAllOrderListRoute, getSapiV1MarginAllOrderListRouteHandler)
+  .openapi(getSapiV1MarginOpenOrderListRoute, getSapiV1MarginOpenOrderListRouteHandler)
+  .openapi(getSapiV1MarginMyTradesRoute, getSapiV1MarginMyTradesRouteHandler)
+  .openapi(getSapiV1MarginMaxBorrowableRoute, getSapiV1MarginMaxBorrowableRouteHandler)
+  .openapi(getSapiV1MarginMaxTransferableRoute, getSapiV1MarginMaxTransferableRouteHandler)
+  .openapi(getSapiV1MarginTradeCoeffRoute, getSapiV1MarginTradeCoeffRouteHandler)
+  .openapi(getSapiV1MarginIsolatedAccountRoute, getSapiV1MarginIsolatedAccountRouteHandler)
+  .openapi(deleteSapiV1MarginIsolatedAccountRoute, deleteSapiV1MarginIsolatedAccountRouteHandler)
+  .openapi(postSapiV1MarginIsolatedAccountRoute, postSapiV1MarginIsolatedAccountRouteHandler)
+  .openapi(
+    getSapiV1MarginIsolatedAccountLimitRoute,
+    getSapiV1MarginIsolatedAccountLimitRouteHandler,
+  )
+  .openapi(getSapiV1MarginIsolatedAllPairsRoute, getSapiV1MarginIsolatedAllPairsRouteHandler)
+  .openapi(postSapiV1BnbBurnRoute, postSapiV1BnbBurnRouteHandler)
+  .openapi(getSapiV1BnbBurnRoute, getSapiV1BnbBurnRouteHandler)
+  .openapi(getSapiV1MarginInterestRateHistoryRoute, getSapiV1MarginInterestRateHistoryRouteHandler)
+  .openapi(getSapiV1MarginCrossMarginDataRoute, getSapiV1MarginCrossMarginDataRouteHandler)
+  .openapi(getSapiV1MarginIsolatedMarginDataRoute, getSapiV1MarginIsolatedMarginDataRouteHandler)
+  .openapi(getSapiV1MarginIsolatedMarginTierRoute, getSapiV1MarginIsolatedMarginTierRouteHandler)
+  .openapi(getSapiV1MarginRateLimitOrderRoute, getSapiV1MarginRateLimitOrderRouteHandler)
+  .openapi(
+    getSapiV1MarginCrossMarginCollateralRatioRoute,
+    getSapiV1MarginCrossMarginCollateralRatioRouteHandler,
+  )
+  .openapi(
+    getSapiV1MarginExchangeSmallLiabilityRoute,
+    getSapiV1MarginExchangeSmallLiabilityRouteHandler,
+  )
+  .openapi(
+    getSapiV1MarginExchangeSmallLiabilityHistoryRoute,
+    getSapiV1MarginExchangeSmallLiabilityHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1MarginNextHourlyInterestRateRoute,
+    getSapiV1MarginNextHourlyInterestRateRouteHandler,
+  )
+  .openapi(getSapiV1MarginCapitalFlowRoute, getSapiV1MarginCapitalFlowRouteHandler)
+  .openapi(getSapiV1MarginDelistScheduleRoute, getSapiV1MarginDelistScheduleRouteHandler)
+  .openapi(getSapiV1MarginAvailableInventoryRoute, getSapiV1MarginAvailableInventoryRouteHandler)
+  .openapi(postSapiV1MarginManualLiquidationRoute, postSapiV1MarginManualLiquidationRouteHandler)
+  .openapi(postSapiV1MarginOrderOtoRoute, postSapiV1MarginOrderOtoRouteHandler)
+  .openapi(postSapiV1MarginOrderOtocoRoute, postSapiV1MarginOrderOtocoRouteHandler)
+  .openapi(postSapiV1MarginMaxLeverageRoute, postSapiV1MarginMaxLeverageRouteHandler)
+  .openapi(getSapiV1MarginLeverageBracketRoute, getSapiV1MarginLeverageBracketRouteHandler)
+  .openapi(getSapiV1SystemStatusRoute, getSapiV1SystemStatusRouteHandler)
+  .openapi(getSapiV1CapitalConfigGetallRoute, getSapiV1CapitalConfigGetallRouteHandler)
+  .openapi(getSapiV1AccountSnapshotRoute, getSapiV1AccountSnapshotRouteHandler)
+  .openapi(
+    postSapiV1AccountDisableFastWithdrawSwitchRoute,
+    postSapiV1AccountDisableFastWithdrawSwitchRouteHandler,
+  )
+  .openapi(
+    postSapiV1AccountEnableFastWithdrawSwitchRoute,
+    postSapiV1AccountEnableFastWithdrawSwitchRouteHandler,
+  )
+  .openapi(postSapiV1CapitalWithdrawApplyRoute, postSapiV1CapitalWithdrawApplyRouteHandler)
+  .openapi(getSapiV1CapitalDepositHisrecRoute, getSapiV1CapitalDepositHisrecRouteHandler)
+  .openapi(getSapiV1CapitalWithdrawHistoryRoute, getSapiV1CapitalWithdrawHistoryRouteHandler)
+  .openapi(getSapiV1CapitalDepositAddressRoute, getSapiV1CapitalDepositAddressRouteHandler)
+  .openapi(getSapiV1AccountStatusRoute, getSapiV1AccountStatusRouteHandler)
+  .openapi(getSapiV1AccountApiTradingStatusRoute, getSapiV1AccountApiTradingStatusRouteHandler)
+  .openapi(getSapiV1AssetDribbletRoute, getSapiV1AssetDribbletRouteHandler)
+  .openapi(postSapiV1AssetDustBtcRoute, postSapiV1AssetDustBtcRouteHandler)
+  .openapi(postSapiV1AssetDustRoute, postSapiV1AssetDustRouteHandler)
+  .openapi(getSapiV1AssetAssetDividendRoute, getSapiV1AssetAssetDividendRouteHandler)
+  .openapi(getSapiV1AssetAssetDetailRoute, getSapiV1AssetAssetDetailRouteHandler)
+  .openapi(getSapiV1AssetTradeFeeRoute, getSapiV1AssetTradeFeeRouteHandler)
+  .openapi(getSapiV1AssetTransferRoute, getSapiV1AssetTransferRouteHandler)
+  .openapi(postSapiV1AssetTransferRoute, postSapiV1AssetTransferRouteHandler)
+  .openapi(postSapiV1AssetGetFundingAssetRoute, postSapiV1AssetGetFundingAssetRouteHandler)
+  .openapi(postSapiV3AssetGetUserAssetRoute, postSapiV3AssetGetUserAssetRouteHandler)
+  .openapi(postSapiV1AssetConvertTransferRoute, postSapiV1AssetConvertTransferRouteHandler)
+  .openapi(
+    getSapiV1AssetConvertTransferQueryByPageRoute,
+    getSapiV1AssetConvertTransferQueryByPageRouteHandler,
+  )
+  .openapi(
+    getSapiV1AssetLedgerTransferCloudMiningQueryByPageRoute,
+    getSapiV1AssetLedgerTransferCloudMiningQueryByPageRouteHandler,
+  )
+  .openapi(getSapiV1AccountApiRestrictionsRoute, getSapiV1AccountApiRestrictionsRouteHandler)
+  .openapi(
+    getSapiV1CapitalContractConvertibleCoinsRoute,
+    getSapiV1CapitalContractConvertibleCoinsRouteHandler,
+  )
+  .openapi(
+    postSapiV1CapitalContractConvertibleCoinsRoute,
+    postSapiV1CapitalContractConvertibleCoinsRouteHandler,
+  )
+  .openapi(
+    postSapiV1SubAccountVirtualSubAccountRoute,
+    postSapiV1SubAccountVirtualSubAccountRouteHandler,
+  )
+  .openapi(getSapiV1SubAccountListRoute, getSapiV1SubAccountListRouteHandler)
+  .openapi(
+    getSapiV1SubAccountSubTransferHistoryRoute,
+    getSapiV1SubAccountSubTransferHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1SubAccountFuturesInternalTransferRoute,
+    getSapiV1SubAccountFuturesInternalTransferRouteHandler,
+  )
+  .openapi(
+    postSapiV1SubAccountFuturesInternalTransferRoute,
+    postSapiV1SubAccountFuturesInternalTransferRouteHandler,
+  )
+  .openapi(getSapiV3SubAccountAssetsRoute, getSapiV3SubAccountAssetsRouteHandler)
+  .openapi(getSapiV1SubAccountSpotSummaryRoute, getSapiV1SubAccountSpotSummaryRouteHandler)
+  .openapi(getSapiV1CapitalDepositSubAddressRoute, getSapiV1CapitalDepositSubAddressRouteHandler)
+  .openapi(getSapiV1CapitalDepositSubHisrecRoute, getSapiV1CapitalDepositSubHisrecRouteHandler)
+  .openapi(
+    postSapiV1CapitalDepositCreditApplyRoute,
+    postSapiV1CapitalDepositCreditApplyRouteHandler,
+  )
+  .openapi(getSapiV1AssetWalletBalanceRoute, getSapiV1AssetWalletBalanceRouteHandler)
+  .openapi(
+    getSapiV1AssetCustodyTransferHistoryRoute,
+    getSapiV1AssetCustodyTransferHistoryRouteHandler,
+  )
+  .openapi(getSapiV1CapitalDepositAddressListRoute, getSapiV1CapitalDepositAddressListRouteHandler)
+  .openapi(getSapiV1SpotDelistScheduleRoute, getSapiV1SpotDelistScheduleRouteHandler)
+  .openapi(
+    getSapiV1CapitalWithdrawAddressListRoute,
+    getSapiV1CapitalWithdrawAddressListRouteHandler,
+  )
+  .openapi(getSapiV1AccountInfoRoute, getSapiV1AccountInfoRouteHandler)
+  .openapi(getSapiV1SubAccountStatusRoute, getSapiV1SubAccountStatusRouteHandler)
+  .openapi(postSapiV1SubAccountMarginEnableRoute, postSapiV1SubAccountMarginEnableRouteHandler)
+  .openapi(getSapiV1SubAccountMarginAccountRoute, getSapiV1SubAccountMarginAccountRouteHandler)
+  .openapi(
+    getSapiV1SubAccountMarginAccountSummaryRoute,
+    getSapiV1SubAccountMarginAccountSummaryRouteHandler,
+  )
+  .openapi(postSapiV1SubAccountFuturesEnableRoute, postSapiV1SubAccountFuturesEnableRouteHandler)
+  .openapi(getSapiV1SubAccountFuturesAccountRoute, getSapiV1SubAccountFuturesAccountRouteHandler)
+  .openapi(
+    getSapiV1SubAccountFuturesAccountSummaryRoute,
+    getSapiV1SubAccountFuturesAccountSummaryRouteHandler,
+  )
+  .openapi(
+    getSapiV1SubAccountFuturesPositionRiskRoute,
+    getSapiV1SubAccountFuturesPositionRiskRouteHandler,
+  )
+  .openapi(
+    postSapiV1SubAccountFuturesTransferRoute,
+    postSapiV1SubAccountFuturesTransferRouteHandler,
+  )
+  .openapi(postSapiV1SubAccountMarginTransferRoute, postSapiV1SubAccountMarginTransferRouteHandler)
+  .openapi(
+    postSapiV1SubAccountTransferSubToSubRoute,
+    postSapiV1SubAccountTransferSubToSubRouteHandler,
+  )
+  .openapi(
+    postSapiV1SubAccountTransferSubToMasterRoute,
+    postSapiV1SubAccountTransferSubToMasterRouteHandler,
+  )
+  .openapi(
+    getSapiV1SubAccountTransferSubUserHistoryRoute,
+    getSapiV1SubAccountTransferSubUserHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1SubAccountUniversalTransferRoute,
+    getSapiV1SubAccountUniversalTransferRouteHandler,
+  )
+  .openapi(
+    postSapiV1SubAccountUniversalTransferRoute,
+    postSapiV1SubAccountUniversalTransferRouteHandler,
+  )
+  .openapi(getSapiV2SubAccountFuturesAccountRoute, getSapiV2SubAccountFuturesAccountRouteHandler)
+  .openapi(
+    getSapiV2SubAccountFuturesAccountSummaryRoute,
+    getSapiV2SubAccountFuturesAccountSummaryRouteHandler,
+  )
+  .openapi(
+    getSapiV2SubAccountFuturesPositionRiskRoute,
+    getSapiV2SubAccountFuturesPositionRiskRouteHandler,
+  )
+  .openapi(postSapiV1SubAccountBlvtEnableRoute, postSapiV1SubAccountBlvtEnableRouteHandler)
+  .openapi(postSapiV1ManagedSubaccountDepositRoute, postSapiV1ManagedSubaccountDepositRouteHandler)
+  .openapi(getSapiV1ManagedSubaccountAssetRoute, getSapiV1ManagedSubaccountAssetRouteHandler)
+  .openapi(
+    postSapiV1ManagedSubaccountWithdrawRoute,
+    postSapiV1ManagedSubaccountWithdrawRouteHandler,
+  )
+  .openapi(
+    getSapiV1ManagedSubaccountAccountSnapshotRoute,
+    getSapiV1ManagedSubaccountAccountSnapshotRouteHandler,
+  )
+  .openapi(
+    getSapiV1ManagedSubaccountQueryTransLogForInvestorRoute,
+    getSapiV1ManagedSubaccountQueryTransLogForInvestorRouteHandler,
+  )
+  .openapi(
+    getSapiV1ManagedSubaccountQueryTransLogForTradeParentRoute,
+    getSapiV1ManagedSubaccountQueryTransLogForTradeParentRouteHandler,
+  )
+  .openapi(
+    getSapiV1ManagedSubaccountFetchFutureAssetRoute,
+    getSapiV1ManagedSubaccountFetchFutureAssetRouteHandler,
+  )
+  .openapi(
+    getSapiV1ManagedSubaccountMarginAssetRoute,
+    getSapiV1ManagedSubaccountMarginAssetRouteHandler,
+  )
+  .openapi(getSapiV1ManagedSubaccountInfoRoute, getSapiV1ManagedSubaccountInfoRouteHandler)
+  .openapi(
+    getSapiV1ManagedSubaccountDepositAddressRoute,
+    getSapiV1ManagedSubaccountDepositAddressRouteHandler,
+  )
+  .openapi(
+    getSapiV1ManagedSubaccountQueryTransLogRoute,
+    getSapiV1ManagedSubaccountQueryTransLogRouteHandler,
+  )
+  .openapi(
+    getSapiV1SubAccountSubAccountApiIpRestrictionRoute,
+    getSapiV1SubAccountSubAccountApiIpRestrictionRouteHandler,
+  )
+  .openapi(
+    deleteSapiV1SubAccountSubAccountApiIpRestrictionIpListRoute,
+    deleteSapiV1SubAccountSubAccountApiIpRestrictionIpListRouteHandler,
+  )
+  .openapi(
+    getSapiV1SubAccountTransactionStatisticsRoute,
+    getSapiV1SubAccountTransactionStatisticsRouteHandler,
+  )
+  .openapi(postSapiV1SubAccountEoptionsEnableRoute, postSapiV1SubAccountEoptionsEnableRouteHandler)
+  .openapi(
+    postSapiV2SubAccountSubAccountApiIpRestrictionRoute,
+    postSapiV2SubAccountSubAccountApiIpRestrictionRouteHandler,
+  )
+  .openapi(getSapiV4SubAccountAssetsRoute, getSapiV4SubAccountAssetsRouteHandler)
+  .openapi(postApiV3UserDataStreamRoute, postApiV3UserDataStreamRouteHandler)
+  .openapi(putApiV3UserDataStreamRoute, putApiV3UserDataStreamRouteHandler)
+  .openapi(deleteApiV3UserDataStreamRoute, deleteApiV3UserDataStreamRouteHandler)
+  .openapi(postSapiV1UserDataStreamRoute, postSapiV1UserDataStreamRouteHandler)
+  .openapi(putSapiV1UserDataStreamRoute, putSapiV1UserDataStreamRouteHandler)
+  .openapi(deleteSapiV1UserDataStreamRoute, deleteSapiV1UserDataStreamRouteHandler)
+  .openapi(postSapiV1UserDataStreamIsolatedRoute, postSapiV1UserDataStreamIsolatedRouteHandler)
+  .openapi(putSapiV1UserDataStreamIsolatedRoute, putSapiV1UserDataStreamIsolatedRouteHandler)
+  .openapi(deleteSapiV1UserDataStreamIsolatedRoute, deleteSapiV1UserDataStreamIsolatedRouteHandler)
+  .openapi(getSapiV1FiatOrdersRoute, getSapiV1FiatOrdersRouteHandler)
+  .openapi(getSapiV1FiatPaymentsRoute, getSapiV1FiatPaymentsRouteHandler)
+  .openapi(getSapiV1LendingProjectListRoute, getSapiV1LendingProjectListRouteHandler)
+  .openapi(
+    postSapiV1LendingCustomizedFixedPurchaseRoute,
+    postSapiV1LendingCustomizedFixedPurchaseRouteHandler,
+  )
+  .openapi(
+    getSapiV1LendingProjectPositionListRoute,
+    getSapiV1LendingProjectPositionListRouteHandler,
+  )
+  .openapi(postSapiV1LendingPositionChangedRoute, postSapiV1LendingPositionChangedRouteHandler)
+  .openapi(getSapiV1MiningPubAlgoListRoute, getSapiV1MiningPubAlgoListRouteHandler)
+  .openapi(getSapiV1MiningPubCoinListRoute, getSapiV1MiningPubCoinListRouteHandler)
+  .openapi(getSapiV1MiningWorkerDetailRoute, getSapiV1MiningWorkerDetailRouteHandler)
+  .openapi(getSapiV1MiningWorkerListRoute, getSapiV1MiningWorkerListRouteHandler)
+  .openapi(getSapiV1MiningPaymentListRoute, getSapiV1MiningPaymentListRouteHandler)
+  .openapi(getSapiV1MiningPaymentOtherRoute, getSapiV1MiningPaymentOtherRouteHandler)
+  .openapi(
+    getSapiV1MiningHashTransferConfigDetailsListRoute,
+    getSapiV1MiningHashTransferConfigDetailsListRouteHandler,
+  )
+  .openapi(
+    getSapiV1MiningHashTransferProfitDetailsRoute,
+    getSapiV1MiningHashTransferProfitDetailsRouteHandler,
+  )
+  .openapi(postSapiV1MiningHashTransferConfigRoute, postSapiV1MiningHashTransferConfigRouteHandler)
+  .openapi(
+    postSapiV1MiningHashTransferConfigCancelRoute,
+    postSapiV1MiningHashTransferConfigCancelRouteHandler,
+  )
+  .openapi(
+    getSapiV1MiningStatisticsUserStatusRoute,
+    getSapiV1MiningStatisticsUserStatusRouteHandler,
+  )
+  .openapi(getSapiV1MiningStatisticsUserListRoute, getSapiV1MiningStatisticsUserListRouteHandler)
+  .openapi(getSapiV1MiningPaymentUidRoute, getSapiV1MiningPaymentUidRouteHandler)
+  .openapi(postSapiV1FuturesTransferRoute, postSapiV1FuturesTransferRouteHandler)
+  .openapi(getSapiV1FuturesTransferRoute, getSapiV1FuturesTransferRouteHandler)
+  .openapi(getSapiV1FuturesHistDataLinkRoute, getSapiV1FuturesHistDataLinkRouteHandler)
+  .openapi(postSapiV1AlgoFuturesNewOrderVpRoute, postSapiV1AlgoFuturesNewOrderVpRouteHandler)
+  .openapi(postSapiV1AlgoFuturesNewOrderTwapRoute, postSapiV1AlgoFuturesNewOrderTwapRouteHandler)
+  .openapi(deleteSapiV1AlgoFuturesOrderRoute, deleteSapiV1AlgoFuturesOrderRouteHandler)
+  .openapi(getSapiV1AlgoFuturesOpenOrdersRoute, getSapiV1AlgoFuturesOpenOrdersRouteHandler)
+  .openapi(
+    getSapiV1AlgoFuturesHistoricalOrdersRoute,
+    getSapiV1AlgoFuturesHistoricalOrdersRouteHandler,
+  )
+  .openapi(getSapiV1AlgoFuturesSubOrdersRoute, getSapiV1AlgoFuturesSubOrdersRouteHandler)
+  .openapi(postSapiV1AlgoSpotNewOrderTwapRoute, postSapiV1AlgoSpotNewOrderTwapRouteHandler)
+  .openapi(deleteSapiV1AlgoSpotOrderRoute, deleteSapiV1AlgoSpotOrderRouteHandler)
+  .openapi(getSapiV1AlgoSpotOpenOrdersRoute, getSapiV1AlgoSpotOpenOrdersRouteHandler)
+  .openapi(getSapiV1AlgoSpotHistoricalOrdersRoute, getSapiV1AlgoSpotHistoricalOrdersRouteHandler)
+  .openapi(getSapiV1AlgoSpotSubOrdersRoute, getSapiV1AlgoSpotSubOrdersRouteHandler)
+  .openapi(getSapiV1PortfolioAccountRoute, getSapiV1PortfolioAccountRouteHandler)
+  .openapi(getSapiV1PortfolioCollateralRateRoute, getSapiV1PortfolioCollateralRateRouteHandler)
+  .openapi(getSapiV2PortfolioCollateralRateRoute, getSapiV2PortfolioCollateralRateRouteHandler)
+  .openapi(getSapiV1PortfolioPmLoanRoute, getSapiV1PortfolioPmLoanRouteHandler)
+  .openapi(postSapiV1PortfolioRepayRoute, postSapiV1PortfolioRepayRouteHandler)
+  .openapi(getSapiV1PortfolioInterestHistoryRoute, getSapiV1PortfolioInterestHistoryRouteHandler)
+  .openapi(getSapiV1PortfolioAssetIndexPriceRoute, getSapiV1PortfolioAssetIndexPriceRouteHandler)
+  .openapi(postSapiV1PortfolioAutoCollectionRoute, postSapiV1PortfolioAutoCollectionRouteHandler)
+  .openapi(postSapiV1PortfolioBnbTransferRoute, postSapiV1PortfolioBnbTransferRouteHandler)
+  .openapi(
+    postSapiV1PortfolioRepayFuturesSwitchRoute,
+    postSapiV1PortfolioRepayFuturesSwitchRouteHandler,
+  )
+  .openapi(
+    getSapiV1PortfolioRepayFuturesSwitchRoute,
+    getSapiV1PortfolioRepayFuturesSwitchRouteHandler,
+  )
+  .openapi(
+    postSapiV1PortfolioRepayFuturesNegativeBalanceRoute,
+    postSapiV1PortfolioRepayFuturesNegativeBalanceRouteHandler,
+  )
+  .openapi(
+    getSapiV1PortfolioMarginAssetLeverageRoute,
+    getSapiV1PortfolioMarginAssetLeverageRouteHandler,
+  )
+  .openapi(postSapiV1PortfolioAssetCollectionRoute, postSapiV1PortfolioAssetCollectionRouteHandler)
+  .openapi(getSapiV1BlvtTokenInfoRoute, getSapiV1BlvtTokenInfoRouteHandler)
+  .openapi(postSapiV1BlvtSubscribeRoute, postSapiV1BlvtSubscribeRouteHandler)
+  .openapi(getSapiV1BlvtSubscribeRecordRoute, getSapiV1BlvtSubscribeRecordRouteHandler)
+  .openapi(postSapiV1BlvtRedeemRoute, postSapiV1BlvtRedeemRouteHandler)
+  .openapi(getSapiV1BlvtRedeemRecordRoute, getSapiV1BlvtRedeemRecordRouteHandler)
+  .openapi(getSapiV1BlvtUserLimitRoute, getSapiV1BlvtUserLimitRouteHandler)
+  .openapi(
+    getSapiV1C2cOrderMatchListUserOrderHistoryRoute,
+    getSapiV1C2cOrderMatchListUserOrderHistoryRouteHandler,
+  )
+  .openapi(getSapiV1LoanVipOngoingOrdersRoute, getSapiV1LoanVipOngoingOrdersRouteHandler)
+  .openapi(postSapiV1LoanVipRepayRoute, postSapiV1LoanVipRepayRouteHandler)
+  .openapi(getSapiV1LoanVipRepayHistoryRoute, getSapiV1LoanVipRepayHistoryRouteHandler)
+  .openapi(getSapiV1LoanVipCollateralAccountRoute, getSapiV1LoanVipCollateralAccountRouteHandler)
+  .openapi(postSapiV1LoanVipBorrowRoute, postSapiV1LoanVipBorrowRouteHandler)
+  .openapi(getSapiV1LoanVipLoanableDataRoute, getSapiV1LoanVipLoanableDataRouteHandler)
+  .openapi(getSapiV1LoanVipCollateralDataRoute, getSapiV1LoanVipCollateralDataRouteHandler)
+  .openapi(getSapiV1LoanVipRequestDataRoute, getSapiV1LoanVipRequestDataRouteHandler)
+  .openapi(
+    getSapiV1LoanVipRequestInterestRateRoute,
+    getSapiV1LoanVipRequestInterestRateRouteHandler,
+  )
+  .openapi(postSapiV1LoanVipRenewRoute, postSapiV1LoanVipRenewRouteHandler)
+  .openapi(getSapiV1LoanIncomeRoute, getSapiV1LoanIncomeRouteHandler)
+  .openapi(postSapiV1LoanBorrowRoute, postSapiV1LoanBorrowRouteHandler)
+  .openapi(getSapiV1LoanBorrowHistoryRoute, getSapiV1LoanBorrowHistoryRouteHandler)
+  .openapi(getSapiV1LoanOngoingOrdersRoute, getSapiV1LoanOngoingOrdersRouteHandler)
+  .openapi(postSapiV1LoanRepayRoute, postSapiV1LoanRepayRouteHandler)
+  .openapi(getSapiV1LoanRepayHistoryRoute, getSapiV1LoanRepayHistoryRouteHandler)
+  .openapi(postSapiV1LoanAdjustLtvRoute, postSapiV1LoanAdjustLtvRouteHandler)
+  .openapi(getSapiV1LoanLtvAdjustmentHistoryRoute, getSapiV1LoanLtvAdjustmentHistoryRouteHandler)
+  .openapi(getSapiV1LoanLoanableDataRoute, getSapiV1LoanLoanableDataRouteHandler)
+  .openapi(getSapiV1LoanCollateralDataRoute, getSapiV1LoanCollateralDataRouteHandler)
+  .openapi(getSapiV1LoanRepayCollateralRateRoute, getSapiV1LoanRepayCollateralRateRouteHandler)
+  .openapi(postSapiV1LoanCustomizeMarginCallRoute, postSapiV1LoanCustomizeMarginCallRouteHandler)
+  .openapi(postSapiV2LoanFlexibleBorrowRoute, postSapiV2LoanFlexibleBorrowRouteHandler)
+  .openapi(getSapiV2LoanFlexibleOngoingOrdersRoute, getSapiV2LoanFlexibleOngoingOrdersRouteHandler)
+  .openapi(getSapiV2LoanFlexibleBorrowHistoryRoute, getSapiV2LoanFlexibleBorrowHistoryRouteHandler)
+  .openapi(postSapiV2LoanFlexibleRepayRoute, postSapiV2LoanFlexibleRepayRouteHandler)
+  .openapi(getSapiV2LoanFlexibleRepayHistoryRoute, getSapiV2LoanFlexibleRepayHistoryRouteHandler)
+  .openapi(postSapiV2LoanFlexibleAdjustLtvRoute, postSapiV2LoanFlexibleAdjustLtvRouteHandler)
+  .openapi(
+    getSapiV2LoanFlexibleLtvAdjustmentHistoryRoute,
+    getSapiV2LoanFlexibleLtvAdjustmentHistoryRouteHandler,
+  )
+  .openapi(getSapiV2LoanFlexibleLoanableDataRoute, getSapiV2LoanFlexibleLoanableDataRouteHandler)
+  .openapi(
+    getSapiV2LoanFlexibleCollateralDataRoute,
+    getSapiV2LoanFlexibleCollateralDataRouteHandler,
+  )
+  .openapi(getSapiV1PayTransactionsRoute, getSapiV1PayTransactionsRouteHandler)
+  .openapi(getSapiV1ConvertExchangeInfoRoute, getSapiV1ConvertExchangeInfoRouteHandler)
+  .openapi(getSapiV1ConvertAssetInfoRoute, getSapiV1ConvertAssetInfoRouteHandler)
+  .openapi(postSapiV1ConvertGetQuoteRoute, postSapiV1ConvertGetQuoteRouteHandler)
+  .openapi(postSapiV1ConvertAcceptQuoteRoute, postSapiV1ConvertAcceptQuoteRouteHandler)
+  .openapi(getSapiV1ConvertOrderStatusRoute, getSapiV1ConvertOrderStatusRouteHandler)
+  .openapi(postSapiV1ConvertLimitPlaceOrderRoute, postSapiV1ConvertLimitPlaceOrderRouteHandler)
+  .openapi(postSapiV1ConvertLimitCancelOrderRoute, postSapiV1ConvertLimitCancelOrderRouteHandler)
+  .openapi(
+    getSapiV1ConvertLimitQueryOpenOrdersRoute,
+    getSapiV1ConvertLimitQueryOpenOrdersRouteHandler,
+  )
+  .openapi(getSapiV1ConvertTradeFlowRoute, getSapiV1ConvertTradeFlowRouteHandler)
+  .openapi(getSapiV1RebateTaxQueryRoute, getSapiV1RebateTaxQueryRouteHandler)
+  .openapi(getSapiV1NftHistoryTransactionsRoute, getSapiV1NftHistoryTransactionsRouteHandler)
+  .openapi(getSapiV1NftHistoryDepositRoute, getSapiV1NftHistoryDepositRouteHandler)
+  .openapi(getSapiV1NftHistoryWithdrawRoute, getSapiV1NftHistoryWithdrawRouteHandler)
+  .openapi(getSapiV1NftUserGetAssetRoute, getSapiV1NftUserGetAssetRouteHandler)
+  .openapi(postSapiV1GiftcardCreateCodeRoute, postSapiV1GiftcardCreateCodeRouteHandler)
+  .openapi(postSapiV1GiftcardRedeemCodeRoute, postSapiV1GiftcardRedeemCodeRouteHandler)
+  .openapi(getSapiV1GiftcardVerifyRoute, getSapiV1GiftcardVerifyRouteHandler)
+  .openapi(
+    getSapiV1GiftcardCryptographyRsaPublicKeyRoute,
+    getSapiV1GiftcardCryptographyRsaPublicKeyRouteHandler,
+  )
+  .openapi(postSapiV1GiftcardBuyCodeRoute, postSapiV1GiftcardBuyCodeRouteHandler)
+  .openapi(getSapiV1GiftcardBuyCodeTokenLimitRoute, getSapiV1GiftcardBuyCodeTokenLimitRouteHandler)
+  .openapi(
+    getSapiV1LendingAutoInvestTargetAssetListRoute,
+    getSapiV1LendingAutoInvestTargetAssetListRouteHandler,
+  )
+  .openapi(
+    getSapiV1LendingAutoInvestTargetAssetRoiListRoute,
+    getSapiV1LendingAutoInvestTargetAssetRoiListRouteHandler,
+  )
+  .openapi(getSapiV1LendingAutoInvestAllAssetRoute, getSapiV1LendingAutoInvestAllAssetRouteHandler)
+  .openapi(
+    getSapiV1LendingAutoInvestSourceAssetListRoute,
+    getSapiV1LendingAutoInvestSourceAssetListRouteHandler,
+  )
+  .openapi(postSapiV1LendingAutoInvestPlanAddRoute, postSapiV1LendingAutoInvestPlanAddRouteHandler)
+  .openapi(
+    postSapiV1LendingAutoInvestPlanEditRoute,
+    postSapiV1LendingAutoInvestPlanEditRouteHandler,
+  )
+  .openapi(
+    postSapiV1LendingAutoInvestPlanEditStatusRoute,
+    postSapiV1LendingAutoInvestPlanEditStatusRouteHandler,
+  )
+  .openapi(getSapiV1LendingAutoInvestPlanListRoute, getSapiV1LendingAutoInvestPlanListRouteHandler)
+  .openapi(getSapiV1LendingAutoInvestPlanIdRoute, getSapiV1LendingAutoInvestPlanIdRouteHandler)
+  .openapi(
+    getSapiV1LendingAutoInvestHistoryListRoute,
+    getSapiV1LendingAutoInvestHistoryListRouteHandler,
+  )
+  .openapi(
+    getSapiV1LendingAutoInvestIndexInfoRoute,
+    getSapiV1LendingAutoInvestIndexInfoRouteHandler,
+  )
+  .openapi(
+    getSapiV1LendingAutoInvestIndexUserSummaryRoute,
+    getSapiV1LendingAutoInvestIndexUserSummaryRouteHandler,
+  )
+  .openapi(postSapiV1LendingAutoInvestOneOffRoute, postSapiV1LendingAutoInvestOneOffRouteHandler)
+  .openapi(
+    getSapiV1LendingAutoInvestOneOffStatusRoute,
+    getSapiV1LendingAutoInvestOneOffStatusRouteHandler,
+  )
+  .openapi(postSapiV1LendingAutoInvestRedeemRoute, postSapiV1LendingAutoInvestRedeemRouteHandler)
+  .openapi(
+    getSapiV1LendingAutoInvestRedeemHistoryRoute,
+    getSapiV1LendingAutoInvestRedeemHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1LendingAutoInvestRebalanceHistoryRoute,
+    getSapiV1LendingAutoInvestRebalanceHistoryRouteHandler,
+  )
+  .openapi(postSapiV2EthStakingEthStakeRoute, postSapiV2EthStakingEthStakeRouteHandler)
+  .openapi(postSapiV1EthStakingEthRedeemRoute, postSapiV1EthStakingEthRedeemRouteHandler)
+  .openapi(
+    getSapiV1EthStakingEthHistoryStakingHistoryRoute,
+    getSapiV1EthStakingEthHistoryStakingHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1EthStakingEthHistoryRedemptionHistoryRoute,
+    getSapiV1EthStakingEthHistoryRedemptionHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1EthStakingEthHistoryRewardsHistoryRoute,
+    getSapiV1EthStakingEthHistoryRewardsHistoryRouteHandler,
+  )
+  .openapi(getSapiV1EthStakingEthQuotaRoute, getSapiV1EthStakingEthQuotaRouteHandler)
+  .openapi(
+    getSapiV1EthStakingEthHistoryRateHistoryRoute,
+    getSapiV1EthStakingEthHistoryRateHistoryRouteHandler,
+  )
+  .openapi(getSapiV2EthStakingAccountRoute, getSapiV2EthStakingAccountRouteHandler)
+  .openapi(postSapiV1EthStakingWbethWrapRoute, postSapiV1EthStakingWbethWrapRouteHandler)
+  .openapi(
+    getSapiV1EthStakingWbethHistoryWrapHistoryRoute,
+    getSapiV1EthStakingWbethHistoryWrapHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1EthStakingWbethHistoryUnwrapHistoryRoute,
+    getSapiV1EthStakingWbethHistoryUnwrapHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1EthStakingEthHistoryWbethRewardsHistoryRoute,
+    getSapiV1EthStakingEthHistoryWbethRewardsHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1CopyTradingFuturesUserStatusRoute,
+    getSapiV1CopyTradingFuturesUserStatusRouteHandler,
+  )
+  .openapi(
+    getSapiV1CopyTradingFuturesLeadSymbolRoute,
+    getSapiV1CopyTradingFuturesLeadSymbolRouteHandler,
+  )
+  .openapi(getSapiV1SimpleEarnFlexibleListRoute, getSapiV1SimpleEarnFlexibleListRouteHandler)
+  .openapi(getSapiV1SimpleEarnLockedListRoute, getSapiV1SimpleEarnLockedListRouteHandler)
+  .openapi(
+    postSapiV1SimpleEarnFlexibleSubscribeRoute,
+    postSapiV1SimpleEarnFlexibleSubscribeRouteHandler,
+  )
+  .openapi(
+    postSapiV1SimpleEarnLockedSubscribeRoute,
+    postSapiV1SimpleEarnLockedSubscribeRouteHandler,
+  )
+  .openapi(postSapiV1SimpleEarnFlexibleRedeemRoute, postSapiV1SimpleEarnFlexibleRedeemRouteHandler)
+  .openapi(postSapiV1SimpleEarnLockedRedeemRoute, postSapiV1SimpleEarnLockedRedeemRouteHandler)
+  .openapi(
+    getSapiV1SimpleEarnFlexiblePositionRoute,
+    getSapiV1SimpleEarnFlexiblePositionRouteHandler,
+  )
+  .openapi(getSapiV1SimpleEarnLockedPositionRoute, getSapiV1SimpleEarnLockedPositionRouteHandler)
+  .openapi(getSapiV1SimpleEarnAccountRoute, getSapiV1SimpleEarnAccountRouteHandler)
+  .openapi(
+    getSapiV1SimpleEarnFlexibleHistorySubscriptionRecordRoute,
+    getSapiV1SimpleEarnFlexibleHistorySubscriptionRecordRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnLockedHistorySubscriptionRecordRoute,
+    getSapiV1SimpleEarnLockedHistorySubscriptionRecordRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnFlexibleHistoryRedemptionRecordRoute,
+    getSapiV1SimpleEarnFlexibleHistoryRedemptionRecordRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnLockedHistoryRedemptionRecordRoute,
+    getSapiV1SimpleEarnLockedHistoryRedemptionRecordRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnFlexibleHistoryRewardsRecordRoute,
+    getSapiV1SimpleEarnFlexibleHistoryRewardsRecordRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnLockedHistoryRewardsRecordRoute,
+    getSapiV1SimpleEarnLockedHistoryRewardsRecordRouteHandler,
+  )
+  .openapi(
+    postSapiV1SimpleEarnFlexibleSetAutoSubscribeRoute,
+    postSapiV1SimpleEarnFlexibleSetAutoSubscribeRouteHandler,
+  )
+  .openapi(
+    postSapiV1SimpleEarnLockedSetAutoSubscribeRoute,
+    postSapiV1SimpleEarnLockedSetAutoSubscribeRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnFlexiblePersonalLeftQuotaRoute,
+    getSapiV1SimpleEarnFlexiblePersonalLeftQuotaRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnLockedPersonalLeftQuotaRoute,
+    getSapiV1SimpleEarnLockedPersonalLeftQuotaRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnFlexibleSubscriptionPreviewRoute,
+    getSapiV1SimpleEarnFlexibleSubscriptionPreviewRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnLockedSubscriptionPreviewRoute,
+    getSapiV1SimpleEarnLockedSubscriptionPreviewRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnLockedSetRedeemOptionRoute,
+    getSapiV1SimpleEarnLockedSetRedeemOptionRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnFlexibleHistoryRateHistoryRoute,
+    getSapiV1SimpleEarnFlexibleHistoryRateHistoryRouteHandler,
+  )
+  .openapi(
+    getSapiV1SimpleEarnFlexibleHistoryCollateralRecordRoute,
+    getSapiV1SimpleEarnFlexibleHistoryCollateralRecordRouteHandler,
+  )
+  .openapi(getSapiV1DciProductListRoute, getSapiV1DciProductListRouteHandler)
+  .openapi(postSapiV1DciProductSubscribeRoute, postSapiV1DciProductSubscribeRouteHandler)
+  .openapi(getSapiV1DciProductPositionsRoute, getSapiV1DciProductPositionsRouteHandler)
+  .openapi(getSapiV1DciProductAccountsRoute, getSapiV1DciProductAccountsRouteHandler)
+  .openapi(
+    postSapiV1DciProductAutoCompoundEditStatusRoute,
+    postSapiV1DciProductAutoCompoundEditStatusRouteHandler,
+  )
+
+export default app

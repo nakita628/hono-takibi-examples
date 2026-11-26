@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteDuplicatesIdRoute,
   deleteDuplicatesRoute,
   getDuplicatesRoute,
   postDuplicatesResolveRoute,
+  deleteDuplicatesIdRoute,
 } from '../routes'
 
 export const deleteDuplicatesRouteHandler: RouteHandler<typeof deleteDuplicatesRoute> = async (

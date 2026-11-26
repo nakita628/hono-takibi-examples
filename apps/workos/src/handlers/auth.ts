@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAuthFactorsIdRoute,
-  getAuthFactorsIdRoute,
   postAuthChallengesIdVerifyRoute,
   postAuthFactorsEnrollRoute,
+  getAuthFactorsIdRoute,
+  deleteAuthFactorsIdRoute,
   postAuthFactorsIdChallengeRoute,
 } from '../routes'
 

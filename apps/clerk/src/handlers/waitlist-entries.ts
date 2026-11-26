@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteWaitlistEntriesWaitlistEntryIdRoute,
   getWaitlistEntriesRoute,
   postWaitlistEntriesRoute,
+  deleteWaitlistEntriesWaitlistEntryIdRoute,
   postWaitlistEntriesWaitlistEntryIdInviteRoute,
   postWaitlistEntriesWaitlistEntryIdRejectRoute,
 } from '../routes'

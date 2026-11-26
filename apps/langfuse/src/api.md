@@ -3726,7 +3726,7 @@ curl https://cloud.langfuse.com/api/public/v2/evaluators \
 
 Create an evaluator in the authenticated project.
 
-An evaluator defines **how** Langfuse should score data. LLM-as-a-judge evaluators define a prompt, expected structured output, and optional model configuration. Code evaluators define source code and a runtime language.
+An evaluator defines **how** Langfuse should score data. LLM-as-a-judge evaluators define a prompt, expected structured output, and optional model configuration. Code evaluators define source code and a runtime language. Decision-model evaluators define typed questions, a decision-model configuration, and a mapping from observation data to state keys.
 
 This always creates a new evaluator with version `1`. Names are not identifiers and do not need to be unique.
 
@@ -3780,6 +3780,14 @@ This always creates a new evaluator with version `1`. Names are not identifiers 
 |» type|body|string|true|Evaluator type.|
 |» sourceCode|body|string|true|Source code executed for each matched observation.|
 |» sourceCodeLanguage|body|[CodeEvaluatorSourceCodeLanguage](#schemacodeevaluatorsourcecodelanguage)|true|Runtime language used to execute the source code.|
+|» *oneOf*|body|object|false|none|
+|» type|body|string|true|none|
+|» name|body|string|true|Human-readable evaluator name. Names are not identifiers and do not need to be unique.|
+|» description|body|string \| null|false|Optional human-readable evaluator description.|
+|» type|body|string|true|Evaluator type.|
+|» questions|body|[[DecisionModelQuestion](#schemadecisionmodelquestion)]|true|Between 1 and 50 typed questions. Question ids and score names must be unique.|
+|» modelConfig|body|[EvaluatorModelConfig](#schemaevaluatormodelconfig)|true|Decision-model connection and model. Required.<br><br>The provider must be a decision-model connection of the project. Call `GET /api/public/llm-connections` to discover available providers.|
+|» variableMapping|body|[[PromptVariableMappingInput](#schemapromptvariablemappinginput)]|true|At least one mapping from observation data to a state key. Each `variable` is a state key that starts with a letter or underscore and contains only letters, digits, and underscores.|
 
 #### Enumerated Values
 
@@ -3789,6 +3797,7 @@ This always creates a new evaluator with version `1`. Names are not identifiers 
 |» type|code|
 |» sourceCodeLanguage|PYTHON|
 |» sourceCodeLanguage|TYPESCRIPT|
+|» type|decision_model|
 
 > Example responses
 
@@ -4324,7 +4333,7 @@ Update an evaluator by its stable identifier.
 
 Provide only the top-level fields to change. Metadata-only changes do not create a version. Evaluator type cannot change.
 
-Definition fields are flattened into the request. To replace a definition, include `type` and every definition field for that type. Definition fields are replaced as a complete unit rather than merged. For LLM-as-a-judge evaluators, omitting or setting `modelConfig` to `null` selects the project's default evaluation model.
+Definition fields are flattened into the request. To replace a definition, include `type` and every definition field for that type. Definition fields are replaced as a complete unit rather than merged. For LLM-as-a-judge evaluators, omitting or setting `modelConfig` to `null` selects the project's default evaluation model. Decision-model evaluators always require `modelConfig`.
 
 Replacing a definition automatically returns an evaluator paused by an invalid or missing model configuration to `active`, while preserving its id and evaluation-rule assignments. Pauses caused by provider authentication, billing, connectivity, account state, or an unknown legacy reason remain paused until the explicit reactivation check succeeds.
 
@@ -4346,6 +4355,7 @@ Replacing a definition automatically returns an evaluator paused by an invalid o
 |» *oneOf*|body|[UpdateEvaluatorMetadataRequest](#schemaupdateevaluatormetadatarequest)|false|Metadata-only update. At least one field must be provided.|
 |» *oneOf*|body|[UpdateLlmAsJudgeEvaluatorRequest](#schemaupdatellmasjudgeevaluatorrequest)|false|none|
 |» *oneOf*|body|[UpdateCodeEvaluatorRequest](#schemaupdatecodeevaluatorrequest)|false|none|
+|» *oneOf*|body|[UpdateDecisionModelEvaluatorRequest](#schemaupdatedecisionmodelevaluatorrequest)|false|none|
 
 > Example responses
 
@@ -5365,7 +5375,7 @@ Create or update an LLM connection. The connection is upserted on provider.
 |» withDefaultModels|body|boolean \| null|false|Whether to include default models. Default is true.|
 |» extraHeaders|body|object \| null|false|Extra headers to send with requests|
 |» » **additionalProperties**|body|string|false|none|
-|» config|body|object \| null|false|Adapter-specific configuration. Validation rules: - **Bedrock**: Required. Must be `{"region": "<aws-region>"}` (e.g., `{"region":"us-east-1"}`) - **OpenAI**: Optional. If provided, must be `{"useResponsesApi": <boolean>}` to control whether Langfuse routes calls through OpenAI's Responses API. - **VertexAI**: Optional. If provided, must be `{"location": "<gcp-location>"}` (e.g., `{"location":"us-central1"}`) - **Other adapters**: Not supported. Omit this field or set to null.|
+|» config|body|object \| null|false|Adapter-specific configuration. Validation rules: - **Bedrock**: Required. Must be `{"region": "<aws-region>"}` (e.g., `{"region":"us-east-1"}`)<br>  Optionally add `"customModelConfig": {"<custom model>": {"modelFamily": "anthropic"}}` to mark custom models, such as application inference profile ARNs, whose id does not show that they run an Anthropic model.<br>- **OpenAI**: Optional. If provided, must be `{"useResponsesApi": <boolean>}` to control whether Langfuse routes calls through OpenAI's Responses API. - **VertexAI**: Optional. If provided, must be `{"location": "<gcp-location>"}` (e.g., `{"location":"us-central1"}`) - **Other adapters**: Not supported. Omit this field or set to null.|
 
 #### Enumerated Values
 
@@ -5696,7 +5706,7 @@ Create or update an organization-level LLM connection. The connection is upserte
 |» withDefaultModels|body|boolean \| null|false|Whether to include default models. Default is true.|
 |» extraHeaders|body|object \| null|false|Extra headers to send with requests|
 |» » **additionalProperties**|body|string|false|none|
-|» config|body|object \| null|false|Adapter-specific configuration. Validation rules: - **Bedrock**: Required. Must be `{"region": "<aws-region>"}` (e.g., `{"region":"us-east-1"}`) - **OpenAI**: Optional. If provided, must be `{"useResponsesApi": <boolean>}` to control whether Langfuse routes calls through OpenAI's Responses API. - **VertexAI**: Optional. If provided, must be `{"location": "<gcp-location>"}` (e.g., `{"location":"us-central1"}`) - **Other adapters**: Not supported. Omit this field or set to null.|
+|» config|body|object \| null|false|Adapter-specific configuration. Validation rules: - **Bedrock**: Required. Must be `{"region": "<aws-region>"}` (e.g., `{"region":"us-east-1"}`)<br>  Optionally add `"customModelConfig": {"<custom model>": {"modelFamily": "anthropic"}}` to mark custom models, such as application inference profile ARNs, whose id does not show that they run an Anthropic model.<br>- **OpenAI**: Optional. If provided, must be `{"useResponsesApi": <boolean>}` to control whether Langfuse routes calls through OpenAI's Responses API. - **VertexAI**: Optional. If provided, must be `{"location": "<gcp-location>"}` (e.g., `{"location":"us-central1"}`) - **Other adapters**: Not supported. Omit this field or set to null.|
 
 #### Enumerated Values
 
@@ -7211,7 +7221,7 @@ A condition in the `filter` parameter replaces the query parameter for the same 
 |fromStartTime|query|string(date-time) \| null|false|Retrieve only observations with a start_time on or after this datetime (ISO 8601).|
 |toStartTime|query|string(date-time) \| null|false|Retrieve only observations with a start_time before this datetime (ISO 8601).|
 |version|query|string \| null|false|Optional filter to only include observations with a certain version.|
-|filter|query|string \| null|false|JSON string containing an array of filter conditions. A condition on the same field as a query parameter filter (userId, name, type, level, environment, fromStartTime, ...) replaces that parameter. Query parameters for other fields still apply. A `startTime` condition replaces both `fromStartTime` and `toStartTime`.<br><br>## Filter Structure<br>Each filter condition has the following structure:<br>```json<br>[<br>  {<br>    "type": string,           // Required. One of: "datetime", "string", "number", "stringOptions", "arrayOptions", "stringObject", "boolean", "null"<br>    "column": string,         // Required. Column to filter on (see available columns below)<br>    "operator": string,       // Required. Operator based on type:<br>                              // - datetime: ">", "<", ">=", "<="<br>                              // - string: "=", "contains", "does not contain", "starts with", "ends with", "is not empty", "matches" (input/output only)<br>                              // - stringOptions: "any of", "none of" (works on any string column except input/output)<br>                              // - arrayOptions: "any of", "none of", "all of"<br>                              // - number: "=", ">", "<", ">=", "<="<br>                              // - stringObject: "=", "contains", "does not contain", "starts with", "ends with", "matches", "is set", "is not set"<br>                              // - boolean: "=", "<>"<br>                              // - null: "is null", "is not null"<br>    "value": any,             // Required. Type depends on filter type: ISO 8601 string for datetime, JSON number for number (not a numeric string), array of strings for stringOptions/arrayOptions, boolean for boolean, and "" (empty string) for null<br>    "key": string             // Required only for stringObject (the metadata key to filter on)<br>  }<br>]<br>```<br><br>## Available Columns<br><br>### Core Observation Fields<br>- `id` (string) - Observation ID<br>- `type` (string) - Observation type (SPAN, GENERATION, EVENT)<br>- `name` (string) - Observation name<br>- `traceId` (string) - Associated trace ID<br>- `startTime` (datetime) - Observation start time<br>- `endTime` (datetime) - Observation end time<br>- `environment` (string) - Environment tag<br>- `level` (string) - Log level (DEBUG, DEFAULT, WARNING, ERROR)<br>- `statusMessage` (string) - Status message<br>- `version` (string) - Version tag<br>- `userId` (string) - User ID<br>- `sessionId` (string) - Session ID<br>- `isRootObservation` (boolean) - Whether the observation is a logical root. Observations marked as app roots by the SDK may retain a non-null parentObservationId.<br><br>### Trace-Related Fields<br>- `traceName` (string) - Name of the parent trace<br>- `traceTags` (arrayOptions) - Tags from the parent trace<br>- `tags` (arrayOptions) - Alias for traceTags<br><br>### Performance Metrics<br>- `latency` (number) - Latency in seconds (calculated: end_time - start_time)<br>- `timeToFirstToken` (number) - Time to first token in seconds<br>- `tokensPerSecond` (number) - Output tokens per second<br><br>### Token Usage<br>- `inputTokens` (number) - Number of input tokens<br>- `outputTokens` (number) - Number of output tokens<br>- `totalTokens` (number) - Total tokens (alias: `tokens`)<br><br>### Cost Metrics<br>- `inputCost` (number) - Input cost in USD<br>- `outputCost` (number) - Output cost in USD<br>- `totalCost` (number) - Total cost in USD<br><br>### Model Information<br>- `model` (string) - Provided model name (alias: `providedModelName`)<br>- `promptName` (string) - Associated prompt name<br>- `promptVersion` (number) - Associated prompt version<br><br>### Structured Data<br>- `input` (string) - Observation input. Supports accelerated indexed literal search with the `matches` operator.<br>- `output` (string) - Observation output. Supports accelerated indexed literal search with the `matches` operator.<br>- `metadata` (stringObject) - Metadata key-value pairs. Use the `key` parameter to filter on a specific metadata key. Metadata values are stored as strings, so match numbers and booleans by their string form with `=` (for example `"value": "true"` or `"value": "42"`); numeric comparisons such as `>` are not supported on metadata.<br><br>The `matches` operator is only supported for `input`, `output`, and stringObject `metadata` filters. It performs indexed literal search with token-boundary pruning using the events table text indexes. Case sensitivity differs by target: `input` and `output` matches are case-insensitive, while metadata value matches are case-sensitive. Unlike SQL `LIKE`, `%` and `_` are treated as literal characters. Use `contains` for legacy substring semantics where the API allows it. Any v2 `input` or `output` filter must be accompanied by at least one `=` or `matches` filter on `input` or `output`; standalone `contains`, `starts with`, `ends with`, and `does not contain` filters on these columns are rejected.<br><br>## Filter Examples<br>```json<br>[<br>  {<br>    "type": "string",<br>    "column": "type",<br>    "operator": "=",<br>    "value": "GENERATION"<br>  },<br>  {<br>    "type": "number",<br>    "column": "latency",<br>    "operator": ">=",<br>    "value": 2.5<br>  },<br>  {<br>    "type": "stringObject",<br>    "column": "metadata",<br>    "key": "environment",<br>    "operator": "=",<br>    "value": "production"<br>  },<br>  {<br>    "type": "string",<br>    "column": "output",<br>    "operator": "matches",<br>    "value": "needle"<br>  },<br>  {<br>    "type": "boolean",<br>    "column": "isRootObservation",<br>    "operator": "=",<br>    "value": true<br>  }<br>]<br>```|
+|filter|query|string \| null|false|JSON string containing an array of filter conditions. A condition on the same field as a query parameter filter (userId, name, type, level, environment, fromStartTime, ...) replaces that parameter. Query parameters for other fields still apply. A `startTime` condition replaces both `fromStartTime` and `toStartTime`.<br><br>## Filter Structure<br>Each filter condition has the following structure:<br>```json<br>[<br>  {<br>    "type": string,           // Required. One of: "datetime", "string", "number", "stringOptions", "arrayOptions", "stringObject", "numberObject", "boolean", "null"<br>    "column": string,         // Required. Column to filter on (see available columns below)<br>    "operator": string,       // Required. Operator based on type:<br>                              // - datetime: ">", "<", ">=", "<="<br>                              // - string: "=", "contains", "does not contain", "starts with", "ends with", "is not empty", "matches" (input/output only)<br>                              // - stringOptions: "any of", "none of" (works on any string column except input/output)<br>                              // - arrayOptions: "any of", "none of", "all of"<br>                              // - number: "=", ">", "<", ">=", "<="<br>                              // - stringObject: "=", "contains", "does not contain", "starts with", "ends with", "matches", "is set", "is not set"<br>                              // - numberObject: "=", ">", "<", ">=", "<=" (metadata only)<br>                              // - boolean: "=", "<>"<br>                              // - null: "is null", "is not null"<br>    "value": any,             // Required. Type depends on filter type: ISO 8601 string for datetime, JSON number for number and numberObject (not a numeric string), array of strings for stringOptions/arrayOptions, boolean for boolean, and "" (empty string) for null<br>    "key": string             // Required only for stringObject and numberObject (the metadata key to filter on)<br>  }<br>]<br>```<br><br>## Available Columns<br><br>### Core Observation Fields<br>- `id` (string) - Observation ID<br>- `type` (string) - Observation type (SPAN, GENERATION, EVENT)<br>- `name` (string) - Observation name<br>- `traceId` (string) - Associated trace ID<br>- `startTime` (datetime) - Observation start time<br>- `endTime` (datetime) - Observation end time<br>- `environment` (string) - Environment tag<br>- `level` (string) - Log level (DEBUG, DEFAULT, WARNING, ERROR)<br>- `statusMessage` (string) - Status message<br>- `version` (string) - Version tag<br>- `userId` (string) - User ID<br>- `sessionId` (string) - Session ID<br>- `isRootObservation` (boolean) - Whether the observation is a logical root. Observations marked as app roots by the SDK may retain a non-null parentObservationId.<br><br>### Trace-Related Fields<br>- `traceName` (string) - Name of the parent trace<br>- `traceTags` (arrayOptions) - Tags from the parent trace<br>- `tags` (arrayOptions) - Alias for traceTags<br><br>### Performance Metrics<br>- `latency` (number) - Latency in seconds (calculated: end_time - start_time)<br>- `timeToFirstToken` (number) - Time to first token in seconds<br>- `tokensPerSecond` (number) - Output tokens per second<br><br>### Token Usage<br>- `inputTokens` (number) - Number of input tokens<br>- `outputTokens` (number) - Number of output tokens<br>- `totalTokens` (number) - Total tokens (alias: `tokens`)<br><br>### Cost Metrics<br>- `inputCost` (number) - Input cost in USD<br>- `outputCost` (number) - Output cost in USD<br>- `totalCost` (number) - Total cost in USD<br><br>### Model Information<br>- `model` (string) - Provided model name (alias: `providedModelName`)<br>- `promptName` (string) - Associated prompt name<br>- `promptVersion` (number) - Associated prompt version<br><br>### Structured Data<br>- `input` (string) - Observation input. Supports accelerated indexed literal search with the `matches` operator.<br>- `output` (string) - Observation output. Supports accelerated indexed literal search with the `matches` operator.<br>- `metadata` (stringObject) - Metadata key-value pairs. Use the `key` parameter to filter on a specific metadata key. Metadata values are stored as strings: a stringObject filter matches numbers and booleans by their string form with `=` (for example `"value": "true"` or `"value": "42"`). A numberObject filter compares the value as a number (for example `"operator": ">", "value": 20` matches `"20.5"` and `"21"`); values that are not numbers never match.<br><br>The `matches` operator is only supported for `input`, `output`, and stringObject `metadata` filters. It performs indexed literal search with token-boundary pruning using the events table text indexes. Case sensitivity differs by target: `input` and `output` matches are case-insensitive, while metadata value matches are case-sensitive. Unlike SQL `LIKE`, `%` and `_` are treated as literal characters. Use `contains` for legacy substring semantics where the API allows it. Any v2 `input` or `output` filter must be accompanied by at least one `=` or `matches` filter on `input` or `output`; standalone `contains`, `starts with`, `ends with`, and `does not contain` filters on these columns are rejected.<br><br>## Filter Examples<br>```json<br>[<br>  {<br>    "type": "string",<br>    "column": "type",<br>    "operator": "=",<br>    "value": "GENERATION"<br>  },<br>  {<br>    "type": "number",<br>    "column": "latency",<br>    "operator": ">=",<br>    "value": 2.5<br>  },<br>  {<br>    "type": "stringObject",<br>    "column": "metadata",<br>    "key": "environment",<br>    "operator": "=",<br>    "value": "production"<br>  },<br>  {<br>    "type": "string",<br>    "column": "output",<br>    "operator": "matches",<br>    "value": "needle"<br>  },<br>  {<br>    "type": "boolean",<br>    "column": "isRootObservation",<br>    "operator": "=",<br>    "value": true<br>  }<br>]<br>```|
 
 #### Enumerated Values
 
@@ -14876,7 +14886,7 @@ curl https://cloud.langfuse.com/api/public/unstable/topic-facets \
 
 `GET /api/public/unstable/topic-facets`
 
-Unstable: Topics is in closed beta. The shape may change without notice.
+Unstable: Topics is in public beta. The shape may change without notice.
 
 List the project's Topics facets. Only active facets (run by a Topics
 rule, or all facets if the project has no rule) are returned unless
@@ -14913,7 +14923,7 @@ String matching is case-insensitive. Columns: `id` (stringOptions),
       ],
       "version": 0,
       "prompt": "string",
-      "publishedRun": {
+      "publishedMap": {
         "id": "string",
         "completedAt": "1970-01-01T00:00:00Z",
         "topicCount": 0
@@ -15057,7 +15067,7 @@ curl https://cloud.langfuse.com/api/public/unstable/topic-facets/string \
 
 `GET /api/public/unstable/topic-facets/{facetId}`
 
-Unstable: Topics is in closed beta. The shape may change without notice.
+Unstable: Topics is in public beta. The shape may change without notice.
 
 Get one Topics facet by id, including inactive facets.
 
@@ -15083,7 +15093,7 @@ Get one Topics facet by id, including inactive facets.
   ],
   "version": 0,
   "prompt": "string",
-  "publishedRun": {
+  "publishedMap": {
     "id": "string",
     "completedAt": "1970-01-01T00:00:00Z",
     "topicCount": 0
@@ -15219,7 +15229,7 @@ curl https://cloud.langfuse.com/api/public/unstable/topics \
 
 `GET /api/public/unstable/topics`
 
-Unstable: Topics is in closed beta. The shape may change without notice.
+Unstable: Topics is in public beta. The shape may change without notice.
 
 List the topics of each active facet's live map, with
 the number of traces currently assigned to each topic in the window.
@@ -15232,7 +15242,7 @@ The window applies to the trace start time. It defaults to the last
 `filter` is a JSON array of filter conditions combined with AND.
 String matching is case-insensitive. Columns: `facetId`
 (stringOptions), `facetName` (string, stringOptions), `ruleId`
-(stringOptions), `id` (stringOptions), `name` (string, stringOptions).
+(stringOptions), `stableId` (stringOptions), `name` (string, stringOptions).
 Facet and rule conditions also restrict `facets`.
 
 <h3 id="unstabletopicslist-parameters">Parameters</h3>
@@ -15267,7 +15277,7 @@ Facet and rule conditions also restrict `facets`.
   },
   "data": [
     {
-      "id": "string",
+      "stableId": "string",
       "versionId": "string",
       "name": "string",
       "description": "string",
@@ -15277,7 +15287,7 @@ Facet and rule conditions also restrict `facets`.
         "version": 0
       },
       "ruleId": "string",
-      "runId": "string",
+      "mapId": "string",
       "traceCount": 0
     }
   ],
@@ -15289,13 +15299,15 @@ Facet and rule conditions also restrict `facets`.
         "version": 0
       },
       "ruleId": "string",
-      "publishedRunId": "string",
+      "publishedMapId": "string",
       "counts": {
         "assigned": 0,
         "outlier": 0,
         "awaitingMap": 0,
         "notApplicable": 0,
-        "insufficientInput": 0
+        "insufficientInput": 0,
+        "emptyInput": 0,
+        "inputTooLarge": 0
       }
     }
   ],
@@ -15434,9 +15446,9 @@ curl https://cloud.langfuse.com/api/public/unstable/topics/string \
   -H "Authorization: Basic ${CREDENTIALS}"
 ```
 
-`GET /api/public/unstable/topics/{topicId}`
+`GET /api/public/unstable/topics/{topicStableId}`
 
-Unstable: Topics is in closed beta. The shape may change without notice.
+Unstable: Topics is in public beta. The shape may change without notice.
 
 Get one topic of a facet's current map by its stable id. Retired
 topics are not found.
@@ -15445,7 +15457,7 @@ topics are not found.
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|topicId|path|string|true|none|
+|topicStableId|path|string|true|none|
 |fromTimestamp|query|string(date-time) \| null|false|Start of the window used for `traceCount`. Defaults to 7 days before `toTimestamp`.|
 |toTimestamp|query|string(date-time) \| null|false|End of the window used for `traceCount`. Defaults to now.|
 
@@ -15455,7 +15467,7 @@ topics are not found.
 
 ```json
 {
-  "id": "string",
+  "stableId": "string",
   "versionId": "string",
   "name": "string",
   "description": "string",
@@ -15465,7 +15477,7 @@ topics are not found.
     "version": 0
   },
   "ruleId": "string",
-  "runId": "string",
+  "mapId": "string",
   "traceCount": 0,
   "inCurrentMap": true,
   "window": {
@@ -15603,7 +15615,7 @@ curl https://cloud.langfuse.com/api/public/unstable/topic-rules \
 
 `GET /api/public/unstable/topic-rules`
 
-Unstable: Topics is in closed beta. The shape may change without notice.
+Unstable: Topics is in public beta. The shape may change without notice.
 
 List the project's Topics rules. A rule selects traces with an
 observation filter and a sampling rate, runs the facets in `facetIds`
@@ -15784,7 +15796,7 @@ curl https://cloud.langfuse.com/api/public/unstable/topic-rules/string \
 
 `GET /api/public/unstable/topic-rules/{ruleId}`
 
-Unstable: Topics is in closed beta. The shape may change without notice.
+Unstable: Topics is in public beta. The shape may change without notice.
 
 Get one Topics rule by id.
 
@@ -15947,7 +15959,7 @@ curl https://cloud.langfuse.com/api/public/unstable/topic-summaries \
 
 `GET /api/public/unstable/topic-summaries`
 
-Unstable: Topics is in closed beta. The shape may change without notice.
+Unstable: Topics is in public beta. The shape may change without notice.
 
 List the current Topics summary per trace and facet: what the trace
 is about from the facet's perspective. Summaries are shared by all
@@ -15969,19 +15981,21 @@ listed.
 
 `filter` is a JSON array of filter conditions combined with AND, with
 at most 100 `traceId` values. Columns: `traceId`, `facetId`, `facetName`, `ruleId`, `environment`
-(stringOptions), `timestamp`, `processedAt` (datetime), `state`,
-`topicId`, `topicName` (stringOptions), `assignmentStatus`
+(stringOptions), `timestamp`, `createdAt` (datetime), `state`,
+`topicStableId`, `topicName` (stringOptions), `assignmentStatus`
 (stringOptions, `any of` only). An unknown `topicName` matches nothing under `any of`
 and is ignored under `none of`.
 
 `state` values: `complete` (summarized), `not_applicable` (the facet
 does not apply to the trace), `insufficient_input` (too little input
-to summarize). `assignmentStatus` values: `assigned`, `outlier` (no
+to summarize), `empty_input` (no usable text in the trace),
+`input_too_large` (trace text exceeded the Topics input limit).
+`assignmentStatus` values: `assigned`, `outlier` (no
 topic fits), `awaiting_map` (summarized, not yet assigned).
 
 Common questions:
 - Summaries of specific traces: `traceId` `any of` the trace ids.
-- Summaries of a topic's traces: `topicId` or `topicName`.
+- Summaries of a topic's traces: `topicStableId` or `topicName`.
 - Traces without a topic yet: `assignmentStatus` `any of` `["awaiting_map", "outlier"]`.
 
 <h3 id="unstabletopicslistsummaries-parameters">Parameters</h3>
@@ -16025,7 +16039,7 @@ Common questions:
       "state": "complete",
       "summary": "string",
       "summaryTruncated": true,
-      "processedAt": "1970-01-01T00:00:00Z"
+      "createdAt": "1970-01-01T00:00:00Z"
     }
   ],
   "meta": {
@@ -16163,7 +16177,7 @@ curl https://cloud.langfuse.com/api/public/unstable/topic-assignments \
 
 `GET /api/public/unstable/topic-assignments`
 
-Unstable: Topics is in closed beta. The shape may change without notice.
+Unstable: Topics is in public beta. The shape may change without notice.
 
 List the current topic per trace, facet and rule on each rule's live
 map: `assigned` with its topic, or `outlier` when no topic fits.
@@ -16186,14 +16200,14 @@ listed.
 
 `filter` is a JSON array of filter conditions combined with AND, with
 at most 100 `traceId` values. Columns: `traceId`, `facetId`, `facetName`, `ruleId`, `environment`,
-`topicId`, `topicName` (stringOptions), `status` (stringOptions,
-`any of` only: `assigned`, `outlier`), `timestamp` (datetime). An
+`topicStableId`, `topicName` (stringOptions), `status` (stringOptions,
+`any of` only: `assigned`, `outlier`), `timestamp`, `createdAt` (datetime). An
 unknown `topicName` matches nothing under `any of` and is ignored
 under `none of`.
 
 Common questions:
 - Topics of specific traces: `traceId` `any of` the trace ids.
-- Traces in a topic: `topicId` or `topicName`.
+- Traces in a topic: `topicStableId` or `topicName`.
 
 <h3 id="unstabletopicslistassignments-parameters">Parameters</h3>
 
@@ -16233,12 +16247,12 @@ Common questions:
       "ruleId": "string",
       "status": "assigned",
       "topic": {
-        "id": "string",
+        "stableId": "string",
         "versionId": "string",
         "name": "string"
       },
-      "runId": "string",
-      "assignedAt": "1970-01-01T00:00:00Z"
+      "mapId": "string",
+      "createdAt": "1970-01-01T00:00:00Z"
     }
   ],
   "meta": {
@@ -18970,7 +18984,7 @@ Usage interface of OpenAI for improved compatibility.
 
 The evaluator type.
 
-The public API supports LLM-as-a-judge and code evaluators.
+The public API supports LLM-as-a-judge, code, and decision-model evaluators.
 
 <h2 id="tocS_CodeEvaluatorSourceCodeLanguage">CodeEvaluatorSourceCodeLanguage</h2>
 <!-- backwards compatibility -->
@@ -20733,6 +20747,335 @@ A user prompt string shortcut, or an ordered list of chat messages.
 |sourceCodeLanguage|PYTHON|
 |sourceCodeLanguage|TYPESCRIPT|
 
+<h2 id="tocS_DecisionModelEntry">DecisionModelEntry</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelentry"></a>
+<a id="schema_DecisionModelEntry"></a>
+<a id="tocSdecisionmodelentry"></a>
+<a id="tocsdecisionmodelentry"></a>
+
+```json
+"string"
+```
+
+Instruction text (1 to 20,000 characters), or a non-null JSON value that the decision model receives as structured instructions.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|string|false|none|none|
+|*oneOf*|object|false|none|none|
+|*oneOf*|[object]|false|none|none|
+|*oneOf*|number(double)|false|none|none|
+|*oneOf*|boolean|false|none|none|
+
+<h2 id="tocS_DecisionModelChoiceCriterion">DecisionModelChoiceCriterion</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelchoicecriterion"></a>
+<a id="schema_DecisionModelChoiceCriterion"></a>
+<a id="tocSdecisionmodelchoicecriterion"></a>
+<a id="tocsdecisionmodelchoicecriterion"></a>
+
+```json
+{
+  "value": "string",
+  "description": "string"
+}
+```
+
+One allowed answer of a `choice` question.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|value|string|true|none|Answer value stored as the categorical score value. Must be unique within the question.|
+|description|[DecisionModelEntry](#schemadecisionmodelentry)|false|none|Optional description of when this answer applies.|
+
+<h2 id="tocS_DecisionModelScoreCriterion">DecisionModelScoreCriterion</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelscorecriterion"></a>
+<a id="schema_DecisionModelScoreCriterion"></a>
+<a id="tocSdecisionmodelscorecriterion"></a>
+<a id="tocsdecisionmodelscorecriterion"></a>
+
+```json
+{
+  "description": "string"
+}
+```
+
+One level of a `score` question, ordered from lowest to highest.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|[DecisionModelEntry](#schemadecisionmodelentry)|true|none|Description of this level.|
+
+<h2 id="tocS_DecisionModelBooleanCriteria">DecisionModelBooleanCriteria</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelbooleancriteria"></a>
+<a id="schema_DecisionModelBooleanCriteria"></a>
+<a id="tocSdecisionmodelbooleancriteria"></a>
+<a id="tocsdecisionmodelbooleancriteria"></a>
+
+```json
+{
+  "true": {
+    "description": "string"
+  },
+  "false": {
+    "description": "string"
+  }
+}
+```
+
+Optional descriptions of the two answers of a `boolean` question. The answer is always `true` or `false`; these descriptions only tell the model when each one applies.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|true|[DecisionModelBooleanCriterion](#schemadecisionmodelbooleancriterion)|false|none|When the statement is true.|
+|false|[DecisionModelBooleanCriterion](#schemadecisionmodelbooleancriterion)|false|none|When the statement is false.|
+
+<h2 id="tocS_DecisionModelBooleanCriterion">DecisionModelBooleanCriterion</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelbooleancriterion"></a>
+<a id="schema_DecisionModelBooleanCriterion"></a>
+<a id="tocSdecisionmodelbooleancriterion"></a>
+<a id="tocsdecisionmodelbooleancriterion"></a>
+
+```json
+{
+  "description": "string"
+}
+```
+
+One answer of a `boolean` question.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|[DecisionModelEntry](#schemadecisionmodelentry)|true|none|Description of when this answer applies.|
+
+<h2 id="tocS_DecisionModelChoiceQuestion">DecisionModelChoiceQuestion</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelchoicequestion"></a>
+<a id="schema_DecisionModelChoiceQuestion"></a>
+<a id="tocSdecisionmodelchoicequestion"></a>
+<a id="tocsdecisionmodelchoicequestion"></a>
+
+```json
+{
+  "id": "string",
+  "scoreName": "string",
+  "instructions": "string",
+  "criteria": [
+    {
+      "value": "string",
+      "description": "string"
+    }
+  ]
+}
+```
+
+Pick one of a fixed list of options. Produces a categorical score.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Question identifier. Must be unique within the evaluator.|
+|scoreName|string|true|none|Name of the score this question produces. Must be unique within the evaluator.|
+|instructions|[DecisionModelEntry](#schemadecisionmodelentry)|true|none|Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.|
+|criteria|[[DecisionModelChoiceCriterion](#schemadecisionmodelchoicecriterion)]|true|none|The allowed answers. Between 2 and 255, with unique values.|
+
+<h2 id="tocS_DecisionModelScoreQuestion">DecisionModelScoreQuestion</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelscorequestion"></a>
+<a id="schema_DecisionModelScoreQuestion"></a>
+<a id="tocSdecisionmodelscorequestion"></a>
+<a id="tocsdecisionmodelscorequestion"></a>
+
+```json
+{
+  "id": "string",
+  "scoreName": "string",
+  "instructions": "string",
+  "criteria": [
+    {
+      "description": "string"
+    }
+  ]
+}
+```
+
+Rate on an ordered scale. Produces a numeric score.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Question identifier. Must be unique within the evaluator.|
+|scoreName|string|true|none|Name of the score this question produces. Must be unique within the evaluator.|
+|instructions|[DecisionModelEntry](#schemadecisionmodelentry)|true|none|Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.|
+|criteria|[[DecisionModelScoreCriterion](#schemadecisionmodelscorecriterion)]|true|none|The levels of the scale. Between 2 and 10, ordered from lowest to highest.|
+
+<h2 id="tocS_DecisionModelBooleanQuestion">DecisionModelBooleanQuestion</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelbooleanquestion"></a>
+<a id="schema_DecisionModelBooleanQuestion"></a>
+<a id="tocSdecisionmodelbooleanquestion"></a>
+<a id="tocsdecisionmodelbooleanquestion"></a>
+
+```json
+{
+  "id": "string",
+  "scoreName": "string",
+  "instructions": "string",
+  "criteria": {
+    "true": {
+      "description": "string"
+    },
+    "false": {
+      "description": "string"
+    }
+  }
+}
+```
+
+Decide whether a statement is true. Produces a numeric score: the probability (0–1) that the statement is true.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Question identifier. Must be unique within the evaluator.|
+|scoreName|string|true|none|Name of the score this question produces. Must be unique within the evaluator.|
+|instructions|[DecisionModelEntry](#schemadecisionmodelentry)|true|none|Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.|
+|criteria|[DecisionModelBooleanCriteria](#schemadecisionmodelbooleancriteria)|false|none|Optional descriptions of when the statement is true and when it is false.|
+
+<h2 id="tocS_DecisionModelQuestion">DecisionModelQuestion</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelquestion"></a>
+<a id="schema_DecisionModelQuestion"></a>
+<a id="tocSdecisionmodelquestion"></a>
+<a id="tocsdecisionmodelquestion"></a>
+
+```json
+{
+  "type": "choice",
+  "id": "string",
+  "scoreName": "string",
+  "instructions": "string",
+  "criteria": [
+    {
+      "value": "string",
+      "description": "string"
+    }
+  ]
+}
+```
+
+One typed question answered by a decision-model evaluator. Each question produces one score.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|id|string|true|none|Question identifier. Must be unique within the evaluator.|
+|scoreName|string|true|none|Name of the score this question produces. Must be unique within the evaluator.|
+|instructions|[DecisionModelEntry](#schemadecisionmodelentry)|true|none|Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.|
+|criteria|[[DecisionModelChoiceCriterion](#schemadecisionmodelchoicecriterion)]|true|none|The allowed answers. Between 2 and 255, with unique values.|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|id|string|true|none|Question identifier. Must be unique within the evaluator.|
+|scoreName|string|true|none|Name of the score this question produces. Must be unique within the evaluator.|
+|instructions|[DecisionModelEntry](#schemadecisionmodelentry)|true|none|Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.|
+|criteria|[[DecisionModelScoreCriterion](#schemadecisionmodelscorecriterion)]|true|none|The levels of the scale. Between 2 and 10, ordered from lowest to highest.|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|id|string|true|none|Question identifier. Must be unique within the evaluator.|
+|scoreName|string|true|none|Name of the score this question produces. Must be unique within the evaluator.|
+|instructions|[DecisionModelEntry](#schemadecisionmodelentry)|true|none|Question instructions. Refer to state keys from `variableMapping` by name, wrapped in backticks, for example `` `user_message` ``.|
+|criteria|[DecisionModelBooleanCriteria](#schemadecisionmodelbooleancriteria)|false|none|Optional descriptions of when the statement is true and when it is false.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|choice|
+|type|score|
+|type|boolean|
+
+<h2 id="tocS_DecisionModelEvaluatorVersion">DecisionModelEvaluatorVersion</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelevaluatorversion"></a>
+<a id="schema_DecisionModelEvaluatorVersion"></a>
+<a id="tocSdecisionmodelevaluatorversion"></a>
+<a id="tocsdecisionmodelevaluatorversion"></a>
+
+```json
+{
+  "id": "string",
+  "version": 0,
+  "createdAt": "1970-01-01T00:00:00Z",
+  "createdBy": {
+    "id": "string",
+    "name": "string"
+  },
+  "type": "decision_model",
+  "questions": [
+    {
+      "type": "choice",
+      "id": "string",
+      "scoreName": "string",
+      "instructions": "string",
+      "criteria": [
+        {
+          "value": "string",
+          "description": "string"
+        }
+      ]
+    }
+  ],
+  "variables": [
+    "string"
+  ],
+  "variableMapping": [
+    {
+      "variable": "string",
+      "source": "string",
+      "jsonPath": "string"
+    }
+  ],
+  "modelConfig": {
+    "provider": "string",
+    "model": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Stable identifier of this evaluator version.|
+|version|integer|true|none|Monotonically increasing evaluator version number.|
+|createdAt|string(date-time)|true|none|Timestamp when this evaluator version was created.|
+|createdBy|[Creator](#schemacreator)|true|none|User who created this version, or `null` when no user can be resolved.|
+|type|string|true|none|Evaluator type.|
+|questions|[[DecisionModelQuestion](#schemadecisionmodelquestion)]|true|none|Typed questions answered during evaluation.|
+|variables|[string]|true|none|State keys available to the questions and evaluation-rule mappings.|
+|variableMapping|[[PromptVariableMappingRead](#schemapromptvariablemappingread)]|true|none|Default mapping from observation data to state keys.|
+|modelConfig|[EvaluatorModelConfig](#schemaevaluatormodelconfig)|true|none|Decision-model connection and model used for evaluation.|
+
 <h2 id="tocS_EvaluatorVersion">EvaluatorVersion</h2>
 <!-- backwards compatibility -->
 <a id="schemaevaluatorversion"></a>
@@ -20805,6 +21148,17 @@ A user prompt string shortcut, or an ordered list of chat messages.
 |type|string|true|none|Evaluator type.|
 |sourceCode|string|true|none|Source code executed for each matched observation.|
 |sourceCodeLanguage|[CodeEvaluatorSourceCodeLanguage](#schemacodeevaluatorsourcecodelanguage)|true|none|Runtime language used to execute the source code.|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|id|string|true|none|Stable identifier of this evaluator version.|
+|version|integer|true|none|Monotonically increasing evaluator version number.|
+|createdAt|string(date-time)|true|none|Timestamp when this evaluator version was created.|
+|createdBy|[Creator](#schemacreator)|true|none|User who created this version, or `null` when no user can be resolved.|
+|type|string|true|none|Evaluator type.|
+|questions|[[DecisionModelQuestion](#schemadecisionmodelquestion)]|true|none|Typed questions answered during evaluation.|
+|variables|[string]|true|none|State keys available to the questions and evaluation-rule mappings.|
+|variableMapping|[[PromptVariableMappingRead](#schemapromptvariablemappingread)]|true|none|Default mapping from observation data to state keys.|
+|modelConfig|[EvaluatorModelConfig](#schemaevaluatormodelconfig)|true|none|Decision-model connection and model used for evaluation.|
 
 #### Enumerated Values
 
@@ -20814,6 +21168,7 @@ A user prompt string shortcut, or an ordered list of chat messages.
 |type|code|
 |sourceCodeLanguage|PYTHON|
 |sourceCodeLanguage|TYPESCRIPT|
+|type|decision_model|
 
 <h2 id="tocS_EvaluationRuleAssignment">EvaluationRuleAssignment</h2>
 <!-- backwards compatibility -->
@@ -21099,6 +21454,111 @@ Evaluation-rule assignment associated with this evaluator.
 |sourceCodeLanguage|PYTHON|
 |sourceCodeLanguage|TYPESCRIPT|
 
+<h2 id="tocS_DecisionModelEvaluator">DecisionModelEvaluator</h2>
+<!-- backwards compatibility -->
+<a id="schemadecisionmodelevaluator"></a>
+<a id="schema_DecisionModelEvaluator"></a>
+<a id="tocSdecisionmodelevaluator"></a>
+<a id="tocsdecisionmodelevaluator"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "createdBy": {
+    "id": "string",
+    "name": "string"
+  },
+  "status": "active",
+  "pausedAt": "1970-01-01T00:00:00Z",
+  "pausedReason": "string",
+  "pausedMessage": "string",
+  "evaluationRuleAssignments": [
+    {
+      "evaluationRuleId": "string",
+      "variableMappingOverride": [
+        {
+          "variable": "string",
+          "source": "string",
+          "jsonPath": "string"
+        }
+      ]
+    }
+  ],
+  "createdAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "1970-01-01T00:00:00Z",
+  "versionId": "string",
+  "version": 0,
+  "versionCreatedAt": "1970-01-01T00:00:00Z",
+  "versionCreatedBy": {
+    "id": "string",
+    "name": "string"
+  },
+  "type": "decision_model",
+  "questions": [
+    {
+      "type": "choice",
+      "id": "string",
+      "scoreName": "string",
+      "instructions": "string",
+      "criteria": [
+        {
+          "value": "string",
+          "description": "string"
+        }
+      ]
+    }
+  ],
+  "variables": [
+    "string"
+  ],
+  "variableMapping": [
+    {
+      "variable": "string",
+      "source": "string",
+      "jsonPath": "string"
+    }
+  ],
+  "modelConfig": {
+    "provider": "string",
+    "model": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Stable identifier of this evaluator across all versions.|
+|name|string|true|none|Human-readable evaluator name. Names are not identifiers and do not need to be unique.|
+|description|string \| null|true|none|Optional human-readable evaluator description.|
+|createdBy|[Creator](#schemacreator)|true|none|User who created this evaluator, or `null` when no user can be resolved.|
+|status|[EvaluatorStatus](#schemaevaluatorstatus)|true|none|Effective evaluator status after Langfuse validates its runtime configuration.|
+|pausedAt|string(date-time) \| null|true|none|Timestamp when the evaluator was paused, otherwise `null`.|
+|pausedReason|string \| null|true|none|Machine-readable reason when `status=paused`, otherwise `null`.|
+|pausedMessage|string \| null|true|none|Human-readable explanation when `status=paused`, otherwise `null`.|
+|evaluationRuleAssignments|[[EvaluationRuleAssignment](#schemaevaluationruleassignment)]|true|none|All modern and legacy evaluation-rule assignments in newest-assignment-first order. Rule-specific mappings are exposed as `variableMappingOverride`; inherited defaults are omitted.|
+|createdAt|string(date-time)|true|none|Timestamp when the evaluator was created.|
+|updatedAt|string(date-time)|true|none|Timestamp when the evaluator was last updated.|
+|versionId|string|true|none|Stable identifier of the latest evaluator version.|
+|version|integer|true|none|Monotonically increasing latest evaluator version number.|
+|versionCreatedAt|string(date-time)|true|none|Timestamp when the latest evaluator version was created.|
+|versionCreatedBy|[Creator](#schemacreator)|true|none|User who created the latest evaluator version, or `null` when no user can be resolved.|
+|type|string|true|none|Evaluator type.|
+|questions|[[DecisionModelQuestion](#schemadecisionmodelquestion)]|true|none|Typed questions answered by the latest evaluator version.|
+|variables|[string]|true|none|State keys available to the questions and evaluation-rule mappings.|
+|variableMapping|[[PromptVariableMappingRead](#schemapromptvariablemappingread)]|true|none|Default mapping from observation data to state keys for the latest version.|
+|modelConfig|[EvaluatorModelConfig](#schemaevaluatormodelconfig)|true|none|Decision-model connection and model used by the latest version.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|active|
+|status|paused|
+
 <h2 id="tocS_Evaluator">Evaluator</h2>
 <!-- backwards compatibility -->
 <a id="schemaevaluator"></a>
@@ -21222,6 +21682,28 @@ An evaluator describes **how** to score data. Associated evaluation rules descri
 |type|string|true|none|Evaluator type.|
 |sourceCode|string|true|none|Source code executed by the latest evaluator version.|
 |sourceCodeLanguage|[CodeEvaluatorSourceCodeLanguage](#schemacodeevaluatorsourcecodelanguage)|true|none|Runtime language used to execute the latest source code.|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|id|string|true|none|Stable identifier of this evaluator across all versions.|
+|name|string|true|none|Human-readable evaluator name. Names are not identifiers and do not need to be unique.|
+|description|string \| null|true|none|Optional human-readable evaluator description.|
+|createdBy|[Creator](#schemacreator)|true|none|User who created this evaluator, or `null` when no user can be resolved.|
+|status|[EvaluatorStatus](#schemaevaluatorstatus)|true|none|Effective evaluator status after Langfuse validates its runtime configuration.|
+|pausedAt|string(date-time) \| null|true|none|Timestamp when the evaluator was paused, otherwise `null`.|
+|pausedReason|string \| null|true|none|Machine-readable reason when `status=paused`, otherwise `null`.|
+|pausedMessage|string \| null|true|none|Human-readable explanation when `status=paused`, otherwise `null`.|
+|evaluationRuleAssignments|[[EvaluationRuleAssignment](#schemaevaluationruleassignment)]|true|none|All modern and legacy evaluation-rule assignments in newest-assignment-first order. Rule-specific mappings are exposed as `variableMappingOverride`; inherited defaults are omitted.|
+|createdAt|string(date-time)|true|none|Timestamp when the evaluator was created.|
+|updatedAt|string(date-time)|true|none|Timestamp when the evaluator was last updated.|
+|versionId|string|true|none|Stable identifier of the latest evaluator version.|
+|version|integer|true|none|Monotonically increasing latest evaluator version number.|
+|versionCreatedAt|string(date-time)|true|none|Timestamp when the latest evaluator version was created.|
+|versionCreatedBy|[Creator](#schemacreator)|true|none|User who created the latest evaluator version, or `null` when no user can be resolved.|
+|type|string|true|none|Evaluator type.|
+|questions|[[DecisionModelQuestion](#schemadecisionmodelquestion)]|true|none|Typed questions answered by the latest evaluator version.|
+|variables|[string]|true|none|State keys available to the questions and evaluation-rule mappings.|
+|variableMapping|[[PromptVariableMappingRead](#schemapromptvariablemappingread)]|true|none|Default mapping from observation data to state keys for the latest version.|
+|modelConfig|[EvaluatorModelConfig](#schemaevaluatormodelconfig)|true|none|Decision-model connection and model used by the latest version.|
 
 #### Enumerated Values
 
@@ -21235,6 +21717,9 @@ An evaluator describes **how** to score data. Associated evaluation rules descri
 |status|paused|
 |sourceCodeLanguage|PYTHON|
 |sourceCodeLanguage|TYPESCRIPT|
+|type|decision_model|
+|status|active|
+|status|paused|
 
 <h2 id="tocS_EvaluatorStatus">EvaluatorStatus</h2>
 <!-- backwards compatibility -->
@@ -21332,6 +21817,57 @@ Effective evaluator runtime status.
 |sourceCodeLanguage|PYTHON|
 |sourceCodeLanguage|TYPESCRIPT|
 
+<h2 id="tocS_CreateDecisionModelEvaluatorRequest">CreateDecisionModelEvaluatorRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatedecisionmodelevaluatorrequest"></a>
+<a id="schema_CreateDecisionModelEvaluatorRequest"></a>
+<a id="tocScreatedecisionmodelevaluatorrequest"></a>
+<a id="tocscreatedecisionmodelevaluatorrequest"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "type": "decision_model",
+  "questions": [
+    {
+      "type": "choice",
+      "id": "string",
+      "scoreName": "string",
+      "instructions": "string",
+      "criteria": [
+        {
+          "value": "string",
+          "description": "string"
+        }
+      ]
+    }
+  ],
+  "modelConfig": {
+    "provider": "string",
+    "model": "string"
+  },
+  "variableMapping": [
+    {
+      "variable": "string",
+      "source": "input",
+      "jsonPath": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string|true|none|Human-readable evaluator name. Names are not identifiers and do not need to be unique.|
+|description|string \| null|false|none|Optional human-readable evaluator description.|
+|type|string|true|none|Evaluator type.|
+|questions|[[DecisionModelQuestion](#schemadecisionmodelquestion)]|true|none|Between 1 and 50 typed questions. Question ids and score names must be unique.|
+|modelConfig|[EvaluatorModelConfig](#schemaevaluatormodelconfig)|true|none|Decision-model connection and model. Required.<br><br>The provider must be a decision-model connection of the project. Call `GET /api/public/llm-connections` to discover available providers.|
+|variableMapping|[[PromptVariableMappingInput](#schemapromptvariablemappinginput)]|true|none|At least one mapping from observation data to a state key. Each `variable` is a state key that starts with a letter or underscore and contains only letters, digits, and underscores.|
+
 <h2 id="tocS_CreateEvaluatorRequest">CreateEvaluatorRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemacreateevaluatorrequest"></a>
@@ -21388,6 +21924,14 @@ Initial evaluator definition with metadata and definition fields at the same lev
 |type|string|true|none|Evaluator type.|
 |sourceCode|string|true|none|Source code executed for each matched observation.|
 |sourceCodeLanguage|[CodeEvaluatorSourceCodeLanguage](#schemacodeevaluatorsourcecodelanguage)|true|none|Runtime language used to execute the source code.|
+|*oneOf*|object|false|none|none|
+|type|string|true|none|none|
+|name|string|true|none|Human-readable evaluator name. Names are not identifiers and do not need to be unique.|
+|description|string \| null|false|none|Optional human-readable evaluator description.|
+|type|string|true|none|Evaluator type.|
+|questions|[[DecisionModelQuestion](#schemadecisionmodelquestion)]|true|none|Between 1 and 50 typed questions. Question ids and score names must be unique.|
+|modelConfig|[EvaluatorModelConfig](#schemaevaluatormodelconfig)|true|none|Decision-model connection and model. Required.<br><br>The provider must be a decision-model connection of the project. Call `GET /api/public/llm-connections` to discover available providers.|
+|variableMapping|[[PromptVariableMappingInput](#schemapromptvariablemappinginput)]|true|none|At least one mapping from observation data to a state key. Each `variable` is a state key that starts with a letter or underscore and contains only letters, digits, and underscores.|
 
 #### Enumerated Values
 
@@ -21397,6 +21941,7 @@ Initial evaluator definition with metadata and definition fields at the same lev
 |type|code|
 |sourceCodeLanguage|PYTHON|
 |sourceCodeLanguage|TYPESCRIPT|
+|type|decision_model|
 
 <h2 id="tocS_UpdateEvaluatorMetadataRequest">UpdateEvaluatorMetadataRequest</h2>
 <!-- backwards compatibility -->
@@ -21501,6 +22046,57 @@ Metadata-only update. At least one field must be provided.
 |sourceCodeLanguage|PYTHON|
 |sourceCodeLanguage|TYPESCRIPT|
 
+<h2 id="tocS_UpdateDecisionModelEvaluatorRequest">UpdateDecisionModelEvaluatorRequest</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatedecisionmodelevaluatorrequest"></a>
+<a id="schema_UpdateDecisionModelEvaluatorRequest"></a>
+<a id="tocSupdatedecisionmodelevaluatorrequest"></a>
+<a id="tocsupdatedecisionmodelevaluatorrequest"></a>
+
+```json
+{
+  "name": "string",
+  "description": "string",
+  "type": "decision_model",
+  "questions": [
+    {
+      "type": "choice",
+      "id": "string",
+      "scoreName": "string",
+      "instructions": "string",
+      "criteria": [
+        {
+          "value": "string",
+          "description": "string"
+        }
+      ]
+    }
+  ],
+  "modelConfig": {
+    "provider": "string",
+    "model": "string"
+  },
+  "variableMapping": [
+    {
+      "variable": "string",
+      "source": "input",
+      "jsonPath": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|name|string \| null|false|none|New human-readable evaluator name.|
+|description|string \| null|false|none|New description. Set to `null` to clear it.|
+|type|string|true|none|Evaluator type. The type of an existing evaluator cannot change.|
+|questions|[[DecisionModelQuestion](#schemadecisionmodelquestion)]|true|none|Complete replacement list of typed questions.|
+|modelConfig|[EvaluatorModelConfig](#schemaevaluatormodelconfig)|true|none|Decision-model connection and model. Required.|
+|variableMapping|[[PromptVariableMappingInput](#schemapromptvariablemappinginput)]|true|none|Complete replacement mapping from observation data to state keys.|
+
 <h2 id="tocS_UpdateEvaluatorRequest">UpdateEvaluatorRequest</h2>
 <!-- backwards compatibility -->
 <a id="schemaupdateevaluatorrequest"></a>
@@ -21524,6 +22120,7 @@ Metadata-only update or complete flattened definition replacement. At least one 
 |*oneOf*|[UpdateEvaluatorMetadataRequest](#schemaupdateevaluatormetadatarequest)|false|none|Metadata-only update. At least one field must be provided.|
 |*oneOf*|[UpdateLlmAsJudgeEvaluatorRequest](#schemaupdatellmasjudgeevaluatorrequest)|false|none|none|
 |*oneOf*|[UpdateCodeEvaluatorRequest](#schemaupdatecodeevaluatorrequest)|false|none|none|
+|*oneOf*|[UpdateDecisionModelEvaluatorRequest](#schemaupdatedecisionmodelevaluatorrequest)|false|none|none|
 
 <h2 id="tocS_EvaluatorsPage">EvaluatorsPage</h2>
 <!-- backwards compatibility -->
@@ -22132,7 +22729,7 @@ LLM API connection configuration (secrets excluded)
 |customModels|[string]|true|none|List of custom model names available for this connection|
 |withDefaultModels|boolean|true|none|Whether to include default models for this adapter|
 |extraHeaderKeys|[string]|true|none|Keys of extra headers sent with requests (values excluded for security)|
-|config|object \| null|false|none|Adapter-specific configuration. Required for Bedrock (`{"region":"us-east-1"}`), optional for OpenAI (`{"useResponsesApi":true}`), optional for VertexAI (`{"location":"us-central1"}`), not used by other adapters.|
+|config|object \| null|false|none|Adapter-specific configuration. Required for Bedrock (`{"region":"us-east-1"}`, optionally with `"customModelConfig"`), optional for OpenAI (`{"useResponsesApi":true}`), optional for VertexAI (`{"location":"us-central1"}`), not used by other adapters.|
 |createdAt|string(date-time)|true|none|none|
 |updatedAt|string(date-time)|true|none|none|
 
@@ -22218,7 +22815,7 @@ Request to create or update an LLM connection (upsert)
 |customModels|[string]|false|none|List of custom model names|
 |withDefaultModels|boolean \| null|false|none|Whether to include default models. Default is true.|
 |extraHeaders|object \| null|false|none|Extra headers to send with requests|
-|config|object \| null|false|none|Adapter-specific configuration. Validation rules: - **Bedrock**: Required. Must be `{"region": "<aws-region>"}` (e.g., `{"region":"us-east-1"}`) - **OpenAI**: Optional. If provided, must be `{"useResponsesApi": <boolean>}` to control whether Langfuse routes calls through OpenAI's Responses API. - **VertexAI**: Optional. If provided, must be `{"location": "<gcp-location>"}` (e.g., `{"location":"us-central1"}`) - **Other adapters**: Not supported. Omit this field or set to null.|
+|config|object \| null|false|none|Adapter-specific configuration. Validation rules: - **Bedrock**: Required. Must be `{"region": "<aws-region>"}` (e.g., `{"region":"us-east-1"}`)<br>  Optionally add `"customModelConfig": {"<custom model>": {"modelFamily": "anthropic"}}` to mark custom models, such as application inference profile ARNs, whose id does not show that they run an Anthropic model.<br>- **OpenAI**: Optional. If provided, must be `{"useResponsesApi": <boolean>}` to control whether Langfuse routes calls through OpenAI's Responses API. - **VertexAI**: Optional. If provided, must be `{"location": "<gcp-location>"}` (e.g., `{"location":"us-central1"}`) - **Other adapters**: Not supported. Omit this field or set to null.|
 
 #### Enumerated Values
 
@@ -27512,7 +28109,7 @@ Standard error envelope for unstable public API endpoints.
   "state": "complete",
   "summary": "string",
   "summaryTruncated": true,
-  "processedAt": "1970-01-01T00:00:00Z"
+  "createdAt": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -27530,7 +28127,7 @@ Standard error envelope for unstable public API endpoints.
 |state|[unstableTopicSummaryState](#schemaunstabletopicsummarystate)|true|none|none|
 |summary|string \| null|false|none|Set when `state` is `complete`.|
 |summaryTruncated|boolean|true|none|none|
-|processedAt|string(date-time)|true|none|none|
+|createdAt|string(date-time)|true|none|none|
 
 #### Enumerated Values
 
@@ -27539,6 +28136,8 @@ Standard error envelope for unstable public API endpoints.
 |state|complete|
 |state|not_applicable|
 |state|insufficient_input|
+|state|empty_input|
+|state|input_too_large|
 
 <h2 id="tocS_unstableTopicSummaryList">unstableTopicSummaryList</h2>
 <!-- backwards compatibility -->
@@ -27565,7 +28164,7 @@ Standard error envelope for unstable public API endpoints.
       "state": "complete",
       "summary": "string",
       "summaryTruncated": true,
-      "processedAt": "1970-01-01T00:00:00Z"
+      "createdAt": "1970-01-01T00:00:00Z"
     }
   ],
   "meta": {
@@ -27603,7 +28202,7 @@ Standard error envelope for unstable public API endpoints.
 
 ```json
 {
-  "id": "string",
+  "stableId": "string",
   "versionId": "string",
   "name": "string"
 }
@@ -27613,8 +28212,8 @@ Standard error envelope for unstable public API endpoints.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|true|none|Stable topic id.|
-|versionId|string|true|none|none|
+|stableId|string|true|none|Stable topic id.|
+|versionId|string|true|none|Id of this topic version.|
 |name|string|true|none|none|
 
 <h2 id="tocS_unstableTopicAssignment">unstableTopicAssignment</h2>
@@ -27634,12 +28233,12 @@ Standard error envelope for unstable public API endpoints.
   "ruleId": "string",
   "status": "assigned",
   "topic": {
-    "id": "string",
+    "stableId": "string",
     "versionId": "string",
     "name": "string"
   },
-  "runId": "string",
-  "assignedAt": "1970-01-01T00:00:00Z"
+  "mapId": "string",
+  "createdAt": "1970-01-01T00:00:00Z"
 }
 ```
 
@@ -27655,8 +28254,8 @@ Standard error envelope for unstable public API endpoints.
 |ruleId|string \| null|false|none|The rule whose map assigned the trace. Null when the project has no rule.|
 |status|[unstableTopicAssignmentStatus](#schemaunstabletopicassignmentstatus)|true|none|none|
 |topic|[unstableTopicAssignmentTopic](#schemaunstabletopicassignmenttopic)|false|none|Set when `status` is `assigned`.|
-|runId|string \| null|false|none|The run that assigned the trace. Null for assignments made as traces arrive.|
-|assignedAt|string(date-time)|true|none|none|
+|mapId|string \| null|false|none|The map that assigned the trace.|
+|createdAt|string(date-time)|true|none|none|
 
 #### Enumerated Values
 
@@ -27688,12 +28287,12 @@ Standard error envelope for unstable public API endpoints.
       "ruleId": "string",
       "status": "assigned",
       "topic": {
-        "id": "string",
+        "stableId": "string",
         "versionId": "string",
         "name": "string"
       },
-      "runId": "string",
-      "assignedAt": "1970-01-01T00:00:00Z"
+      "mapId": "string",
+      "createdAt": "1970-01-01T00:00:00Z"
     }
   ],
   "meta": {
@@ -27722,12 +28321,12 @@ Standard error envelope for unstable public API endpoints.
 "traceCount.desc"
 ```
 
-<h2 id="tocS_unstableTopicFacetPublishedRun">unstableTopicFacetPublishedRun</h2>
+<h2 id="tocS_unstableTopicFacetPublishedMap">unstableTopicFacetPublishedMap</h2>
 <!-- backwards compatibility -->
-<a id="schemaunstabletopicfacetpublishedrun"></a>
-<a id="schema_unstableTopicFacetPublishedRun"></a>
-<a id="tocSunstabletopicfacetpublishedrun"></a>
-<a id="tocsunstabletopicfacetpublishedrun"></a>
+<a id="schemaunstabletopicfacetpublishedmap"></a>
+<a id="schema_unstableTopicFacetPublishedMap"></a>
+<a id="tocSunstabletopicfacetpublishedmap"></a>
+<a id="tocsunstabletopicfacetpublishedmap"></a>
 
 ```json
 {
@@ -27764,7 +28363,7 @@ Standard error envelope for unstable public API endpoints.
   ],
   "version": 0,
   "prompt": "string",
-  "publishedRun": {
+  "publishedMap": {
     "id": "string",
     "completedAt": "1970-01-01T00:00:00Z",
     "topicCount": 0
@@ -27784,7 +28383,7 @@ Standard error envelope for unstable public API endpoints.
 |ruleIds|[string]|true|none|The rules that run the facet.|
 |version|integer|true|none|Latest facet version.|
 |prompt|string|true|none|Prompt of the latest facet version.|
-|publishedRun|[unstableTopicFacetPublishedRun](#schemaunstabletopicfacetpublishedrun)|false|none|The run that produced the facet's current map. Null before the first map.|
+|publishedMap|[unstableTopicFacetPublishedMap](#schemaunstabletopicfacetpublishedmap)|false|none|The facet's current published topic map. Null before the first map.|
 
 <h2 id="tocS_unstableTopicFacetList">unstableTopicFacetList</h2>
 <!-- backwards compatibility -->
@@ -27807,7 +28406,7 @@ Standard error envelope for unstable public API endpoints.
       ],
       "version": 0,
       "prompt": "string",
-      "publishedRun": {
+      "publishedMap": {
         "id": "string",
         "completedAt": "1970-01-01T00:00:00Z",
         "topicCount": 0
@@ -27883,7 +28482,7 @@ Standard error envelope for unstable public API endpoints.
 
 ```json
 {
-  "id": "string",
+  "stableId": "string",
   "versionId": "string",
   "name": "string",
   "description": "string",
@@ -27893,7 +28492,7 @@ Standard error envelope for unstable public API endpoints.
     "version": 0
   },
   "ruleId": "string",
-  "runId": "string",
+  "mapId": "string",
   "traceCount": 0
 }
 ```
@@ -27902,13 +28501,13 @@ Standard error envelope for unstable public API endpoints.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|true|none|Stable topic id, kept across map updates.|
+|stableId|string|true|none|Stable topic id, kept across map updates.|
 |versionId|string|true|none|Id of this topic version.|
 |name|string|true|none|none|
 |description|string|true|none|none|
 |facet|[unstableTopicFacetRef](#schemaunstabletopicfacetref)|true|none|none|
 |ruleId|string \| null|false|none|The rule whose live map has the topic. Null when the project has no rule.|
-|runId|string|true|none|The run that produced this topic version.|
+|mapId|string|true|none|The map that produced this topic version.|
 |traceCount|integer|true|none|Traces in the window whose current result for the facet is this topic.|
 
 <h2 id="tocS_unstableTopicWithStatus">unstableTopicWithStatus</h2>
@@ -27920,7 +28519,7 @@ Standard error envelope for unstable public API endpoints.
 
 ```json
 {
-  "id": "string",
+  "stableId": "string",
   "versionId": "string",
   "name": "string",
   "description": "string",
@@ -27930,7 +28529,7 @@ Standard error envelope for unstable public API endpoints.
     "version": 0
   },
   "ruleId": "string",
-  "runId": "string",
+  "mapId": "string",
   "traceCount": 0,
   "inCurrentMap": true,
   "window": {
@@ -27944,13 +28543,13 @@ Standard error envelope for unstable public API endpoints.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|true|none|Stable topic id, kept across map updates.|
+|stableId|string|true|none|Stable topic id, kept across map updates.|
 |versionId|string|true|none|Id of this topic version.|
 |name|string|true|none|none|
 |description|string|true|none|none|
 |facet|[unstableTopicFacetRef](#schemaunstabletopicfacetref)|true|none|none|
 |ruleId|string \| null|false|none|The rule whose live map has the topic. Null when the project has no rule.|
-|runId|string|true|none|The run that produced this topic version.|
+|mapId|string|true|none|The map that produced this topic version.|
 |traceCount|integer|true|none|Traces in the window whose current result for the facet is this topic.|
 |inCurrentMap|boolean|true|none|Always true; retired topics are not returned.|
 |window|[unstableTopicWindow](#schemaunstabletopicwindow)|true|none|none|
@@ -27968,7 +28567,9 @@ Standard error envelope for unstable public API endpoints.
   "outlier": 0,
   "awaitingMap": 0,
   "notApplicable": 0,
-  "insufficientInput": 0
+  "insufficientInput": 0,
+  "emptyInput": 0,
+  "inputTooLarge": 0
 }
 ```
 
@@ -27983,6 +28584,8 @@ Traces in the window by their current result for one facet.
 |awaitingMap|integer|true|none|none|
 |notApplicable|integer|true|none|none|
 |insufficientInput|integer|true|none|none|
+|emptyInput|integer|true|none|none|
+|inputTooLarge|integer|true|none|none|
 
 <h2 id="tocS_unstableTopicFacetCounts">unstableTopicFacetCounts</h2>
 <!-- backwards compatibility -->
@@ -27999,13 +28602,15 @@ Traces in the window by their current result for one facet.
     "version": 0
   },
   "ruleId": "string",
-  "publishedRunId": "string",
+  "publishedMapId": "string",
   "counts": {
     "assigned": 0,
     "outlier": 0,
     "awaitingMap": 0,
     "notApplicable": 0,
-    "insufficientInput": 0
+    "insufficientInput": 0,
+    "emptyInput": 0,
+    "inputTooLarge": 0
   }
 }
 ```
@@ -28016,7 +28621,7 @@ Traces in the window by their current result for one facet.
 |---|---|---|---|---|
 |facet|[unstableTopicFacetRef](#schemaunstabletopicfacetref)|true|none|none|
 |ruleId|string \| null|false|none|none|
-|publishedRunId|string \| null|false|none|none|
+|publishedMapId|string \| null|false|none|none|
 |counts|[unstableTopicStatusCounts](#schemaunstabletopicstatuscounts)|true|none|Traces in the window by their current result for one facet.|
 
 <h2 id="tocS_unstableTopicList">unstableTopicList</h2>
@@ -28034,7 +28639,7 @@ Traces in the window by their current result for one facet.
   },
   "data": [
     {
-      "id": "string",
+      "stableId": "string",
       "versionId": "string",
       "name": "string",
       "description": "string",
@@ -28044,7 +28649,7 @@ Traces in the window by their current result for one facet.
         "version": 0
       },
       "ruleId": "string",
-      "runId": "string",
+      "mapId": "string",
       "traceCount": 0
     }
   ],
@@ -28056,13 +28661,15 @@ Traces in the window by their current result for one facet.
         "version": 0
       },
       "ruleId": "string",
-      "publishedRunId": "string",
+      "publishedMapId": "string",
       "counts": {
         "assigned": 0,
         "outlier": 0,
         "awaitingMap": 0,
         "notApplicable": 0,
-        "insufficientInput": 0
+        "insufficientInput": 0,
+        "emptyInput": 0,
+        "inputTooLarge": 0
       }
     }
   ],

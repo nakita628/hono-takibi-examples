@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
   postTrashEmptyRoute,
-  postTrashRestoreAssetsRoute,
   postTrashRestoreRoute,
+  postTrashRestoreAssetsRoute,
 } from '../routes'
 
 export const postTrashEmptyRouteHandler: RouteHandler<typeof postTrashEmptyRoute> = async (c) => {

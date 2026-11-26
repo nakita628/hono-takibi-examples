@@ -1,17 +1,17 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  postCompaniesRoute,
+  getCompaniesRoute,
+  getCompaniesCompanyIdRoute,
+  putCompaniesCompanyIdRoute,
   deleteCompaniesCompanyIdRoute,
   getCompaniesCompanyIdContactsRoute,
-  getCompaniesCompanyIdNotesRoute,
-  getCompaniesCompanyIdRoute,
   getCompaniesCompanyIdSegmentsRoute,
-  getCompaniesRoute,
-  getCompaniesScrollRoute,
+  getCompaniesCompanyIdNotesRoute,
   postCompaniesCompanyIdNotesRoute,
-  postCompaniesListRoute,
-  postCompaniesRoute,
   postCompaniesSearchRoute,
-  putCompaniesCompanyIdRoute,
+  postCompaniesListRoute,
+  getCompaniesScrollRoute,
 } from '../routes'
 
 export const postCompaniesRouteHandler: RouteHandler<typeof postCompaniesRoute> = async (c) => {

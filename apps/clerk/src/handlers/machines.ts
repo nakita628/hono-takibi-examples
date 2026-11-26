@@ -1,14 +1,14 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteMachinesMachineIdRoute,
-  deleteMachinesMachineIdScopesOtherMachineIdRoute,
-  getMachinesMachineIdRoute,
-  getMachinesMachineIdSecretKeyRoute,
   getMachinesRoute,
-  patchMachinesMachineIdRoute,
-  postMachinesMachineIdScopesRoute,
-  postMachinesMachineIdSecretKeyRotateRoute,
   postMachinesRoute,
+  getMachinesMachineIdRoute,
+  patchMachinesMachineIdRoute,
+  deleteMachinesMachineIdRoute,
+  getMachinesMachineIdSecretKeyRoute,
+  postMachinesMachineIdSecretKeyRotateRoute,
+  postMachinesMachineIdScopesRoute,
+  deleteMachinesMachineIdScopesOtherMachineIdRoute,
 } from '../routes'
 
 export const getMachinesRouteHandler: RouteHandler<typeof getMachinesRoute> = async (c) => {

@@ -1,19 +1,19 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRoute,
-  deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRoute,
-  deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRoute,
-  deleteConnectionsIdRoute,
-  getConnectionsConnectionIdSamlIdpSigningCertsRoute,
-  getConnectionsConnectionIdSamlSpEncryptionCertsRoute,
-  getConnectionsConnectionIdSamlSpSigningCertRoute,
-  getConnectionsIdRoute,
-  getConnectionsRoute,
-  patchConnectionsIdRoute,
-  postConnectionsConnectionIdSamlIdpSigningCertsRoute,
-  postConnectionsConnectionIdSamlSpEncryptionCertsRoute,
-  postConnectionsConnectionIdSamlSpSigningCertRoute,
   postConnectionsRoute,
+  getConnectionsRoute,
+  getConnectionsConnectionIdSamlIdpSigningCertsRoute,
+  postConnectionsConnectionIdSamlIdpSigningCertsRoute,
+  deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRoute,
+  getConnectionsConnectionIdSamlSpEncryptionCertsRoute,
+  postConnectionsConnectionIdSamlSpEncryptionCertsRoute,
+  deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRoute,
+  getConnectionsConnectionIdSamlSpSigningCertRoute,
+  postConnectionsConnectionIdSamlSpSigningCertRoute,
+  deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRoute,
+  patchConnectionsIdRoute,
+  getConnectionsIdRoute,
+  deleteConnectionsIdRoute,
 } from '../routes'
 
 export const postConnectionsRouteHandler: RouteHandler<typeof postConnectionsRoute> = async (c) => {

@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  getChatCompletionsRoute,
+  postChatCompletionsRoute,
+  getChatCompletionsCompletionIdRoute,
+  postChatCompletionsCompletionIdRoute,
   deleteChatCompletionsCompletionIdRoute,
   getChatCompletionsCompletionIdMessagesRoute,
-  getChatCompletionsCompletionIdRoute,
-  getChatCompletionsRoute,
-  postChatCompletionsCompletionIdRoute,
-  postChatCompletionsRoute,
 } from '../routes'
 
 export const getChatCompletionsRouteHandler: RouteHandler<typeof getChatCompletionsRoute> = async (

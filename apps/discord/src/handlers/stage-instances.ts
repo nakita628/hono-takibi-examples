@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteStageInstancesChannelIdRoute,
-  getStageInstancesChannelIdRoute,
-  patchStageInstancesChannelIdRoute,
   postStageInstancesRoute,
+  getStageInstancesChannelIdRoute,
+  deleteStageInstancesChannelIdRoute,
+  patchStageInstancesChannelIdRoute,
 } from '../routes'
 
 export const postStageInstancesRouteHandler: RouteHandler<typeof postStageInstancesRoute> = async (

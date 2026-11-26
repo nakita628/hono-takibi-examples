@@ -2045,6 +2045,8 @@ const CustomTypeStatusOptionBaseSchema = CustomTypeStatusOptionCompactSchema.ope
   'CustomTypeStatusOptionBase',
 )
 
+const DependencyTypeRequestSchema = z.looseObject({}).openapi('DependencyTypeRequest')
+
 const SectionCompactSchema = z
   .object({
     gid: z
@@ -50778,7 +50780,10 @@ export const getTasksTaskGidDependenciesRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              data: z.array(TaskCompactSchema).exactOptional(),
+              data: z
+                .array(TaskCompactSchema)
+                .exactOptional()
+                .openapi({ 'x-public-items': { $ref: '#/components/schemas/TaskCompact' } }),
               next_page: NextPageSchema.exactOptional(),
             })
             .openapi({ required: [] }),
@@ -50811,7 +50816,11 @@ export const postTasksTaskGidAddDependenciesRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ data: ModifyDependenciesRequestSchema.exactOptional() })
+            .object({
+              data: ModifyDependenciesRequestSchema.and(
+                DependencyTypeRequestSchema,
+              ).exactOptional(),
+            })
             .openapi({ required: [] }),
         },
       },
@@ -51288,7 +51297,10 @@ export const getTasksTaskGidDependentsRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              data: z.array(TaskCompactSchema).exactOptional(),
+              data: z
+                .array(TaskCompactSchema)
+                .exactOptional()
+                .openapi({ 'x-public-items': { $ref: '#/components/schemas/TaskCompact' } }),
               next_page: NextPageSchema.exactOptional(),
             })
             .openapi({ required: [] }),
@@ -51321,7 +51333,9 @@ export const postTasksTaskGidAddDependentsRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({ data: ModifyDependentsRequestSchema.exactOptional() })
+            .object({
+              data: ModifyDependentsRequestSchema.and(DependencyTypeRequestSchema).exactOptional(),
+            })
             .openapi({ required: [] }),
         },
       },

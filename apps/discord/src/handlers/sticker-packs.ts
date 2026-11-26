@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getStickerPacksPackIdRoute, getStickerPacksRoute } from '../routes'
+import type { getStickerPacksRoute, getStickerPacksPackIdRoute } from '../routes'
 
 export const getStickerPacksRouteHandler: RouteHandler<typeof getStickerPacksRoute> = async (c) => {
   throw new Error('Not implemented')

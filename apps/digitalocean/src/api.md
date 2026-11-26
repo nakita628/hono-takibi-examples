@@ -50664,6 +50664,7 @@ Accepts name, environment-spec YAML text, and optional Insights telemetry opt-in
             "provider": "openai",
             "ref": "do.actions",
             "value": "sk-example",
+            "actor": "github1",
             "env": true
           }
         ],
@@ -50996,6 +50997,7 @@ Returns one team-scoped Environment Config including the sanitized environment s
             "provider": "openai",
             "ref": "do.actions",
             "value": "sk-example",
+            "actor": "github1",
             "env": true
           }
         ],
@@ -51471,6 +51473,7 @@ Copies the source config's sanitized manifest to a new UUID. Source and clone ar
             "provider": "openai",
             "ref": "do.actions",
             "value": "sk-example",
+            "actor": "github1",
             "env": true
           }
         ],
@@ -51762,6 +51765,40 @@ Enumerates the caller's team sessions whose session was created from this durabl
             "changed": [
               "github"
             ]
+          },
+          "egress": {
+            "mode": "allowlist",
+            "added": [
+              "example.atlassian.net"
+            ],
+            "removed": [
+              "203.0.113.10"
+            ]
+          },
+          "permissions": {
+            "default": "ask",
+            "rules": {
+              "added": [
+                "bash \"npm test\""
+              ],
+              "removed": [
+                "bash \"rm -rf *\""
+              ],
+              "changed": [
+                "do.actions/web_search"
+              ]
+            }
+          },
+          "skills": {
+            "added": [
+              "jira"
+            ],
+            "removed": [
+              "docs"
+            ],
+            "changed": [
+              "github"
+            ]
           }
         },
         "error": "update_failed",
@@ -51808,9 +51845,54 @@ Enumerates the caller's team sessions whose session was created from this durabl
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
-      "manifest": {}
+      "manifest": {},
+      "mutability": {
+        "model": true,
+        "env": true,
+        "secrets": true,
+        "tools": true,
+        "permissions": true,
+        "egress": true,
+        "system_prompt": false,
+        "custom_tools": false,
+        "skills": false
+      }
     }
   ],
   "next_page_token": "example"
@@ -52142,6 +52224,40 @@ Keyset-paginated on an opaque cursor. Results are scoped to the authenticated te
             "changed": [
               "github"
             ]
+          },
+          "egress": {
+            "mode": "allowlist",
+            "added": [
+              "example.atlassian.net"
+            ],
+            "removed": [
+              "203.0.113.10"
+            ]
+          },
+          "permissions": {
+            "default": "ask",
+            "rules": {
+              "added": [
+                "bash \"npm test\""
+              ],
+              "removed": [
+                "bash \"rm -rf *\""
+              ],
+              "changed": [
+                "do.actions/web_search"
+              ]
+            }
+          },
+          "skills": {
+            "added": [
+              "jira"
+            ],
+            "removed": [
+              "docs"
+            ],
+            "changed": [
+              "github"
+            ]
           }
         },
         "error": "update_failed",
@@ -52188,9 +52304,54 @@ Keyset-paginated on an opaque cursor. Results are scoped to the authenticated te
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
-      "manifest": {}
+      "manifest": {},
+      "mutability": {
+        "model": true,
+        "env": true,
+        "secrets": true,
+        "tools": true,
+        "permissions": true,
+        "egress": true,
+        "system_prompt": false,
+        "custom_tools": false,
+        "skills": false
+      }
     }
   ],
   "next_page_token": "example"
@@ -52433,6 +52594,40 @@ parameter wins.
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -52479,9 +52674,54 @@ parameter wins.
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   }
 }
 ```
@@ -52694,7 +52934,7 @@ curl https://api.digitalocean.com/v2/harness-runtime/sessions/policy/validate \
   -H 'Content-Type: application/x-yaml' \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
-  -d '{"apiVersion":"agents.digitalocean.com/v1alpha1","kind":"Agent","metadata":{"name":"example","description":"Use when ...","labels":{}},"spec":{"permissions":{"defaultAction":"allow","rules":[{"tool":"example","match":{"property1":"string","property2":"string"},"action":"allow","enforcement":"strict"}],"filesystem":{"mode":"read-only","allowWrite":["example"]},"network":{"default":"allow","allow":["example"]}},"mode":"interactive","runtime":{"adapter":"claude-code","custom":{"image":"example.registry/image@sha256:abc","entrypoint":["example"]},"config":{}},"workspace":{"repos":["example"]},"sandbox":{"template":"example","persistentWorkspace":true,"idleTimeoutSeconds":1,"maxLifetimeSeconds":1,"sizeSlug":"example","mounts":[{"type":"s3fuse","path":"/mnt/data","bucket":"my-bucket","endpoint":"https://nyc3.digitaloceanspaces.com","readOnly":true,"accessKeyRef":"my-secret","secretKeyRef":"my-secret"}],"egress":{"allow":[{"host":"api.example.com"}],"allowIps":["example"],"vpcUuid":"example","subnetUuid":"example","unrestricted":true}},"model":{"default":"example","routing":"example","profile":"example"},"tools":{"mcpServers":[{"ref":"do.actions","name":"example","url":"https://example.com","tools":["example"],"preloadTools":["example"],"auth":{"header":"Authorization","secretRef":"my-secret"}}],"bundle":"default"},"skills":[{"name":"example","description":"Use when ...","instructions":"Use when diagnosing errors.","license":"Apache-2.0","metadata":{},"allowedTools":["example"]}],"env":{},"memory":{"backend":"example","scope":"tenant"},"secrets":[{"name":"example","source":"oauth","provider":"openai","ref":"do.actions","value":"sk-example","env":true}],"defaults":{"budget":{"maxCostUSD":1,"maxSteps":1,"maxWallClockSeconds":1,"onBreach":"pause"}},"serving":{"minReplicas":1,"maxReplicas":1,"targetConcurrency":1,"scaleToZero":{"idleSeconds":1}}}}'
+  -d '{"apiVersion":"agents.digitalocean.com/v1alpha1","kind":"Agent","metadata":{"name":"example","description":"Use when ...","labels":{}},"spec":{"permissions":{"defaultAction":"allow","rules":[{"tool":"example","match":{"property1":"string","property2":"string"},"action":"allow","enforcement":"strict"}],"filesystem":{"mode":"read-only","allowWrite":["example"]},"network":{"default":"allow","allow":["example"]}},"mode":"interactive","runtime":{"adapter":"claude-code","custom":{"image":"example.registry/image@sha256:abc","entrypoint":["example"]},"config":{}},"workspace":{"repos":["example"]},"sandbox":{"template":"example","persistentWorkspace":true,"idleTimeoutSeconds":1,"maxLifetimeSeconds":1,"sizeSlug":"example","mounts":[{"type":"s3fuse","path":"/mnt/data","bucket":"my-bucket","endpoint":"https://nyc3.digitaloceanspaces.com","readOnly":true,"accessKeyRef":"my-secret","secretKeyRef":"my-secret"}],"egress":{"allow":[{"host":"api.example.com"}],"allowIps":["example"],"vpcUuid":"example","subnetUuid":"example","unrestricted":true}},"model":{"default":"example","routing":"example","profile":"example"},"tools":{"mcpServers":[{"ref":"do.actions","name":"example","url":"https://example.com","tools":["example"],"preloadTools":["example"],"auth":{"header":"Authorization","secretRef":"my-secret"}}],"bundle":"default"},"skills":[{"name":"example","description":"Use when ...","instructions":"Use when diagnosing errors.","license":"Apache-2.0","metadata":{},"allowedTools":["example"]}],"env":{},"memory":{"backend":"example","scope":"tenant"},"secrets":[{"name":"example","source":"oauth","provider":"openai","ref":"do.actions","value":"sk-example","actor":"github1","env":true}],"defaults":{"budget":{"maxCostUSD":1,"maxSteps":1,"maxWallClockSeconds":1,"onBreach":"pause"}},"serving":{"minReplicas":1,"maxReplicas":1,"targetConcurrency":1,"scaleToZero":{"idleSeconds":1}}}}'
 ```
 
 `POST /v2/harness-runtime/sessions/policy/validate`
@@ -52837,6 +53077,7 @@ Each rule is validated against the descriptor for the (agent, version) the templ
         "provider": "openai",
         "ref": "do.actions",
         "value": "sk-example",
+        "actor": "github1",
         "env": true
       }
     ],
@@ -52932,12 +53173,13 @@ Each rule is validated against the descriptor for the (agent, version) the templ
 |» » memory|body|object|false|Accepted, not yet enforced (returns a warning).|
 |» » » backend|body|string|true|none|
 |» » » scope|body|string|false|none|
-|» » secrets|body|[object]|false|Declared credential requirements. source tenantSecret is enforced today: value is write-only plaintext, extracted into Secrets Manager at create and never persisted or returned. source oauth requires provider, carries no value, and is accepted but not yet enforced. ref is legacy and ignored. env false keeps the resolved value out of the guest environment (mount-only slots).|
+|» » secrets|body|[object]|false|Declared credential requirements. source tenantSecret is enforced today: value is write-only plaintext, extracted into Secrets Manager at create and never persisted or returned. source oauth requires provider and carries no value: at session create, the guest environment receives a token from your team's connection for provider, or from the connection that actor names, and session create fails if that connection isn't connected. ref is legacy and ignored. env false keeps the resolved value out of the guest environment (mount-only slots).|
 |» » » name|body|string|true|none|
 |» » » source|body|string|true|none|
 |» » » provider|body|string|false|none|
 |» » » ref|body|string|false|none|
 |» » » value|body|string|false|Write-only tenantSecret plaintext; never persisted or returned.|
+|» » » actor|body|string|false|For source oauth only: the user_id of the provider connection the secret uses, instead of your team's connection for provider. Requires naming connections in secrets to be enabled for your team. Only a secret with actor can switch to another connection on a running session (see the session update operation).|
 |» » » env|body|boolean|false|Whether the resolved credential is injected into the guest env. Omitted means true; false is for mount-only slots (tenantSecret only).|
 |» » defaults|body|object|false|none|
 |» » » budget|body|object|false|Accepted, not yet enforced (returns a warning). Advisory per-run ceilings, clamped server-side to tenant policy.|
@@ -53325,6 +53567,40 @@ GetSession returns the current snapshot of a session.
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -53371,9 +53647,54 @@ GetSession returns the current snapshot of a session.
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   }
 }
 ```
@@ -53663,22 +53984,198 @@ An empty body (`{}`) returns `400`.
 
 | Section | What it changes | Agent restart |
 | --- | --- | --- |
-| `tools` | The session's Action Gateway tools (`do.actions` entries). Custom MCP servers can't be changed. | No |
+| `tools` | The session's Action Gateway tools (`do.actions` entries). Custom MCP servers too, where the session's `mutability.custom_tools` is `true`. | No (LangGraph: yes). A custom MCP server change: when it alters the agent's environment |
 | `env` | Environment variables (name and value). | Yes |
 | `env.HARNESS_INFERENCE_MODEL` | The model, for sessions that use DigitalOcean Serverless Inference. | Yes |
+| `env.MODEL`, `env.OPENAI_MODEL`, `env.ANTHROPIC_MODEL` | The model, for sessions that use their own OpenAI-compatible or Anthropic endpoint. | Yes |
 | `secrets` | Plain secrets (name and value). | Yes |
+| `secrets` (URL-bound) | URL-bound secrets: value, `url`, and `scheme`. | No |
+| `secrets` (OAuth) | The provider connection an OAuth secret uses (`actor`). | Yes |
+| `egress` | The hosts and IP addresses the session can reach (`allow_hosts` and `allow_ips`). | No |
+| `permissions` | The permission policy: the default action and the full rules list. What can change depends on the agent; see below. | No (LangGraph: yes for `do.actions` rules or `default`) |
+| `skills` | The full list of inline skills. Supported on `claude-code`, `codex`, and `opencode`; see below. | No |
 
 Sections you omit are not changed. Each section you include replaces that section in full; see
 `manifest_yaml` for the exact rules.
 
-The only way to change a session's model is to set `HARNESS_INFERENCE_MODEL` in `env`. This
-works only for sessions that were created with a DigitalOcean Serverless Inference model;
-sessions that use a third-party model provider can't change their model. A top-level `model`
-section returns `400`.
+### Changing the model
 
-The following can't be changed on an existing session: custom MCP servers (`422`), egress rules,
-GitHub OAuth connections, URL-bound secrets, platform-managed model keys, and `permissions`
-(`400`). To use a different custom MCP server, create a new session.
+You change a session's model through `env`; a top-level `model` section returns `400`. The key
+to set depends on the model endpoint the session was created with:
+
+| Session created with | Model endpoint | `env` key that sets the model |
+| --- | --- | --- |
+| `HARNESS_INFERENCE_MODEL`, and none of the keys below | DigitalOcean Serverless Inference | `HARNESS_INFERENCE_MODEL` |
+| `OPENAI_BASE_URL` | Your OpenAI-compatible endpoint | `MODEL`, or `OPENAI_MODEL` |
+| `ANTHROPIC_BASE_URL`, or an `ANTHROPIC_API_KEY` secret | Your Anthropic endpoint, or the Anthropic API | `ANTHROPIC_MODEL`, or `MODEL` |
+
+A session keeps the model endpoint it was created with. Its provider and base URL can't be
+changed (`422`). The provider API key (`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`) can be rotated
+but not added, removed, or moved to another URL or scheme (`422`). See `manifest_yaml` for the
+rules.
+
+The following can't be changed on an existing session: the egress VPC (`vpc_uuid` and
+`subnet_uuid`, `422`) and platform-managed model keys. To use a different VPC, create a new
+session.
+
+### Custom MCP servers
+
+A custom MCP server (`name` and `url`) in `tools` can be added, modified, or removed on a running
+session only where the session's `mutability.custom_tools` is `true`, and `mutability.tools` is
+`true` too. Read `mutability` from the session (`GET /v2/agents/sessions/{session_id}`). Where
+`custom_tools` is `false`, the request returns `409` and the message ends with
+`(update_unsupported)`. The flag is `false` for every agent until its custom-server update is
+supported, and a session created before an agent was enabled keeps reading `false`; create a new
+session to change its custom MCP servers.
+
+Include the session's other custom MCP servers exactly as they are, because `tools` replaces the
+whole list. The agent restarts when the change alters its environment (a server added, removed or
+moved, or a changed credential), and the update then ends `APPLIED_RESTARTED`. A change that
+doesn't, such as editing the `tools` allowlist of an existing server, ends `APPLIED`.
+
+A server with `auth` that is added, moved to another `url`, or given another secret slot must carry
+its credential in the same request, so a credential never goes to a destination the request did
+not name. Either send the secret's value in `secrets` (a plain secret), or use a URL-bound secret
+whose `url` covers the server's URL: the same host, a path prefix of the server's path, and the
+default port. A URL-bound secret needs that coverage even when you send its value. Otherwise the
+request returns `400`. A server whose `url` differs only in the case of the scheme or host is the
+same server. A new server host under an egress allowlist also needs `mutability.egress` to be
+`true`.
+
+### Switching an OAuth connection
+
+An OAuth secret that names a provider connection with `actor` can move to another connection of
+the same provider while the session runs. `actor` is the connection's `user_id`; see
+[`GET /v2/harness-runtime/auth/{provider}/connections`](#operation/harness_list_provider_connections).
+Send the secret with `source`, `provider`, and the new `actor`, and keep every other secret as
+`{}`. Leaving out `provider` or `actor` returns `400`. See `manifest_yaml` for an example.
+
+The platform first checks that you can use the new connection: it must be active and owned by
+you. Another team member's connection returns `400`, even when it is active. Switching back to
+the connection the agent config names skips this check, so any team member can do it. If the
+platform can't reach its connection service to check, the request returns `503`; retry it. The
+platform then gives the session that connection's token and restarts the agent, so the next
+`git` operation uses the new connection. Sending the connection the secret already uses returns
+`200` with `outcome` set to `UNCHANGED`.
+
+The switch applies to this session only:
+
+- New sessions from the same agent config still start on the connection the config names.
+- A rollback, or a fork from a checkpoint, uses the connection the session had when the
+  checkpoint was taken.
+- The switch changes only the token in the session. Action Gateway tools (`do.actions` entries)
+  keep using the connection Action Gateway picks for the session, so `git` and those tools can
+  act as different accounts.
+- A token the agent already read stays valid with the provider until the old connection is
+  revoked.
+
+Switching OAuth connections must be enabled for your team (`403` otherwise). The following
+still require a new session (`422`): adding or removing an OAuth secret, changing its provider,
+and switching an OAuth secret that was created without `actor`.
+
+### URL-bound secrets and egress
+
+URL-bound secret and `egress` changes take effect on the session's next outbound connection.
+An update that changes only URL-bound secrets and `egress` doesn't restart the agent and ends in
+`APPLIED`. Connections that are already open stay open, including connections to a host that
+the update removed.
+
+These updates have the following additional requirements:
+
+- URL-bound secret and egress updates must be enabled for your team. Otherwise, the request
+  returns `403`.
+- The session must have been created with a URL-bound secret or an egress allowlist. A session
+  created with unrestricted egress and no URL-bound secrets can't gain either one: the update
+  ends in `FAILED` with `error` set to `requires_new_session`.
+- Changing `egress`, or adding a URL-bound secret for a host the session can't reach yet,
+  requires that the session's agent runtime supports egress updates. Sessions created before
+  egress updates were available don't support them (`409`).
+
+See `manifest_yaml` for the format of each change.
+
+### Changing permissions
+
+`permissions` replaces the whole policy: `default` and the full `rules` list. A rule you leave
+out is removed. Use the same fields as when you create the session. `permissions: {}` removes
+the policy, so the agent goes back to its built-in default, as long as every rule it removes is
+one the agent can change (see below). `permissions: null` returns `400`.
+
+Rules are checked in the order you list them, and the last rule that matches wins. The order is
+part of the policy, so moving a rule counts as a change and is applied like any other.
+
+The agent is not restarted; the new rules apply from its next tool call once the update is
+`APPLIED`. On `langgraph`, a change to `do.actions/<tool>` rules or `default` restarts the
+agent, as a `tools` change does.
+
+Only sessions created after live permissions updates were released can change `permissions`.
+An older session returns `409`; create a new session instead.
+
+What can change depends on the session's agent:
+
+- `claude-code`, `opencode`: `default` and `bash`, `file.read`, `file.write`, `mcp`, and
+  `do.actions/<tool>` rules, with `allow`, `ask`, or `deny`.
+- `openhands`: `default` and `bash`, `file.read`, `file.write`, and `web.fetch` rules. Not
+  `mcp` or `do.actions/<tool>` rules. While the session uses `do.actions` tools, `default`
+  can't change: the change would move the session to a new Action Gateway endpoint, which
+  `openhands` can't pick up while running.
+- `codex`: `default` and `bash` and `do.actions/<tool>` rules, with `allow`, `ask`, or `deny`.
+  Not `file.read`, `file.write`, `web.fetch`, or `mcp` rules.
+- `hermes`, `langgraph`: `do.actions/<tool>` rules with `allow` or `deny`, and `default` set to
+  `allow` or `deny`. Not `ask`, and no other rule types.
+- `crewai`, `cursor`, and any other agent: nothing.
+
+`permissions.filesystem` and `permissions.network` can't be changed on any agent. If your
+`permissions` section leaves them out, the session keeps the ones it has; if it sets them to
+something different, the request returns `409`.
+
+Only the differences from the current policy are checked: rules you add, remove, change, or
+move, and a changed `default`. Rules you keep as they are never cause a refusal. A removed rule
+is checked like an added one, so a rule of a type the agent can't change can't be removed
+either: every `permissions` section you send has to keep it, and `permissions: {}` returns
+`409` while the policy has one. For example, `{}` returns `409` on a `codex` session with a
+`file.read` rule, or on a `hermes` session with a `bash` rule.
+
+If any change can't be applied on the session's agent, the request returns `409` and nothing is
+applied, including changes to other sections. The error message names the unsupported changes
+and what the agent can change. Remove them and send the update again. For example:
+
+```
+permissions can't change live on hermes for: bash rule "rm -rf *" (only do.actions allow/deny rules and an allow or deny default action can change on this agent). Remove these changes and send the update again (update_unsupported)
+```
+
+If the agent itself refuses a change after the request is accepted, the update ends `FAILED`
+with `session.update.reverted` set to `true`, and `session.update.detail` says to remove the
+permission changes the agent can't take and send the update again.
+
+### Changing skills
+
+`skills` replaces the session's whole list of inline skills. Send every skill the session
+should keep, with the same fields as when you create the session: `name`, `description`,
+`instructions`, and optionally `license`, `metadata`, and `allowed_tools`. A skill you leave
+out is removed. `skills: []` removes every skill, and `skills: null` returns `400`. The list is
+checked with the same rules and limits as at session creation: at most 32 skills, and at most
+512 KiB for all skills together (`400` otherwise). `manifest_yaml` itself can be at most 1 MiB
+and the request body at most 2 MiB (`413` otherwise). The same skills in a different order are
+not a change.
+
+The agent is not restarted, so the conversation continues. The agent reloads its skills, and
+the new list is in use once the update is `APPLIED`. `session.update.changes.skills` names the
+skills added, removed, or changed, never their content.
+
+Changing `skills` is supported on `claude-code`, `codex`, and `opencode` sessions. On any other
+agent, or on a session created before live updates were available, a manifest with a `skills`
+section returns `409`, even if the list matches the session's skills. Changing `skills` must be
+enabled for your team (see Requirements below).
+
+If the agent refuses the new skills after the request is accepted, the update ends `FAILED`
+with `error` set to `update_failed` and `session.update.reverted` set to `true`, and the
+session keeps its previous skills. This happens when a skill has the same name as one the
+session's repository already provides: rename the skill and send the update again on the same
+session. Only when the session's agent can't reload skills while it runs does the update end
+with `error` set to `requires_new_session`. If the same update also changes
+`permissions`, the platform can't tell which of the two the agent refused: the update ends
+`FAILED` with `error` set to `update_failed`, and sending the `permissions` and `skills` changes
+as separate updates shows which one the agent can't take.
 
 ### Tracking an update
 
@@ -53694,8 +54191,11 @@ GitHub OAuth connections, URL-bound secrets, platform-managed model keys, and `p
    - `FAILED`: the update did not take effect. `session.update.detail` explains why, and
      `session.update.reverted` is `true` if the previous settings were restored.
 
-Tool updates usually finish within a few seconds. Updates to `env` (including the model) or
-`secrets` restart the agent and can take up to about two minutes.
+Tool, URL-bound secret, `egress`, `permissions`, and `skills` updates usually finish within a
+few seconds, except on `langgraph`, where a `tools` update or a `permissions` change to
+`default` or `do.actions/<tool>` rules restarts the agent. Updates to `env` (including the
+model) or plain secrets, and OAuth connection switches, restart the agent and can take up to
+about two minutes.
 
 If the request matches the session's current settings, it returns `200` with `outcome` set to
 `UNCHANGED` and nothing is applied.
@@ -53717,8 +54217,13 @@ settings the session now runs with (without secret values).
   `SESSION_STATUS_PROVISIONING`, `SESSION_STATUS_UPDATING`, a session paused for zero balance,
   and a destroyed or failed session. A locked session returns `423`.
 - The session must be idle: no agent turn running and no approval pending (`409`).
-- Session settings updates must be enabled for your team.
-- Not every agent runtime supports every section. An unsupported change returns `409`.
+- Session settings updates must be enabled for your team. Changing `permissions` must also be
+  enabled for your team; if it isn't, a request whose manifest includes a `permissions`
+  section returns `403`, even if the section matches the session's policy. Likewise, changing
+  `skills` must be enabled for your team; if it isn't, a request whose manifest includes a
+  `skills` section returns `403`, even if the list matches the session's skills.
+- Not every agent runtime supports every section, or every `permissions` change (see Changing
+  permissions above). An unsupported change returns `409`, and nothing is applied.
 
 > Body parameter
 
@@ -53736,7 +54241,7 @@ settings the session now runs with (without secret values).
 |session_id|path|string|true|The session UUID.|
 |body|body|[patch_session_request](#schemapatch_session_request)|true|Set either `resume_on_topoff` or `manifest_yaml`, not both.|
 |» resume_on_topoff|body|boolean|false|Whether this session resumes automatically after it is paused for low balance and your team's prepaid balance is topped up. Applies to this session only. Can't be combined with `manifest_yaml`.|
-|» manifest_yaml|body|string|false|A partial agent manifest, as a YAML string, that holds only the sections to change. Can't<br>be combined with `resume_on_topoff`. Requires session settings updates to be enabled for<br>your team (`403` otherwise).<br><br>Supported sections are `tools`, `env`, and `secrets`. Sections you omit are not changed.<br>Any other top-level key returns `400`, including `model` (to change the model, set<br>`HARNESS_INFERENCE_MODEL` in `env`) and `permissions` (can't be changed on an existing<br>session).<br><br>Each section you include replaces that section in full:<br><br>- `tools`: the complete list of tools for the session. Only Action Gateway tools<br>  (`do.actions` entries) can be added, removed, or changed. Custom MCP servers can't be<br>  changed on an existing session: include the session's current custom MCP servers<br>  exactly as they are. Adding, removing, or changing one returns `422`. To remove all Action Gateway tools from a session that has no custom<br>  MCP servers, send `tools: []`. `tools: null` returns `400`.<br>- `env`: the complete set of environment variables, as name-value pairs. A variable you<br>  leave out is removed. `env: {}` removes all variables; `env: null` returns `400`.<br>- `secrets`: the complete set of secrets, as name-value pairs. A secret you leave out is<br>  removed. For each secret, set the value to a string to add or rotate it, or to `{}` to<br>  keep its current value. A `null` value returns `400`.<br><br>**Changing the model.** The only way to change a session's model is through `env`. Set<br>`HARNESS_INFERENCE_MODEL` to a DigitalOcean Serverless Inference model ID, or to<br>`router:<name>` for an inference router. This works<br>only on sessions created with `HARNESS_INFERENCE_MODEL` set and without their own<br>inference endpoint. Adding, removing, or changing the key on any other session, or moving<br>a session to its own endpoint, returns `422`. A malformed value (empty, multi-line, or over<br>256 bytes) returns `400`. Whether the model exists is not checked when you send the<br>request; an unknown model fails on the agent's next turn.<br><br>**Reserved keys.** `HARNESS_INFERENCE_API_KEY` and `HARNESS_INFERENCE_BASE_URL` are<br>managed by the platform: include them with their current values, or the request returns<br>`422`. Framework keys can't be changed either (`422`). Secrets that are not plain values<br>(such as URL-bound or OAuth secrets) can't be changed on an existing session (`422`).<br><br>Example that changes the model, keeps one secret, and rotates another. Because each<br>section is a full replacement, the example assumes the session has no other env<br>variables or secrets:<br><br>```yaml<br>env:<br>  HARNESS_INFERENCE_MODEL: llama3.3-70b-instruct<br>  LOG_LEVEL: info<br>secrets:<br>  GITHUB_TOKEN: {}<br>  JIRA_API_TOKEN: new-token-value<br>```|
+|» manifest_yaml|body|string|false|A partial agent manifest, as a YAML string, that holds only the sections to change. Can't<br>be combined with `resume_on_topoff`. Requires session settings updates to be enabled for<br>your team (`403` otherwise).<br><br>Supported sections are `tools`, `env`, `secrets`, `egress`, `permissions`, and `skills`.<br>Sections you omit are not changed. Any other top-level key returns `400`, including `model`<br>(set the model in `env` instead; see **Changing the model**).<br><br>Each section you include replaces that section in full:<br><br>- `tools`: the complete list of tools for the session. Action Gateway tools<br>  (`do.actions` entries) can be added, removed, or changed. A custom MCP server can be<br>  added, modified, or removed only where the session's `mutability.custom_tools` is<br>  `true`; otherwise the request returns `409`. Include the session's current custom MCP<br>  servers exactly as they are unless you are changing them. A server with `auth` that is<br>  added, moved to another `url`, or given another secret slot needs its secret's value in<br>  the same request, or a URL-bound secret that covers its `url`; otherwise the request<br>  returns `400`. To remove all Action Gateway tools from a session that has no custom MCP<br>  servers, send `tools: []`. `tools: null` returns `400`.<br>- `env`: the complete set of environment variables, as name-value pairs. A variable you<br>  leave out is removed. `env: {}` removes all variables; `env: null` returns `400`.<br>- `secrets`: the complete set of secrets, as name-value pairs. A secret you leave out is<br>  removed. For each secret, set the value to a string to add or rotate it, or to `{}` to<br>  keep its current value. URL-bound and OAuth secrets also accept an object; see<br>  **URL-bound secrets** and **Switching an OAuth connection**. A `null` value returns<br>  `400`.<br>- `egress`: the complete egress allowlist, as an object with `allow_hosts` (hostnames) and<br>  `allow_ips` (exact IPv4 or IPv6 addresses, not CIDR ranges). Only this object form is<br>  supported in an update. It replaces the session's<br>  current allowlist: a host or IP address you leave out is removed. Leave out `vpc_uuid`<br>  and `subnet_uuid` to keep the session's current VPC, or set them to their current values.<br>  A different value returns `422`. See **Egress**.<br>- `permissions`: the complete permission policy, `default` and the full `rules` list,<br>  with the same fields as at session creation. A rule you leave out is removed.<br>  `permissions: {}` removes the policy (the agent's built-in default applies);<br>  `permissions: null` returns `400`. What can change depends on the session's agent, and<br>  `permissions.filesystem` and `permissions.network` can't be changed. Removing a rule is<br>  a change too: a rule of a type the agent can't change must be kept, so `{}` returns<br>  `409` while the policy has one. If any change<br>  can't be applied on the agent, the request returns `409` and nothing is applied; the<br>  error message names the unsupported changes so you can remove them and send the update<br>  again. Sessions created before live permissions updates were released return `409`.<br>- `skills`: the complete list of inline skills, with the same fields and limits as at<br>  session creation. A skill you leave out is removed. `skills: []` removes every skill;<br>  `skills: null` returns `400`. The same skills in a different order are not a change.<br>  Supported on `claude-code`, `codex`, and `opencode` sessions (`409` otherwise), and must<br>  be enabled for your team (`403` otherwise). The agent reloads its skills without a<br>  restart. If the agent refuses them (for example, a skill named like one the session's<br>  repository already ships), the update ends in `FAILED` with `error` set to<br>  `update_failed` and the session keeps its previous skills: rename the skill and send the<br>  update again. Only an agent that can't reload skills on a running session ends with<br>  `requires_new_session`.<br><br>**URL-bound secrets.** The egress proxy sends a URL-bound secret only to requests that<br>match its `url`; the agent never receives the value. An update to a URL-bound secret<br>doesn't restart the agent. In `secrets`, you can:<br><br>- Rotate the value: set the secret to the new value as a string. Its `url` and `scheme`<br>  don't change.<br>- Move it to another URL or scheme: set it to `{value, url, scheme}`. A new host or path,<br>  or a change to `scheme: raw`, requires `value` (`400` otherwise). Sending the current<br>  `value`, `url`, and `scheme` again is not a change.<br>- Add one: set it to `{value, url}`. `scheme` is optional and defaults to `bearer`<br>  (`Authorization: Bearer <value>`); `raw` sends the value exactly as stored.<br>- Bind an existing plain secret to a URL: set it to `{url}`. The secret keeps its current<br>  value.<br>- Keep one unchanged: set it to `{}`.<br>- Remove one: leave it out of `secrets`.<br><br>`url` must use `https://` and name an exact hostname (no wildcards, IP addresses, or<br>`localhost`), with an optional path and no port, query, or fragment. A session can have up<br>to 16 URL-bound secrets, fewer if it has storage mounts, which count toward the same limit. A URL-bound secret can't be changed back to a plain secret. If<br>the session has an egress allowlist, the secret's host is added to it. After a rollback or<br>fork, a URL-bound secret that was moved off its agent config's URL can need its value<br>again: the request returns `409` until you send `value`.<br><br>**Egress.** `egress` changes the hosts and IP addresses the session can reach. The new<br>allowlist takes effect on the session's next outbound connection, without an agent<br>restart. Connections that are already open stay open, including connections to a host you<br>removed. Only `allow_hosts` and `allow_ips` can change; the VPC is fixed when the session<br>is created. A session created with unrestricted egress and no URL-bound secrets can't gain<br>an allowlist: the update ends in `FAILED` with `error` set to `requires_new_session`.<br><br>**Switching an OAuth connection.** An OAuth secret that was created with `actor` can move<br>to another connection of the same provider: set it to `{source: oauth, provider, actor}`<br>with the new connection's `user_id` as `actor`; leaving out `provider` or `actor` returns<br>`400`. The connection must be active and owned by you, except when you switch back to the<br>connection the agent config names. Another team member's connection returns `400`.<br>Switching OAuth connections must be enabled for your team (`403` otherwise). The agent<br>restarts to read the new token. Sending the connection the secret already uses is not a<br>change. Adding or removing an OAuth secret, changing its provider, or switching one that<br>was created without `actor` returns `422`.<br>This example switches `GITHUB_TOKEN` to the connection `github2` and assumes the session<br>has no other secrets:<br><br>```yaml<br>secrets:<br>  GITHUB_TOKEN:<br>    source: oauth<br>    provider: github<br>    actor: github2<br>```<br><br>**Changing the model.** You change a session's model through `env`. The key to set depends<br>on the model endpoint the session was created with:<br><br>- DigitalOcean Serverless Inference (created with `HARNESS_INFERENCE_MODEL` and without<br>  `OPENAI_BASE_URL`, `ANTHROPIC_BASE_URL`, or an `ANTHROPIC_API_KEY` secret): set<br>  `HARNESS_INFERENCE_MODEL` to a Serverless Inference model ID, or to `router:<name>` for<br>  an inference router. Removing the key, or moving the session to its own endpoint,<br>  returns `422`. Adding the key to a session that was created without it also returns<br>  `422`.<br>- Your own OpenAI-compatible endpoint (created with `OPENAI_BASE_URL`): set `MODEL`. The<br>  session reads `MODEL` before `OPENAI_MODEL`, so set `OPENAI_MODEL` only if the session<br>  uses it and doesn't have `MODEL`.<br>- Your own Anthropic endpoint (created with `ANTHROPIC_BASE_URL`), or the Anthropic API<br>  (created with an `ANTHROPIC_API_KEY` secret and no base URL): set `ANTHROPIC_MODEL`. The<br>  session reads `ANTHROPIC_MODEL` before `MODEL`.<br><br>On a session that uses its own endpoint, the following rules also apply:<br><br>- Removing the model key makes the agent use its default model for that endpoint.<br>- The model provider and the base URL (`OPENAI_BASE_URL` or `ANTHROPIC_BASE_URL`) can't be<br>  changed (`422`). Include the base URL with its current value.<br>- The provider API key (`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`) can only be rotated: set<br>  it to the new value as a string, or to `{}` to keep it. Removing it, adding it to a<br>  session that was created without it, or changing its `url` or `scheme` returns `422`.<br>  If the key is URL-bound, rotating it follows the URL-bound secret rules: the agent isn't<br>  restarted, and URL-bound secret updates must be enabled for your team (`403`<br>  otherwise).<br><br>A model name can't be empty, start or end with whitespace, span more than one line, be<br>longer than 256 bytes, or contain ` #` or `: ` (`400`). Whether the endpoint serves the<br>model is not checked when you send the request; an unknown model fails on the agent's next<br>turn.<br><br>**Reserved keys.** `HARNESS_INFERENCE_API_KEY` and `HARNESS_INFERENCE_BASE_URL` are<br>managed by the platform: include them with their current values, or the request returns<br>`422`. Framework keys can't be changed either (`422`). Mount-only secrets (`env: false`)<br>can't be changed on an existing session: set them to `{}` (`422` otherwise). Set an OAuth<br>secret to `{}` unless you switch its connection.<br><br>Example that changes the model, keeps one secret, and rotates another. Because each<br>section is a full replacement, the example assumes the session has no other env<br>variables or secrets:<br><br>```yaml<br>env:<br>  HARNESS_INFERENCE_MODEL: llama3.3-70b-instruct<br>  LOG_LEVEL: info<br>secrets:<br>  GITHUB_TOKEN: {}<br>  JIRA_API_TOKEN: new-token-value<br>```<br><br>Example that changes the model and rotates the provider API key of a session that was<br>created with its own OpenAI-compatible endpoint. The example assumes the session has no<br>other env variables or secrets:<br><br>```yaml<br>env:<br>  OPENAI_BASE_URL: https://llm.example.com/v1<br>  MODEL: my-model-v2<br>secrets:<br>  OPENAI_API_KEY: new-api-key<br>```<br><br>Example that keeps one URL-bound secret, moves another to a new URL, and replaces the<br>egress allowlist. The example assumes the session has no other secrets:<br><br>```yaml<br>secrets:<br>  GITHUB_TOKEN: {}<br>  JIRA_API_TOKEN:<br>    value: new-token-value<br>    url: https://example.atlassian.net/rest/api/3<br>egress:<br>  allow_hosts:<br>    - api.github.com<br>    - example.atlassian.net<br>  allow_ips:<br>    - 203.0.113.10<br>```|
 
 > Example responses
 
@@ -53807,6 +54312,40 @@ settings the session now runs with (without secret values).
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -53853,9 +54392,54 @@ settings the session now runs with (without secret values).
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   },
   "outcome": "ACCEPTED",
   "warnings": [
@@ -53931,6 +54515,40 @@ settings the session now runs with (without secret values).
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -53977,9 +54595,54 @@ settings the session now runs with (without secret values).
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   },
   "outcome": "ACCEPTED",
   "warnings": [
@@ -54036,6 +54699,16 @@ settings the session now runs with (without secret values).
 }
 ```
 
+> 413 Response
+
+```json
+{
+  "id": "not_found",
+  "message": "The resource you were accessing could not be found.",
+  "request_id": "4d9d8375-3c56-4925-a3e7-eb137fed17e9"
+}
+```
+
 > 422 Response
 
 ```json
@@ -54074,6 +54747,16 @@ settings the session now runs with (without secret values).
 }
 ```
 
+> 503 Response
+
+```json
+{
+  "id": "not_found",
+  "message": "The resource you were accessing could not be found.",
+  "request_id": "4d9d8375-3c56-4925-a3e7-eb137fed17e9"
+}
+```
+
 > default Response
 
 ```json
@@ -54089,15 +54772,17 @@ settings the session now runs with (without secret values).
 |---|---|---|---|
 |200|OK|The session was updated (`resume_on_topoff`), or the requested session settings match the current ones and nothing was applied (`outcome` is `UNCHANGED`).|[patch_session_response](#schemapatch_session_response)|
 |202|Accepted|The session settings update was accepted and is being applied. The session status is `SESSION_STATUS_UPDATING`. Poll the session until the status is `SESSION_STATUS_READY`, or `SESSION_STATUS_PAUSED` if the session was paused when you sent the update, then read `session.update` to see whether the update was applied.|[patch_session_response](#schemapatch_session_response)|
-|400|Bad Request|The request is invalid. For example: the body is empty or not valid JSON, `manifest_yaml` is not valid YAML, a field or manifest section is not recognized, a value is invalid, or both `resume_on_topoff` and `manifest_yaml` are set. A top-level `model` section (set `env.HARNESS_INFERENCE_MODEL` instead) and a `permissions` section (can't be changed on an existing session) also return `400`.|[error](#schemaerror)|
+|400|Bad Request|The request is invalid. For example: the body is empty or not valid JSON, `manifest_yaml` is not valid YAML, a field or manifest section is not recognized, a value is invalid, or both `resume_on_topoff` and `manifest_yaml` are set. A top-level `model` section (set the model in `env` instead), `permissions: null`, and `skills: null` also return `400`, as do a malformed model name and a `skills` list that isn't valid (for example, a duplicate or badly formed skill name, a missing `description` or `instructions`, more than 32 skills, or more than 512 KiB of skills in total). A URL-bound secret moved to a new host or path, or to `scheme: raw`, without `value` returns `400`. An OAuth secret switched to a connection you can't use also returns `400`: no connection has that `actor`, or the connection is pending, expired, revoked, or another team member's. So does an OAuth connection switch that leaves out `provider` or `actor`.|[error](#schemaerror)|
 |401|Unauthorized|Authentication failed due to invalid credentials.|[error](#schemaerror)|
-|403|Forbidden|You don't have access to this session, or session settings updates are not enabled for your team (`manifest_yaml` only).|[error](#schemaerror)|
+|403|Forbidden|You don't have access to this session, or session settings updates are not enabled for your team (`manifest_yaml` only). A URL-bound secret or `egress` change also returns `403` when URL-bound secret and egress updates are not enabled for your team, a manifest with a `permissions` section returns `403` when permission updates are not enabled for your team, a manifest with a `skills` section returns `403` when skills updates are not enabled for your team, and an OAuth connection switch returns `403` when switching OAuth connections is not enabled for your team.|[error](#schemaerror)|
 |404|Not Found|The resource was not found.|[error](#schemaerror)|
-|409|Conflict|The session can't be updated right now. For example, it is still provisioning, already updating, running an agent turn, waiting on an approval, paused for zero balance, or destroyed, or its agent runtime doesn't support the change. The error message gives the reason.|[error](#schemaerror)|
-|422|Unprocessable Entity|The change can only be made by creating a new session. For example: adding, removing, or changing a custom MCP server in `tools`, changing a reserved platform key or a secret that is not a plain value (such as a URL-bound or OAuth secret), or adding, removing, or changing `HARNESS_INFERENCE_MODEL` on a session that doesn't use DigitalOcean Serverless Inference.|[error](#schemaerror)|
+|409|Conflict|The session can't be updated right now. For example, it is still provisioning, already updating, running an agent turn, waiting on an approval, paused for zero balance, or destroyed, or its agent runtime doesn't support the change (including an `egress` change on a session that doesn't support egress updates, and a custom MCP server change on a session whose `mutability.custom_tools` is `false`). After a rollback or fork, a URL-bound secret that was moved off its agent config's URL also returns `409` until you send its value again. For a `permissions` change the agent can't apply, the message names the unsupported changes and ends with `(update_unsupported)`; nothing is applied, so remove them and send the update again. A session created before live permissions updates were released can't change `permissions`; create a new session. A session forked from a checkpoint whose agent still reaches Action Gateway through its parent session can't take an update involving `do.actions` tools, including an OAuth connection switch on a session that has them; the message ends with `(fork_update_unsupported)`, and you need a new session. A manifest with a `skills` section on an agent that can't take skills while it runs, or on a session created before live updates were available, also returns `409` and ends with `(update_unsupported)`, even if the list matches the session's skills. The error message gives the reason.|[error](#schemaerror)|
+|413|Payload Too Large|The request body exceeds 2 MiB, or `manifest_yaml` exceeds 1 MiB. A long `skills` list is the most likely cause; the error message gives the limit.|[error](#schemaerror)|
+|422|Unprocessable Entity|The change can only be made by creating a new session. For example: changing a reserved platform key or a mount-only secret; adding or removing an OAuth secret, changing its provider, or switching one that was created without `actor`; changing `vpc_uuid` or `subnet_uuid` in `egress`; adding, removing, or changing `HARNESS_INFERENCE_MODEL` on a session that doesn't use DigitalOcean Serverless Inference; changing a session's model provider or base URL; or adding, removing, or moving the provider API key of a session that uses its own endpoint.|[error](#schemaerror)|
 |423|Locked|The session is unavailable. Contact support.|[error](#schemaerror)|
 |429|Too Many Requests|The API rate limit has been exceeded.|[error](#schemaerror)|
 |500|Internal Server Error|There was a server error.|[error](#schemaerror)|
+|503|Service Unavailable|A service the update depends on is unavailable. For example, an OAuth connection switch couldn't reach the connection service to check the new connection. The session wasn't changed; retry the request.|[error](#schemaerror)|
 |default|Default|There was an unexpected error.|[error](#schemaerror)|
 
 ### Response Headers
@@ -54125,6 +54810,9 @@ settings the session now runs with (without secret values).
 |409|ratelimit-limit|integer||The default limit on number of requests that can be made per hour and per minute. Current rate limits are 5000 requests per hour and 250 requests per minute.|
 |409|ratelimit-remaining|integer||The number of requests in your hourly quota that remain before you hit your request limit. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
 |409|ratelimit-reset|integer||The time when the oldest request will expire. The value is given in Unix epoch time. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
+|413|ratelimit-limit|integer||The default limit on number of requests that can be made per hour and per minute. Current rate limits are 5000 requests per hour and 250 requests per minute.|
+|413|ratelimit-remaining|integer||The number of requests in your hourly quota that remain before you hit your request limit. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
+|413|ratelimit-reset|integer||The time when the oldest request will expire. The value is given in Unix epoch time. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
 |422|ratelimit-limit|integer||The default limit on number of requests that can be made per hour and per minute. Current rate limits are 5000 requests per hour and 250 requests per minute.|
 |422|ratelimit-remaining|integer||The number of requests in your hourly quota that remain before you hit your request limit. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
 |422|ratelimit-reset|integer||The time when the oldest request will expire. The value is given in Unix epoch time. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
@@ -54137,6 +54825,9 @@ settings the session now runs with (without secret values).
 |500|ratelimit-limit|integer||The default limit on number of requests that can be made per hour and per minute. Current rate limits are 5000 requests per hour and 250 requests per minute.|
 |500|ratelimit-remaining|integer||The number of requests in your hourly quota that remain before you hit your request limit. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
 |500|ratelimit-reset|integer||The time when the oldest request will expire. The value is given in Unix epoch time. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
+|503|ratelimit-limit|integer||The default limit on number of requests that can be made per hour and per minute. Current rate limits are 5000 requests per hour and 250 requests per minute.|
+|503|ratelimit-remaining|integer||The number of requests in your hourly quota that remain before you hit your request limit. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
+|503|ratelimit-reset|integer||The time when the oldest request will expire. The value is given in Unix epoch time. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
 |default|ratelimit-limit|integer||The default limit on number of requests that can be made per hour and per minute. Current rate limits are 5000 requests per hour and 250 requests per minute.|
 |default|ratelimit-remaining|integer||The number of requests in your hourly quota that remain before you hit your request limit. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
 |default|ratelimit-reset|integer||The time when the oldest request will expire. The value is given in Unix epoch time. See https://developers.digitalocean.com/documentation/v2/#rate-limit for information about how requests expire.|
@@ -55094,6 +55785,40 @@ In-place restore: boots a fresh sandbox from the checkpoint and atomically swaps
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -55140,9 +55865,54 @@ In-place restore: boots a fresh sandbox from the checkpoint and atomically swaps
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   }
 }
 ```
@@ -55411,6 +56181,40 @@ Each child boots a fresh sandbox from the checkpoint's machine-state capture and
             "changed": [
               "github"
             ]
+          },
+          "egress": {
+            "mode": "allowlist",
+            "added": [
+              "example.atlassian.net"
+            ],
+            "removed": [
+              "203.0.113.10"
+            ]
+          },
+          "permissions": {
+            "default": "ask",
+            "rules": {
+              "added": [
+                "bash \"npm test\""
+              ],
+              "removed": [
+                "bash \"rm -rf *\""
+              ],
+              "changed": [
+                "do.actions/web_search"
+              ]
+            }
+          },
+          "skills": {
+            "added": [
+              "jira"
+            ],
+            "removed": [
+              "docs"
+            ],
+            "changed": [
+              "github"
+            ]
           }
         },
         "error": "update_failed",
@@ -55457,9 +56261,54 @@ Each child boots a fresh sandbox from the checkpoint's machine-state capture and
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
-      "manifest": {}
+      "manifest": {},
+      "mutability": {
+        "model": true,
+        "env": true,
+        "secrets": true,
+        "tools": true,
+        "permissions": true,
+        "egress": true,
+        "system_prompt": false,
+        "custom_tools": false,
+        "skills": false
+      }
     }
   ]
 }
@@ -176230,6 +177079,7 @@ Customer-declared tool-execution permission policy (spec.permissions). REQUEST o
         "provider": "openai",
         "ref": "do.actions",
         "value": "sk-example",
+        "actor": "github1",
         "env": true
       }
     ],
@@ -176444,6 +177294,7 @@ Customer-authored agents.yaml Agent manifest, sent as the CreateSession request 
           "provider": "openai",
           "ref": "do.actions",
           "value": "sk-example",
+          "actor": "github1",
           "env": true
         }
       ],
@@ -176647,6 +177498,7 @@ Immutable team-scoped Environment Config: one sanitized manifest per config. The
             "provider": "openai",
             "ref": "do.actions",
             "value": "sk-example",
+            "actor": "github1",
             "env": true
           }
         ],
@@ -176763,7 +177615,7 @@ SessionStatus is the lifecycle state of the sandbox + agent pair. SESSION_STATUS
 "APPLIED"
 ```
 
-State of a session settings update. `APPLYING`: in progress. `APPLIED`: live. `APPLIED_RESTARTED`: live, and the agent was restarted to apply it (`env` and `secrets` changes). `FAILED`: the update did not take effect; see `reverted` and `detail`.
+State of a session settings update. `APPLYING`: in progress. `APPLIED`: live. `APPLIED_RESTARTED`: live, and the agent was restarted to apply it (`env` and plain secret changes). `FAILED`: the update did not take effect; see `reverted` and `detail`.
 
 <h2 id="tocS_session_config_section_changes">session_config_section_changes</h2>
 <!-- backwards compatibility -->
@@ -176795,6 +177647,76 @@ Names of the entries added, removed, or changed in one manifest section.
 |added|[string]|false|none|none|
 |removed|[string]|false|none|none|
 |changed|[string]|false|none|none|
+
+<h2 id="tocS_session_config_egress_changes">session_config_egress_changes</h2>
+<!-- backwards compatibility -->
+<a id="schemasession_config_egress_changes"></a>
+<a id="schema_session_config_egress_changes"></a>
+<a id="tocSsession_config_egress_changes"></a>
+<a id="tocssession_config_egress_changes"></a>
+
+```json
+{
+  "mode": "allowlist",
+  "added": [
+    "example.atlassian.net"
+  ],
+  "removed": [
+    "203.0.113.10"
+  ]
+}
+```
+
+The hosts and IP addresses an `egress` change added or removed, and the new egress mode when it changed. Omitted when the egress policy is unchanged.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|mode|string|false|none|The new egress mode. Present only when the mode changed.|
+|added|[string]|false|none|none|
+|removed|[string]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|mode|allowlist|
+|mode|unrestricted|
+|mode|deny_all|
+
+<h2 id="tocS_session_config_permissions_changes">session_config_permissions_changes</h2>
+<!-- backwards compatibility -->
+<a id="schemasession_config_permissions_changes"></a>
+<a id="schema_session_config_permissions_changes"></a>
+<a id="tocSsession_config_permissions_changes"></a>
+<a id="tocssession_config_permissions_changes"></a>
+
+```json
+{
+  "default": "ask",
+  "rules": {
+    "added": [
+      "bash \"npm test\""
+    ],
+    "removed": [
+      "bash \"rm -rf *\""
+    ],
+    "changed": [
+      "do.actions/web_search"
+    ]
+  }
+}
+```
+
+Changes to the permission policy. A rule is named by its tool and match values, for example `bash "git *"` or `do.actions/web_search`. Omitted when the permissions are identical.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|default|string|false|none|The new default action (`allow`, `ask`, or `deny`), when it changed. Empty when the default was removed.|
+|rules|object|false|none|Names of the rules added, removed, or changed. `changed` covers a rule kept under the same tool and match with another action, or at another position. The last matching rule wins, so the order is part of the policy.|
 
 <h2 id="tocS_session_config_changes">session_config_changes</h2>
 <!-- backwards compatibility -->
@@ -176837,6 +177759,40 @@ Names of the entries added, removed, or changed in one manifest section.
     "changed": [
       "github"
     ]
+  },
+  "egress": {
+    "mode": "allowlist",
+    "added": [
+      "example.atlassian.net"
+    ],
+    "removed": [
+      "203.0.113.10"
+    ]
+  },
+  "permissions": {
+    "default": "ask",
+    "rules": {
+      "added": [
+        "bash \"npm test\""
+      ],
+      "removed": [
+        "bash \"rm -rf *\""
+      ],
+      "changed": [
+        "do.actions/web_search"
+      ]
+    }
+  },
+  "skills": {
+    "added": [
+      "jira"
+    ],
+    "removed": [
+      "docs"
+    ],
+    "changed": [
+      "github"
+    ]
   }
 }
 ```
@@ -176849,7 +177805,10 @@ Changes made in each manifest section. Secret values are never included.
 |---|---|---|---|---|
 |tools|[session_config_section_changes](#schemasession_config_section_changes)|false|none|Names of the entries added, removed, or changed in one manifest section.|
 |env|[session_config_section_changes](#schemasession_config_section_changes)|false|none|Names of the entries added, removed, or changed in one manifest section.|
-|secrets|[session_config_section_changes](#schemasession_config_section_changes)|false|none|Names of the entries added, removed, or changed in one manifest section.|
+|secrets|object|false|none|Secret names, never values. On an update, `changed` lists the secrets that got a new value, were bound to another URL or scheme, or were switched to another OAuth connection. On `config_diff`, `changed` lists only the secrets bound to a different URL or scheme than in the agent config; a switched OAuth connection isn't listed there.|
+|egress|[session_config_egress_changes](#schemasession_config_egress_changes)|false|none|The hosts and IP addresses an `egress` change added or removed, and the new egress mode when it changed. Omitted when the egress policy is unchanged.|
+|permissions|[session_config_permissions_changes](#schemasession_config_permissions_changes)|false|none|Changes to the permission policy. A rule is named by its tool and match values, for example `bash "git *"` or `do.actions/web_search`. Omitted when the permissions are identical.|
+|skills|object|false|none|Skill names, never their content. `changed` lists the skills kept under the same name whose definition changed.|
 
 <h2 id="tocS_session_config_update">session_config_update</h2>
 <!-- backwards compatibility -->
@@ -176900,6 +177859,40 @@ Changes made in each manifest section. Secret values are never included.
       "changed": [
         "github"
       ]
+    },
+    "egress": {
+      "mode": "allowlist",
+      "added": [
+        "example.atlassian.net"
+      ],
+      "removed": [
+        "203.0.113.10"
+      ]
+    },
+    "permissions": {
+      "default": "ask",
+      "rules": {
+        "added": [
+          "bash \"npm test\""
+        ],
+        "removed": [
+          "bash \"rm -rf *\""
+        ],
+        "changed": [
+          "do.actions/web_search"
+        ]
+      }
+    },
+    "skills": {
+      "added": [
+        "jira"
+      ],
+      "removed": [
+        "docs"
+      ],
+      "changed": [
+        "github"
+      ]
     }
   },
   "error": "update_failed",
@@ -176923,7 +177916,7 @@ The most recent session settings update to the session, or the automatic rollbac
 |update_id|string|false|none|none|
 |session_id|string|false|none|none|
 |kind|string|false|none|none|
-|state|[session_config_update_state](#schemasession_config_update_state)|false|none|State of a session settings update. `APPLYING`: in progress. `APPLIED`: live. `APPLIED_RESTARTED`: live, and the agent was restarted to apply it (`env` and `secrets` changes). `FAILED`: the update did not take effect; see `reverted` and `detail`.|
+|state|[session_config_update_state](#schemasession_config_update_state)|false|none|State of a session settings update. `APPLYING`: in progress. `APPLIED`: live. `APPLIED_RESTARTED`: live, and the agent was restarted to apply it (`env` and plain secret changes). `FAILED`: the update did not take effect; see `reverted` and `detail`.|
 |sections|[string]|false|none|Manifest sections this update touched.|
 |changes|[session_config_changes](#schemasession_config_changes)|false|none|Changes made in each manifest section. Secret values are never included.|
 |error|string|false|none|Failure class; present when state is FAILED.|
@@ -176949,6 +177942,43 @@ The most recent session settings update to the session, or the automatic rollbac
 |error|update_failed|
 |error|requires_new_session|
 |error|interrupted|
+
+<h2 id="tocS_session_mutability">session_mutability</h2>
+<!-- backwards compatibility -->
+<a id="schemasession_mutability"></a>
+<a id="schema_session_mutability"></a>
+<a id="tocSsession_mutability"></a>
+<a id="tocssession_mutability"></a>
+
+```json
+{
+  "model": true,
+  "env": true,
+  "secrets": true,
+  "tools": true,
+  "permissions": true,
+  "egress": true,
+  "system_prompt": false,
+  "custom_tools": false,
+  "skills": false
+}
+```
+
+Which manifest sections a live config update (`PATCH /v2/agents/sessions/{session_id}` with `manifest_yaml`) can change on this session. It describes what this session's agent can take, recorded when the session was created. A flag that is `false` answers `409` with `(update_unsupported)` when a PATCH tries to change what it covers. A session created before the field existed reads `false` for every key. A top-level `model` section in `manifest_yaml` returns `400` whatever this says.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|model|boolean|true|none|The session's model can be changed, through `env.HARNESS_INFERENCE_MODEL` or, on a session with its own endpoint, the env key that endpoint reads its model from. Independent of `env`.|
+|env|boolean|true|none|A live update can change `env` keys other than the model keys. A patch that changes both needs both.|
+|secrets|boolean|true|none|A live update can change the `secrets` section.|
+|tools|boolean|true|none|A live update can change the `tools` section: the Action Gateway (`do.actions`) entries. A custom MCP server also needs `custom_tools`.|
+|permissions|boolean|true|none|A live update can change `permissions`: the default and the rules of the types the session's agent enforces live. `filesystem` and `network` never change on a running session.|
+|egress|boolean|true|none|A live update can change the `egress` section: the destinations the session can reach.|
+|system_prompt|boolean|true|none|The session's standing instruction can be replaced by a live update.|
+|custom_tools|boolean|true|none|A live update can add, modify, or remove a custom MCP server (`name` and `url`) in the `tools` section. It also needs `tools`. The agent restarts when the change alters its environment. A session reads `false` until its agent's custom-server update is supported, and keeps reading `false` after that if it was created earlier. A server with `auth` that is added, moved to another `url`, or given another secret slot must carry its secret's value in the same request, or use a URL-bound secret whose `url` covers the server's `url` (`400` otherwise). A new server host under an egress allowlist also needs `egress`.|
+|skills|boolean|true|none|A live update can change the `skills` section, the inline skill list, which is replaced as a whole. Only claude-code, codex and opencode can reload skills live. A session reads `false` until its agent's live skill update is supported, and keeps reading `false` after that if it was created earlier. While skills updates are enabled team by team, a team that has them can also change the skills of a claude-code, codex, or opencode session that reads `false`, unless the session was created before this field existed.|
 
 <h2 id="tocS_definitions_session">definitions_session</h2>
 <!-- backwards compatibility -->
@@ -177021,6 +178051,40 @@ The most recent session settings update to the session, or the automatic rollbac
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
     "error": "update_failed",
@@ -177067,9 +178131,54 @@ The most recent session settings update to the session, or the automatic rollbac
       "changed": [
         "github"
       ]
+    },
+    "egress": {
+      "mode": "allowlist",
+      "added": [
+        "example.atlassian.net"
+      ],
+      "removed": [
+        "203.0.113.10"
+      ]
+    },
+    "permissions": {
+      "default": "ask",
+      "rules": {
+        "added": [
+          "bash \"npm test\""
+        ],
+        "removed": [
+          "bash \"rm -rf *\""
+        ],
+        "changed": [
+          "do.actions/web_search"
+        ]
+      }
+    },
+    "skills": {
+      "added": [
+        "jira"
+      ],
+      "removed": [
+        "docs"
+      ],
+      "changed": [
+        "github"
+      ]
     }
   },
-  "manifest": {}
+  "manifest": {},
+  "mutability": {
+    "model": true,
+    "env": true,
+    "secrets": true,
+    "tools": true,
+    "permissions": true,
+    "egress": true,
+    "system_prompt": false,
+    "custom_tools": false,
+    "skills": false
+  }
 }
 ```
 
@@ -177101,9 +178210,10 @@ Session is the user-facing record of a environment session + sandbox pair.
 |region|string|false|none|DO region slug the session lives in, e.g. ric1. Stamped once at create from the region whose API host served the request, and never changed. Returned only for teams on the regional routing rollout; omitted otherwise.|
 |workspace_id|string|false|none|The persistent workspace attached to the session, mounted at `/workspace`. Empty when the session has none. Fork and rollback return 409 for a session that has a workspace.|
 |update|[session_config_update](#schemasession_config_update)|false|none|The most recent session settings update to the session, or the automatic rollback of a failed one.|
-|config_drifted|boolean|false|none|True when the running config differs from the manifest the session was created from, for example after a successful PATCH with `manifest_yaml`. Omitted when false.|
+|config_drifted|boolean|false|none|True when the running config differs from the manifest the session was created from, for example after a successful PATCH with `manifest_yaml`. Omitted when false. `config_diff` doesn't cover every kind of drift: after an update that only switched an OAuth connection, `config_drifted` is true and `config_diff` is omitted. `manifest` shows the new `actor`.|
 |config_diff|[session_config_changes](#schemasession_config_changes)|false|none|Changes made in each manifest section. Secret values are never included.|
 |manifest|object|false|none|The effective manifest of the session. Present only when `config_drifted` is true. Never contains secret values.|
+|mutability|[session_mutability](#schemasession_mutability)|false|none|Which manifest sections a live config update (`PATCH /v2/agents/sessions/{session_id}` with `manifest_yaml`) can change on this session. It describes what this session's agent can take, recorded when the session was created. A flag that is `false` answers `409` with `(update_unsupported)` when a PATCH tries to change what it covers. A session created before the field existed reads `false` for every key. A top-level `model` section in `manifest_yaml` returns `400` whatever this says.|
 
 #### Enumerated Values
 
@@ -177205,6 +178315,40 @@ Session is the user-facing record of a environment session + sandbox pair.
             "changed": [
               "github"
             ]
+          },
+          "egress": {
+            "mode": "allowlist",
+            "added": [
+              "example.atlassian.net"
+            ],
+            "removed": [
+              "203.0.113.10"
+            ]
+          },
+          "permissions": {
+            "default": "ask",
+            "rules": {
+              "added": [
+                "bash \"npm test\""
+              ],
+              "removed": [
+                "bash \"rm -rf *\""
+              ],
+              "changed": [
+                "do.actions/web_search"
+              ]
+            }
+          },
+          "skills": {
+            "added": [
+              "jira"
+            ],
+            "removed": [
+              "docs"
+            ],
+            "changed": [
+              "github"
+            ]
           }
         },
         "error": "update_failed",
@@ -177251,9 +178395,54 @@ Session is the user-facing record of a environment session + sandbox pair.
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
-      "manifest": {}
+      "manifest": {},
+      "mutability": {
+        "model": true,
+        "env": true,
+        "secrets": true,
+        "tools": true,
+        "permissions": true,
+        "egress": true,
+        "system_prompt": false,
+        "custom_tools": false,
+        "skills": false
+      }
     }
   ],
   "next_page_token": "example"
@@ -177417,6 +178606,40 @@ Strict application/json CreateSession form. Loads config_id, resolves the config
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -177463,9 +178686,54 @@ Strict application/json CreateSession form. Loads config_id, resolves the config
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   }
 }
 ```
@@ -177765,6 +179033,40 @@ Response for ListSandboxSizes.
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -177811,9 +179113,54 @@ Response for ListSandboxSizes.
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   }
 }
 ```
@@ -177845,7 +179192,7 @@ Request body for updating a session. Set either `resume_on_topoff` to change a s
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |resume_on_topoff|boolean|false|none|Whether this session resumes automatically after it is paused for low balance and your team's prepaid balance is topped up. Applies to this session only. Can't be combined with `manifest_yaml`.|
-|manifest_yaml|string|false|none|A partial agent manifest, as a YAML string, that holds only the sections to change. Can't<br>be combined with `resume_on_topoff`. Requires session settings updates to be enabled for<br>your team (`403` otherwise).<br><br>Supported sections are `tools`, `env`, and `secrets`. Sections you omit are not changed.<br>Any other top-level key returns `400`, including `model` (to change the model, set<br>`HARNESS_INFERENCE_MODEL` in `env`) and `permissions` (can't be changed on an existing<br>session).<br><br>Each section you include replaces that section in full:<br><br>- `tools`: the complete list of tools for the session. Only Action Gateway tools<br>  (`do.actions` entries) can be added, removed, or changed. Custom MCP servers can't be<br>  changed on an existing session: include the session's current custom MCP servers<br>  exactly as they are. Adding, removing, or changing one returns `422`. To remove all Action Gateway tools from a session that has no custom<br>  MCP servers, send `tools: []`. `tools: null` returns `400`.<br>- `env`: the complete set of environment variables, as name-value pairs. A variable you<br>  leave out is removed. `env: {}` removes all variables; `env: null` returns `400`.<br>- `secrets`: the complete set of secrets, as name-value pairs. A secret you leave out is<br>  removed. For each secret, set the value to a string to add or rotate it, or to `{}` to<br>  keep its current value. A `null` value returns `400`.<br><br>**Changing the model.** The only way to change a session's model is through `env`. Set<br>`HARNESS_INFERENCE_MODEL` to a DigitalOcean Serverless Inference model ID, or to<br>`router:<name>` for an inference router. This works<br>only on sessions created with `HARNESS_INFERENCE_MODEL` set and without their own<br>inference endpoint. Adding, removing, or changing the key on any other session, or moving<br>a session to its own endpoint, returns `422`. A malformed value (empty, multi-line, or over<br>256 bytes) returns `400`. Whether the model exists is not checked when you send the<br>request; an unknown model fails on the agent's next turn.<br><br>**Reserved keys.** `HARNESS_INFERENCE_API_KEY` and `HARNESS_INFERENCE_BASE_URL` are<br>managed by the platform: include them with their current values, or the request returns<br>`422`. Framework keys can't be changed either (`422`). Secrets that are not plain values<br>(such as URL-bound or OAuth secrets) can't be changed on an existing session (`422`).<br><br>Example that changes the model, keeps one secret, and rotates another. Because each<br>section is a full replacement, the example assumes the session has no other env<br>variables or secrets:<br><br>```yaml<br>env:<br>  HARNESS_INFERENCE_MODEL: llama3.3-70b-instruct<br>  LOG_LEVEL: info<br>secrets:<br>  GITHUB_TOKEN: {}<br>  JIRA_API_TOKEN: new-token-value<br>```|
+|manifest_yaml|string|false|none|A partial agent manifest, as a YAML string, that holds only the sections to change. Can't<br>be combined with `resume_on_topoff`. Requires session settings updates to be enabled for<br>your team (`403` otherwise).<br><br>Supported sections are `tools`, `env`, `secrets`, `egress`, `permissions`, and `skills`.<br>Sections you omit are not changed. Any other top-level key returns `400`, including `model`<br>(set the model in `env` instead; see **Changing the model**).<br><br>Each section you include replaces that section in full:<br><br>- `tools`: the complete list of tools for the session. Action Gateway tools<br>  (`do.actions` entries) can be added, removed, or changed. A custom MCP server can be<br>  added, modified, or removed only where the session's `mutability.custom_tools` is<br>  `true`; otherwise the request returns `409`. Include the session's current custom MCP<br>  servers exactly as they are unless you are changing them. A server with `auth` that is<br>  added, moved to another `url`, or given another secret slot needs its secret's value in<br>  the same request, or a URL-bound secret that covers its `url`; otherwise the request<br>  returns `400`. To remove all Action Gateway tools from a session that has no custom MCP<br>  servers, send `tools: []`. `tools: null` returns `400`.<br>- `env`: the complete set of environment variables, as name-value pairs. A variable you<br>  leave out is removed. `env: {}` removes all variables; `env: null` returns `400`.<br>- `secrets`: the complete set of secrets, as name-value pairs. A secret you leave out is<br>  removed. For each secret, set the value to a string to add or rotate it, or to `{}` to<br>  keep its current value. URL-bound and OAuth secrets also accept an object; see<br>  **URL-bound secrets** and **Switching an OAuth connection**. A `null` value returns<br>  `400`.<br>- `egress`: the complete egress allowlist, as an object with `allow_hosts` (hostnames) and<br>  `allow_ips` (exact IPv4 or IPv6 addresses, not CIDR ranges). Only this object form is<br>  supported in an update. It replaces the session's<br>  current allowlist: a host or IP address you leave out is removed. Leave out `vpc_uuid`<br>  and `subnet_uuid` to keep the session's current VPC, or set them to their current values.<br>  A different value returns `422`. See **Egress**.<br>- `permissions`: the complete permission policy, `default` and the full `rules` list,<br>  with the same fields as at session creation. A rule you leave out is removed.<br>  `permissions: {}` removes the policy (the agent's built-in default applies);<br>  `permissions: null` returns `400`. What can change depends on the session's agent, and<br>  `permissions.filesystem` and `permissions.network` can't be changed. Removing a rule is<br>  a change too: a rule of a type the agent can't change must be kept, so `{}` returns<br>  `409` while the policy has one. If any change<br>  can't be applied on the agent, the request returns `409` and nothing is applied; the<br>  error message names the unsupported changes so you can remove them and send the update<br>  again. Sessions created before live permissions updates were released return `409`.<br>- `skills`: the complete list of inline skills, with the same fields and limits as at<br>  session creation. A skill you leave out is removed. `skills: []` removes every skill;<br>  `skills: null` returns `400`. The same skills in a different order are not a change.<br>  Supported on `claude-code`, `codex`, and `opencode` sessions (`409` otherwise), and must<br>  be enabled for your team (`403` otherwise). The agent reloads its skills without a<br>  restart. If the agent refuses them (for example, a skill named like one the session's<br>  repository already ships), the update ends in `FAILED` with `error` set to<br>  `update_failed` and the session keeps its previous skills: rename the skill and send the<br>  update again. Only an agent that can't reload skills on a running session ends with<br>  `requires_new_session`.<br><br>**URL-bound secrets.** The egress proxy sends a URL-bound secret only to requests that<br>match its `url`; the agent never receives the value. An update to a URL-bound secret<br>doesn't restart the agent. In `secrets`, you can:<br><br>- Rotate the value: set the secret to the new value as a string. Its `url` and `scheme`<br>  don't change.<br>- Move it to another URL or scheme: set it to `{value, url, scheme}`. A new host or path,<br>  or a change to `scheme: raw`, requires `value` (`400` otherwise). Sending the current<br>  `value`, `url`, and `scheme` again is not a change.<br>- Add one: set it to `{value, url}`. `scheme` is optional and defaults to `bearer`<br>  (`Authorization: Bearer <value>`); `raw` sends the value exactly as stored.<br>- Bind an existing plain secret to a URL: set it to `{url}`. The secret keeps its current<br>  value.<br>- Keep one unchanged: set it to `{}`.<br>- Remove one: leave it out of `secrets`.<br><br>`url` must use `https://` and name an exact hostname (no wildcards, IP addresses, or<br>`localhost`), with an optional path and no port, query, or fragment. A session can have up<br>to 16 URL-bound secrets, fewer if it has storage mounts, which count toward the same limit. A URL-bound secret can't be changed back to a plain secret. If<br>the session has an egress allowlist, the secret's host is added to it. After a rollback or<br>fork, a URL-bound secret that was moved off its agent config's URL can need its value<br>again: the request returns `409` until you send `value`.<br><br>**Egress.** `egress` changes the hosts and IP addresses the session can reach. The new<br>allowlist takes effect on the session's next outbound connection, without an agent<br>restart. Connections that are already open stay open, including connections to a host you<br>removed. Only `allow_hosts` and `allow_ips` can change; the VPC is fixed when the session<br>is created. A session created with unrestricted egress and no URL-bound secrets can't gain<br>an allowlist: the update ends in `FAILED` with `error` set to `requires_new_session`.<br><br>**Switching an OAuth connection.** An OAuth secret that was created with `actor` can move<br>to another connection of the same provider: set it to `{source: oauth, provider, actor}`<br>with the new connection's `user_id` as `actor`; leaving out `provider` or `actor` returns<br>`400`. The connection must be active and owned by you, except when you switch back to the<br>connection the agent config names. Another team member's connection returns `400`.<br>Switching OAuth connections must be enabled for your team (`403` otherwise). The agent<br>restarts to read the new token. Sending the connection the secret already uses is not a<br>change. Adding or removing an OAuth secret, changing its provider, or switching one that<br>was created without `actor` returns `422`.<br>This example switches `GITHUB_TOKEN` to the connection `github2` and assumes the session<br>has no other secrets:<br><br>```yaml<br>secrets:<br>  GITHUB_TOKEN:<br>    source: oauth<br>    provider: github<br>    actor: github2<br>```<br><br>**Changing the model.** You change a session's model through `env`. The key to set depends<br>on the model endpoint the session was created with:<br><br>- DigitalOcean Serverless Inference (created with `HARNESS_INFERENCE_MODEL` and without<br>  `OPENAI_BASE_URL`, `ANTHROPIC_BASE_URL`, or an `ANTHROPIC_API_KEY` secret): set<br>  `HARNESS_INFERENCE_MODEL` to a Serverless Inference model ID, or to `router:<name>` for<br>  an inference router. Removing the key, or moving the session to its own endpoint,<br>  returns `422`. Adding the key to a session that was created without it also returns<br>  `422`.<br>- Your own OpenAI-compatible endpoint (created with `OPENAI_BASE_URL`): set `MODEL`. The<br>  session reads `MODEL` before `OPENAI_MODEL`, so set `OPENAI_MODEL` only if the session<br>  uses it and doesn't have `MODEL`.<br>- Your own Anthropic endpoint (created with `ANTHROPIC_BASE_URL`), or the Anthropic API<br>  (created with an `ANTHROPIC_API_KEY` secret and no base URL): set `ANTHROPIC_MODEL`. The<br>  session reads `ANTHROPIC_MODEL` before `MODEL`.<br><br>On a session that uses its own endpoint, the following rules also apply:<br><br>- Removing the model key makes the agent use its default model for that endpoint.<br>- The model provider and the base URL (`OPENAI_BASE_URL` or `ANTHROPIC_BASE_URL`) can't be<br>  changed (`422`). Include the base URL with its current value.<br>- The provider API key (`OPENAI_API_KEY` or `ANTHROPIC_API_KEY`) can only be rotated: set<br>  it to the new value as a string, or to `{}` to keep it. Removing it, adding it to a<br>  session that was created without it, or changing its `url` or `scheme` returns `422`.<br>  If the key is URL-bound, rotating it follows the URL-bound secret rules: the agent isn't<br>  restarted, and URL-bound secret updates must be enabled for your team (`403`<br>  otherwise).<br><br>A model name can't be empty, start or end with whitespace, span more than one line, be<br>longer than 256 bytes, or contain ` #` or `: ` (`400`). Whether the endpoint serves the<br>model is not checked when you send the request; an unknown model fails on the agent's next<br>turn.<br><br>**Reserved keys.** `HARNESS_INFERENCE_API_KEY` and `HARNESS_INFERENCE_BASE_URL` are<br>managed by the platform: include them with their current values, or the request returns<br>`422`. Framework keys can't be changed either (`422`). Mount-only secrets (`env: false`)<br>can't be changed on an existing session: set them to `{}` (`422` otherwise). Set an OAuth<br>secret to `{}` unless you switch its connection.<br><br>Example that changes the model, keeps one secret, and rotates another. Because each<br>section is a full replacement, the example assumes the session has no other env<br>variables or secrets:<br><br>```yaml<br>env:<br>  HARNESS_INFERENCE_MODEL: llama3.3-70b-instruct<br>  LOG_LEVEL: info<br>secrets:<br>  GITHUB_TOKEN: {}<br>  JIRA_API_TOKEN: new-token-value<br>```<br><br>Example that changes the model and rotates the provider API key of a session that was<br>created with its own OpenAI-compatible endpoint. The example assumes the session has no<br>other env variables or secrets:<br><br>```yaml<br>env:<br>  OPENAI_BASE_URL: https://llm.example.com/v1<br>  MODEL: my-model-v2<br>secrets:<br>  OPENAI_API_KEY: new-api-key<br>```<br><br>Example that keeps one URL-bound secret, moves another to a new URL, and replaces the<br>egress allowlist. The example assumes the session has no other secrets:<br><br>```yaml<br>secrets:<br>  GITHUB_TOKEN: {}<br>  JIRA_API_TOKEN:<br>    value: new-token-value<br>    url: https://example.atlassian.net/rest/api/3<br>egress:<br>  allow_hosts:<br>    - api.github.com<br>    - example.atlassian.net<br>  allow_ips:<br>    - 203.0.113.10<br>```|
 
 <h2 id="tocS_patch_session_response">patch_session_response</h2>
 <!-- backwards compatibility -->
@@ -177919,6 +179266,40 @@ Request body for updating a session. Set either `resume_on_topoff` to change a s
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -177965,9 +179346,54 @@ Request body for updating a session. Set either `resume_on_topoff` to change a s
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   },
   "outcome": "ACCEPTED",
   "warnings": [
@@ -178305,6 +179731,40 @@ Terminal result of the synchronous capture: checkpoint.status is READY on succes
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
       "error": "update_failed",
@@ -178351,9 +179811,54 @@ Terminal result of the synchronous capture: checkpoint.status is READY on succes
         "changed": [
           "github"
         ]
+      },
+      "egress": {
+        "mode": "allowlist",
+        "added": [
+          "example.atlassian.net"
+        ],
+        "removed": [
+          "203.0.113.10"
+        ]
+      },
+      "permissions": {
+        "default": "ask",
+        "rules": {
+          "added": [
+            "bash \"npm test\""
+          ],
+          "removed": [
+            "bash \"rm -rf *\""
+          ],
+          "changed": [
+            "do.actions/web_search"
+          ]
+        }
+      },
+      "skills": {
+        "added": [
+          "jira"
+        ],
+        "removed": [
+          "docs"
+        ],
+        "changed": [
+          "github"
+        ]
       }
     },
-    "manifest": {}
+    "manifest": {},
+    "mutability": {
+      "model": true,
+      "env": true,
+      "secrets": true,
+      "tools": true,
+      "permissions": true,
+      "egress": true,
+      "system_prompt": false,
+      "custom_tools": false,
+      "skills": false
+    }
   }
 }
 ```
@@ -178460,6 +179965,40 @@ The session after in-place rollback: same session_id, sandbox_id swapped to the 
             "changed": [
               "github"
             ]
+          },
+          "egress": {
+            "mode": "allowlist",
+            "added": [
+              "example.atlassian.net"
+            ],
+            "removed": [
+              "203.0.113.10"
+            ]
+          },
+          "permissions": {
+            "default": "ask",
+            "rules": {
+              "added": [
+                "bash \"npm test\""
+              ],
+              "removed": [
+                "bash \"rm -rf *\""
+              ],
+              "changed": [
+                "do.actions/web_search"
+              ]
+            }
+          },
+          "skills": {
+            "added": [
+              "jira"
+            ],
+            "removed": [
+              "docs"
+            ],
+            "changed": [
+              "github"
+            ]
           }
         },
         "error": "update_failed",
@@ -178506,9 +180045,54 @@ The session after in-place rollback: same session_id, sandbox_id swapped to the 
           "changed": [
             "github"
           ]
+        },
+        "egress": {
+          "mode": "allowlist",
+          "added": [
+            "example.atlassian.net"
+          ],
+          "removed": [
+            "203.0.113.10"
+          ]
+        },
+        "permissions": {
+          "default": "ask",
+          "rules": {
+            "added": [
+              "bash \"npm test\""
+            ],
+            "removed": [
+              "bash \"rm -rf *\""
+            ],
+            "changed": [
+              "do.actions/web_search"
+            ]
+          }
+        },
+        "skills": {
+          "added": [
+            "jira"
+          ],
+          "removed": [
+            "docs"
+          ],
+          "changed": [
+            "github"
+          ]
         }
       },
-      "manifest": {}
+      "manifest": {},
+      "mutability": {
+        "model": true,
+        "env": true,
+        "secrets": true,
+        "tools": true,
+        "permissions": true,
+        "egress": true,
+        "system_prompt": false,
+        "custom_tools": false,
+        "skills": false
+      }
     }
   ]
 }

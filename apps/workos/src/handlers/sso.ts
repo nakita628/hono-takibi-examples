@@ -3,8 +3,8 @@ import type {
   getSsoAuthorizeRoute,
   getSsoJwksClientIdRoute,
   getSsoLogoutRoute,
-  getSsoProfileRoute,
   postSsoLogoutAuthorizeRoute,
+  getSsoProfileRoute,
   postSsoTokenRoute,
 } from '../routes'
 

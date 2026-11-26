@@ -1,21 +1,21 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteDataIntegrationsSlugOrganizationRoute,
-  deleteDataIntegrationsSlugRoute,
-  getDataIntegrationsRoute,
-  getDataIntegrationsSlugOrganizationRoute,
-  getDataIntegrationsSlugRoute,
-  postDataIntegrationsFinishRoute,
   postDataIntegrationsRoute,
+  getDataIntegrationsRoute,
+  postDataIntegrationsFinishRoute,
+  getDataIntegrationsSlugRoute,
+  putDataIntegrationsSlugRoute,
+  deleteDataIntegrationsSlugRoute,
   postDataIntegrationsSlugApiKeyRoute,
+  putDataIntegrationsSlugApiKeyRoute,
   postDataIntegrationsSlugAuthorizeRoute,
   postDataIntegrationsSlugClientCredentialsRoute,
-  postDataIntegrationsSlugCredentialsRoute,
-  postDataIntegrationsSlugTokenRoute,
-  putDataIntegrationsSlugApiKeyRoute,
   putDataIntegrationsSlugClientCredentialsRoute,
+  postDataIntegrationsSlugCredentialsRoute,
+  getDataIntegrationsSlugOrganizationRoute,
   putDataIntegrationsSlugOrganizationRoute,
-  putDataIntegrationsSlugRoute,
+  deleteDataIntegrationsSlugOrganizationRoute,
+  postDataIntegrationsSlugTokenRoute,
 } from '../routes'
 
 export const postDataIntegrationsRouteHandler: RouteHandler<

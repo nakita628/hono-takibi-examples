@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteFilesFileIdRoute,
-  getFilesFileIdContentRoute,
-  getFilesFileIdRoute,
   getFilesRoute,
   postFilesRoute,
+  deleteFilesFileIdRoute,
+  getFilesFileIdRoute,
+  getFilesFileIdContentRoute,
 } from '../routes'
 
 export const getFilesRouteHandler: RouteHandler<typeof getFilesRoute> = async (c) => {

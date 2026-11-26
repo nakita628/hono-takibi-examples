@@ -9,6 +9,11 @@
         "etag": "W/\"00d9f459492d01adff78112624f0ee86ec9c8c938cb7115e3413661da06631ec\"",
         "sha256": "3caaaaddb481a3d7bd8a744511792c18c14c5e214850aee7e193394ed7059e66"
       }
+    },
+    "failed": {
+      "hono-takibi": "0.35.13",
+      "date": "2026-11-26",
+      "error": "Error parsing https://raw.githubusercontent.com/apache/iceberg/main/open-api/rest-catalog-open-api.yaml: deficient indentation (210:15)"
     }
   }
 }

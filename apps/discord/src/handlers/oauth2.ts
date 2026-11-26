@@ -1,8 +1,8 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  getOauth2MeRoute,
   getOauth2ApplicationsMeRoute,
   getOauth2KeysRoute,
-  getOauth2MeRoute,
   getOauth2UserinfoRoute,
 } from '../routes'
 

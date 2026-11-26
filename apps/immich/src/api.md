@@ -2005,7 +2005,7 @@ Updates multiple assets at the same time.
 |body|body|[AssetBulkUpdateDto](#schemaassetbulkupdatedto)|true|none|
 |» dateTimeOriginal|body|string|false|Original date and time|
 |» dateTimeRelative|body|integer|false|Relative time offset in minutes|
-|» description|body|string|false|Asset description|
+|» description|body|string \| null|false|Asset description|
 |» duplicateId|body|string \| null|false|Duplicate ID|
 |» ids|body|[string(uuid)]|true|Asset IDs to update|
 |» isFavorite|body|boolean|false|Mark as favorite|
@@ -2724,7 +2724,6 @@ Retrieve detailed information about a specific asset.
       "updatedAt": "1970-01-01T00:00:00Z"
     }
   ],
-  "resized": true,
   "stack": {
     "assetCount": 0,
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -2810,7 +2809,7 @@ Update information of a specific asset.
 |id|path|string(uuid)|true|none|
 |body|body|[UpdateAssetDto](#schemaupdateassetdto)|true|none|
 |» dateTimeOriginal|body|string|false|Original date and time|
-|» description|body|string|false|Asset description|
+|» description|body|string \| null|false|Asset description|
 |» isFavorite|body|boolean|false|Mark as favorite|
 |» latitude|body|number(double)|false|Latitude coordinate|
 |» livePhotoVideoId|body|string \| null(uuid)|false|Live photo video ID|
@@ -2928,7 +2927,6 @@ Update information of a specific asset.
       "updatedAt": "1970-01-01T00:00:00Z"
     }
   ],
-  "resized": true,
   "stack": {
     "assetCount": 0,
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -3501,7 +3499,6 @@ Retrieve the thumbnail image for the specified asset. Viewing the fullsize thumb
 
 |Parameter|Value|
 |---|---|
-|size|original|
 |size|fullsize|
 |size|preview|
 |size|thumbnail|
@@ -3931,7 +3928,7 @@ Create the first admin user in the system.
 |---|---|---|---|---|
 |body|body|[SignUpDto](#schemasignupdto)|true|none|
 |» email|body|string(email)|true|User email|
-|» name|body|string|true|User name|
+|» name|body|string \| null|true|User name|
 |» password|body|string|true|User password|
 
 > Example responses
@@ -4057,6 +4054,128 @@ Change the password of the current user.
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
 bearer, cookie, api_key
+</aside>
+
+## Create app login code
+
+<a id="opIdcreateAuthCode"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:2283/api/auth/code \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+  -d '{
+    "codeChallenge": "string"
+  }'
+```
+
+`POST /auth/code`
+
+Create a one-time code that the mobile app exchanges for a session.
+
+> Body parameter
+
+```json
+{
+  "codeChallenge": "string"
+}
+```
+
+<h3 id="create-app-login-code-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AuthCodeCreateDto](#schemaauthcodecreatedto)|true|none|
+|» codeChallenge|body|string(sha256_base64url)|true|PKCE code challenge (S256, base64url)|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "code": "string"
+}
+```
+
+<h3 id="create-app-login-code-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created||[AuthCodeResponseDto](#schemaauthcoderesponsedto)|
+
+<aside class="warning">
+To perform this operation, you must be authenticated by means of one of the following methods:
+bearer, cookie, api_key
+</aside>
+
+## Exchange app login code
+
+<a id="opIdexchangeAuthCode"></a>
+
+> Code samples
+
+```bash
+curl http://localhost:2283/api/auth/exchange \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "code": "string",
+    "codeVerifier": "stringstringstringstringstringstringstrings"
+  }'
+```
+
+`POST /auth/exchange`
+
+Exchange a one-time code and its code verifier for a session.
+
+> Body parameter
+
+```json
+{
+  "code": "string",
+  "codeVerifier": "stringstringstringstringstringstringstrings"
+}
+```
+
+<h3 id="exchange-app-login-code-parameters">Parameters</h3>
+
+|Name|In|Type|Required|Description|
+|---|---|---|---|---|
+|body|body|[AuthCodeExchangeDto](#schemaauthcodeexchangedto)|true|none|
+|» code|body|string|true|One-time code|
+|» codeVerifier|body|string(base64url)|true|PKCE code verifier (base64url)|
+
+> Example responses
+
+> 201 Response
+
+```json
+{
+  "accessToken": "string",
+  "isAdmin": true,
+  "isOnboarded": true,
+  "name": "string",
+  "profileImagePath": "string",
+  "shouldChangePassword": true,
+  "userEmail": "user@example.com",
+  "userId": "497f6eca-6276-4993-bfeb-53cbbbba6f08"
+}
+```
+
+<h3 id="exchange-app-login-code-responses">Responses</h3>
+
+|Status|Meaning|Description|Schema|
+|---|---|---|---|
+|201|Created||[LoginResponseDto](#schemaloginresponsedto)|
+
+<aside class="success">
+This operation does not require authentication
 </aside>
 
 ## Login
@@ -7677,7 +7796,6 @@ Retrieve a list of duplicate assets available to the authenticated user.
             "updatedAt": "1970-01-01T00:00:00Z"
           }
         ],
-        "resized": true,
         "stack": {
           "assetCount": 0,
           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -9856,7 +9974,6 @@ Retrieve a list of memories. Memories are sorted descending by creation date by 
             "updatedAt": "1970-01-01T00:00:00Z"
           }
         ],
-        "resized": true,
         "stack": {
           "assetCount": 0,
           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -10098,7 +10215,6 @@ Create a new memory by providing a name, description, and a list of asset IDs to
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -10338,7 +10454,6 @@ Retrieve a specific memory by its ID.
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -10538,7 +10653,6 @@ Update an existing memory by its ID.
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -11627,60 +11741,6 @@ To perform this operation, you must be authenticated by means of one of the foll
 bearer, cookie, api_key
 </aside>
 
-## Create a partner
-
-<a id="opIdcreatePartnerDeprecated"></a>
-
-> Code samples
-
-```bash
-curl http://localhost:2283/api/partners/497f6eca-6276-4993-bfeb-53cbbbba6f08 \
-  -X POST \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer ${ACCESS_TOKEN}"
-```
-
-`POST /partners/{id}`
-
-<aside class="warning">
-This operation is deprecated
-</aside>
-
-Create a new partner to share assets with.
-
-<h3 id="create-a-partner-1-parameters">Parameters</h3>
-
-|Name|In|Type|Required|Description|
-|---|---|---|---|---|
-|id|path|string(uuid)|true|none|
-
-> Example responses
-
-> 201 Response
-
-```json
-{
-  "avatarColor": "primary",
-  "email": "user@example.com",
-  "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
-  "inTimeline": true,
-  "name": "string",
-  "profileChangedAt": "1970-01-01T00:00:00Z",
-  "profileImagePath": "string"
-}
-```
-
-<h3 id="create-a-partner-1-responses">Responses</h3>
-
-|Status|Meaning|Description|Schema|
-|---|---|---|---|
-|201|Created||[PartnerResponseDto](#schemapartnerresponsedto)|
-
-<aside class="warning">
-To perform this operation, you must be authenticated by means of one of the following methods:
-bearer, cookie, api_key
-</aside>
-
 ## Remove a partner
 
 <a id="opIdremovePartner"></a>
@@ -12380,7 +12440,7 @@ Create a new person that can have multiple faces assigned to them.
 |» color|body|string \| null|false|Person color (hex)|
 |» isFavorite|body|boolean|false|Mark as favorite|
 |» isHidden|body|boolean|false|Person visibility (hidden)|
-|» name|body|string|false|Person name|
+|» name|body|string \| null|false|Person name|
 
 > Example responses
 
@@ -12905,7 +12965,7 @@ Update an individual person.
 |» featureFaceAssetId|body|string(uuid)|false|Asset ID used for feature face thumbnail|
 |» isFavorite|body|boolean|false|Mark as favorite|
 |» isHidden|body|boolean|false|Person visibility (hidden)|
-|» name|body|string|false|Person name|
+|» name|body|string \| null|false|Person name|
 |» userId|body|string(uuid)|false|Restrict the update to the person record of this User ID|
 
 > Example responses
@@ -14085,7 +14145,6 @@ Retrieve a list of assets with each asset belonging to a different city. This en
         "updatedAt": "1970-01-01T00:00:00Z"
       }
     ],
-    "resized": true,
     "stack": {
       "assetCount": 0,
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -14252,7 +14311,6 @@ Retrieve data for the explore section, such as popular people and places.
               "updatedAt": "1970-01-01T00:00:00Z"
             }
           ],
-          "resized": true,
           "stack": {
             "assetCount": 0,
             "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -14473,7 +14531,6 @@ Search for assets that are considered large based on specified criteria.
         "updatedAt": "1970-01-01T00:00:00Z"
       }
     ],
-    "resized": true,
     "stack": {
       "assetCount": 0,
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -15967,7 +16024,6 @@ Search for assets based on various metadata criteria.
             "updatedAt": "1970-01-01T00:00:00Z"
           }
         ],
-        "resized": true,
         "stack": {
           "assetCount": 0,
           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -15992,8 +16048,7 @@ Search for assets based on various metadata criteria.
       }
     ],
     "nextCursor": "string",
-    "nextPage": "string",
-    "total": 0
+    "nextPage": "string"
   }
 }
 ```
@@ -17494,7 +17549,6 @@ Retrieve a random selection of assets based on the provided criteria.
         "updatedAt": "1970-01-01T00:00:00Z"
       }
     ],
-    "resized": true,
     "stack": {
       "assetCount": 0,
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -18948,7 +19002,6 @@ Perform a smart search for assets by using machine learning vectors to determine
             "updatedAt": "1970-01-01T00:00:00Z"
           }
         ],
-        "resized": true,
         "stack": {
           "assetCount": 0,
           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -18973,8 +19026,7 @@ Perform a smart search for assets by using machine learning vectors to determine
       }
     ],
     "nextCursor": "string",
-    "nextPage": "string",
-    "total": 0
+    "nextPage": "string"
   }
 }
 ```
@@ -21033,8 +21085,8 @@ Create a session as a child to the current session. This endpoint is used for ca
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[SessionCreateDto](#schemasessioncreatedto)|true|none|
-|» deviceOS|body|string|false|Device OS|
-|» deviceType|body|string|false|Device type|
+|» deviceOS|body|string \| null|false|Device OS|
+|» deviceType|body|string \| null|false|Device type|
 |» duration|body|integer|false|Session duration in seconds|
 
 > Example responses
@@ -21394,7 +21446,6 @@ Retrieve a list of all shared links.
             "updatedAt": "1970-01-01T00:00:00Z"
           }
         ],
-        "resized": true,
         "stack": {
           "assetCount": 0,
           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -21665,7 +21716,6 @@ Create a new shared link.
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -21891,7 +21941,6 @@ Login to a password protected shared link
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -22102,7 +22151,6 @@ Retrieve the current shared link associated with authentication method.
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -22312,7 +22360,6 @@ Retrieve a specific shared link by its ID.
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -22588,7 +22635,6 @@ Update an existing shared link by its ID.
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -22914,7 +22960,6 @@ Retrieve a list of stacks.
             "updatedAt": "1970-01-01T00:00:00Z"
           }
         ],
-        "resized": true,
         "stack": {
           "assetCount": 0,
           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -23108,7 +23153,6 @@ Create a new stack by providing a name and a list of asset IDs to include in the
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -23323,7 +23367,6 @@ Retrieve a specific stack by its ID.
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -23503,7 +23546,6 @@ Update an existing stack by its ID.
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -23818,6 +23860,7 @@ Delete specific synchronization acknowledgments.
 |» types|SyncAckV1|
 |» types|SyncResetV1|
 |» types|SyncCompleteV1|
+|» types|SyncPendingResetV1|
 
 <h3 id="delete-acknowledgements-responses">Responses</h3>
 
@@ -23844,7 +23887,7 @@ curl http://localhost:2283/api/sync/stream \
   -d '{
     "reset": true,
     "types": [
-      "AlbumsV1"
+      "AlbumsV2"
     ]
   }'
 ```
@@ -23859,7 +23902,7 @@ Retrieve a JSON lines streamed response of changes for synchronization. This end
 {
   "reset": true,
   "types": [
-    "AlbumsV1"
+    "AlbumsV2"
   ]
 }
 ```
@@ -23876,14 +23919,11 @@ Retrieve a JSON lines streamed response of changes for synchronization. This end
 
 |Parameter|Value|
 |---|---|
-|» types|AlbumsV1|
 |» types|AlbumsV2|
 |» types|AlbumUsersV1|
 |» types|AlbumToAssetsV1|
-|» types|AlbumAssetsV1|
 |» types|AlbumAssetsV2|
 |» types|AlbumAssetExifsV1|
-|» types|AssetsV1|
 |» types|AssetsV2|
 |» types|AssetExifsV1|
 |» types|AssetEditsV1|
@@ -23896,17 +23936,16 @@ Retrieve a JSON lines streamed response of changes for synchronization. This end
 |» types|MemoryToAssetsV1|
 |» types|MemoryToAssetsV2|
 |» types|PartnersV1|
-|» types|PartnerAssetsV1|
 |» types|PartnerAssetsV2|
 |» types|PartnerAssetExifsV1|
 |» types|PartnerStacksV1|
 |» types|StacksV1|
 |» types|UsersV1|
 |» types|PeopleV1|
-|» types|AssetFacesV1|
 |» types|AssetFacesV2|
 |» types|AssetFacesV3|
 |» types|UserMetadataV1|
+|» types|PendingResetV1|
 
 <h3 id="stream-sync-changes-responses">Responses</h3>
 
@@ -26311,6 +26350,7 @@ Retrieve a string of all asset ids in a given time bucket.
 |---|---|---|---|---|
 |albumId|query|string(uuid)|false|Filter assets belonging to a specific album|
 |bbox|query|string|false|Bounding box coordinates as west,south,east,north (WGS84)|
+|hasCoordinates|query|boolean|false|Filter by GPS coordinates (true for assets with coordinates only, false for assets without)|
 |isFavorite|query|boolean|false|Filter by favorite status (true for favorites only, false for non-favorites only)|
 |isTrashed|query|boolean|false|Filter by trash status (true for trashed assets only, false for non-trashed only)|
 |key|query|string|false|none|
@@ -26441,6 +26481,7 @@ Retrieve a list of all minimal time buckets.
 |---|---|---|---|---|
 |albumId|query|string(uuid)|false|Filter assets belonging to a specific album|
 |bbox|query|string|false|Bounding box coordinates as west,south,east,north (WGS84)|
+|hasCoordinates|query|boolean|false|Filter by GPS coordinates (true for assets with coordinates only, false for assets without)|
 |isFavorite|query|boolean|false|Filter by favorite status (true for favorites only, false for non-favorites only)|
 |isTrashed|query|boolean|false|Filter by trash status (true for trashed assets only, false for non-trashed only)|
 |key|query|string|false|none|
@@ -26777,7 +26818,7 @@ Create a new user.
 |» » *anyOf*|body|null|false|none|
 |» email|body|string(email)|true|User email|
 |» isAdmin|body|boolean|false|Grant admin privileges|
-|» name|body|string|true|User name|
+|» name|body|string \| null|true|User name|
 |» notify|body|boolean|false|Send notification email|
 |» password|body|string|true|User password|
 |» pinCode|body|string \| null|false|PIN code|
@@ -26962,7 +27003,7 @@ Update an existing user.
 |» » *anyOf*|body|null|false|none|
 |» email|body|string(email)|false|User email|
 |» isAdmin|body|boolean|false|Grant admin privileges|
-|» name|body|string|false|User name|
+|» name|body|string \| null|false|User name|
 |» password|body|string|false|User password|
 |» pinCode|body|string \| null|false|PIN code|
 |» quotaSizeInBytes|body|integer \| null|false|Storage quota in bytes|
@@ -27812,7 +27853,7 @@ Update the current user making the API request.
 |» » *anyOf*|body|[UserAvatarColor](#schemauseravatarcolor)|false|User avatar color|
 |» » *anyOf*|body|null|false|none|
 |» email|body|string(email)|false|User email|
-|» name|body|string|false|User name|
+|» name|body|string \| null|false|User name|
 
 #### Enumerated Values
 
@@ -28769,7 +28810,6 @@ Retrieve assets that are children of a specific folder.
         "updatedAt": "1970-01-01T00:00:00Z"
       }
     ],
-    "resized": true,
     "stack": {
       "assetCount": 0,
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -31254,7 +31294,7 @@ Integrity job config
 |assetCount|integer|true|none|Number of assets|
 |contributorCounts|[[ContributorCountResponseDto](#schemacontributorcountresponsedto)]|false|none|none|
 |createdAt|string(date-time)|true|none|Creation date|
-|description|string|true|none|Album description|
+|description|string \| null|true|none|Album description|
 |endDate|string(date-time)|false|none|UTC representation of (local) end date (latest asset)|
 |hasSharedLink|boolean|true|none|Has shared link|
 |id|string(uuid)|true|none|Album ID|
@@ -32390,7 +32430,7 @@ Album preferences
 |---|---|---|---|---|
 |dateTimeOriginal|string|false|none|Original date and time|
 |dateTimeRelative|integer|false|none|Relative time offset in minutes|
-|description|string|false|none|Asset description|
+|description|string \| null|false|none|Asset description|
 |duplicateId|string \| null|false|none|Duplicate ID|
 |ids|[string(uuid)]|true|none|Asset IDs to update|
 |isFavorite|boolean|false|none|Mark as favorite|
@@ -33134,7 +33174,7 @@ Job name
 <a id="tocsassetmediasize"></a>
 
 ```json
-"original"
+"fullsize"
 ```
 
 Asset media size
@@ -33542,7 +33582,6 @@ Rejection reason if rejected
       "updatedAt": "1970-01-01T00:00:00Z"
     }
   ],
-  "resized": true,
   "stack": {
     "assetCount": 0,
     "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -33595,7 +33634,6 @@ Rejection reason if rejected
 |owner|[UserResponseDto](#schemauserresponsedto)|false|none|none|
 |ownerId|string(uuid)|true|none|Owner user ID|
 |people|[[PersonResponseDto](#schemapersonresponsedto)]|false|none|none|
-|resized|boolean|false|none|Is resized|
 |stack|[AssetStackResponseDto](#schemaassetstackresponsedto) \| null|false|none|none|
 |tags|[[TagResponseDto](#schematagresponsedto)]|false|none|none|
 |thumbhash|string \| null|true|none|Thumbhash for thumbnail generation (base64) also used as the c query param for thumbnail cache busting.|
@@ -33714,6 +33752,65 @@ Asset visibility
 ```
 
 Target audio codec
+
+<h2 id="tocS_AuthCodeCreateDto">AuthCodeCreateDto</h2>
+<!-- backwards compatibility -->
+<a id="schemaauthcodecreatedto"></a>
+<a id="schema_AuthCodeCreateDto"></a>
+<a id="tocSauthcodecreatedto"></a>
+<a id="tocsauthcodecreatedto"></a>
+
+```json
+{
+  "codeChallenge": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|codeChallenge|string(sha256_base64url)|true|none|PKCE code challenge (S256, base64url)|
+
+<h2 id="tocS_AuthCodeExchangeDto">AuthCodeExchangeDto</h2>
+<!-- backwards compatibility -->
+<a id="schemaauthcodeexchangedto"></a>
+<a id="schema_AuthCodeExchangeDto"></a>
+<a id="tocSauthcodeexchangedto"></a>
+<a id="tocsauthcodeexchangedto"></a>
+
+```json
+{
+  "code": "string",
+  "codeVerifier": "stringstringstringstringstringstringstrings"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|One-time code|
+|codeVerifier|string(base64url)|true|none|PKCE code verifier (base64url)|
+
+<h2 id="tocS_AuthCodeResponseDto">AuthCodeResponseDto</h2>
+<!-- backwards compatibility -->
+<a id="schemaauthcoderesponsedto"></a>
+<a id="schema_AuthCodeResponseDto"></a>
+<a id="tocSauthcoderesponsedto"></a>
+<a id="tocsauthcoderesponsedto"></a>
+
+```json
+{
+  "code": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|code|string|true|none|One-time code|
 
 <h2 id="tocS_AuthStatusResponseDto">AuthStatusResponseDto</h2>
 <!-- backwards compatibility -->
@@ -34640,7 +34737,6 @@ Colorspace
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -35356,8 +35452,8 @@ Log level
 |accessToken|string|true|none|Access token|
 |isAdmin|boolean|true|none|Is admin user|
 |isOnboarded|boolean|true|none|Is onboarded|
-|name|string|true|none|User name|
-|profileImagePath|string|true|none|Profile image path|
+|name|string \| null|true|none|User name|
+|profileImagePath|string \| null|true|none|Profile image path|
 |shouldChangePassword|boolean|true|none|Should change password|
 |userEmail|string(email)|true|none|User email|
 |userId|string(uuid)|true|none|User ID|
@@ -35821,7 +35917,6 @@ Manual job name
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -37159,9 +37254,9 @@ Partner response
 |email|string(email)|true|none|User email|
 |id|string(uuid)|true|none|User ID|
 |inTimeline|boolean|false|none|Show in timeline|
-|name|string|true|none|User name|
+|name|string \| null|true|none|User name|
 |profileChangedAt|string(date-time)|true|none|Profile change date|
-|profileImagePath|string|true|none|Profile image path|
+|profileImagePath|string \| null|true|none|Profile image path|
 
 #### Enumerated Values
 
@@ -37551,7 +37646,7 @@ People response
 |id|string(uuid)|true|none|Person ID|
 |isFavorite|boolean|false|none|Mark as favorite|
 |isHidden|boolean|false|none|Person visibility (hidden)|
-|name|string|false|none|Person name|
+|name|string \| null|false|none|Person name|
 |userId|string(uuid)|false|none|Restrict the update to the person record of this User ID|
 
 <h2 id="tocS_PeopleUserResponseDto">PeopleUserResponseDto</h2>
@@ -37580,9 +37675,9 @@ People response
 |avatarColor|[UserAvatarColor](#schemauseravatarcolor)|true|none|User avatar color|
 |email|string(email)|true|none|User email|
 |id|string(uuid)|true|none|User ID|
-|name|string|true|none|User name|
+|name|string \| null|true|none|User name|
 |profileChangedAt|string(date-time)|true|none|Profile change date|
-|profileImagePath|string|true|none|Profile image path|
+|profileImagePath|string \| null|true|none|Profile image path|
 |role|[PersonUserRole](#schemapersonuserrole)|true|none|Access role|
 
 #### Enumerated Values
@@ -37692,7 +37787,7 @@ List of permissions
 |color|string \| null|false|none|Person color (hex)|
 |isFavorite|boolean|false|none|Mark as favorite|
 |isHidden|boolean|false|none|Person visibility (hidden)|
-|name|string|false|none|Person name|
+|name|string \| null|false|none|Person name|
 
 <h2 id="tocS_PersonDeleteDto">PersonDeleteDto</h2>
 <!-- backwards compatibility -->
@@ -37732,7 +37827,7 @@ List of permissions
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |birthDate|string \| null|true|none|none|
-|name|string|true|none|none|
+|name|string \| null|true|none|none|
 |role|[PersonUserRole](#schemapersonuserrole)|true|none|Levels of access for managing people resources on behalf of another user.|
 |sharedById|string(uuid)|true|none|none|
 
@@ -37803,11 +37898,11 @@ List of permissions
 |id|string(uuid)|true|none|Person ID|
 |isFavorite|boolean|false|none|Is favorite|
 |isHidden|boolean|true|none|Is hidden|
-|name|string|true|none|Person name|
+|name|string \| null|true|none|Person name|
 |otherPeople|[[PersonOtherResponseDto](#schemapersonotherresponsedto)]|true|none|none|
 |sharedBy|[[PeopleUserResponseDto](#schemapeopleuserresponsedto)]|true|none|Users that gave the current user access to this person|
 |sharedWith|[[PeopleUserResponseDto](#schemapeopleuserresponsedto)]|true|none|Users the current user gave access to this person|
-|thumbnailPath|string|true|none|Thumbnail path|
+|thumbnailPath|string \| null|true|none|Thumbnail path|
 |updatedAt|string(date-time)|false|none|Last update date|
 
 <h2 id="tocS_PersonStatisticsResponseDto">PersonStatisticsResponseDto</h2>
@@ -37857,7 +37952,7 @@ List of permissions
 |featureFaceAssetId|string(uuid)|false|none|Asset ID used for feature face thumbnail|
 |isFavorite|boolean|false|none|Mark as favorite|
 |isHidden|boolean|false|none|Person visibility (hidden)|
-|name|string|false|none|Person name|
+|name|string \| null|false|none|Person name|
 |userId|string(uuid)|false|none|Restrict the update to the person record of this User ID|
 
 <h2 id="tocS_PersonUpdateStrategy">PersonUpdateStrategy</h2>
@@ -40109,7 +40204,6 @@ Release channel
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -40134,8 +40228,7 @@ Release channel
     }
   ],
   "nextCursor": "string",
-  "nextPage": "string",
-  "total": 0
+  "nextPage": "string"
 }
 ```
 
@@ -40148,7 +40241,6 @@ Release channel
 |items|[[AssetResponseDto](#schemaassetresponsedto)]|true|none|none|
 |nextCursor|string \| null|true|none|Cursor for the next page of results|
 |nextPage|string \| null|true|none|**Deprecated.** Next page token|
-|total|integer|true|none|Total number of matching assets|
 
 <h2 id="tocS_SearchExploreItem">SearchExploreItem</h2>
 <!-- backwards compatibility -->
@@ -40255,7 +40347,6 @@ Release channel
         "updatedAt": "1970-01-01T00:00:00Z"
       }
     ],
-    "resized": true,
     "stack": {
       "assetCount": 0,
       "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -40397,7 +40488,6 @@ Release channel
             "updatedAt": "1970-01-01T00:00:00Z"
           }
         ],
-        "resized": true,
         "stack": {
           "assetCount": 0,
           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -41598,7 +41688,6 @@ Release channel
             "updatedAt": "1970-01-01T00:00:00Z"
           }
         ],
-        "resized": true,
         "stack": {
           "assetCount": 0,
           "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -41623,8 +41712,7 @@ Release channel
       }
     ],
     "nextCursor": "string",
-    "nextPage": "string",
-    "total": 0
+    "nextPage": "string"
   }
 }
 ```
@@ -42047,8 +42135,8 @@ Server feature level
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|deviceOS|string|false|none|Device OS|
-|deviceType|string|false|none|Device type|
+|deviceOS|string \| null|false|none|Device OS|
+|deviceType|string \| null|false|none|Device type|
 |duration|integer|false|none|Session duration in seconds|
 
 <h2 id="tocS_SessionCreateResponseDto">SessionCreateResponseDto</h2>
@@ -42080,8 +42168,8 @@ Server feature level
 |appVersion|string \| null|true|none|App version|
 |createdAt|string|true|none|Creation date|
 |current|boolean|true|none|Is current session|
-|deviceOS|string|true|none|Device OS|
-|deviceType|string|true|none|Device type|
+|deviceOS|string \| null|true|none|Device OS|
+|deviceType|string \| null|true|none|Device type|
 |expiresAt|string|false|none|Expiration date|
 |id|string(uuid)|true|none|Session ID|
 |isPendingSyncReset|boolean|true|none|Is pending sync reset|
@@ -42116,8 +42204,8 @@ Server feature level
 |appVersion|string \| null|true|none|App version|
 |createdAt|string|true|none|Creation date|
 |current|boolean|true|none|Is current session|
-|deviceOS|string|true|none|Device OS|
-|deviceType|string|true|none|Device type|
+|deviceOS|string \| null|true|none|Device OS|
+|deviceType|string \| null|true|none|Device type|
 |expiresAt|string|false|none|Expiration date|
 |id|string(uuid)|true|none|Session ID|
 |isPendingSyncReset|boolean|true|none|Is pending sync reset|
@@ -42437,7 +42525,6 @@ Server feature level
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -42590,7 +42677,7 @@ Sharing direction
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |email|string(email)|true|none|User email|
-|name|string|true|none|User name|
+|name|string \| null|true|none|User name|
 |password|string|true|none|User password|
 
 <h2 id="tocS_SmartSearchDto">SmartSearchDto</h2>
@@ -43379,7 +43466,6 @@ Face detection source type
           "updatedAt": "1970-01-01T00:00:00Z"
         }
       ],
-      "resized": true,
       "stack": {
         "assetCount": 0,
         "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
@@ -44396,6 +44482,7 @@ Storage folder
 |types|SyncAckV1|
 |types|SyncResetV1|
 |types|SyncCompleteV1|
+|types|SyncPendingResetV1|
 
 <h2 id="tocS_SyncAckDto">SyncAckDto</h2>
 <!-- backwards compatibility -->
@@ -44485,6 +44572,7 @@ Storage folder
 |type|SyncAckV1|
 |type|SyncResetV1|
 |type|SyncCompleteV1|
+|type|SyncPendingResetV1|
 
 <h2 id="tocS_SyncAckSetDto">SyncAckSetDto</h2>
 <!-- backwards compatibility -->
@@ -45524,6 +45612,57 @@ Sync entity type
 |sharedById|string(uuid)|true|none|Shared by ID|
 |sharedWithId|string(uuid)|true|none|Shared with ID|
 
+<h2 id="tocS_SyncPendingResetV1">SyncPendingResetV1</h2>
+<!-- backwards compatibility -->
+<a id="schemasyncpendingresetv1"></a>
+<a id="schema_SyncPendingResetV1"></a>
+<a id="tocSsyncpendingresetv1"></a>
+<a id="tocssyncpendingresetv1"></a>
+
+```json
+{
+  "type": "AlbumsV2"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|[SyncRequestType](#schemasyncrequesttype)|true|none|Sync request type to reset|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|AlbumsV2|
+|type|AlbumUsersV1|
+|type|AlbumToAssetsV1|
+|type|AlbumAssetsV2|
+|type|AlbumAssetExifsV1|
+|type|AssetsV2|
+|type|AssetExifsV1|
+|type|AssetEditsV1|
+|type|AssetMetadataV1|
+|type|AssetOcrV1|
+|type|AuthUsersV1|
+|type|AuthUsersV2|
+|type|MemoriesV1|
+|type|MemoriesV2|
+|type|MemoryToAssetsV1|
+|type|MemoryToAssetsV2|
+|type|PartnersV1|
+|type|PartnerAssetsV2|
+|type|PartnerAssetExifsV1|
+|type|PartnerStacksV1|
+|type|StacksV1|
+|type|UsersV1|
+|type|PeopleV1|
+|type|AssetFacesV2|
+|type|AssetFacesV3|
+|type|UserMetadataV1|
+|type|PendingResetV1|
+
 <h2 id="tocS_SyncPersonDeleteV1">SyncPersonDeleteV1</h2>
 <!-- backwards compatibility -->
 <a id="schemasyncpersondeletev1"></a>
@@ -45588,7 +45727,7 @@ Sync entity type
 <a id="tocssyncrequesttype"></a>
 
 ```json
-"AlbumsV1"
+"AlbumsV2"
 ```
 
 Sync request type
@@ -45661,7 +45800,7 @@ Sync request type
 {
   "reset": true,
   "types": [
-    "AlbumsV1"
+    "AlbumsV2"
   ]
 }
 ```
@@ -45677,14 +45816,11 @@ Sync request type
 
 |Property|Value|
 |---|---|
-|types|AlbumsV1|
 |types|AlbumsV2|
 |types|AlbumUsersV1|
 |types|AlbumToAssetsV1|
-|types|AlbumAssetsV1|
 |types|AlbumAssetsV2|
 |types|AlbumAssetExifsV1|
-|types|AssetsV1|
 |types|AssetsV2|
 |types|AssetExifsV1|
 |types|AssetEditsV1|
@@ -45697,17 +45833,16 @@ Sync request type
 |types|MemoryToAssetsV1|
 |types|MemoryToAssetsV2|
 |types|PartnersV1|
-|types|PartnerAssetsV1|
 |types|PartnerAssetsV2|
 |types|PartnerAssetExifsV1|
 |types|PartnerStacksV1|
 |types|StacksV1|
 |types|UsersV1|
 |types|PeopleV1|
-|types|AssetFacesV1|
 |types|AssetFacesV2|
 |types|AssetFacesV3|
 |types|UserMetadataV1|
+|types|PendingResetV1|
 
 <h2 id="tocS_SyncUserDeleteV1">SyncUserDeleteV1</h2>
 <!-- backwards compatibility -->
@@ -46382,7 +46517,7 @@ Transcode policy
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |dateTimeOriginal|string|false|none|Original date and time|
-|description|string|false|none|Asset description|
+|description|string \| null|false|none|Asset description|
 |isFavorite|boolean|false|none|Mark as favorite|
 |latitude|number(double)|false|none|Latitude coordinate|
 |livePhotoVideoId|string \| null(uuid)|false|none|Live photo video ID|
@@ -46488,7 +46623,7 @@ Transcode policy
 |avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
 |email|string(email)|true|none|User email|
 |isAdmin|boolean|false|none|Grant admin privileges|
-|name|string|true|none|User name|
+|name|string \| null|true|none|User name|
 |notify|boolean|false|none|Send notification email|
 |password|string|true|none|User password|
 |pinCode|string \| null|false|none|PIN code|
@@ -46561,10 +46696,10 @@ Transcode policy
 |id|string(uuid)|true|none|User ID|
 |isAdmin|boolean|true|none|Is admin user|
 |license|[UserLicense](#schemauserlicense) \| null|true|none|none|
-|name|string|true|none|User name|
-|oauthId|string|true|none|OAuth ID|
+|name|string \| null|true|none|User name|
+|oauthId|string \| null|true|none|OAuth ID|
 |profileChangedAt|string(date-time)|true|none|Profile change date|
-|profileImagePath|string|true|none|Profile image path|
+|profileImagePath|string \| null|true|none|Profile image path|
 |quotaSizeInBytes|integer \| null|true|none|Storage quota in bytes|
 |quotaUsageInBytes|integer \| null|true|none|Storage usage in bytes|
 |shouldChangePassword|boolean|true|none|Require password change on next login|
@@ -46618,7 +46753,7 @@ Transcode policy
 |avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
 |email|string(email)|false|none|User email|
 |isAdmin|boolean|false|none|Grant admin privileges|
-|name|string|false|none|User name|
+|name|string \| null|false|none|User name|
 |password|string|false|none|User password|
 |pinCode|string \| null|false|none|PIN code|
 |quotaSizeInBytes|integer \| null|false|none|Storage quota in bytes|
@@ -47420,9 +47555,9 @@ User metadata key
 |avatarColor|[UserAvatarColor](#schemauseravatarcolor)|true|none|User avatar color|
 |email|string(email)|true|none|User email|
 |id|string(uuid)|true|none|User ID|
-|name|string|true|none|User name|
+|name|string \| null|true|none|User name|
 |profileChangedAt|string(date-time)|true|none|Profile change date|
-|profileImagePath|string|true|none|Profile image path|
+|profileImagePath|string \| null|true|none|Profile image path|
 
 #### Enumerated Values
 
@@ -47473,7 +47608,7 @@ User status
 |---|---|---|---|---|
 |avatarColor|[UserAvatarColor](#schemauseravatarcolor) \| null|false|none|none|
 |email|string(email)|false|none|User email|
-|name|string|false|none|User name|
+|name|string \| null|false|none|User name|
 
 <h2 id="tocS_ValidateAccessTokenResponseDto">ValidateAccessTokenResponseDto</h2>
 <!-- backwards compatibility -->

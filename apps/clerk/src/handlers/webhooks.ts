@@ -1,7 +1,7 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteWebhooksSvixRoute,
   postWebhooksSvixRoute,
+  deleteWebhooksSvixRoute,
   postWebhooksSvixUrlRoute,
 } from '../routes'
 

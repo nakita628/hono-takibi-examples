@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAddonsIdRoute,
-  getAddonsIdRoute,
   getAddonsRoute,
   postAddonsRoute,
+  getAddonsIdRoute,
+  deleteAddonsIdRoute,
   putAddonsIdRoute,
 } from '../routes'
 

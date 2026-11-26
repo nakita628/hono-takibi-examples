@@ -1,7 +1,7 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getLogEntriesIdRoute,
   getLogEntriesRoute,
+  getLogEntriesIdRoute,
   putLogEntriesIdChannelRoute,
 } from '../routes'
 

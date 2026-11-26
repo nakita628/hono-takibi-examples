@@ -2497,10 +2497,13 @@ const GetReceivedEmailResponseSchema = z
       .exactOptional()
       .openapi({ description: 'The plain text content of the email.', example: 'Email content' }),
     headers: z
-      .looseObject({})
+      .record(z.string(), z.string())
       .nullable()
       .exactOptional()
-      .openapi({ description: 'The email headers.', example: { 'X-Custom-Header': 'value' } }),
+      .openapi({
+        description: 'The email headers, keyed by lowercase header name.',
+        example: { 'x-custom-header': 'value' },
+      }),
     created_at: z.iso
       .datetime({ offset: true })
       .exactOptional()
@@ -8597,6 +8600,58 @@ export const getEmailsReceivingRoute = createRoute({
               "Pagination cursor to fetch results before this email ID. Cannot be used with 'after'.",
           },
         }),
+      to: z
+        .preprocess(
+          (val) =>
+            val === undefined
+              ? val
+              : (Array.isArray(val) ? val : [val]).flatMap((item) =>
+                  typeof item === 'string' ? item.split(',') : [item],
+                ),
+          z.array(z.string()).max(20),
+        )
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'to',
+            in: 'query',
+            required: false,
+            style: 'form',
+            explode: false,
+            schema: { type: 'array', maxItems: 20, items: { type: 'string' } },
+            description:
+              'Comma-separated recipient addresses. Each value must exactly match the envelope recipient, with case. Returns emails that match any of them. Up to 20 values. Repeating the parameter returns a 422 validation_error.',
+            example: ['support@example.com', 'billing@example.com'],
+          },
+        }),
+      start_date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'start_date',
+            in: 'query',
+            required: false,
+            schema: { type: 'string' },
+            description:
+              'Matches emails received on or after this date. Accepts a date like `2026-09-01` or an ISO 8601 timestamp, in UTC unless the timestamp has an offset.',
+            example: '2026-09-01',
+          },
+        }),
+      end_date: z
+        .string()
+        .exactOptional()
+        .openapi({
+          param: {
+            name: 'end_date',
+            in: 'query',
+            required: false,
+            schema: { type: 'string' },
+            description:
+              'Matches emails received on or before this date. Same formats as `start_date`. A date covers that whole day, so `start_date=2026-09-01&end_date=2026-09-30` covers all of September. A timestamp is used as given. An `end_date` before `start_date` returns a 422 validation_error. A range entirely outside your data retention also returns a 422.',
+            example: '2026-09-30',
+          },
+        }),
     }),
   },
   responses: {
@@ -9163,23 +9218,6 @@ export const postDomainsDomainIdForgeRoute = createRoute({
     'Put a domain\'s sending on Resend Forge. The domain must be a sending domain: receive-only domains, domains on a dedicated IP, and domains with legacy DKIM get a `forge_unavailable` error. The response includes the DNS record Forge needs. Add it to your DNS and call the verify domain endpoint with `scope: ["forge"]`, then poll the retrieve domain endpoint until the Forge record\'s `status` is `verified`. The domain keeps sending through its current records while the Forge record verifies, so there is no interruption. Calling this endpoint again just returns the current state.',
   operationId: 'domains/enable-forge',
   request: {
-    headers: z.object({
-      'Idempotency-Key': z
-        .string()
-        .min(1)
-        .max(256)
-        .exactOptional()
-        .openapi({
-          param: {
-            in: 'header',
-            name: 'Idempotency-Key',
-            required: false,
-            schema: { type: 'string', minLength: 1, maxLength: 256 },
-            description:
-              'A unique key for the request, so Forge is enabled only once. A retry with the same key within 24 hours returns the first successful (2xx) response, with the `idempotent-replayed: true` header. A failed request is not stored, so it can be retried with the same key. Reusing the key with a different body, or while the first request is still running, returns a 409. An empty key, or one longer than 256 characters, returns a 400 `invalid_idempotency_key`. [Learn more](https://resend.com/docs/dashboard/emails/idempotency-keys)',
-          },
-        }),
-    }),
     params: z.object({
       domain_id: z
         .string()

@@ -1,0 +1,36 @@
+{
+  "name": "@apps/binance-spot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "hono-takibi",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@angular/common": "catalog:",
+    "@angular/core": "catalog:",
+    "@hono/zod-openapi": "catalog:",
+    "@tanstack/angular-query": "catalog:",
+    "@tanstack/preact-query": "catalog:",
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/solid-query": "catalog:",
+    "@tanstack/svelte-query": "catalog:",
+    "@tanstack/vue-query": "catalog:",
+    "hono": "catalog:",
+    "preact": "catalog:",
+    "react": "catalog:",
+    "rxjs": "catalog:",
+    "solid-js": "catalog:",
+    "svelte": "catalog:",
+    "swr": "catalog:",
+    "vue": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "hono-takibi": "catalog:",
+    "typescript": "catalog:"
+  }
+}

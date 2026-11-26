@@ -1,18 +1,18 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteContactsContactIdSegmentsSegmentIdRoute,
+  postContactsRoute,
+  getContactsRoute,
+  postContactsImportsRoute,
+  getContactsImportsRoute,
+  getContactsImportsIdRoute,
+  getContactsIdRoute,
+  patchContactsIdRoute,
   deleteContactsIdRoute,
   getContactsContactIdSegmentsRoute,
-  getContactsContactIdTopicsRoute,
-  getContactsIdRoute,
-  getContactsImportsIdRoute,
-  getContactsImportsRoute,
-  getContactsRoute,
-  patchContactsContactIdTopicsRoute,
-  patchContactsIdRoute,
   postContactsContactIdSegmentsSegmentIdRoute,
-  postContactsImportsRoute,
-  postContactsRoute,
+  deleteContactsContactIdSegmentsSegmentIdRoute,
+  getContactsContactIdTopicsRoute,
+  patchContactsContactIdTopicsRoute,
 } from '../routes'
 
 export const postContactsRouteHandler: RouteHandler<typeof postContactsRoute> = async (c) => {

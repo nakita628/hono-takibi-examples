@@ -907,11 +907,13 @@ export async function getApiPublicUnstableTopics(
   return await parseResponse(client.api.public.unstable.topics.$get(args, options))
 }
 
-export async function getApiPublicUnstableTopicsTopicId(
-  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicId']['$get']>,
+export async function getApiPublicUnstableTopicsTopicStableId(
+  args: InferRequestType<(typeof client.api.public.unstable.topics)[':topicStableId']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.api.public.unstable.topics[':topicId'].$get(args, options))
+  return await parseResponse(
+    client.api.public.unstable.topics[':topicStableId'].$get(args, options),
+  )
 }
 
 export async function getApiPublicUnstableTopicRules(

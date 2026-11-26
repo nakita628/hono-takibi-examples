@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteOrganizationPermissionsPermissionIdRoute,
-  getOrganizationPermissionsPermissionIdRoute,
   getOrganizationPermissionsRoute,
-  patchOrganizationPermissionsPermissionIdRoute,
   postOrganizationPermissionsRoute,
+  getOrganizationPermissionsPermissionIdRoute,
+  patchOrganizationPermissionsPermissionIdRoute,
+  deleteOrganizationPermissionsPermissionIdRoute,
 } from '../routes'
 
 export const getOrganizationPermissionsRouteHandler: RouteHandler<

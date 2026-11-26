@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getTeamMembershipsRoute, getTeamMembershipsTeamMembershipGidRoute } from '../routes'
+import type { getTeamMembershipsTeamMembershipGidRoute, getTeamMembershipsRoute } from '../routes'
 
 export const getTeamMembershipsTeamMembershipGidRouteHandler: RouteHandler<
   typeof getTeamMembershipsTeamMembershipGidRoute

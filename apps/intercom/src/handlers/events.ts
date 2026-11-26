@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getEventsRoute, postEventsRoute, postEventsSummariesRoute } from '../routes'
+import type { postEventsRoute, getEventsRoute, postEventsSummariesRoute } from '../routes'
 
 export const postEventsRouteHandler: RouteHandler<typeof postEventsRoute> = async (c) => {
   throw new Error('Not implemented')

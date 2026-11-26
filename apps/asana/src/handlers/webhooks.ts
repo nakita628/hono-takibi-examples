@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteWebhooksWebhookGidRoute,
   getWebhooksRoute,
-  getWebhooksWebhookGidRoute,
   postWebhooksRoute,
+  getWebhooksWebhookGidRoute,
   putWebhooksWebhookGidRoute,
+  deleteWebhooksWebhookGidRoute,
 } from '../routes'
 
 export const getWebhooksRouteHandler: RouteHandler<typeof getWebhooksRoute> = async (c) => {

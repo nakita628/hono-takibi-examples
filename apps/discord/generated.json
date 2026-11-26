@@ -1,13 +1,14 @@
 {
   "hono-takibi.config.ts": {
-    "hono-takibi": "0.33.7",
-    "date": "2026-11-23",
+    "hono-takibi": "0.35.13",
+    "date": "2026-11-26",
     "generated": true,
     "config": "6b3b326e7b7b6fc7c8f4502c20b12d82a6d6cb1ab35e825595444694a63c1577",
     "sources": {
       "https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json": {
-        "etag": "W/\"19542bb6e57f68c5e4ef16055b22565d3a5c6a49836be5b62da33a6d65999330\"",
-        "sha256": "ef338088f4c6a73fdb9840acd1ce2bf8f16c1870f4437bfc563418c7e0de7278"
+        "etag": "W/\"3dd217b4a22029740ca7519f51d5d69383f227765b9ed2debed3695a0b4229ee\"",
+        "sha256": "33be28e715283003426be4666c0b558a53ce2e9a54f13217666304a2865048ba",
+        "canonical": "945d12e0506a05897465ff1710742a188d7e446bdc53eda6631a7c1b4b744f11"
       }
     },
     "typecheck": {

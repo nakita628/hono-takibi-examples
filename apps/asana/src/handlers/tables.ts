@@ -1,14 +1,14 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteTablesTableGidRoute,
-  getTablesTableGidCustomFieldSettingsRoute,
-  getTablesTableGidGetCustomFieldSettingsRoute,
   getTablesTableGidRecordsRoute,
-  getTablesTableGidRoute,
   postTablesRoute,
+  getTablesTableGidRoute,
+  putTablesTableGidRoute,
+  deleteTablesTableGidRoute,
   postTablesTableGidAddCustomFieldSettingRoute,
   postTablesTableGidRemoveCustomFieldSettingRoute,
-  putTablesTableGidRoute,
+  getTablesTableGidGetCustomFieldSettingsRoute,
+  getTablesTableGidCustomFieldSettingsRoute,
 } from '../routes'
 
 export const getTablesTableGidRecordsRouteHandler: RouteHandler<

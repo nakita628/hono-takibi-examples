@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteChatkitThreadsThreadIdRoute,
-  getChatkitThreadsRoute,
+  postChatkitSessionsSessionIdCancelRoute,
+  postChatkitSessionsRoute,
   getChatkitThreadsThreadIdItemsRoute,
   getChatkitThreadsThreadIdRoute,
-  postChatkitSessionsRoute,
-  postChatkitSessionsSessionIdCancelRoute,
+  deleteChatkitThreadsThreadIdRoute,
+  getChatkitThreadsRoute,
 } from '../routes'
 
 export const postChatkitSessionsSessionIdCancelRouteHandler: RouteHandler<

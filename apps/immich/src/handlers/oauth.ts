@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getOauthMobileRedirectRoute,
   postOauthAuthorizeRoute,
   postOauthBackchannelLogoutRoute,
   postOauthCallbackRoute,
   postOauthLinkRoute,
+  getOauthMobileRedirectRoute,
   postOauthUnlinkRoute,
 } from '../routes'
 

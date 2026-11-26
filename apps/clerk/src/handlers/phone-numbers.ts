@@ -1,11 +1,11 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deletePhoneNumbersPhoneNumberIdRoute,
-  getPhoneNumbersPhoneNumberIdRoute,
-  patchPhoneNumbersPhoneNumberIdRoute,
-  postPhoneNumbersPhoneNumberIdAttemptVerificationRoute,
-  postPhoneNumbersPhoneNumberIdPrepareVerificationRoute,
   postPhoneNumbersRoute,
+  getPhoneNumbersPhoneNumberIdRoute,
+  deletePhoneNumbersPhoneNumberIdRoute,
+  patchPhoneNumbersPhoneNumberIdRoute,
+  postPhoneNumbersPhoneNumberIdPrepareVerificationRoute,
+  postPhoneNumbersPhoneNumberIdAttemptVerificationRoute,
 } from '../routes'
 
 export const postPhoneNumbersRouteHandler: RouteHandler<typeof postPhoneNumbersRoute> = async (

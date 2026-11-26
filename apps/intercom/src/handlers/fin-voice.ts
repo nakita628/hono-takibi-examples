@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
+  postFinVoiceRegisterRoute,
   getFinVoiceCollectIdRoute,
-  getFinVoiceConversationConversationIdRoute,
   getFinVoiceExternalIdExternalIdRoute,
   getFinVoicePhoneNumberPhoneNumberRoute,
-  postFinVoiceRegisterRoute,
+  getFinVoiceConversationConversationIdRoute,
 } from '../routes'
 
 export const postFinVoiceRegisterRouteHandler: RouteHandler<

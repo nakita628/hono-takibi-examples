@@ -1,19 +1,19 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  getEmailsEmailIdAttachmentsAttachmentIdRoute,
-  getEmailsEmailIdAttachmentsRoute,
-  getEmailsEmailIdRoute,
-  getEmailsMetricsRoute,
-  getEmailsReceivingEmailIdAttachmentsAttachmentIdRoute,
-  getEmailsReceivingEmailIdAttachmentsRoute,
-  getEmailsReceivingEmailIdRoute,
-  getEmailsReceivingRoute,
+  postEmailsRoute,
   getEmailsRoute,
+  getEmailsEmailIdRoute,
   patchEmailsEmailIdRoute,
-  postEmailsBatchRoute,
   postEmailsEmailIdCancelRoute,
   postEmailsEmailIdShareRoute,
-  postEmailsRoute,
+  postEmailsBatchRoute,
+  getEmailsEmailIdAttachmentsRoute,
+  getEmailsEmailIdAttachmentsAttachmentIdRoute,
+  getEmailsReceivingRoute,
+  getEmailsReceivingEmailIdRoute,
+  getEmailsReceivingEmailIdAttachmentsRoute,
+  getEmailsReceivingEmailIdAttachmentsAttachmentIdRoute,
+  getEmailsMetricsRoute,
 } from '../routes'
 
 export const postEmailsRouteHandler: RouteHandler<typeof postEmailsRoute> = async (c) => {

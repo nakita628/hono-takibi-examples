@@ -1,15 +1,15 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteOfficeHoursSchedulesIdRoute,
-  deleteOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute,
-  getOfficeHoursSchedulesIdRoute,
   getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute,
-  getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRoute,
-  getOfficeHoursSchedulesRoute,
-  postOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRoute,
-  postOfficeHoursSchedulesRoute,
-  putOfficeHoursSchedulesIdRoute,
   putOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute,
+  deleteOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRoute,
+  getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRoute,
+  postOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsRoute,
+  getOfficeHoursSchedulesIdRoute,
+  putOfficeHoursSchedulesIdRoute,
+  deleteOfficeHoursSchedulesIdRoute,
+  getOfficeHoursSchedulesRoute,
+  postOfficeHoursSchedulesRoute,
 } from '../routes'
 
 export const getOfficeHoursSchedulesOfficeHoursScheduleIdOfficeHoursExceptionsIdRouteHandler: RouteHandler<

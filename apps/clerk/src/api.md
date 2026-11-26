@@ -24046,10 +24046,25 @@ times out. Cursor pagination requires the `created_at` ordering, which is the de
 |last_sign_in_at_after|query|integer|false|Returns users whose last sign-in was after the given date (with millisecond precision).<br>Example: use 1700690400000 to retrieve users whose last sign-in was after 2023-11-23.|
 |provider|query|string|false|Returns users with external accounts for the specified OAuth provider.<br>Must be used in combination with the `provider_user_id` parameter.<br>For example, use `provider=oauth_google&provider_user_id=12345` to retrieve a user with Google provider user ID 12345.|
 |provider_user_id|query|[string]|false|Returns users with the specified provider user IDs for a specific provider.<br>Must be used in combination with the `provider` parameter.<br>For example, use `provider=oauth_google&provider_user_id=12345` to retrieve a user with Google provider user ID 12345.<br>Accepts up to 100 provider user IDs.<br>Any provider user IDs not found are ignored.|
+|metadata|query|[string]|false|Returns users matching every one of the given metadata filters. Repeat it once per filter; each value<br>is a JSON object with these fields:<br><br>- `scope` (required): `public`, `private` or `unsafe`, the metadata to match against.<br>- `key` (required): a dot-separated path into the metadata, e.g. `settings.theme`. Escape a<br>  literal dot in a key as `\.`.<br>- `match` (required): `exists` matches users holding the key, whether it holds a value or nested<br>  keys. `equals` matches the whole value, case-insensitively.<br>- `value`: required for `equals`; not allowed for `exists`.<br>- `negate`: `true` inverts the filter. With `exists` it returns the users who do not hold the<br>  key. With `equals` it returns the users who hold the key with a different value.<br><br>Other fields are rejected.<br><br>With `metadata`, `offset` plus `limit` cannot exceed 1000, and `starting_after` is not accepted.<br>`GET /v1/users/count` does not accept `metadata`.<br><br>Results are eventually consistent. A user created, updated or deleted a short time ago may not<br>yet be reflected in which users are returned or in their order. To read a user right after<br>writing it, fetch it by ID.|
 |limit|query|integer|false|Applies a limit to the number of results returned.<br>Can be used for paginating the results together with `offset`.|
 |offset|query|integer|false|Skip the first `offset` results when paginating.<br>Needs to be an integer greater or equal to zero.<br>To be used in conjunction with `limit`.|
 |starting_after|query|string|false|A cursor for pagination: the `id` of the last user on the previous page. Returns the users that follow it.<br><br>**Requires ordering by `created_at`** — that is, `order_by` omitted, or set to `created_at`, `+created_at`<br>or `-created_at`. Any other `order_by` value is rejected with a 422: the other orderings sort by a value<br>that is neither unique per user nor immutable, so a cursor over them would skip or repeat users.<br><br>Cannot be combined with a non-zero `offset`, which is also a 422. Keep every other parameter identical<br>across requests, and stop when a page returns fewer than `limit` users.|
+|pagination|query|string|false|`cursor` pages by cursor, with any `order_by` and any filter, including `metadata`. The response is<br>then an object in place of the array of users: `data` holds the users, and `cursor` is<br>`{"starting_after": <string or null>, "ending_before": <string or null>, "has_next_page": <boolean>}`.<br>Pass its `starting_after` back as `starting_after` for the next page, or its `ending_before` back<br>as `ending_before` for the previous one, keeping every other parameter identical. Stop when<br>`has_next_page` is `false`; `ending_before` is null on the first page. In this mode<br>`starting_after` is that cursor, not a user ID; a cursor from a different `order_by` is rejected<br>with a 422, as is a non-zero `offset`.<br><br>Results in this mode are eventually consistent. A user created, updated or deleted a short time<br>ago may not yet be reflected in which users are returned, in their order, or in any count. To<br>read a user right after writing it, fetch it by ID.<br><br>Without this parameter the list pages by offset, and `starting_after` takes a user ID.<br>`offset` pages the same way, except that it does not accept `starting_after`.|
+|ending_before|query|string|false|With `pagination=cursor`, the `cursor.ending_before` of a previous response. Returns the page<br>before it, in the same order. Cannot be combined with `starting_after`, and a cursor from a<br>different `order_by` is rejected with a 422. A previous page can hold fewer than `limit` users<br>even when more precede it.|
+|remaining_count|query|string|false|With `pagination=cursor`, also counts the users from the start of this page onward, this page<br>included. On the first page that is every user the request matches.<br><br>A number counts up to that many. The response's `cursor` then carries one of two<br>fields: `remaining_count_exact` when there are fewer users than the number given, and otherwise<br>`remaining_count_at_least`, set to that number. Larger numbers make the request slower.<br><br>`exact` counts them all, with no ceiling, and the `cursor` carries `remaining_count_exact`. The<br>count takes longer the more users match, and a request whose count does not finish in time is<br>rejected with a 422 `users_exact_count_timed_out`; retry it with a number, or without this<br>parameter.<br><br>The count is computed separately from the page and is subject to the same delay. Treat it as a<br>close estimate: it can differ slightly from the number of users that paging through the results<br>returns.|
 |order_by|query|string|false|Allows to return users in a particular order.<br>At the moment, you can order the returned users by their `created_at`,`updated_at`,`email_address`,`web3wallet`,`first_name`,`last_name`,`phone_number`,`username`,`last_active_at`,`last_sign_in_at`.<br>In order to specify the direction, you can use the `+/-` symbols prepended in the property to order by.<br>For example, if you want users to be returned in descending order according to their `created_at` property, you can use `-created_at`.<br>If you don't use `+` or `-`, then `+` is implied. We only support one `order_by` parameter, and if multiple `order_by` parameters are provided, we will only keep the first one. For example,<br>if you pass `order_by=username&order_by=created_at`, we will consider only the first `order_by` parameter, which is `username`. The `created_at` parameter will be ignored in this case.<br>Only the `created_at` orderings can be combined with `starting_after` cursor pagination; see that parameter.|
+
+#### Enumerated Values
+
+|Parameter|Value|
+|---|---|
+|pagination|offset|
+|pagination|cursor|
+|remaining_count|100|
+|remaining_count|1000|
+|remaining_count|10000|
+|remaining_count|exact|
 
 > Example responses
 
@@ -24517,6 +24532,7 @@ Status Code **200**
 |---|---|---|---|---|
 |*oneOf*|[[User](#schemauser)]|false|none|none|
 |*anonymous*|[[User](#schemauser)]|false|none|none|
+|*oneOf*|[UserCursorPage](#schemausercursorpage)|false|none|A page of users from `GET /v1/users` with `pagination=cursor`.|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -25813,6 +25829,7 @@ curl https://api.clerk.com/v1/users/string \
     "password_hasher": "string",
     "skip_password_checks": true,
     "sign_out_of_other_sessions": true,
+    "reset_client_trust": true,
     "totp_secret": "string",
     "backup_codes": [
       "string"
@@ -25865,6 +25882,7 @@ You can also choose to sign the user out of all their active sessions on any dev
   "password_hasher": "string",
   "skip_password_checks": true,
   "sign_out_of_other_sessions": true,
+  "reset_client_trust": true,
   "totp_secret": "string",
   "backup_codes": [
     "string"
@@ -25904,6 +25922,7 @@ You can also choose to sign the user out of all their active sessions on any dev
 |» password_hasher|body|[PasswordHasher](#schemapasswordhasher)|false|The hashing algorithm that was used to generate the password digest.<br><br>The algorithms we support at the moment are [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt), [`bcrypt_sha256_django`](https://docs.djangoproject.com/en/4.0/topics/auth/passwords/), [`md5`](https://en.wikipedia.org/wiki/MD5), `pbkdf2_sha1`, `pbkdf2_sha256`, [`pbkdf2_sha256_django`](https://docs.djangoproject.com/en/4.0/topics/auth/passwords/),<br>`pbkdf2_sha512`, [`phpass`](https://www.openwall.com/phpass/), `md5_phpass`, [`scrypt_firebase`](https://firebaseopensource.com/projects/firebase/scrypt/),<br>[`scrypt_werkzeug`](https://werkzeug.palletsprojects.com/en/3.0.x/utils/#werkzeug.security.generate_password_hash), [`sha256`](https://en.wikipedia.org/wiki/SHA-2),<br>[`ldap_ssha`](https://www.openldap.org/faq/data/cache/347.html), the [`argon2`](https://argon2.online/) variants: `argon2i` and `argon2id`, `sha512_symfony`, the SHA-512 variant of the [Symfony](https://symfony.com/doc/current/security/passwords.html) legacy hasher,<br>and `pbkdf2_sha512_hex`, a variant of `pbkdf2_sha512` that accepts hex-encoded salt and hash.<br><br>Each of the supported hashers expects the incoming digest to be in a particular format. See the [Clerk docs](https://clerk.com/docs/references/backend/user/create-user) for more information.|
 |» skip_password_checks|body|boolean \| null|false|Set it to `true` if you're updating the user's password and want to skip any password policy settings check. This parameter can only be used when providing a `password`.|
 |» sign_out_of_other_sessions|body|boolean \| null|false|Set to `true` to sign out the user from all their active sessions once their password is updated. This parameter can only be used when providing a `password`.|
+|» reset_client_trust|body|boolean \| null|false|When set to `true`, also clears Device Trust for the user on every client, whether or not the instance has Device Trust enabled.<br>The next sign-in by this user on any client counts as a new device: it can require a Device Trust challenge and trigger the new device email.<br>This parameter can only be used when providing a `password` and setting `sign_out_of_other_sessions` to `true`, otherwise a 422 is returned and the user is not updated.|
 |» totp_secret|body|string \| null|false|In case TOTP is configured on the instance, you can provide the secret to enable it on the specific user without the need to reset it.<br>Please note that currently the supported options are:<br>* Period: 30 seconds<br>* Code length: 6 digits<br>* Algorithm: SHA1|
 |» backup_codes|body|[string]|false|If Backup Codes are configured on the instance, you can provide them to enable it on the specific user without the need to reset them.<br>You must provide the backup codes in plain format or the corresponding bcrypt digest.|
 |» public_metadata|body|object \| null|false|**Deprecated.** Metadata saved on the user, that is visible to both your Frontend and Backend APIs.<br>Deprecated: As of API version 2026-05-12, this field is rejected on `PATCH /v1/users/{user_id}`. Use `PATCH /v1/users/{user_id}/metadata` to merge updates into existing metadata, or `PUT /v1/users/{user_id}/metadata` to replace a metadata field entirely.|
@@ -43881,6 +43900,389 @@ Metadata describing a user's linkage to a directory. Included in user responses 
 |Property|Value|
 |---|---|
 |object|user|
+
+<h2 id="tocS_UserCursorPage">UserCursorPage</h2>
+<!-- backwards compatibility -->
+<a id="schemausercursorpage"></a>
+<a id="schema_UserCursorPage"></a>
+<a id="tocSusercursorpage"></a>
+<a id="tocsusercursorpage"></a>
+
+```json
+{
+  "data": [
+    {
+      "id": "string",
+      "object": "user",
+      "external_id": "string",
+      "primary_email_address_id": "string",
+      "primary_phone_number_id": "string",
+      "primary_web3_wallet_id": "string",
+      "username": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "locale": "string",
+      "timezone": "string",
+      "profile_image_url": "string",
+      "image_url": "string",
+      "has_image": true,
+      "public_metadata": {},
+      "private_metadata": {},
+      "unsafe_metadata": {},
+      "email_addresses": [
+        {
+          "id": "string",
+          "object": "email_address",
+          "email_address": "string",
+          "reserved": true,
+          "verification": {
+            "object": "verification_otp",
+            "status": "unverified",
+            "strategy": "phone_code",
+            "attempts": 0,
+            "expire_at": 0,
+            "channel": "string",
+            "verified_at_client": "string"
+          },
+          "linked_to": [
+            {
+              "type": "string",
+              "id": "string"
+            }
+          ],
+          "matches_sso_connection": true,
+          "created_at": 0,
+          "updated_at": 0
+        }
+      ],
+      "phone_numbers": [
+        {
+          "id": "string",
+          "object": "phone_number",
+          "phone_number": "string",
+          "reserved_for_second_factor": true,
+          "default_second_factor": true,
+          "reserved": true,
+          "verification": {
+            "object": "verification_otp",
+            "status": "unverified",
+            "strategy": "phone_code",
+            "attempts": 0,
+            "expire_at": 0,
+            "channel": "string",
+            "verified_at_client": "string"
+          },
+          "linked_to": [
+            {
+              "type": "string",
+              "id": "string"
+            }
+          ],
+          "backup_codes": [
+            "string"
+          ],
+          "created_at": 0,
+          "updated_at": 0
+        }
+      ],
+      "web3_wallets": [
+        {
+          "id": "string",
+          "object": "web3_wallet",
+          "web3_wallet": "string",
+          "verification": {
+            "object": "verification_web3",
+            "status": "unverified",
+            "strategy": "web3_metamask_signature",
+            "nonce": "string",
+            "message": "string",
+            "attempts": 0,
+            "expire_at": 0,
+            "verified_at_client": "string"
+          },
+          "created_at": 0,
+          "updated_at": 0
+        }
+      ],
+      "passkeys": [
+        {
+          "id": "string",
+          "object": "passkey",
+          "name": "string",
+          "last_used_at": 0,
+          "verification": {
+            "object": "verification_passkey",
+            "status": "verified",
+            "strategy": "passkey",
+            "nonce": "nonce",
+            "message": "string",
+            "attempts": 0,
+            "expire_at": 0,
+            "verified_at_client": "string"
+          }
+        }
+      ],
+      "password_enabled": true,
+      "two_factor_enabled": true,
+      "totp_enabled": true,
+      "backup_code_enabled": true,
+      "mfa_enabled_at": 0,
+      "mfa_disabled_at": 0,
+      "password_last_updated_at": 0,
+      "external_accounts": [
+        {
+          "object": "external_account",
+          "id": "string",
+          "provider": "string",
+          "identification_id": "string",
+          "provider_user_id": "string",
+          "approved_scopes": "string",
+          "email_address": "string",
+          "email_address_verified": true,
+          "first_name": "string",
+          "last_name": "string",
+          "avatar_url": "string",
+          "image_url": "string",
+          "username": "string",
+          "phone_number": "string",
+          "public_metadata": {},
+          "label": "string",
+          "created_at": 0,
+          "updated_at": 0,
+          "verification": {
+            "object": "verification_oauth",
+            "status": "unverified",
+            "strategy": "string",
+            "external_verification_redirect_url": "string",
+            "error": {
+              "message": "string",
+              "long_message": "string",
+              "code": "string",
+              "meta": {}
+            },
+            "expire_at": 0,
+            "attempts": 0,
+            "verified_at_client": "string"
+          }
+        }
+      ],
+      "saml_accounts": [
+        {
+          "id": "string",
+          "object": "saml_account",
+          "provider": "string",
+          "active": true,
+          "email_address": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "provider_user_id": "string",
+          "last_authenticated_at": 0,
+          "public_metadata": {},
+          "verification": {
+            "object": "verification_saml",
+            "status": "unverified",
+            "strategy": "saml",
+            "external_verification_redirect_url": "string",
+            "error": {
+              "message": "string",
+              "long_message": "string",
+              "code": "string",
+              "meta": {}
+            },
+            "expire_at": 0,
+            "attempts": 0,
+            "verified_at_client": "string"
+          },
+          "saml_connection": {
+            "id": "string",
+            "name": "string",
+            "domain": "string",
+            "domains": [
+              "string"
+            ],
+            "active": true,
+            "provider": "string",
+            "sync_user_attributes": true,
+            "allow_subdomains": true,
+            "allow_idp_initiated": true,
+            "disable_additional_identifications": true,
+            "created_at": 0,
+            "updated_at": 0
+          }
+        }
+      ],
+      "enterprise_accounts": [
+        {
+          "id": "string",
+          "object": "enterprise_account",
+          "protocol": "oauth",
+          "provider": "string",
+          "active": true,
+          "email_address": "string",
+          "first_name": "string",
+          "last_name": "string",
+          "provider_user_id": "string",
+          "enterprise_connection_id": "string",
+          "public_metadata": {},
+          "verification": {
+            "object": "verification_ticket",
+            "status": "unverified",
+            "strategy": "ticket",
+            "attempts": 0,
+            "expire_at": 0,
+            "verified_at_client": "string"
+          },
+          "enterprise_connection": {
+            "id": "string",
+            "protocol": "string",
+            "provider": "string",
+            "name": "string",
+            "logo_public_url": "string",
+            "domain": "string",
+            "domains": [
+              "string"
+            ],
+            "active": true,
+            "sync_user_attributes": true,
+            "allow_subdomains": true,
+            "allow_idp_initiated": true,
+            "disable_additional_identifications": true,
+            "created_at": 0,
+            "updated_at": 0
+          },
+          "last_authenticated_at": 0
+        }
+      ],
+      "organization_memberships": [
+        {
+          "id": "string",
+          "object": "organization_membership",
+          "role": "string",
+          "role_name": "string",
+          "permissions": [
+            "string"
+          ],
+          "public_metadata": {},
+          "private_metadata": {},
+          "organization": {
+            "object": "organization",
+            "id": "string",
+            "name": "string",
+            "slug": "string",
+            "image_url": "string",
+            "has_image": true,
+            "members_count": 0,
+            "missing_member_with_elevated_permissions": true,
+            "pending_invitations_count": 0,
+            "max_allowed_memberships": 0,
+            "admin_delete_enabled": true,
+            "self_serve_sso_enabled": true,
+            "self_serve_directory_sync_enabled": true,
+            "public_metadata": {},
+            "private_metadata": {},
+            "created_by": "string",
+            "created_at": 0,
+            "updated_at": 0,
+            "last_active_at": 0,
+            "role_set_key": "string"
+          },
+          "public_user_data": {
+            "user_id": "string",
+            "first_name": "string",
+            "last_name": "string",
+            "profile_image_url": "string",
+            "image_url": "string",
+            "has_image": true,
+            "identifier": "string",
+            "username": "string",
+            "banned": true,
+            "deprovisioned": true
+          },
+          "created_at": 0,
+          "updated_at": 0
+        }
+      ],
+      "last_sign_in_at": 0,
+      "banned": true,
+      "locked": true,
+      "deprovisioned": true,
+      "lockout_expires_in_seconds": 0,
+      "verification_attempts_remaining": 0,
+      "updated_at": 0,
+      "created_at": 0,
+      "delete_self_enabled": true,
+      "create_organization_enabled": true,
+      "create_organizations_limit": 0,
+      "last_active_at": 1700690400000,
+      "legal_accepted_at": 1700690400000,
+      "bypass_client_trust": false,
+      "directories": [
+        {
+          "id": "string",
+          "directory_name": "string",
+          "provider": "string",
+          "enterprise_connection_id": "string",
+          "groups": [
+            {
+              "id": "string",
+              "display_name": "string"
+            }
+          ],
+          "directory_id": "string",
+          "directory_enabled": true,
+          "external_id": "string"
+        }
+      ],
+      "directory": {
+        "id": "string",
+        "directory_name": "string",
+        "provider": "string",
+        "enterprise_connection_id": "string",
+        "groups": [
+          {
+            "id": "string",
+            "display_name": "string"
+          }
+        ],
+        "directory_id": "string",
+        "directory_enabled": true,
+        "external_id": "string"
+      },
+      "scim": {
+        "id": "string",
+        "directory_name": "string",
+        "provider": "string",
+        "enterprise_connection_id": "string",
+        "groups": [
+          {
+            "id": "string",
+            "display_name": "string"
+          }
+        ],
+        "directory_id": "string",
+        "directory_enabled": true,
+        "external_id": "string"
+      }
+    }
+  ],
+  "cursor": {
+    "starting_after": "string",
+    "ending_before": "string",
+    "has_next_page": true,
+    "remaining_count_exact": 0,
+    "remaining_count_at_least": 0
+  }
+}
+```
+
+A page of users from `GET /v1/users` with `pagination=cursor`.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|data|[[User](#schemauser)]|true|none|none|
+|cursor|object|true|none|Cursor information for pagination.|
 
 <h2 id="tocS_PasswordHasher">PasswordHasher</h2>
 <!-- backwards compatibility -->

@@ -1,10 +1,10 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteJwtTemplatesTemplateIdRoute,
   getJwtTemplatesRoute,
+  postJwtTemplatesRoute,
   getJwtTemplatesTemplateIdRoute,
   patchJwtTemplatesTemplateIdRoute,
-  postJwtTemplatesRoute,
+  deleteJwtTemplatesTemplateIdRoute,
 } from '../routes'
 
 export const getJwtTemplatesRouteHandler: RouteHandler<typeof getJwtTemplatesRoute> = async (c) => {

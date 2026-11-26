@@ -1,7 +1,7 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAttachmentsAttachmentGidRoute,
   getAttachmentsAttachmentGidRoute,
+  deleteAttachmentsAttachmentGidRoute,
   getAttachmentsRoute,
   postAttachmentsRoute,
 } from '../routes'

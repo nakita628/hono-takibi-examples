@@ -1,5 +1,5 @@
 import type { RouteHandler } from '@hono/zod-openapi'
-import type { getDirectoryUsersIdRoute, getDirectoryUsersRoute } from '../routes'
+import type { getDirectoryUsersRoute, getDirectoryUsersIdRoute } from '../routes'
 
 export const getDirectoryUsersRouteHandler: RouteHandler<typeof getDirectoryUsersRoute> = async (
   c,

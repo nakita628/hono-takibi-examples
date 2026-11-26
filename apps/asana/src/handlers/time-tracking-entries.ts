@@ -1,9 +1,9 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteTimeTrackingEntriesTimeTrackingEntryGidRoute,
-  getTimeTrackingEntriesRoute,
   getTimeTrackingEntriesTimeTrackingEntryGidRoute,
   putTimeTrackingEntriesTimeTrackingEntryGidRoute,
+  deleteTimeTrackingEntriesTimeTrackingEntryGidRoute,
+  getTimeTrackingEntriesRoute,
 } from '../routes'
 
 export const getTimeTrackingEntriesTimeTrackingEntryGidRouteHandler: RouteHandler<

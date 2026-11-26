@@ -1,16 +1,18 @@
 import type { RouteHandler } from '@hono/zod-openapi'
 import type {
-  deleteAuthPinCodeRoute,
-  getAuthStatusRoute,
   postAuthAdminSignUpRoute,
   postAuthChangePasswordRoute,
+  postAuthCodeRoute,
+  postAuthExchangeRoute,
   postAuthLoginRoute,
   postAuthLogoutRoute,
+  deleteAuthPinCodeRoute,
   postAuthPinCodeRoute,
+  putAuthPinCodeRoute,
   postAuthSessionLockRoute,
   postAuthSessionUnlockRoute,
+  getAuthStatusRoute,
   postAuthValidateTokenRoute,
-  putAuthPinCodeRoute,
 } from '../routes'
 
 export const postAuthAdminSignUpRouteHandler: RouteHandler<
@@ -22,6 +24,16 @@ export const postAuthAdminSignUpRouteHandler: RouteHandler<
 export const postAuthChangePasswordRouteHandler: RouteHandler<
   typeof postAuthChangePasswordRoute
 > = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthCodeRouteHandler: RouteHandler<typeof postAuthCodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthExchangeRouteHandler: RouteHandler<typeof postAuthExchangeRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
 }
 

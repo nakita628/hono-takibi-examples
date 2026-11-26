@@ -8,13 +8,13 @@ type AnnotationQueue = {
 }
 type UtilsMetaResponse = { page: number; limit: number; totalItems: number; totalPages: number }
 type PaginatedAnnotationQueues = { data: AnnotationQueue[]; meta: UtilsMetaResponse }
-type CreateAnnotationQueueRequest = {
+type CreateAnnotationQueueRequestInput = {
   name: string
-  description?: (string | null) | undefined
+  description?: string | null
   scoreConfigIds: string[]
 }
-type AnnotationQueueStatus = 'PENDING' | 'COMPLETED'
 type AnnotationQueueObjectType = 'TRACE' | 'OBSERVATION' | 'SESSION'
+type AnnotationQueueStatus = 'PENDING' | 'COMPLETED'
 type AnnotationQueueItem = {
   id: string
   queueId: string
@@ -26,14 +26,16 @@ type AnnotationQueueItem = {
   updatedAt: string
 }
 type PaginatedAnnotationQueueItems = { data: AnnotationQueueItem[]; meta: UtilsMetaResponse }
-type CreateAnnotationQueueItemRequest = {
+type AnnotationQueueObjectTypeInput = 'TRACE' | 'OBSERVATION' | 'SESSION'
+type AnnotationQueueStatusInput = 'PENDING' | 'COMPLETED'
+type CreateAnnotationQueueItemRequestInput = {
   objectId: string
-  objectType: AnnotationQueueObjectType
-  status?: AnnotationQueueStatus | undefined
+  objectType: AnnotationQueueObjectTypeInput
+  status?: AnnotationQueueStatusInput | null
 }
-type UpdateAnnotationQueueItemRequest = { status?: AnnotationQueueStatus | undefined }
+type UpdateAnnotationQueueItemRequestInput = { status?: AnnotationQueueStatusInput | null }
 type DeleteAnnotationQueueItemResponse = { success: boolean; message: string }
-type AnnotationQueueAssignmentRequest = { userId: string }
+type AnnotationQueueAssignmentRequestInput = { userId: string }
 type CreateAnnotationQueueAssignmentResponse = {
   userId: string
   queueId: string
@@ -97,27 +99,53 @@ type BlobStorageIntegrationResponse = {
   updatedAt: string
 }
 type BlobStorageIntegrationsResponse = { data: BlobStorageIntegrationResponse[] }
-type BlobStorageIntegrationFileType = 'JSON' | 'CSV' | 'JSONL' | 'PARQUET'
-type CreateBlobStorageIntegrationRequest = {
+type BlobStorageIntegrationTypeInput =
+  | 'S3'
+  | 'S3_COMPATIBLE'
+  | 'AZURE_BLOB_STORAGE'
+  | 'GOOGLE_CLOUD_STORAGE'
+type BlobStorageIntegrationAuthTypeInput = 'ACCESS_KEYS' | 'ROLE_ARN'
+type BlobStorageExportFrequencyInput = 'every_20_minutes' | 'hourly' | 'daily' | 'weekly'
+type BlobStorageIntegrationFileTypeInput = 'JSON' | 'CSV' | 'JSONL' | 'PARQUET'
+type BlobStorageExportModeInput = 'FULL_HISTORY' | 'FROM_TODAY' | 'FROM_CUSTOM_DATE'
+type BlobStorageExportSourceInput =
+  | 'LEGACY_TRACES_OBSERVATIONS'
+  | 'OBSERVATIONS_V2'
+  | 'LEGACY_TRACES_AND_ENRICHED_OBSERVATIONS'
+type BlobStorageExportFieldGroupInput =
+  | 'core'
+  | 'basic'
+  | 'time'
+  | 'io'
+  | 'metadata'
+  | 'model'
+  | 'usage'
+  | 'prompt'
+  | 'metrics'
+  | 'tools'
+  | 'trace_context'
+  | 'score_metadata'
+  | 'score_provenance'
+type CreateBlobStorageIntegrationRequestInput = {
   projectId: string
-  type: BlobStorageIntegrationType
+  type: BlobStorageIntegrationTypeInput
   bucketName: string
-  endpoint?: (string | null) | undefined
+  endpoint?: string | null
   region: string
-  authType?: BlobStorageIntegrationAuthType | undefined
-  roleArn?: (string | null) | undefined
-  accessKeyId?: (string | null) | undefined
-  secretAccessKey?: (string | null) | undefined
-  prefix?: (string | null) | undefined
-  exportFrequency: BlobStorageExportFrequency
+  authType?: BlobStorageIntegrationAuthTypeInput | null
+  roleArn?: string | null
+  accessKeyId?: string | null
+  secretAccessKey?: string | null
+  prefix?: string | null
+  exportFrequency: BlobStorageExportFrequencyInput
   enabled: boolean
   forcePathStyle: boolean
-  fileType: BlobStorageIntegrationFileType
-  exportMode: BlobStorageExportMode
-  exportStartDate?: (string | null) | undefined
-  compressed?: (boolean | null) | undefined
-  exportSource?: BlobStorageExportSource | undefined
-  exportFieldGroups?: (BlobStorageExportFieldGroup[] | null) | undefined
+  fileType: BlobStorageIntegrationFileTypeInput
+  exportMode: BlobStorageExportModeInput
+  exportStartDate?: string | null
+  compressed?: boolean | null
+  exportSource?: BlobStorageExportSourceInput | null
+  exportFieldGroups?: BlobStorageExportFieldGroupInput[] | null
 }
 type BlobStorageSyncStatus = 'idle' | 'running' | 'queued' | 'up_to_date' | 'disabled' | 'error'
 type BlobStorageIntegrationStatusResponse = {
@@ -131,12 +159,12 @@ type BlobStorageIntegrationStatusResponse = {
   lastErrorAt: string | null
 }
 type BlobStorageIntegrationDeletionResponse = { message: string }
-type CreateCommentRequest = {
+type CreateCommentRequestInput = {
   projectId: string
   objectType: string
   objectId: string
   content: string
-  authorUserId?: (string | null) | undefined
+  authorUserId?: string | null
 }
 type CreateCommentResponse = { id: string }
 type CommentObjectType = 'TRACE' | 'OBSERVATION' | 'SESSION' | 'PROMPT'
@@ -151,17 +179,18 @@ type Comment = {
   authorUserId?: (string | null) | undefined
 }
 type GetCommentsResponse = { data: Comment[]; meta: UtilsMetaResponse }
-type DatasetStatus = 'ACTIVE' | 'ARCHIVED'
-type CreateDatasetItemRequest = {
+type DatasetStatusInput = 'ACTIVE' | 'ARCHIVED'
+type CreateDatasetItemRequestInput = {
   datasetName: string
-  input?: ({ [x: string]: unknown } | null) | undefined
-  expectedOutput?: ({ [x: string]: unknown } | null) | undefined
-  metadata?: ({ [x: string]: unknown } | null) | undefined
-  sourceTraceId?: (string | null) | undefined
-  sourceObservationId?: (string | null) | undefined
-  id?: (string | null) | undefined
-  status?: DatasetStatus | undefined
+  input?: any | null
+  expectedOutput?: any | null
+  metadata?: any | null
+  sourceTraceId?: string | null
+  sourceObservationId?: string | null
+  id?: string | null
+  status?: DatasetStatusInput | null
 }
+type DatasetStatus = 'ACTIVE' | 'ARCHIVED'
 type DatasetItemMediaReferenceField = 'input' | 'expectedOutput' | 'metadata'
 type DatasetItemMediaReferenceMedia = {
   mediaId: string
@@ -179,9 +208,9 @@ type DatasetItemMediaReference = {
 type DatasetItem = {
   id: string
   status: DatasetStatus
-  input: { [x: string]: unknown }
-  expectedOutput: { [x: string]: unknown }
-  metadata: { [x: string]: unknown }
+  input: any
+  expectedOutput: any
+  metadata: any
   sourceTraceId: string | null
   sourceObservationId: string | null
   datasetId: string
@@ -197,31 +226,62 @@ type Dataset = {
   id: string
   name: string
   description: string | null
-  metadata: { [x: string]: unknown }
-  inputSchema: { [x: string]: unknown } | null
-  expectedOutputSchema: { [x: string]: unknown } | null
+  metadata: any
+  inputSchema: { [key: string]: unknown } | null
+  expectedOutputSchema: { [key: string]: unknown } | null
   projectId: string
   createdAt: string
   updatedAt: string
 }
 type PaginatedDatasets = { data: Dataset[]; meta: UtilsMetaResponse }
-type CreateDatasetRequest = {
+type CreateDatasetRequestInput = {
   name: string
-  description?: (string | null) | undefined
-  metadata?: ({ [x: string]: unknown } | null) | undefined
-  inputSchema?: ({ [x: string]: unknown } | null) | undefined
-  expectedOutputSchema?: ({ [x: string]: unknown } | null) | undefined
+  description?: string | null
+  metadata?: any | null
+  inputSchema?: any | null
+  expectedOutputSchema?: any | null
 }
-type EvaluationRuleNumberFilterOperator = '=' | '>' | '<' | '>=' | '<='
-type EvaluationRuleStringFilterOperator =
+type EvaluationRuleNumberFilterOperatorInput = '=' | '>' | '<' | '>=' | '<='
+type DateTimeEvaluationRuleFilterInput = {
+  column: string
+  operator: EvaluationRuleNumberFilterOperatorInput
+  value: string
+}
+type EvaluationRuleStringFilterOperatorInput =
   | '='
   | 'contains'
   | 'does not contain'
   | 'starts with'
   | 'ends with'
-type EvaluationRuleOptionsFilterOperator = 'any of' | 'none of'
-type EvaluationRuleArrayOptionsFilterOperator = 'any of' | 'none of' | 'all of'
-type EvaluationRuleStringObjectFilterOperator =
+type StringEvaluationRuleFilterInput = {
+  column: string
+  operator: EvaluationRuleStringFilterOperatorInput
+  value: string
+}
+type NumberEvaluationRuleFilterInput = {
+  column: string
+  operator: EvaluationRuleNumberFilterOperatorInput
+  value: number
+}
+type EvaluationRuleOptionsFilterOperatorInput = 'any of' | 'none of'
+type StringOptionsEvaluationRuleFilterInput = {
+  column: string
+  operator: EvaluationRuleOptionsFilterOperatorInput
+  value: string[]
+}
+type CategoryOptionsEvaluationRuleFilterInput = {
+  column: string
+  key: string
+  operator: EvaluationRuleOptionsFilterOperatorInput
+  value: string[]
+}
+type EvaluationRuleArrayOptionsFilterOperatorInput = 'any of' | 'none of' | 'all of'
+type ArrayOptionsEvaluationRuleFilterInput = {
+  column: string
+  operator: EvaluationRuleArrayOptionsFilterOperatorInput
+  value: string[]
+}
+type EvaluationRuleStringObjectFilterOperatorInput =
   | '='
   | 'contains'
   | 'does not contain'
@@ -229,108 +289,72 @@ type EvaluationRuleStringObjectFilterOperator =
   | 'ends with'
   | 'is set'
   | 'is not set'
-type EvaluationRuleBooleanFilterOperator = '=' | '<>'
-type EvaluationRuleNullFilterOperator = 'is null' | 'is not null'
-type EvaluationRuleFilter =
-  | {
-      type?: 'datetime' | undefined
-      column: string
-      operator: EvaluationRuleNumberFilterOperator
-      value: string
-    }
-  | {
-      type?: 'string' | undefined
-      column: string
-      operator: EvaluationRuleStringFilterOperator
-      value: string
-    }
-  | {
-      type?: 'number' | undefined
-      column: string
-      operator: EvaluationRuleNumberFilterOperator
-      value: number
-    }
-  | {
-      type?: 'stringOptions' | undefined
-      column: string
-      operator: EvaluationRuleOptionsFilterOperator
-      value: string[]
-    }
-  | {
-      type?: 'categoryOptions' | undefined
-      column: string
-      key: string
-      operator: EvaluationRuleOptionsFilterOperator
-      value: string[]
-    }
-  | {
-      type?: 'arrayOptions' | undefined
-      column: string
-      operator: EvaluationRuleArrayOptionsFilterOperator
-      value: string[]
-    }
-  | {
-      type?: 'stringObject' | undefined
-      column: string
-      key: string
-      operator: EvaluationRuleStringObjectFilterOperator
-      value: string
-    }
-  | {
-      type?: 'numberObject' | undefined
-      column: string
-      key: string
-      operator: EvaluationRuleNumberFilterOperator
-      value: number
-    }
-  | {
-      type?: 'boolean' | undefined
-      column: string
-      operator: EvaluationRuleBooleanFilterOperator
-      value: boolean
-    }
-  | {
-      type?: 'null' | undefined
-      column: string
-      operator: EvaluationRuleNullFilterOperator
-      value: ''
-    }
-type PromptVariableMappingSource =
+type StringObjectEvaluationRuleFilterInput = {
+  column: string
+  key: string
+  operator: EvaluationRuleStringObjectFilterOperatorInput
+  value: string
+}
+type NumberObjectEvaluationRuleFilterInput = {
+  column: string
+  key: string
+  operator: EvaluationRuleNumberFilterOperatorInput
+  value: number
+}
+type EvaluationRuleBooleanFilterOperatorInput = '=' | '<>'
+type BooleanEvaluationRuleFilterInput = {
+  column: string
+  operator: EvaluationRuleBooleanFilterOperatorInput
+  value: boolean
+}
+type EvaluationRuleNullFilterOperatorInput = 'is null' | 'is not null'
+type NullEvaluationRuleFilterInput = {
+  column: string
+  operator: EvaluationRuleNullFilterOperatorInput
+  value: ''
+}
+type EvaluationRuleFilterInput =
+  | ({ type?: 'datetime' } & DateTimeEvaluationRuleFilterInput)
+  | ({ type?: 'string' } & StringEvaluationRuleFilterInput)
+  | ({ type?: 'number' } & NumberEvaluationRuleFilterInput)
+  | ({ type?: 'stringOptions' } & StringOptionsEvaluationRuleFilterInput)
+  | ({ type?: 'categoryOptions' } & CategoryOptionsEvaluationRuleFilterInput)
+  | ({ type?: 'arrayOptions' } & ArrayOptionsEvaluationRuleFilterInput)
+  | ({ type?: 'stringObject' } & StringObjectEvaluationRuleFilterInput)
+  | ({ type?: 'numberObject' } & NumberObjectEvaluationRuleFilterInput)
+  | ({ type?: 'boolean' } & BooleanEvaluationRuleFilterInput)
+  | ({ type?: 'null' } & NullEvaluationRuleFilterInput)
+type PromptVariableMappingSourceInput =
   | 'input'
   | 'output'
   | 'metadata'
   | 'tool_calls'
   | 'expected_output'
   | 'experiment_item_metadata'
-type PromptVariableMappingInput = {
+type PromptVariableMappingInputInput = {
   variable: string
-  source: PromptVariableMappingSource
-  jsonPath?: (string | null) | undefined
+  source: PromptVariableMappingSourceInput
+  jsonPath?: string | null
 }
-type EvaluationRuleEvaluatorAssignmentInput = {
+type EvaluationRuleEvaluatorAssignmentInputInput = {
   evaluatorId: string
-  variableMapping?: (PromptVariableMappingInput[] | null) | undefined
+  variableMapping?: PromptVariableMappingInputInput[] | null
 }
-type CreateEvaluationRuleRequest = {
+type CreateEvaluationRuleRequestInput = {
   name: string
   enabled: boolean
-  sampling?: (number | null) | undefined
-  filter?: (EvaluationRuleFilter[] | null) | undefined
-  evaluatorAssignments: EvaluationRuleEvaluatorAssignmentInput[]
+  sampling?: number | null
+  filter?: EvaluationRuleFilterInput[] | null
+  evaluatorAssignments: EvaluationRuleEvaluatorAssignmentInputInput[]
 }
 type Creator = { id: string; name: string | null }
-type EvaluationRuleReadFilterWithKey = {
-  type: string
-  column: string
-  operator: string
-  value?: ({ [x: string]: unknown } | null) | undefined
-}
 type EvaluationRuleReadFilterBase = {
   type: string
   column: string
   operator: string
-  value?: ({ [x: string]: unknown } | null) | undefined
+  value?: (any | null) | undefined
 }
+type EvaluationRuleReadFilterWithKey = EvaluationRuleReadFilterBase & { key: string }
 type EvaluationRuleReadFilter = EvaluationRuleReadFilterWithKey | EvaluationRuleReadFilterBase
 type PromptVariableMappingRead = {
   variable: string
@@ -363,7 +387,7 @@ type EvaluatorAssignment = { evaluatorId: string; variableMapping: PromptVariabl
 type EvaluationRule = {
   id: string
   name: string
-  createdBy: Creator
+  createdBy: Creator | null
   enabled: boolean
   sampling: number
   filter: EvaluationRuleReadFilter[]
@@ -382,7 +406,7 @@ type PublicApiErrorCode =
   | 'rate_limited'
   | 'method_not_allowed'
   | 'internal_error'
-type PublicApiValidationIssue = { code: string; message: string; path: { [x: string]: unknown }[] }
+type PublicApiValidationIssue = { code: string; message: string; path: any[] }
 type PublicApiErrorDetails = {
   issues?: (PublicApiValidationIssue[] | null) | undefined
   retryAfterSeconds?: (number | null) | undefined
@@ -393,276 +417,308 @@ type PublicApiErrorDetails = {
 type PublicApiError = {
   message: string
   code: PublicApiErrorCode
-  details?: PublicApiErrorDetails | undefined
+  details?: (PublicApiErrorDetails | null) | undefined
 }
-type CursorMeta = { cursor?: (string | null) | undefined }
+type UtilsCursorMetaResponse = { cursor?: (string | null) | undefined }
+type CursorMeta = UtilsCursorMetaResponse & { [key: string]: unknown }
 type EvaluationRulesPage = { data: EvaluationRule[]; meta: CursorMeta }
-type UpdateEvaluationRuleRequest = {
-  name?: (string | null) | undefined
-  enabled?: (boolean | null) | undefined
-  sampling?: (number | null) | undefined
-  filter?: (EvaluationRuleFilter[] | null) | undefined
-  evaluatorAssignments?: (EvaluationRuleEvaluatorAssignmentInput[] | null) | undefined
+type UpdateEvaluationRuleRequestInput = {
+  name?: string | null
+  enabled?: boolean | null
+  sampling?: number | null
+  filter?: EvaluationRuleFilterInput[] | null
+  evaluatorAssignments?: EvaluationRuleEvaluatorAssignmentInputInput[] | null
 }
 type DeletedEvaluationRule = { id: string }
-type EvaluatorChatMessageRole = 'system' | 'user' | 'assistant'
-type EvaluatorChatMessage = { role: EvaluatorChatMessageRole; content: string }
-type EvaluatorChatPrompt = EvaluatorChatMessage[]
-type EvaluatorChatPromptInput = string | EvaluatorChatPrompt
-type EvaluatorModelConfig = { provider: string; model: string }
-type EvaluatorOutputDefinition =
-  | {
-      dataType: 'NUMERIC'
-      scoreReasoningInstructions?: (string | null) | undefined
-      scoreValueInstructions?: (string | null) | undefined
-      minValue?: (number | null) | undefined
-      maxValue?: (number | null) | undefined
-    }
-  | {
-      dataType: 'BOOLEAN'
-      scoreReasoningInstructions?: (string | null) | undefined
-      scoreValueInstructions?: (string | null) | undefined
-    }
-  | {
-      dataType: 'CATEGORICAL'
-      scoreReasoningInstructions?: (string | null) | undefined
-      scoreValueInstructions?: (string | null) | undefined
-      categories: string[]
-      shouldAllowMultipleMatches: boolean
-    }
-type CodeEvaluatorSourceCodeLanguage = 'PYTHON' | 'TYPESCRIPT'
-type CreateEvaluatorRequest =
-  | {
-      type: 'llm_as_judge'
-      name: string
-      description?: (string | null) | undefined
-      prompt: EvaluatorChatPromptInput
-      modelConfig?: EvaluatorModelConfig | undefined
-      variableMapping?: (PromptVariableMappingInput[] | null) | undefined
-      outputDefinition: EvaluatorOutputDefinition
-    }
-  | {
-      type: 'code'
-      name: string
-      description?: (string | null) | undefined
-      sourceCode: string
-      sourceCodeLanguage: CodeEvaluatorSourceCodeLanguage
-    }
+type EvaluatorChatMessageRoleInput = 'system' | 'user' | 'assistant'
+type EvaluatorChatMessageInput = { role: EvaluatorChatMessageRoleInput; content: string }
+type EvaluatorChatPromptInput = EvaluatorChatMessageInput[]
+type EvaluatorChatPromptInputInput = string | EvaluatorChatPromptInput
+type EvaluatorModelConfigInput = { provider: string; model: string }
+type EvaluatorOutputDefinitionBaseInput = {
+  scoreReasoningInstructions?: string | null
+  scoreValueInstructions?: string | null
+}
+type PublicEvaluatorNumericScoreInput = EvaluatorOutputDefinitionBaseInput & {
+  dataType: 'NUMERIC'
+  minValue?: number | null
+  maxValue?: number | null
+}
+type PublicEvaluatorBooleanScoreInput = EvaluatorOutputDefinitionBaseInput & { dataType: 'BOOLEAN' }
+type PublicEvaluatorCategoricalScoreInput = EvaluatorOutputDefinitionBaseInput & {
+  dataType: 'CATEGORICAL'
+  categories: string[]
+  shouldAllowMultipleMatches: boolean
+}
+type EvaluatorOutputDefinitionInput =
+  | ({ dataType?: 'NUMERIC' } & PublicEvaluatorNumericScoreInput)
+  | ({ dataType?: 'BOOLEAN' } & PublicEvaluatorBooleanScoreInput)
+  | ({ dataType?: 'CATEGORICAL' } & PublicEvaluatorCategoricalScoreInput)
+type CreateLlmAsJudgeEvaluatorRequestInput = {
+  name: string
+  description?: string | null
+  type: 'llm_as_judge'
+  prompt: EvaluatorChatPromptInputInput
+  modelConfig?: EvaluatorModelConfigInput | null
+  variableMapping?: PromptVariableMappingInputInput[] | null
+  outputDefinition: EvaluatorOutputDefinitionInput
+}
+type CodeEvaluatorSourceCodeLanguageInput = 'PYTHON' | 'TYPESCRIPT'
+type CreateCodeEvaluatorRequestInput = {
+  name: string
+  description?: string | null
+  type: 'code'
+  sourceCode: string
+  sourceCodeLanguage: CodeEvaluatorSourceCodeLanguageInput
+}
+type DecisionModelEntryInput = string | { [key: string]: unknown } | any[] | number | boolean
+type DecisionModelChoiceCriterionInput = {
+  value: string
+  description?: DecisionModelEntryInput | null
+}
+type DecisionModelChoiceQuestionInput = {
+  id: string
+  scoreName: string
+  instructions: DecisionModelEntryInput
+  criteria: DecisionModelChoiceCriterionInput[]
+}
+type DecisionModelScoreCriterionInput = { description: DecisionModelEntryInput }
+type DecisionModelScoreQuestionInput = {
+  id: string
+  scoreName: string
+  instructions: DecisionModelEntryInput
+  criteria: DecisionModelScoreCriterionInput[]
+}
+type DecisionModelBooleanCriterionInput = { description: DecisionModelEntryInput }
+type DecisionModelBooleanCriteriaInput = {
+  true?: DecisionModelBooleanCriterionInput | null
+  false?: DecisionModelBooleanCriterionInput | null
+}
+type DecisionModelBooleanQuestionInput = {
+  id: string
+  scoreName: string
+  instructions: DecisionModelEntryInput
+  criteria?: DecisionModelBooleanCriteriaInput | null
+}
+type DecisionModelQuestionInput =
+  | ({ type?: 'choice' } & DecisionModelChoiceQuestionInput)
+  | ({ type?: 'score' } & DecisionModelScoreQuestionInput)
+  | ({ type?: 'boolean' } & DecisionModelBooleanQuestionInput)
+type CreateDecisionModelEvaluatorRequestInput = {
+  name: string
+  description?: string | null
+  type: 'decision_model'
+  questions: DecisionModelQuestionInput[]
+  modelConfig: EvaluatorModelConfigInput
+  variableMapping: PromptVariableMappingInputInput[]
+}
+type CreateEvaluatorRequestInput =
+  | ({ type?: 'llm_as_judge' } & CreateLlmAsJudgeEvaluatorRequestInput)
+  | ({ type?: 'code' } & CreateCodeEvaluatorRequestInput)
+  | ({ type?: 'decision_model' } & CreateDecisionModelEvaluatorRequestInput)
 type EvaluatorStatus = 'active' | 'paused'
 type EvaluationRuleAssignment = {
   evaluationRuleId: string
   variableMappingOverride?: (PromptVariableMapping[] | null) | undefined
 }
+type EvaluatorBase = {
+  id: string
+  name: string
+  description: string | null
+  createdBy: Creator | null
+  status: EvaluatorStatus
+  pausedAt: string | null
+  pausedReason: string | null
+  pausedMessage: string | null
+  evaluationRuleAssignments: EvaluationRuleAssignment[]
+  createdAt: string
+  updatedAt: string
+  versionId: string
+  version: number
+  versionCreatedAt: string
+  versionCreatedBy: Creator | null
+}
+type EvaluatorChatMessageRole = 'system' | 'user' | 'assistant'
+type EvaluatorChatMessage = { role: EvaluatorChatMessageRole; content: string }
+type EvaluatorChatPrompt = EvaluatorChatMessage[]
+type EvaluatorModelConfig = { provider: string; model: string }
+type EvaluatorOutputDefinitionBase = {
+  scoreReasoningInstructions?: (string | null) | undefined
+  scoreValueInstructions?: (string | null) | undefined
+}
+type PublicEvaluatorNumericScore = EvaluatorOutputDefinitionBase & {
+  dataType: 'NUMERIC'
+  minValue?: (number | null) | undefined
+  maxValue?: (number | null) | undefined
+}
+type PublicEvaluatorBooleanScore = EvaluatorOutputDefinitionBase & { dataType: 'BOOLEAN' }
+type PublicEvaluatorCategoricalScore = EvaluatorOutputDefinitionBase & {
+  dataType: 'CATEGORICAL'
+  categories: string[]
+  shouldAllowMultipleMatches: boolean
+}
 type PublicEvaluatorOutputDefinition =
-  | {
-      dataType: 'NUMERIC'
-      scoreReasoningInstructions?: (string | null) | undefined
-      scoreValueInstructions?: (string | null) | undefined
-      minValue?: (number | null) | undefined
-      maxValue?: (number | null) | undefined
-    }
-  | {
-      dataType: 'BOOLEAN'
-      scoreReasoningInstructions?: (string | null) | undefined
-      scoreValueInstructions?: (string | null) | undefined
-    }
-  | {
-      dataType: 'CATEGORICAL'
-      scoreReasoningInstructions?: (string | null) | undefined
-      scoreValueInstructions?: (string | null) | undefined
-      categories: string[]
-      shouldAllowMultipleMatches: boolean
-    }
-type Evaluator =
-  | {
-      type: 'llm_as_judge'
-      id: string
-      name: string
-      description: string | null
-      createdBy: Creator
-      status: EvaluatorStatus
-      pausedAt: string | null
-      pausedReason: string | null
-      pausedMessage: string | null
-      evaluationRuleAssignments: EvaluationRuleAssignment[]
-      createdAt: string
-      updatedAt: string
-      versionId: string
-      version: number
-      versionCreatedAt: string
-      versionCreatedBy: Creator
-      prompt: EvaluatorChatPrompt
-      variables: string[]
-      variableMapping: PromptVariableMappingRead[] | null
-      modelConfig: EvaluatorModelConfig
-      outputDefinition: PublicEvaluatorOutputDefinition
-    }
-  | {
-      type: 'code'
-      id: string
-      name: string
-      description: string | null
-      createdBy: Creator
-      status: EvaluatorStatus
-      pausedAt: string | null
-      pausedReason: string | null
-      pausedMessage: string | null
-      evaluationRuleAssignments: EvaluationRuleAssignment[]
-      createdAt: string
-      updatedAt: string
-      versionId: string
-      version: number
-      versionCreatedAt: string
-      versionCreatedBy: Creator
-      sourceCode: string
-      sourceCodeLanguage: CodeEvaluatorSourceCodeLanguage
-    }
-type EvaluatorsPage = { data: Evaluator[]; meta: CursorMeta }
-type UpdateEvaluatorMetadataRequest = {
-  name?: (string | null) | undefined
-  description?: (string | null) | undefined
-}
-type UpdateLlmAsJudgeEvaluatorRequest = {
-  name?: (string | null) | undefined
-  description?: (string | null) | undefined
+  | ({ dataType?: 'NUMERIC' | undefined } & PublicEvaluatorNumericScore)
+  | ({ dataType?: 'BOOLEAN' | undefined } & PublicEvaluatorBooleanScore)
+  | ({ dataType?: 'CATEGORICAL' | undefined } & PublicEvaluatorCategoricalScore)
+type LlmAsJudgeEvaluator = EvaluatorBase & {
   type: 'llm_as_judge'
-  prompt: EvaluatorChatPromptInput
-  modelConfig?: EvaluatorModelConfig | undefined
-  variableMapping?: (PromptVariableMappingInput[] | null) | undefined
-  outputDefinition: EvaluatorOutputDefinition
+  prompt: EvaluatorChatPrompt
+  variables: string[]
+  variableMapping: PromptVariableMappingRead[] | null
+  modelConfig: EvaluatorModelConfig | null
+  outputDefinition: PublicEvaluatorOutputDefinition
 }
-type UpdateCodeEvaluatorRequest = {
-  name?: (string | null) | undefined
-  description?: (string | null) | undefined
+type CodeEvaluatorSourceCodeLanguage = 'PYTHON' | 'TYPESCRIPT'
+type CodeEvaluator = EvaluatorBase & {
   type: 'code'
   sourceCode: string
   sourceCodeLanguage: CodeEvaluatorSourceCodeLanguage
 }
-type UpdateEvaluatorRequest =
-  | UpdateEvaluatorMetadataRequest
-  | UpdateLlmAsJudgeEvaluatorRequest
-  | UpdateCodeEvaluatorRequest
+type DecisionModelEntry = string | { [key: string]: unknown } | any[] | number | boolean
+type DecisionModelChoiceCriterion = {
+  value: string
+  description?: (DecisionModelEntry | null) | undefined
+}
+type DecisionModelChoiceQuestion = {
+  id: string
+  scoreName: string
+  instructions: DecisionModelEntry
+  criteria: DecisionModelChoiceCriterion[]
+}
+type DecisionModelScoreCriterion = { description: DecisionModelEntry }
+type DecisionModelScoreQuestion = {
+  id: string
+  scoreName: string
+  instructions: DecisionModelEntry
+  criteria: DecisionModelScoreCriterion[]
+}
+type DecisionModelBooleanCriterion = { description: DecisionModelEntry }
+type DecisionModelBooleanCriteria = {
+  true?: (DecisionModelBooleanCriterion | null) | undefined
+  false?: (DecisionModelBooleanCriterion | null) | undefined
+}
+type DecisionModelBooleanQuestion = {
+  id: string
+  scoreName: string
+  instructions: DecisionModelEntry
+  criteria?: (DecisionModelBooleanCriteria | null) | undefined
+}
+type DecisionModelQuestion =
+  | ({ type?: 'choice' | undefined } & DecisionModelChoiceQuestion)
+  | ({ type?: 'score' | undefined } & DecisionModelScoreQuestion)
+  | ({ type?: 'boolean' | undefined } & DecisionModelBooleanQuestion)
+type DecisionModelEvaluator = EvaluatorBase & {
+  type: 'decision_model'
+  questions: DecisionModelQuestion[]
+  variables: string[]
+  variableMapping: PromptVariableMappingRead[]
+  modelConfig: EvaluatorModelConfig
+}
+type Evaluator =
+  | ({ type?: 'llm_as_judge' | undefined } & LlmAsJudgeEvaluator)
+  | ({ type?: 'code' | undefined } & CodeEvaluator)
+  | ({ type?: 'decision_model' | undefined } & DecisionModelEvaluator)
+type EvaluatorsPage = { data: Evaluator[]; meta: CursorMeta }
+type UpdateEvaluatorMetadataRequestInput = { name?: string | null; description?: string | null }
+type UpdateLlmAsJudgeEvaluatorRequestInput = {
+  name?: string | null
+  description?: string | null
+  type: 'llm_as_judge'
+  prompt: EvaluatorChatPromptInputInput
+  modelConfig?: EvaluatorModelConfigInput | null
+  variableMapping?: PromptVariableMappingInputInput[] | null
+  outputDefinition: EvaluatorOutputDefinitionInput
+}
+type UpdateCodeEvaluatorRequestInput = {
+  name?: string | null
+  description?: string | null
+  type: 'code'
+  sourceCode: string
+  sourceCodeLanguage: CodeEvaluatorSourceCodeLanguageInput
+}
+type UpdateDecisionModelEvaluatorRequestInput = {
+  name?: string | null
+  description?: string | null
+  type: 'decision_model'
+  questions: DecisionModelQuestionInput[]
+  modelConfig: EvaluatorModelConfigInput
+  variableMapping: PromptVariableMappingInputInput[]
+}
+type UpdateEvaluatorRequestInput =
+  | UpdateEvaluatorMetadataRequestInput
+  | UpdateLlmAsJudgeEvaluatorRequestInput
+  | UpdateCodeEvaluatorRequestInput
+  | UpdateDecisionModelEvaluatorRequestInput
 type DeletedEvaluator = { id: string }
+type EvaluatorVersionBase = {
+  id: string
+  version: number
+  createdAt: string
+  createdBy: Creator | null
+}
+type LlmAsJudgeEvaluatorVersion = EvaluatorVersionBase & {
+  type: 'llm_as_judge'
+  prompt: EvaluatorChatPrompt
+  variables: string[]
+  variableMapping: PromptVariableMappingRead[] | null
+  modelConfig: EvaluatorModelConfig | null
+  outputDefinition: PublicEvaluatorOutputDefinition
+}
+type CodeEvaluatorVersion = EvaluatorVersionBase & {
+  type: 'code'
+  sourceCode: string
+  sourceCodeLanguage: CodeEvaluatorSourceCodeLanguage
+}
+type DecisionModelEvaluatorVersion = EvaluatorVersionBase & {
+  type: 'decision_model'
+  questions: DecisionModelQuestion[]
+  variables: string[]
+  variableMapping: PromptVariableMappingRead[]
+  modelConfig: EvaluatorModelConfig
+}
 type EvaluatorVersion =
-  | {
-      type: 'llm_as_judge'
-      id: string
-      version: number
-      createdAt: string
-      createdBy: Creator
-      prompt: EvaluatorChatPrompt
-      variables: string[]
-      variableMapping: PromptVariableMappingRead[] | null
-      modelConfig: EvaluatorModelConfig
-      outputDefinition: PublicEvaluatorOutputDefinition
-    }
-  | {
-      type: 'code'
-      id: string
-      version: number
-      createdAt: string
-      createdBy: Creator
-      sourceCode: string
-      sourceCodeLanguage: CodeEvaluatorSourceCodeLanguage
-    }
+  | ({ type?: 'llm_as_judge' | undefined } & LlmAsJudgeEvaluatorVersion)
+  | ({ type?: 'code' | undefined } & CodeEvaluatorVersion)
+  | ({ type?: 'decision_model' | undefined } & DecisionModelEvaluatorVersion)
 type EvaluatorVersionsPage = { data: EvaluatorVersion[]; meta: CursorMeta }
 type ScoreSource = 'ANNOTATION' | 'API' | 'EVAL'
+type ScoreSubjectTraceV3 = { id: string }
+type ScoreSubjectObservationV3 = { id: string; traceId?: (string | null) | undefined }
+type ScoreSubjectSessionV3 = { id: string }
+type ScoreSubjectExperimentV3 = { id: string }
 type ScoreSubjectV3 =
-  | { kind?: 'trace' | undefined; id: string }
-  | { kind?: 'observation' | undefined; id: string; traceId?: (string | null) | undefined }
-  | { kind?: 'session' | undefined; id: string }
-  | { kind?: 'experiment' | undefined; id: string }
+  | ({ kind?: 'trace' | undefined } & ScoreSubjectTraceV3)
+  | ({ kind?: 'observation' | undefined } & ScoreSubjectObservationV3)
+  | ({ kind?: 'session' | undefined } & ScoreSubjectSessionV3)
+  | ({ kind?: 'experiment' | undefined } & ScoreSubjectExperimentV3)
+type BaseScoreV3 = {
+  id: string
+  projectId: string
+  name: string
+  source: ScoreSource
+  timestamp: string
+  environment: string
+  createdAt: string
+  updatedAt: string
+  comment?: (string | null) | undefined
+  configId?: (string | null) | undefined
+  metadata?: ({ [key: string]: unknown } | null) | undefined
+  authorUserId?: (string | null) | undefined
+  queueId?: (string | null) | undefined
+  subject?: (ScoreSubjectV3 | null) | undefined
+}
+type NumericScoreV3 = BaseScoreV3 & { value: number }
+type BooleanScoreV3 = BaseScoreV3 & { value: boolean }
+type CategoricalScoreV3 = BaseScoreV3 & { value: string }
+type TextScoreV3 = BaseScoreV3 & { value: string }
+type CorrectionScoreV3 = BaseScoreV3 & { value: string }
 type ScoreV3 =
-  | {
-      dataType?: 'NUMERIC' | undefined
-      id: string
-      projectId: string
-      name: string
-      source: ScoreSource
-      timestamp: string
-      environment: string
-      createdAt: string
-      updatedAt: string
-      comment?: (string | null) | undefined
-      configId?: (string | null) | undefined
-      metadata?: ({ [x: string]: unknown } | null) | undefined
-      authorUserId?: (string | null) | undefined
-      queueId?: (string | null) | undefined
-      subject?: ScoreSubjectV3 | undefined
-      value: number
-    }
-  | {
-      dataType?: 'BOOLEAN' | undefined
-      id: string
-      projectId: string
-      name: string
-      source: ScoreSource
-      timestamp: string
-      environment: string
-      createdAt: string
-      updatedAt: string
-      comment?: (string | null) | undefined
-      configId?: (string | null) | undefined
-      metadata?: ({ [x: string]: unknown } | null) | undefined
-      authorUserId?: (string | null) | undefined
-      queueId?: (string | null) | undefined
-      subject?: ScoreSubjectV3 | undefined
-      value: boolean
-    }
-  | {
-      dataType?: 'CATEGORICAL' | undefined
-      id: string
-      projectId: string
-      name: string
-      source: ScoreSource
-      timestamp: string
-      environment: string
-      createdAt: string
-      updatedAt: string
-      comment?: (string | null) | undefined
-      configId?: (string | null) | undefined
-      metadata?: ({ [x: string]: unknown } | null) | undefined
-      authorUserId?: (string | null) | undefined
-      queueId?: (string | null) | undefined
-      subject?: ScoreSubjectV3 | undefined
-      value: string
-    }
-  | {
-      dataType?: 'TEXT' | undefined
-      id: string
-      projectId: string
-      name: string
-      source: ScoreSource
-      timestamp: string
-      environment: string
-      createdAt: string
-      updatedAt: string
-      comment?: (string | null) | undefined
-      configId?: (string | null) | undefined
-      metadata?: ({ [x: string]: unknown } | null) | undefined
-      authorUserId?: (string | null) | undefined
-      queueId?: (string | null) | undefined
-      subject?: ScoreSubjectV3 | undefined
-      value: string
-    }
-  | {
-      dataType?: 'CORRECTION' | undefined
-      id: string
-      projectId: string
-      name: string
-      source: ScoreSource
-      timestamp: string
-      environment: string
-      createdAt: string
-      updatedAt: string
-      comment?: (string | null) | undefined
-      configId?: (string | null) | undefined
-      metadata?: ({ [x: string]: unknown } | null) | undefined
-      authorUserId?: (string | null) | undefined
-      queueId?: (string | null) | undefined
-      subject?: ScoreSubjectV3 | undefined
-      value: string
-    }
+  | ({ dataType?: 'NUMERIC' | undefined } & NumericScoreV3)
+  | ({ dataType?: 'BOOLEAN' | undefined } & BooleanScoreV3)
+  | ({ dataType?: 'CATEGORICAL' | undefined } & CategoricalScoreV3)
+  | ({ dataType?: 'TEXT' | undefined } & TextScoreV3)
+  | ({ dataType?: 'CORRECTION' | undefined } & CorrectionScoreV3)
 type Experiment = {
   id: string
   name: string
@@ -671,10 +727,10 @@ type Experiment = {
   endTime: string
   itemCount: number
   datasetId: string | null
-  metadata?: ({ [x: string]: unknown } | null) | undefined
+  metadata?: ({ [key: string]: unknown } | null) | undefined
   scores?: (ScoreV3[] | null) | undefined
 }
-type ExperimentsResponseMeta = { cursor?: (string | null) | undefined }
+type ExperimentsResponseMeta = UtilsCursorMetaResponse & { [key: string]: unknown }
 type ExperimentsResponse = { data: Experiment[]; meta: ExperimentsResponseMeta }
 type ObservationLevel = 'DEBUG' | 'DEFAULT' | 'WARNING' | 'ERROR'
 type ExperimentItem = {
@@ -689,23 +745,23 @@ type ExperimentItem = {
   experimentItemId: string
   experimentDatasetId?: (string | null) | undefined
   experimentItemVersion?: (string | null) | undefined
-  input?: ({ [x: string]: unknown } | null) | undefined
-  output?: ({ [x: string]: unknown } | null) | undefined
-  expectedOutput?: ({ [x: string]: unknown } | null) | undefined
-  metadata?: ({ [x: string]: unknown } | null) | undefined
-  experimentItemMetadata?: ({ [x: string]: unknown } | null) | undefined
-  experimentMetadata?: ({ [x: string]: unknown } | null) | undefined
+  input?: (any | null) | undefined
+  output?: (any | null) | undefined
+  expectedOutput?: (any | null) | undefined
+  metadata?: ({ [key: string]: unknown } | null) | undefined
+  experimentItemMetadata?: ({ [key: string]: unknown } | null) | undefined
+  experimentMetadata?: ({ [key: string]: unknown } | null) | undefined
   experimentDescription?: (string | null) | undefined
   scores?: (ScoreV3[] | null) | undefined
 }
 type ExperimentItemsResponse = { data: ExperimentItem[]; meta: ExperimentsResponseMeta }
-type FeedbackTargetType = 'skill' | 'mcp-tool' | 'cli' | 'docs' | 'public-api' | 'other'
-type SubmitFeedbackRequest = {
-  targetType: FeedbackTargetType
+type FeedbackTargetTypeInput = 'skill' | 'mcp-tool' | 'cli' | 'docs' | 'public-api' | 'other'
+type SubmitFeedbackRequestInput = {
+  targetType: FeedbackTargetTypeInput
   target: string
   feedback: string
-  goal?: (string | null) | undefined
-  referenceUrl?: (string | null) | undefined
+  goal?: string | null
+  referenceUrl?: string | null
 }
 type SubmitFeedbackResponse = { id: string }
 type HealthResponse = { version: string; status: string }
@@ -718,27 +774,27 @@ type LlmConnection = {
   customModels: string[]
   withDefaultModels: boolean
   extraHeaderKeys: string[]
-  config?: ({ [x: string]: unknown } | null) | undefined
+  config?: ({ [key: string]: unknown } | null) | undefined
   createdAt: string
   updatedAt: string
 }
 type PaginatedLlmConnections = { data: LlmConnection[]; meta: UtilsMetaResponse }
-type LlmAdapter =
+type LlmAdapterInput =
   | 'anthropic'
   | 'openai'
   | 'azure'
   | 'bedrock'
   | 'google-vertex-ai'
   | 'google-ai-studio'
-type UpsertLlmConnectionRequest = {
+type UpsertLlmConnectionRequestInput = {
   provider: string
-  adapter: LlmAdapter
+  adapter: LlmAdapterInput
   secretKey: string
-  baseURL?: (string | null) | undefined
-  customModels?: (string[] | null) | undefined
-  withDefaultModels?: (boolean | null) | undefined
-  extraHeaders?: ({ [x: string]: string } | null) | undefined
-  config?: ({ [x: string]: unknown } | null) | undefined
+  baseURL?: string | null
+  customModels?: string[] | null
+  withDefaultModels?: boolean | null
+  extraHeaders?: { [key: string]: string } | null
+  config?: { [key: string]: unknown } | null
 }
 type DeleteLlmConnectionResponse = { message: string }
 type GetMediaResponse = {
@@ -749,13 +805,13 @@ type GetMediaResponse = {
   url: string
   urlExpiry: string
 }
-type PatchMediaBody = {
+type PatchMediaBodyInput = {
   uploadedAt: string
   uploadHttpStatus: number
-  uploadHttpError?: (string | null) | undefined
-  uploadTimeMs?: (number | null) | undefined
+  uploadHttpError?: string | null
+  uploadTimeMs?: number | null
 }
-type MediaContentType =
+type MediaContentTypeInput =
   | 'image/png'
   | 'image/jpeg'
   | 'image/jpg'
@@ -808,25 +864,70 @@ type MediaContentType =
   | 'application/gzip'
   | 'application/x-tar'
   | 'application/x-7z-compressed'
-type GetMediaUploadUrlRequest = {
-  traceId?: (string | null) | undefined
-  observationId?: (string | null) | undefined
-  datasetId?: (string | null) | undefined
-  datasetItemId?: (string | null) | undefined
-  contentType: MediaContentType
+type GetMediaUploadUrlRequestInput = {
+  traceId?: string | null
+  observationId?: string | null
+  datasetId?: string | null
+  datasetItemId?: string | null
+  contentType: MediaContentTypeInput
   contentLength: number
   sha256Hash: string
   field: string
 }
 type GetMediaUploadUrlResponse = { uploadUrl?: (string | null) | undefined; mediaId: string }
-type MetricsV2Response = { data: { [x: string]: unknown }[] }
+type MetricsV2Response = { data: { [key: string]: unknown }[] }
+type ModelUsageUnitInput =
+  | 'CHARACTERS'
+  | 'TOKENS'
+  | 'MILLISECONDS'
+  | 'SECONDS'
+  | 'IMAGES'
+  | 'REQUESTS'
+type PricingTierOperatorInput = 'gt' | 'gte' | 'lt' | 'lte' | 'eq' | 'neq'
+type PricingTierUsageConditionInputInput = {
+  usageDetailPattern: string
+  operator: PricingTierOperatorInput
+  value: number
+  caseSensitive?: boolean | null
+}
+type PricingTierAttributeSourceInput = 'model_parameters' | 'metadata'
+type PricingTierAttributeConditionInput = {
+  source: PricingTierAttributeSourceInput
+  key: string
+  operator: 'in'
+  values: string[]
+}
+type PricingTierConditionInputInput =
+  | PricingTierUsageConditionInputInput
+  | PricingTierAttributeConditionInput
+type PricingTierInputInput = {
+  name: string
+  isDefault?: boolean | null
+  priority: number
+  conditions: PricingTierConditionInputInput[]
+  prices: { [key: string]: number }
+}
+type ModelTokenizerIdInput = 'openai' | 'claude'
+type CreateModelRequestInput = {
+  modelName: string
+  matchPattern: string
+  startDate?: string | null
+  unit: ModelUsageUnitInput
+  inputPrice?: number | null
+  outputPrice?: number | null
+  totalPrice?: number | null
+  pricingTiers?: PricingTierInputInput[] | null
+  tokenizerId?: ModelTokenizerIdInput | null
+  tokenizerConfig?: any | null
+}
 type ModelUsageUnit = 'CHARACTERS' | 'TOKENS' | 'MILLISECONDS' | 'SECONDS' | 'IMAGES' | 'REQUESTS'
+type ModelPrice = { price: number }
 type PricingTierOperator = 'gt' | 'gte' | 'lt' | 'lte' | 'eq' | 'neq'
-type PricingTierUsageConditionInput = {
+type PricingTierUsageCondition = {
   usageDetailPattern: string
   operator: PricingTierOperator
   value: number
-  caseSensitive?: (boolean | null) | undefined
+  caseSensitive: boolean
 }
 type PricingTierAttributeSource = 'model_parameters' | 'metadata'
 type PricingTierAttributeCondition = {
@@ -835,34 +936,6 @@ type PricingTierAttributeCondition = {
   operator: 'in'
   values: string[]
 }
-type PricingTierConditionInput = PricingTierUsageConditionInput | PricingTierAttributeCondition
-type PricingTierInput = {
-  name: string
-  isDefault?: (boolean | null) | undefined
-  priority: number
-  conditions: PricingTierConditionInput[]
-  prices: { [x: string]: number }
-}
-type ModelTokenizerId = 'openai' | 'claude'
-type CreateModelRequest = {
-  modelName: string
-  matchPattern: string
-  startDate?: (string | null) | undefined
-  unit: ModelUsageUnit
-  inputPrice?: (number | null) | undefined
-  outputPrice?: (number | null) | undefined
-  totalPrice?: (number | null) | undefined
-  pricingTiers?: (PricingTierInput[] | null) | undefined
-  tokenizerId?: ModelTokenizerId | undefined
-  tokenizerConfig?: ({ [x: string]: unknown } | null) | undefined
-}
-type ModelPrice = { price: number }
-type PricingTierUsageCondition = {
-  usageDetailPattern: string
-  operator: PricingTierOperator
-  value: number
-  caseSensitive: boolean
-}
 type PricingTierCondition = PricingTierUsageCondition | PricingTierAttributeCondition
 type PricingTier = {
   id: string
@@ -870,22 +943,22 @@ type PricingTier = {
   isDefault: boolean
   priority: number
   conditions: PricingTierCondition[]
-  prices: { [x: string]: number }
+  prices: { [key: string]: number }
 }
 type Model = {
   id: string
   modelName: string
   matchPattern: string
   startDate: string | null
-  unit?: ModelUsageUnit | undefined
+  unit?: (ModelUsageUnit | null) | undefined
   inputPrice: number | null
   outputPrice: number | null
   totalPrice: number | null
   tokenizerId: string | null
-  tokenizerConfig: { [x: string]: unknown }
+  tokenizerConfig: any
   isLangfuseManaged: boolean
   createdAt: string
-  prices: { [x: string]: ModelPrice }
+  prices: { [key: string]: ModelPrice }
   pricingTiers: PricingTier[]
 }
 type PaginatedModels = { data: Model[]; meta: UtilsMetaResponse }
@@ -899,7 +972,7 @@ type ObservationV2 = {
   type: string
   isRootObservation?: (boolean | null) | undefined
   name?: (string | null) | undefined
-  level?: ObservationLevel | undefined
+  level?: (ObservationLevel | null) | undefined
   statusMessage?: (string | null) | undefined
   version?: (string | null) | undefined
   environment?: (string | null) | undefined
@@ -910,14 +983,14 @@ type ObservationV2 = {
   completionStartTime?: (string | null) | undefined
   createdAt?: (string | null) | undefined
   updatedAt?: (string | null) | undefined
-  input?: ({ [x: string]: unknown } | null) | undefined
-  output?: ({ [x: string]: unknown } | null) | undefined
-  metadata?: ({ [x: string]: unknown } | null) | undefined
+  input?: (any | null) | undefined
+  output?: (any | null) | undefined
+  metadata?: ({ [key: string]: unknown } | null) | undefined
   model?: (string | null) | undefined
   internalModelId?: (string | null) | undefined
-  modelParameters?: ({ [x: string]: unknown } | null) | undefined
-  usageDetails?: ({ [x: string]: number } | null) | undefined
-  costDetails?: ({ [x: string]: number } | null) | undefined
+  modelParameters?: (any | null) | undefined
+  usageDetails?: ({ [key: string]: number } | null) | undefined
+  costDetails?: ({ [key: string]: number } | null) | undefined
   totalCost?: (number | null) | undefined
   usagePricingTierName?: (string | null) | undefined
   promptId?: (string | null) | undefined
@@ -933,48 +1006,49 @@ type ObservationV2 = {
   tags?: (string[] | null) | undefined
   release?: (string | null) | undefined
 }
-type ObservationsV2Meta = { cursor?: (string | null) | undefined }
+type ObservationsV2Meta = UtilsCursorMetaResponse & { comment?: (string | null) | undefined }
 type ObservationsV2Response = { data: ObservationV2[]; meta: ObservationsV2Meta }
-type OtelAttributeValue = {
-  stringValue?: (string | null) | undefined
-  intValue?: (number | null) | undefined
-  doubleValue?: (number | null) | undefined
-  boolValue?: (boolean | null) | undefined
+type OtelAttributeValueInput = {
+  stringValue?: string | null
+  intValue?: number | null
+  doubleValue?: number | null
+  boolValue?: boolean | null
 }
-type OtelAttribute = { key?: (string | null) | undefined; value?: OtelAttributeValue | undefined }
-type OtelResource = { attributes?: (OtelAttribute[] | null) | undefined }
-type OtelScope = {
-  name?: (string | null) | undefined
-  version?: (string | null) | undefined
-  attributes?: (OtelAttribute[] | null) | undefined
+type OtelAttributeInput = { key?: string | null; value?: OtelAttributeValueInput | null }
+type OtelResourceInput = { attributes?: OtelAttributeInput[] | null }
+type OtelScopeInput = {
+  name?: string | null
+  version?: string | null
+  attributes?: OtelAttributeInput[] | null
 }
-type OtelSpan = {
-  traceId?: ({ [x: string]: unknown } | null) | undefined
-  spanId?: ({ [x: string]: unknown } | null) | undefined
-  parentSpanId?: ({ [x: string]: unknown } | null) | undefined
-  name?: (string | null) | undefined
-  kind?: (number | null) | undefined
-  startTimeUnixNano?: ({ [x: string]: unknown } | null) | undefined
-  endTimeUnixNano?: ({ [x: string]: unknown } | null) | undefined
-  attributes?: (OtelAttribute[] | null) | undefined
-  status?: ({ [x: string]: unknown } | null) | undefined
+type OtelSpanInput = {
+  traceId?: any | null
+  spanId?: any | null
+  parentSpanId?: any | null
+  name?: string | null
+  kind?: number | null
+  startTimeUnixNano?: any | null
+  endTimeUnixNano?: any | null
+  attributes?: OtelAttributeInput[] | null
+  status?: any | null
 }
-type OtelScopeSpan = { scope?: OtelScope | undefined; spans?: (OtelSpan[] | null) | undefined }
-type OtelResourceSpan = {
-  resource?: OtelResource | undefined
-  scopeSpans?: (OtelScopeSpan[] | null) | undefined
+type OtelScopeSpanInput = { scope?: OtelScopeInput | null; spans?: OtelSpanInput[] | null }
+type OtelResourceSpanInput = {
+  resource?: OtelResourceInput | null
+  scopeSpans?: OtelScopeSpanInput[] | null
 }
-type OtelTraceResponse = { [x: string]: unknown }
+type OtelTraceResponse = { [key: string]: unknown }
 type MembershipRole = 'OWNER' | 'ADMIN' | 'MEMBER' | 'VIEWER'
 type MembershipResponse = { userId: string; role: MembershipRole; email: string; name: string }
 type MembershipsResponse = { memberships: MembershipResponse[] }
-type MembershipRequest = { userId: string; role: MembershipRole }
-type DeleteMembershipRequest = { userId: string }
+type MembershipRoleInput = 'OWNER' | 'ADMIN' | 'MEMBER' | 'VIEWER'
+type MembershipRequestInput = { userId: string; role: MembershipRoleInput }
+type DeleteMembershipRequestInput = { userId: string }
 type MembershipDeletionResponse = { message: string; userId: string }
 type OrganizationProject = {
   id: string
   name: string
-  metadata?: ({ [x: string]: unknown } | null) | undefined
+  metadata?: ({ [key: string]: unknown } | null) | undefined
   createdAt: string
   updatedAt: string
 }
@@ -995,7 +1069,7 @@ type Project = {
   id: string
   name: string
   organization: Organization
-  metadata: { [x: string]: unknown }
+  metadata: { [key: string]: unknown }
   retentionDays?: (number | null) | undefined
 }
 type Projects = { data: Project[] }
@@ -1022,34 +1096,25 @@ type ApiKeyResponse = {
   note?: (string | null) | undefined
 }
 type ApiKeyDeletionResponse = { success: boolean }
+type BasePrompt = {
+  name: string
+  version: number
+  config: any
+  labels: string[]
+  tags: string[]
+  commitMessage?: (string | null) | undefined
+  resolutionGraph?: ({ [key: string]: unknown } | null) | undefined
+}
 type ChatMessageType = 'chatmessage'
-type ChatMessage = { role: string; content: string; type?: ChatMessageType | undefined }
+type ChatMessage = { role: string; content: string; type?: (ChatMessageType | null) | undefined }
 type PlaceholderMessageType = 'placeholder'
-type PlaceholderMessage = { name: string; type?: PlaceholderMessageType | undefined }
+type PlaceholderMessage = { name: string; type?: (PlaceholderMessageType | null) | undefined }
 type ChatMessageWithPlaceholders = ChatMessage | PlaceholderMessage
+type ChatPrompt = BasePrompt & { prompt: ChatMessageWithPlaceholders[] }
+type TextPrompt = BasePrompt & { prompt: string }
 type Prompt =
-  | {
-      type?: 'chat' | undefined
-      name: string
-      version: number
-      config: { [x: string]: unknown }
-      labels: string[]
-      tags: string[]
-      commitMessage?: (string | null) | undefined
-      resolutionGraph?: ({ [x: string]: unknown } | null) | undefined
-      prompt: ChatMessageWithPlaceholders[]
-    }
-  | {
-      type?: 'text' | undefined
-      name: string
-      version: number
-      config: { [x: string]: unknown }
-      labels: string[]
-      tags: string[]
-      commitMessage?: (string | null) | undefined
-      resolutionGraph?: ({ [x: string]: unknown } | null) | undefined
-      prompt: string
-    }
+  | ({ type?: 'chat' | undefined } & ChatPrompt)
+  | ({ type?: 'text' | undefined } & TextPrompt)
 type PromptType = 'chat' | 'text'
 type PromptMeta = {
   name: string
@@ -1058,30 +1123,35 @@ type PromptMeta = {
   labels: string[]
   tags: string[]
   lastUpdatedAt: string
-  lastConfig: { [x: string]: unknown }
+  lastConfig: any
 }
 type PromptMetaListResponse = { data: PromptMeta[]; meta: UtilsMetaResponse }
-type CreateChatPromptType = 'chat'
-type CreateChatPromptRequest = {
+type ChatMessageTypeInput = 'chatmessage'
+type ChatMessageInput = { role: string; content: string; type?: ChatMessageTypeInput | null }
+type PlaceholderMessageTypeInput = 'placeholder'
+type PlaceholderMessageInput = { name: string; type?: PlaceholderMessageTypeInput | null }
+type ChatMessageWithPlaceholdersInput = ChatMessageInput | PlaceholderMessageInput
+type CreateChatPromptTypeInput = 'chat'
+type CreateChatPromptRequestInput = {
   name: string
-  prompt: ChatMessageWithPlaceholders[]
-  config?: ({ [x: string]: unknown } | null) | undefined
-  type: CreateChatPromptType
-  labels?: (string[] | null) | undefined
-  tags?: (string[] | null) | undefined
-  commitMessage?: (string | null) | undefined
+  prompt: ChatMessageWithPlaceholdersInput[]
+  config?: any | null
+  type: CreateChatPromptTypeInput
+  labels?: string[] | null
+  tags?: string[] | null
+  commitMessage?: string | null
 }
-type CreateTextPromptType = 'text'
-type CreateTextPromptRequest = {
+type CreateTextPromptTypeInput = 'text'
+type CreateTextPromptRequestInput = {
   name: string
   prompt: string
-  config?: ({ [x: string]: unknown } | null) | undefined
-  type?: CreateTextPromptType | undefined
-  labels?: (string[] | null) | undefined
-  tags?: (string[] | null) | undefined
-  commitMessage?: (string | null) | undefined
+  config?: any | null
+  type?: CreateTextPromptTypeInput | null
+  labels?: string[] | null
+  tags?: string[] | null
+  commitMessage?: string | null
 }
-type CreatePromptRequest = CreateChatPromptRequest | CreateTextPromptRequest
+type CreatePromptRequestInput = CreateChatPromptRequestInput | CreateTextPromptRequestInput
 type ScimFeatureSupport = { supported: boolean }
 type BulkConfig = { supported: boolean; maxOperations: number; maxPayloadSize: number }
 type FilterConfig = { supported: boolean; maxResults: number }
@@ -1121,7 +1191,7 @@ type SchemaResource = {
   id: string
   name: string
   description: string
-  attributes: { [x: string]: unknown }[]
+  attributes: any[]
   meta: ResourceMeta
 }
 type SchemasResponse = { schemas: string[]; totalResults: number; Resources: SchemaResource[] }
@@ -1147,17 +1217,21 @@ type ScimUsersListResponse = {
   itemsPerPage: number
   Resources: ScimUser[]
 }
-type EmptyResponse = { [x: string]: unknown }
+type ScimNameInput = { formatted?: string | null }
+type ScimEmailInput = { primary: boolean; value: string; type: string }
+type EmptyResponse = { [key: string]: unknown }
+type ScoreConfigDataTypeInput = 'NUMERIC' | 'BOOLEAN' | 'CATEGORICAL' | 'TEXT'
+type ConfigCategoryInput = { value: number; label: string }
+type CreateScoreConfigRequestInput = {
+  name: string
+  dataType: ScoreConfigDataTypeInput
+  categories?: ConfigCategoryInput[] | null
+  minValue?: number | null
+  maxValue?: number | null
+  description?: string | null
+}
 type ScoreConfigDataType = 'NUMERIC' | 'BOOLEAN' | 'CATEGORICAL' | 'TEXT'
 type ConfigCategory = { value: number; label: string }
-type CreateScoreConfigRequest = {
-  name: string
-  dataType: ScoreConfigDataType
-  categories?: (ConfigCategory[] | null) | undefined
-  minValue?: (number | null) | undefined
-  maxValue?: (number | null) | undefined
-  description?: (string | null) | undefined
-}
 type ScoreConfig = {
   id: string
   name: string
@@ -1172,35 +1246,35 @@ type ScoreConfig = {
   description?: (string | null) | undefined
 }
 type ScoreConfigs = { data: ScoreConfig[]; meta: UtilsMetaResponse }
-type UpdateScoreConfigRequest = {
-  isArchived?: (boolean | null) | undefined
-  name?: (string | null) | undefined
-  categories?: (ConfigCategory[] | null) | undefined
-  minValue?: (number | null) | undefined
-  maxValue?: (number | null) | undefined
-  description?: (string | null) | undefined
+type UpdateScoreConfigRequestInput = {
+  isArchived?: boolean | null
+  name?: string | null
+  categories?: ConfigCategoryInput[] | null
+  minValue?: number | null
+  maxValue?: number | null
+  description?: string | null
 }
-type CreateScoreValue = number | string
-type ScoreDataType = 'NUMERIC' | 'BOOLEAN' | 'CATEGORICAL' | 'CORRECTION' | 'TEXT'
-type CreateScoreSource = 'API' | 'ANNOTATION'
-type CreateScoreRequest = {
-  id?: (string | null) | undefined
-  traceId?: (string | null) | undefined
-  sessionId?: (string | null) | undefined
-  observationId?: (string | null) | undefined
-  datasetRunId?: (string | null) | undefined
+type CreateScoreValueInput = number | string
+type ScoreDataTypeInput = 'NUMERIC' | 'BOOLEAN' | 'CATEGORICAL' | 'CORRECTION' | 'TEXT'
+type CreateScoreSourceInput = 'API' | 'ANNOTATION'
+type CreateScoreRequestInput = {
+  id?: string | null
+  traceId?: string | null
+  sessionId?: string | null
+  observationId?: string | null
+  datasetRunId?: string | null
   name: string
-  value: CreateScoreValue
-  comment?: (string | null) | undefined
-  metadata?: ({ [x: string]: unknown } | null) | undefined
-  environment?: (string | null) | undefined
-  queueId?: (string | null) | undefined
-  dataType?: ScoreDataType | undefined
-  configId?: (string | null) | undefined
-  source?: CreateScoreSource | undefined
-  timestamp?: (string | null) | undefined
+  value: CreateScoreValueInput
+  comment?: string | null
+  metadata?: { [key: string]: unknown } | null
+  environment?: string | null
+  queueId?: string | null
+  dataType?: ScoreDataTypeInput | null
+  configId?: string | null
+  source?: CreateScoreSourceInput | null
+  timestamp?: string | null
 }
-type CreateScoresRequest = CreateScoreRequest[]
+type CreateScoresRequestInput = CreateScoreRequestInput[]
 type CreateScoreBatchError = { message: string }
 type CreateScoreBatchResults = {
   accepted: number
@@ -1209,7 +1283,7 @@ type CreateScoreBatchResults = {
 }
 type CreateScoreBatchResponse = { message: 'Accepted' }
 type CreateScoresResponse = CreateScoreBatchResults | CreateScoreBatchResponse
-type GetScoresV3Meta = { cursor?: (string | null) | undefined }
+type GetScoresV3Meta = UtilsCursorMetaResponse & { limit: number }
 type GetScoresV3Response = { data: ScoreV3[]; meta: GetScoresV3Meta }
 type SkillMeta = {
   name: string
@@ -1220,14 +1294,14 @@ type SkillMeta = {
   latestVersionLastUpdatedAt: string
   productionVersion: number | null
 }
-type SkillListPagination = { page: number; limit: number; totalItems: number; totalPages: number }
+type SkillListPagination = UtilsMetaResponse & { hasNextPage: boolean }
 type SkillMetaListResponse = { data: SkillMeta[]; meta: SkillListPagination }
-type SkillVersionFileInput = { path: string; content: string }
-type SkillVersionFileReference = { path: string; sha256Hash: string }
-type SkillVersionFileCreateInput = SkillVersionFileInput | SkillVersionFileReference
-type CreateSkillVersionRequest = {
-  files: SkillVersionFileCreateInput[]
-  commitMessage?: (string | null) | undefined
+type SkillVersionFileInputInput = { path: string; content: string }
+type SkillVersionFileReferenceInput = { path: string; sha256Hash: string }
+type SkillVersionFileCreateInputInput = SkillVersionFileInputInput | SkillVersionFileReferenceInput
+type CreateSkillVersionRequestInput = {
+  files: SkillVersionFileCreateInputInput[]
+  commitMessage?: string | null
 }
 type SkillFile = {
   id: string
@@ -1246,20 +1320,19 @@ type SkillVersion = {
   createdBy: string
   name: string
   description: string
-  frontmatter: { [x: string]: unknown }
+  frontmatter: any
   version: number
   tags: string[]
   labels: string[]
   commitMessage: string | null
   files: SkillFile[]
 }
-type UpdateSkillRequest = { tags: string[] }
+type UpdateSkillRequestInput = { tags: string[] }
 type SkillFileContent = { sha256Hash: string; content: string }
 type SkillFileContentsResponse = { data: SkillFileContent[] }
-type UpdateSkillLabelsRequest = { labels: string[] }
+type UpdateSkillLabelsRequestInput = { labels: string[] }
 type DeleteSkillVersionResponse = { deleted: boolean }
 type DeleteTraceResponse = { message: string }
-type UnstableBillableUnitsGranularity = 'hour' | 'day' | 'week' | 'month'
 type UnstableBillableUnitsRow = {
   bucket: string
   projectId: string
@@ -1284,11 +1357,7 @@ type UnstablePublicApiErrorCode =
   | 'rate_limited'
   | 'method_not_allowed'
   | 'internal_error'
-type UnstablePublicApiValidationIssue = {
-  code: string
-  message: string
-  path: { [x: string]: unknown }[]
-}
+type UnstablePublicApiValidationIssue = { code: string; message: string; path: any[] }
 type UnstablePublicApiErrorDetails = {
   issues?: (UnstablePublicApiValidationIssue[] | null) | undefined
   field?: (string | null) | undefined
@@ -1304,7 +1373,7 @@ type UnstablePublicApiErrorDetails = {
 type UnstablePublicApiError = {
   message: string
   code: UnstablePublicApiErrorCode
-  details?: UnstablePublicApiErrorDetails | undefined
+  details?: (UnstablePublicApiErrorDetails | null) | undefined
 }
 type UnstableDashboardWidgetViewWithLegacy =
   | 'observations'
@@ -1334,7 +1403,7 @@ type UnstableDashboardWidgetFilter = {
   column: string
   operator: string
   type: string
-  value?: ({ [x: string]: unknown } | null) | undefined
+  value?: (any | null) | undefined
   key?: (string | null) | undefined
 }
 type UnstableDashboardWidgetChartType =
@@ -1357,7 +1426,7 @@ type UnstableDashboardWidgetChartConfig = {
   row_limit?: (number | null) | undefined
   show_value_labels?: (boolean | null) | undefined
   bins?: (number | null) | undefined
-  defaultSort?: UnstableDashboardWidgetDefaultSort | undefined
+  defaultSort?: (UnstableDashboardWidgetDefaultSort | null) | undefined
 }
 type UnstableDashboardWidget = {
   id: string
@@ -1373,58 +1442,98 @@ type UnstableDashboardWidget = {
   chartConfig: UnstableDashboardWidgetChartConfig
 }
 type UnstableDashboardWidgetList = { data: UnstableDashboardWidget[]; meta: UtilsMetaResponse }
-type UnstableDashboardWidgetView =
+type UnstableDashboardWidgetViewInput =
   | 'observations'
   | 'scores-numeric'
   | 'scores-boolean'
   | 'scores-categorical'
-type UnstableDashboardWidgetChartConfigInput = {
-  type?: UnstableDashboardWidgetChartType | undefined
-  row_limit?: (number | null) | undefined
-  show_value_labels?: (boolean | null) | undefined
-  bins?: (number | null) | undefined
-  defaultSort?: UnstableDashboardWidgetDefaultSort | undefined
+type UnstableDashboardWidgetDimensionInput = { field: string }
+type UnstableDashboardWidgetMetricAggregationInput =
+  | 'sum'
+  | 'avg'
+  | 'count'
+  | 'max'
+  | 'min'
+  | 'p50'
+  | 'p75'
+  | 'p90'
+  | 'p95'
+  | 'p99'
+  | 'histogram'
+  | 'uniq'
+type UnstableDashboardWidgetMetricInput = {
+  measure: string
+  agg: UnstableDashboardWidgetMetricAggregationInput
 }
-type UnstableCreateDashboardWidgetRequest = {
+type UnstableDashboardWidgetFilterInput = {
+  column: string
+  operator: string
+  type: string
+  value?: any | null
+  key?: string | null
+}
+type UnstableDashboardWidgetChartTypeInput =
+  | 'LINE_TIME_SERIES'
+  | 'AREA_TIME_SERIES'
+  | 'BAR_TIME_SERIES'
+  | 'HORIZONTAL_BAR'
+  | 'VERTICAL_BAR'
+  | 'PIE'
+  | 'NUMBER'
+  | 'HISTOGRAM'
+  | 'PIVOT_TABLE'
+type UnstableDashboardWidgetSortOrderInput = 'ASC' | 'DESC'
+type UnstableDashboardWidgetDefaultSortInput = {
+  column: string
+  order: UnstableDashboardWidgetSortOrderInput
+}
+type UnstableDashboardWidgetChartConfigInputInput = {
+  type?: UnstableDashboardWidgetChartTypeInput | null
+  row_limit?: number | null
+  show_value_labels?: boolean | null
+  bins?: number | null
+  defaultSort?: UnstableDashboardWidgetDefaultSortInput | null
+}
+type UnstableCreateDashboardWidgetRequestInput = {
   name: string
-  description?: (string | null) | undefined
-  view: UnstableDashboardWidgetView
-  dimensions: UnstableDashboardWidgetDimension[]
-  metrics: UnstableDashboardWidgetMetric[]
-  filters: UnstableDashboardWidgetFilter[]
-  chartType: UnstableDashboardWidgetChartType
-  chartConfig?: UnstableDashboardWidgetChartConfigInput | undefined
+  description?: string | null
+  view: UnstableDashboardWidgetViewInput
+  dimensions: UnstableDashboardWidgetDimensionInput[]
+  metrics: UnstableDashboardWidgetMetricInput[]
+  filters: UnstableDashboardWidgetFilterInput[]
+  chartType: UnstableDashboardWidgetChartTypeInput
+  chartConfig?: UnstableDashboardWidgetChartConfigInputInput | null
 }
-type UnstableUpdateDashboardWidgetRequest = {
-  name?: (string | null) | undefined
-  description?: (string | null) | undefined
-  view?: UnstableDashboardWidgetView | undefined
-  dimensions?: (UnstableDashboardWidgetDimension[] | null) | undefined
-  metrics?: (UnstableDashboardWidgetMetric[] | null) | undefined
-  filters?: (UnstableDashboardWidgetFilter[] | null) | undefined
-  chartType?: UnstableDashboardWidgetChartType | undefined
-  chartConfig?: UnstableDashboardWidgetChartConfigInput | undefined
+type UnstableUpdateDashboardWidgetRequestInput = {
+  name?: string | null
+  description?: string | null
+  view?: UnstableDashboardWidgetViewInput | null
+  dimensions?: UnstableDashboardWidgetDimensionInput[] | null
+  metrics?: UnstableDashboardWidgetMetricInput[] | null
+  filters?: UnstableDashboardWidgetFilterInput[] | null
+  chartType?: UnstableDashboardWidgetChartTypeInput | null
+  chartConfig?: UnstableDashboardWidgetChartConfigInputInput | null
 }
 type UnstableDeleteDashboardWidgetResponse = { message: string }
+type UnstableWidgetPlacement = {
+  id: string
+  widgetId: string
+  x: number
+  y: number
+  width: number
+  height: number
+}
+type UnstablePresetPlacement = {
+  id: string
+  presetId: string
+  x: number
+  y: number
+  width: number
+  height: number
+}
 type UnstableDashboardPlacement =
-  | {
-      type?: 'widget' | undefined
-      id: string
-      widgetId: string
-      x: number
-      y: number
-      width: number
-      height: number
-    }
-  | {
-      type?: 'preset' | undefined
-      id: string
-      presetId: string
-      x: number
-      y: number
-      width: number
-      height: number
-    }
+  | ({ type?: 'widget' | undefined } & UnstableWidgetPlacement)
+  | ({ type?: 'preset' | undefined } & UnstablePresetPlacement)
 type UnstableDashboardDefinition = { widgets: UnstableDashboardPlacement[] }
 type UnstableDashboard = {
   id: string
@@ -1436,46 +1545,66 @@ type UnstableDashboard = {
   filters: UnstableDashboardWidgetFilter[]
 }
 type UnstableDashboardList = { data: UnstableDashboard[]; meta: UtilsMetaResponse }
-type UnstableCreateDashboardRequest = {
-  name: string
-  description?: (string | null) | undefined
-  definition?: UnstableDashboardDefinition | undefined
-  filters?: (UnstableDashboardWidgetFilter[] | null) | undefined
+type UnstableWidgetPlacementInput = {
+  id: string
+  widgetId: string
+  x: number
+  y: number
+  width: number
+  height: number
 }
-type UnstableUpdateDashboardRequest = {
-  name?: (string | null) | undefined
-  description?: (string | null) | undefined
-  definition?: UnstableDashboardDefinition | undefined
-  filters?: (UnstableDashboardWidgetFilter[] | null) | undefined
+type UnstablePresetPlacementInput = {
+  id: string
+  presetId: string
+  x: number
+  y: number
+  width: number
+  height: number
+}
+type UnstableDashboardPlacementInput =
+  | ({ type?: 'widget' } & UnstableWidgetPlacementInput)
+  | ({ type?: 'preset' } & UnstablePresetPlacementInput)
+type UnstableDashboardDefinitionInput = { widgets: UnstableDashboardPlacementInput[] }
+type UnstableCreateDashboardRequestInput = {
+  name: string
+  description?: string | null
+  definition?: UnstableDashboardDefinitionInput | null
+  filters?: UnstableDashboardWidgetFilterInput[] | null
+}
+type UnstableUpdateDashboardRequestInput = {
+  name?: string | null
+  description?: string | null
+  definition?: UnstableDashboardDefinitionInput | null
+  filters?: UnstableDashboardWidgetFilterInput[] | null
 }
 type UnstableDeleteDashboardResponse = { message: string }
-type UnstableCreateDashboardPlacementRequest =
-  | {
-      type?: 'widget' | undefined
-      id?: (string | null) | undefined
-      widgetId: string
-      x?: (number | null) | undefined
-      y?: (number | null) | undefined
-      width?: (number | null) | undefined
-      height?: (number | null) | undefined
-    }
-  | {
-      type?: 'preset' | undefined
-      id?: (string | null) | undefined
-      presetId: string
-      x?: (number | null) | undefined
-      y?: (number | null) | undefined
-      width?: (number | null) | undefined
-      height?: (number | null) | undefined
-    }
-type UnstableUpdateDashboardPlacementRequest = {
-  x?: (number | null) | undefined
-  y?: (number | null) | undefined
-  width?: (number | null) | undefined
-  height?: (number | null) | undefined
+type UnstableCreateWidgetPlacementInput = {
+  id?: string | null
+  widgetId: string
+  x?: number | null
+  y?: number | null
+  width?: number | null
+  height?: number | null
+}
+type UnstableCreatePresetPlacementInput = {
+  id?: string | null
+  presetId: string
+  x?: number | null
+  y?: number | null
+  width?: number | null
+  height?: number | null
+}
+type UnstableCreateDashboardPlacementRequestInput =
+  | ({ type?: 'widget' } & UnstableCreateWidgetPlacementInput)
+  | ({ type?: 'preset' } & UnstableCreatePresetPlacementInput)
+type UnstableUpdateDashboardPlacementRequestInput = {
+  x?: number | null
+  y?: number | null
+  width?: number | null
+  height?: number | null
 }
 type UnstableDeleteDashboardPlacementResponse = { message: string }
-type UnstableTopicFacetPublishedRun = {
+type UnstableTopicFacetPublishedMap = {
   id: string
   completedAt?: (string | null) | undefined
   topicCount: number
@@ -1489,20 +1618,19 @@ type UnstableTopicFacet = {
   ruleIds: string[]
   version: number
   prompt: string
-  publishedRun?: UnstableTopicFacetPublishedRun | undefined
+  publishedMap?: (UnstableTopicFacetPublishedMap | null) | undefined
 }
 type UnstableTopicFacetList = { data: UnstableTopicFacet[]; meta: UtilsMetaResponse }
-type UnstableTopicsOrderBy = 'traceCount.desc' | 'traceCount.asc' | 'name.asc' | 'name.desc'
 type UnstableTopicWindow = { from: string; to: string }
 type UnstableTopicFacetRef = { id: string; name: string; version: number }
 type UnstableTopic = {
-  id: string
+  stableId: string
   versionId: string
   name: string
   description: string
   facet: UnstableTopicFacetRef
   ruleId?: (string | null) | undefined
-  runId: string
+  mapId: string
   traceCount: number
 }
 type UnstableTopicStatusCounts = {
@@ -1511,11 +1639,13 @@ type UnstableTopicStatusCounts = {
   awaitingMap: number
   notApplicable: number
   insufficientInput: number
+  emptyInput: number
+  inputTooLarge: number
 }
 type UnstableTopicFacetCounts = {
   facet: UnstableTopicFacetRef
   ruleId?: (string | null) | undefined
-  publishedRunId?: (string | null) | undefined
+  publishedMapId?: (string | null) | undefined
   counts: UnstableTopicStatusCounts
 }
 type UnstableTopicList = {
@@ -1524,15 +1654,9 @@ type UnstableTopicList = {
   facets: UnstableTopicFacetCounts[]
   meta: UtilsMetaResponse
 }
-type UnstableTopicWithStatus = {
-  id: string
-  versionId: string
-  name: string
-  description: string
-  facet: UnstableTopicFacetRef
-  ruleId?: (string | null) | undefined
-  runId: string
-  traceCount: number
+type UnstableTopicWithStatus = UnstableTopic & {
+  inCurrentMap: boolean
+  window: UnstableTopicWindow
 }
 type UnstableTopicRule = {
   id: string
@@ -1543,8 +1667,12 @@ type UnstableTopicRule = {
   updatedAt: string
 }
 type UnstableTopicRuleList = { data: UnstableTopicRule[]; meta: UtilsMetaResponse }
-type UnstableTopicResultsOrderBy = 'timestamp.desc' | 'timestamp.asc'
-type UnstableTopicSummaryState = 'complete' | 'not_applicable' | 'insufficient_input'
+type UnstableTopicSummaryState =
+  | 'complete'
+  | 'not_applicable'
+  | 'insufficient_input'
+  | 'empty_input'
+  | 'input_too_large'
 type UnstableTopicSummary = {
   traceId: string
   traceName: string
@@ -1556,7 +1684,7 @@ type UnstableTopicSummary = {
   state: UnstableTopicSummaryState
   summary?: (string | null) | undefined
   summaryTruncated: boolean
-  processedAt: string
+  createdAt: string
 }
 type UnstableTopicResultListMeta = {
   cursor?: (string | null) | undefined
@@ -1568,7 +1696,7 @@ type UnstableTopicSummaryList = {
   meta: UnstableTopicResultListMeta
 }
 type UnstableTopicAssignmentStatus = 'assigned' | 'outlier'
-type UnstableTopicAssignmentTopic = { id: string; versionId: string; name: string }
+type UnstableTopicAssignmentTopic = { stableId: string; versionId: string; name: string }
 type UnstableTopicAssignment = {
   traceId: string
   timestamp: string
@@ -1577,9 +1705,9 @@ type UnstableTopicAssignment = {
   facetVersion: number
   ruleId?: (string | null) | undefined
   status: UnstableTopicAssignmentStatus
-  topic?: UnstableTopicAssignmentTopic | undefined
-  runId?: (string | null) | undefined
-  assignedAt: string
+  topic?: (UnstableTopicAssignmentTopic | null) | undefined
+  mapId?: (string | null) | undefined
+  createdAt: string
 }
 type UnstableTopicAssignmentList = {
   window: UnstableTopicWindow
@@ -1592,87 +1720,75 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/annotation-queues': {
       $get:
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: PaginatedAnnotationQueues
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $post:
         | {
-            input: { json: CreateAnnotationQueueRequest }
+            input: { json: CreateAnnotationQueueRequestInput }
             output: AnnotationQueue
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreateAnnotationQueueRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateAnnotationQueueRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateAnnotationQueueRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateAnnotationQueueRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateAnnotationQueueRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateAnnotationQueueRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateAnnotationQueueRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateAnnotationQueueRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateAnnotationQueueRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateAnnotationQueueRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -1686,47 +1802,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { queueId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { queueId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { queueId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { queueId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { queueId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { queueId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { queueId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { queueId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { queueId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { queueId: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/annotation-queues/:queueId/items': {
       $get:
         | {
             input: { param: { queueId: string } } & {
-              query: {
-                status?: AnnotationQueueStatus | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
+              query: { status?: unknown; page?: unknown; limit?: unknown }
             }
             output: PaginatedAnnotationQueueItems
             outputFormat: 'json'
@@ -1734,98 +1821,78 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { queueId: string } } & {
-              query: {
-                status?: AnnotationQueueStatus | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
+              query: { status?: unknown; page?: unknown; limit?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { queueId: string } } & {
-              query: {
-                status?: AnnotationQueueStatus | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
+              query: { status?: unknown; page?: unknown; limit?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { queueId: string } } & {
-              query: {
-                status?: AnnotationQueueStatus | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
+              query: { status?: unknown; page?: unknown; limit?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { queueId: string } } & {
-              query: {
-                status?: AnnotationQueueStatus | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
+              query: { status?: unknown; page?: unknown; limit?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { queueId: string } } & {
-              query: {
-                status?: AnnotationQueueStatus | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
+              query: { status?: unknown; page?: unknown; limit?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $post:
         | {
-            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequest }
+            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequestInput }
             output: AnnotationQueueItem
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: CreateAnnotationQueueItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -1841,38 +1908,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $patch:
         | {
             input: { param: { queueId: string; itemId: string } } & {
-              json: UpdateAnnotationQueueItemRequest
+              json: UpdateAnnotationQueueItemRequestInput
             }
             output: AnnotationQueueItem
             outputFormat: 'json'
@@ -1880,41 +1947,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { queueId: string; itemId: string } } & {
-              json: UpdateAnnotationQueueItemRequest
+              json: UpdateAnnotationQueueItemRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { queueId: string; itemId: string } } & {
-              json: UpdateAnnotationQueueItemRequest
+              json: UpdateAnnotationQueueItemRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { queueId: string; itemId: string } } & {
-              json: UpdateAnnotationQueueItemRequest
+              json: UpdateAnnotationQueueItemRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { queueId: string; itemId: string } } & {
-              json: UpdateAnnotationQueueItemRequest
+              json: UpdateAnnotationQueueItemRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { queueId: string; itemId: string } } & {
-              json: UpdateAnnotationQueueItemRequest
+              json: UpdateAnnotationQueueItemRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -1927,31 +1994,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { queueId: string; itemId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -1960,75 +2027,75 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/annotation-queues/:queueId/assignments': {
       $post:
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
             output: CreateAnnotationQueueAssignmentResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $delete:
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
             output: DeleteAnnotationQueueAssignmentResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequest }
-            output: { [x: string]: unknown }
+            input: { param: { queueId: string } } & { json: AnnotationQueueAssignmentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2037,45 +2104,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/integrations/blob-storage': {
       $get:
         | { input: {}; output: BlobStorageIntegrationsResponse; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
       $put:
         | {
-            input: { json: CreateBlobStorageIntegrationRequest }
+            input: { json: CreateBlobStorageIntegrationRequestInput }
             output: BlobStorageIntegrationResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreateBlobStorageIntegrationRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateBlobStorageIntegrationRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateBlobStorageIntegrationRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateBlobStorageIntegrationRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateBlobStorageIntegrationRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateBlobStorageIntegrationRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateBlobStorageIntegrationRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateBlobStorageIntegrationRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateBlobStorageIntegrationRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateBlobStorageIntegrationRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2089,36 +2156,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 405 }
       $delete:
         | {
             input: { param: { id: string } }
@@ -2126,73 +2168,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/comments': {
       $post:
         | {
-            input: { json: CreateCommentRequest }
+            input: { json: CreateCommentRequestInput }
             output: CreateCommentResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreateCommentRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateCommentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateCommentRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateCommentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateCommentRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateCommentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateCommentRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateCommentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateCommentRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateCommentRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2200,11 +2217,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                objectType?: (string | null) | undefined
-                objectId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
+                page?: unknown
+                limit?: unknown
+                objectType?: string | null
+                objectId?: string | null
+                authorUserId?: string | null
               }
             }
             output: GetCommentsResponse
@@ -2214,70 +2231,70 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                objectType?: (string | null) | undefined
-                objectId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
+                page?: unknown
+                limit?: unknown
+                objectType?: string | null
+                objectId?: string | null
+                authorUserId?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                objectType?: (string | null) | undefined
-                objectId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
+                page?: unknown
+                limit?: unknown
+                objectType?: string | null
+                objectId?: string | null
+                authorUserId?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                objectType?: (string | null) | undefined
-                objectId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
+                page?: unknown
+                limit?: unknown
+                objectType?: string | null
+                objectId?: string | null
+                authorUserId?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                objectType?: (string | null) | undefined
-                objectId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
+                page?: unknown
+                limit?: unknown
+                objectType?: string | null
+                objectId?: string | null
+                authorUserId?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                objectType?: (string | null) | undefined
-                objectId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
+                page?: unknown
+                limit?: unknown
+                objectType?: string | null
+                objectId?: string | null
+                authorUserId?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2293,31 +2310,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { commentId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { commentId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { commentId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { commentId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { commentId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2326,38 +2343,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/dataset-items': {
       $post:
         | {
-            input: { json: CreateDatasetItemRequest }
+            input: { json: CreateDatasetItemRequestInput }
             output: DatasetItem
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreateDatasetItemRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateDatasetItemRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateDatasetItemRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateDatasetItemRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateDatasetItemRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetItemRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2365,12 +2382,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                datasetName?: (string | null) | undefined
-                sourceTraceId?: (string | null) | undefined
-                sourceObservationId?: (string | null) | undefined
-                version?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                datasetName?: string | null
+                sourceTraceId?: string | null
+                sourceObservationId?: string | null
+                version?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
             output: PaginatedDatasetItems
@@ -2380,75 +2397,75 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                datasetName?: (string | null) | undefined
-                sourceTraceId?: (string | null) | undefined
-                sourceObservationId?: (string | null) | undefined
-                version?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                datasetName?: string | null
+                sourceTraceId?: string | null
+                sourceObservationId?: string | null
+                version?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                datasetName?: (string | null) | undefined
-                sourceTraceId?: (string | null) | undefined
-                sourceObservationId?: (string | null) | undefined
-                version?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                datasetName?: string | null
+                sourceTraceId?: string | null
+                sourceObservationId?: string | null
+                version?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                datasetName?: (string | null) | undefined
-                sourceTraceId?: (string | null) | undefined
-                sourceObservationId?: (string | null) | undefined
-                version?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                datasetName?: string | null
+                sourceTraceId?: string | null
+                sourceObservationId?: string | null
+                version?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                datasetName?: (string | null) | undefined
-                sourceTraceId?: (string | null) | undefined
-                sourceObservationId?: (string | null) | undefined
-                version?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                datasetName?: string | null
+                sourceTraceId?: string | null
+                sourceObservationId?: string | null
+                version?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                datasetName?: (string | null) | undefined
-                sourceTraceId?: (string | null) | undefined
-                sourceObservationId?: (string | null) | undefined
-                version?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                datasetName?: string | null
+                sourceTraceId?: string | null
+                sourceObservationId?: string | null
+                version?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2462,36 +2479,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 405 }
       $delete:
         | {
             input: { param: { id: string } }
@@ -2499,122 +2491,85 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/v2/datasets': {
       $get:
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: PaginatedDatasets
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $post:
         | {
-            input: { json: CreateDatasetRequest }
+            input: { json: CreateDatasetRequestInput }
             output: Dataset
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreateDatasetRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateDatasetRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateDatasetRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateDatasetRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateDatasetRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateDatasetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2630,31 +2585,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { datasetName: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { datasetName: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { datasetName: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { datasetName: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { datasetName: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2663,120 +2618,104 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/v2/evaluation-rules': {
       $post:
         | {
-            input: { json: CreateEvaluationRuleRequest }
+            input: { json: CreateEvaluationRuleRequestInput }
             output: EvaluationRule
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluationRuleRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluationRuleRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluationRuleRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluationRuleRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluationRuleRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { json: CreateEvaluationRuleRequest }
+            input: { json: CreateEvaluationRuleRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { json: CreateEvaluationRuleRequest }
+            input: { json: CreateEvaluationRuleRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { json: CreateEvaluationRuleRequest }
+            input: { json: CreateEvaluationRuleRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 500
           }
       $get:
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
+            input: { query: { limit?: unknown; cursor?: string | null } }
             output: EvaluationRulesPage
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
+            input: { query: { limit?: unknown; cursor?: string | null } }
             output: PublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
+            input: { query: { limit?: unknown; cursor?: string | null } }
             output: PublicApiError
             outputFormat: 'json'
             status: 500
@@ -2793,31 +2732,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2835,55 +2774,73 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
             output: EvaluationRule
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
             output: PublicApiError
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
             output: PublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { evaluationRuleId: string } } & { json: UpdateEvaluationRuleRequest }
+            input: { param: { evaluationRuleId: string } } & {
+              json: UpdateEvaluationRuleRequestInput
+            }
             output: PublicApiError
             outputFormat: 'json'
             status: 500
@@ -2897,31 +2854,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { evaluationRuleId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -2942,120 +2899,104 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/v2/evaluators': {
       $post:
         | {
-            input: { json: CreateEvaluatorRequest }
+            input: { json: CreateEvaluatorRequestInput }
             output: Evaluator
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { json: CreateEvaluatorRequest }
+            input: { json: CreateEvaluatorRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 412
           }
         | {
-            input: { json: CreateEvaluatorRequest }
+            input: { json: CreateEvaluatorRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { json: CreateEvaluatorRequest }
+            input: { json: CreateEvaluatorRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 500
           }
       $get:
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
+            input: { query: { limit?: unknown; cursor?: string | null } }
             output: EvaluatorsPage
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { limit?: unknown; cursor?: string | null } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
+            input: { query: { limit?: unknown; cursor?: string | null } }
             output: PublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
-            }
+            input: { query: { limit?: unknown; cursor?: string | null } }
             output: PublicApiError
             outputFormat: 'json'
             status: 500
@@ -3072,31 +3013,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -3114,61 +3055,61 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
             output: Evaluator
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
-            output: { [x: string]: unknown }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 409
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 412
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequest }
+            input: { param: { evaluatorId: string } } & { json: UpdateEvaluatorRequestInput }
             output: PublicApiError
             outputFormat: 'json'
             status: 500
@@ -3182,31 +3123,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { evaluatorId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -3228,7 +3169,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { evaluatorId: string } } & {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
+              query: { limit?: unknown; cursor?: string | null }
             }
             output: EvaluatorVersionsPage
             outputFormat: 'json'
@@ -3236,47 +3177,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { evaluatorId: string } } & {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
+              query: { limit?: unknown; cursor?: string | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { evaluatorId: string } } & {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
+              query: { limit?: unknown; cursor?: string | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { evaluatorId: string } } & {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
+              query: { limit?: unknown; cursor?: string | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { evaluatorId: string } } & {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
+              query: { limit?: unknown; cursor?: string | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { evaluatorId: string } } & {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
+              query: { limit?: unknown; cursor?: string | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
             input: { param: { evaluatorId: string } } & {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
+              query: { limit?: unknown; cursor?: string | null }
             }
             output: PublicApiError
             outputFormat: 'json'
@@ -3284,7 +3225,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { evaluatorId: string } } & {
-              query: { limit?: (number | null) | undefined; cursor?: (string | null) | undefined }
+              query: { limit?: unknown; cursor?: string | null }
             }
             output: PublicApiError
             outputFormat: 'json'
@@ -3297,16 +3238,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                id?: string | null
+                name?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
             output: ExperimentsResponse
@@ -3316,95 +3257,95 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                id?: string | null
+                name?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                id?: string | null
+                name?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                id?: string | null
+                name?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                id?: string | null
+                name?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                id?: string | null
+                name?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -3415,17 +3356,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                experimentName?: (string | null) | undefined
-                experimentItemId?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                experimentId?: string | null
+                experimentName?: string | null
+                experimentItemId?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
             output: ExperimentItemsResponse
@@ -3435,100 +3376,100 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                experimentName?: (string | null) | undefined
-                experimentItemId?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                experimentId?: string | null
+                experimentName?: string | null
+                experimentItemId?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                experimentName?: (string | null) | undefined
-                experimentItemId?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                experimentId?: string | null
+                experimentName?: string | null
+                experimentItemId?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                experimentName?: (string | null) | undefined
-                experimentItemId?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                experimentId?: string | null
+                experimentName?: string | null
+                experimentItemId?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                experimentName?: (string | null) | undefined
-                experimentItemId?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                experimentId?: string | null
+                experimentName?: string | null
+                experimentItemId?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                scoreLimit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fields?: string | null
+                limit?: unknown
+                scoreLimit?: unknown
+                cursor?: string | null
                 fromStartTime: string
-                toStartTime?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                experimentName?: (string | null) | undefined
-                experimentItemId?: (string | null) | undefined
-                datasetId?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                toStartTime?: unknown
+                experimentId?: string | null
+                experimentName?: string | null
+                experimentItemId?: string | null
+                datasetId?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -3537,139 +3478,132 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/feedback': {
       $post:
         | {
-            input: { json: SubmitFeedbackRequest }
+            input: { json: SubmitFeedbackRequestInput }
             output: SubmitFeedbackResponse
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: SubmitFeedbackRequest }
-            output: { [x: string]: unknown }
+            input: { json: SubmitFeedbackRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: SubmitFeedbackRequest }
-            output: { [x: string]: unknown }
+            input: { json: SubmitFeedbackRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: SubmitFeedbackRequest }
-            output: { [x: string]: unknown }
+            input: { json: SubmitFeedbackRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: SubmitFeedbackRequest }
-            output: { [x: string]: unknown }
+            input: { json: SubmitFeedbackRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: SubmitFeedbackRequest }
-            output: { [x: string]: unknown }
+            input: { json: SubmitFeedbackRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
-        | { input: { json: SubmitFeedbackRequest }; output: {}; outputFormat: string; status: 409 }
+        | {
+            input: { json: SubmitFeedbackRequestInput }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
     }
   } & {
     '/api/public/health': {
       $get:
         | { input: {}; output: HealthResponse; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
         | { input: {}; output: {}; outputFormat: string; status: 503 }
     }
   } & {
     '/api/public/llm-connections': {
       $get:
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: PaginatedLlmConnections
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $put:
         | {
-            input: { json: UpsertLlmConnectionRequest }
+            input: { json: UpsertLlmConnectionRequestInput }
             output: LlmConnection
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -3683,122 +3617,85 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/organizations/llm-connections': {
       $get:
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: PaginatedLlmConnections
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $put:
         | {
-            input: { json: UpsertLlmConnectionRequest }
+            input: { json: UpsertLlmConnectionRequestInput }
             output: LlmConnection
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: UpsertLlmConnectionRequest }
-            output: { [x: string]: unknown }
+            input: { json: UpsertLlmConnectionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -3812,36 +3709,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/media/:mediaId': {
@@ -3852,70 +3724,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { mediaId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { mediaId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { mediaId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { mediaId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { mediaId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { mediaId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { mediaId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { mediaId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { mediaId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { mediaId: string } }; output: any; outputFormat: 'json'; status: 405 }
       $patch:
         | {
-            input: { param: { mediaId: string } } & { json: PatchMediaBody }
+            input: { param: { mediaId: string } } & { json: PatchMediaBodyInput }
             output: {}
             outputFormat: string
             status: 204
           }
         | {
-            input: { param: { mediaId: string } } & { json: PatchMediaBody }
-            output: { [x: string]: unknown }
+            input: { param: { mediaId: string } } & { json: PatchMediaBodyInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { mediaId: string } } & { json: PatchMediaBody }
-            output: { [x: string]: unknown }
+            input: { param: { mediaId: string } } & { json: PatchMediaBodyInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { mediaId: string } } & { json: PatchMediaBody }
-            output: { [x: string]: unknown }
+            input: { param: { mediaId: string } } & { json: PatchMediaBodyInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { mediaId: string } } & { json: PatchMediaBody }
-            output: { [x: string]: unknown }
+            input: { param: { mediaId: string } } & { json: PatchMediaBodyInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { mediaId: string } } & { json: PatchMediaBody }
-            output: { [x: string]: unknown }
+            input: { param: { mediaId: string } } & { json: PatchMediaBodyInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -3924,38 +3771,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/media': {
       $post:
         | {
-            input: { json: GetMediaUploadUrlRequest }
+            input: { json: GetMediaUploadUrlRequestInput }
             output: GetMediaUploadUrlResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: GetMediaUploadUrlRequest }
-            output: { [x: string]: unknown }
+            input: { json: GetMediaUploadUrlRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: GetMediaUploadUrlRequest }
-            output: { [x: string]: unknown }
+            input: { json: GetMediaUploadUrlRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: GetMediaUploadUrlRequest }
-            output: { [x: string]: unknown }
+            input: { json: GetMediaUploadUrlRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: GetMediaUploadUrlRequest }
-            output: { [x: string]: unknown }
+            input: { json: GetMediaUploadUrlRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: GetMediaUploadUrlRequest }
-            output: { [x: string]: unknown }
+            input: { json: GetMediaUploadUrlRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -3969,117 +3816,85 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { query: { query: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { query: { query: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { query: { query: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { query: { query: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { query: { query: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { query: { query: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { query: { query: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { query: { query: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { query: { query: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { query: { query: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/models': {
       $post:
-        | { input: { json: CreateModelRequest }; output: Model; outputFormat: 'json'; status: 200 }
         | {
-            input: { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateModelRequestInput }
+            output: Model
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $get:
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: PaginatedModels
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4088,105 +3903,55 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/models/:id': {
       $put:
         | {
-            input: { param: { id: string } } & { json: CreateModelRequest }
+            input: { param: { id: string } } & { json: CreateModelRequestInput }
             output: Model
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { id: string } } & { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { param: { id: string } } & { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { id: string } } & { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { param: { id: string } } & { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { id: string } } & { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { param: { id: string } } & { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { id: string } } & { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { param: { id: string } } & { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { id: string } } & { json: CreateModelRequest }
-            output: { [x: string]: unknown }
+            input: { param: { id: string } } & { json: CreateModelRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $get:
         | { input: { param: { id: string } }; output: Model; outputFormat: 'json'; status: 200 }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 405 }
       $delete:
         | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 204 }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { id: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { id: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/v2/observations': {
@@ -4194,24 +3959,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                expandMetadata?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                parseIoAsJson?: (boolean | null) | undefined
-                name?: (string | null) | undefined
-                userId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                type?: (string | null) | undefined
-                traceId?: (string | null) | undefined
-                level?: ObservationLevel | undefined
-                parentObservationId?: (string | null) | undefined
-                isRootObservation?: (boolean | null) | undefined
-                environment?: (string | null)[] | undefined
-                fromStartTime?: (string | null) | undefined
-                toStartTime?: (string | null) | undefined
-                version?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                fields?: string | null
+                expandMetadata?: string | null
+                limit?: unknown
+                cursor?: string | null
+                parseIoAsJson?: unknown
+                name?: string | null
+                userId?: string | null
+                sessionId?: string | null
+                type?: string | null
+                traceId?: string | null
+                level?: unknown
+                parentObservationId?: string | null
+                isRootObservation?: unknown
+                environment?: unknown
+                fromStartTime?: unknown
+                toStartTime?: unknown
+                version?: string | null
+                filter?: string | null
               }
             }
             output: ObservationsV2Response
@@ -4221,135 +3986,135 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                expandMetadata?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                parseIoAsJson?: (boolean | null) | undefined
-                name?: (string | null) | undefined
-                userId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                type?: (string | null) | undefined
-                traceId?: (string | null) | undefined
-                level?: ObservationLevel | undefined
-                parentObservationId?: (string | null) | undefined
-                isRootObservation?: (boolean | null) | undefined
-                environment?: (string | null)[] | undefined
-                fromStartTime?: (string | null) | undefined
-                toStartTime?: (string | null) | undefined
-                version?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                fields?: string | null
+                expandMetadata?: string | null
+                limit?: unknown
+                cursor?: string | null
+                parseIoAsJson?: unknown
+                name?: string | null
+                userId?: string | null
+                sessionId?: string | null
+                type?: string | null
+                traceId?: string | null
+                level?: unknown
+                parentObservationId?: string | null
+                isRootObservation?: unknown
+                environment?: unknown
+                fromStartTime?: unknown
+                toStartTime?: unknown
+                version?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                expandMetadata?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                parseIoAsJson?: (boolean | null) | undefined
-                name?: (string | null) | undefined
-                userId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                type?: (string | null) | undefined
-                traceId?: (string | null) | undefined
-                level?: ObservationLevel | undefined
-                parentObservationId?: (string | null) | undefined
-                isRootObservation?: (boolean | null) | undefined
-                environment?: (string | null)[] | undefined
-                fromStartTime?: (string | null) | undefined
-                toStartTime?: (string | null) | undefined
-                version?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                fields?: string | null
+                expandMetadata?: string | null
+                limit?: unknown
+                cursor?: string | null
+                parseIoAsJson?: unknown
+                name?: string | null
+                userId?: string | null
+                sessionId?: string | null
+                type?: string | null
+                traceId?: string | null
+                level?: unknown
+                parentObservationId?: string | null
+                isRootObservation?: unknown
+                environment?: unknown
+                fromStartTime?: unknown
+                toStartTime?: unknown
+                version?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                expandMetadata?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                parseIoAsJson?: (boolean | null) | undefined
-                name?: (string | null) | undefined
-                userId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                type?: (string | null) | undefined
-                traceId?: (string | null) | undefined
-                level?: ObservationLevel | undefined
-                parentObservationId?: (string | null) | undefined
-                isRootObservation?: (boolean | null) | undefined
-                environment?: (string | null)[] | undefined
-                fromStartTime?: (string | null) | undefined
-                toStartTime?: (string | null) | undefined
-                version?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                fields?: string | null
+                expandMetadata?: string | null
+                limit?: unknown
+                cursor?: string | null
+                parseIoAsJson?: unknown
+                name?: string | null
+                userId?: string | null
+                sessionId?: string | null
+                type?: string | null
+                traceId?: string | null
+                level?: unknown
+                parentObservationId?: string | null
+                isRootObservation?: unknown
+                environment?: unknown
+                fromStartTime?: unknown
+                toStartTime?: unknown
+                version?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                expandMetadata?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                parseIoAsJson?: (boolean | null) | undefined
-                name?: (string | null) | undefined
-                userId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                type?: (string | null) | undefined
-                traceId?: (string | null) | undefined
-                level?: ObservationLevel | undefined
-                parentObservationId?: (string | null) | undefined
-                isRootObservation?: (boolean | null) | undefined
-                environment?: (string | null)[] | undefined
-                fromStartTime?: (string | null) | undefined
-                toStartTime?: (string | null) | undefined
-                version?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                fields?: string | null
+                expandMetadata?: string | null
+                limit?: unknown
+                cursor?: string | null
+                parseIoAsJson?: unknown
+                name?: string | null
+                userId?: string | null
+                sessionId?: string | null
+                type?: string | null
+                traceId?: string | null
+                level?: unknown
+                parentObservationId?: string | null
+                isRootObservation?: unknown
+                environment?: unknown
+                fromStartTime?: unknown
+                toStartTime?: unknown
+                version?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                fields?: (string | null) | undefined
-                expandMetadata?: (string | null) | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                parseIoAsJson?: (boolean | null) | undefined
-                name?: (string | null) | undefined
-                userId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                type?: (string | null) | undefined
-                traceId?: (string | null) | undefined
-                level?: ObservationLevel | undefined
-                parentObservationId?: (string | null) | undefined
-                isRootObservation?: (boolean | null) | undefined
-                environment?: (string | null)[] | undefined
-                fromStartTime?: (string | null) | undefined
-                toStartTime?: (string | null) | undefined
-                version?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                fields?: string | null
+                expandMetadata?: string | null
+                limit?: unknown
+                cursor?: string | null
+                parseIoAsJson?: unknown
+                name?: string | null
+                userId?: string | null
+                sessionId?: string | null
+                type?: string | null
+                traceId?: string | null
+                level?: unknown
+                parentObservationId?: string | null
+                isRootObservation?: unknown
+                environment?: unknown
+                fromStartTime?: unknown
+                toStartTime?: unknown
+                version?: string | null
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4358,38 +4123,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/otel/v1/traces': {
       $post:
         | {
-            input: { json: { resourceSpans: OtelResourceSpan[] } }
+            input: { json: { resourceSpans: OtelResourceSpanInput[] } }
             output: OtelTraceResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { resourceSpans: OtelResourceSpan[] } }
-            output: { [x: string]: unknown }
+            input: { json: { resourceSpans: OtelResourceSpanInput[] } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: { resourceSpans: OtelResourceSpan[] } }
-            output: { [x: string]: unknown }
+            input: { json: { resourceSpans: OtelResourceSpanInput[] } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: { resourceSpans: OtelResourceSpan[] } }
-            output: { [x: string]: unknown }
+            input: { json: { resourceSpans: OtelResourceSpanInput[] } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: { resourceSpans: OtelResourceSpan[] } }
-            output: { [x: string]: unknown }
+            input: { json: { resourceSpans: OtelResourceSpanInput[] } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: { resourceSpans: OtelResourceSpan[] } }
-            output: { [x: string]: unknown }
+            input: { json: { resourceSpans: OtelResourceSpanInput[] } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4398,82 +4163,82 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/organizations/memberships': {
       $get:
         | { input: {}; output: MembershipsResponse; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
       $put:
         | {
-            input: { json: MembershipRequest }
+            input: { json: MembershipRequestInput }
             output: MembershipResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $delete:
         | {
-            input: { json: DeleteMembershipRequest }
+            input: { json: DeleteMembershipRequestInput }
             output: MembershipDeletionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4489,105 +4254,105 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $put:
         | {
-            input: { param: { projectId: string } } & { json: MembershipRequest }
+            input: { param: { projectId: string } } & { json: MembershipRequestInput }
             output: MembershipResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { projectId: string } } & { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { projectId: string } } & { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { projectId: string } } & { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { projectId: string } } & { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { projectId: string } } & { json: MembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: MembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $delete:
         | {
-            input: { param: { projectId: string } } & { json: DeleteMembershipRequest }
+            input: { param: { projectId: string } } & { json: DeleteMembershipRequestInput }
             output: MembershipDeletionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { projectId: string } } & { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { projectId: string } } & { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { projectId: string } } & { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { projectId: string } } & { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { projectId: string } } & { json: DeleteMembershipRequest }
-            output: { [x: string]: unknown }
+            input: { param: { projectId: string } } & { json: DeleteMembershipRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4596,37 +4361,37 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/organizations/projects': {
       $get:
         | { input: {}; output: OrganizationProjectsResponse; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/organizations/apiKeys': {
       $get:
         | { input: {}; output: OrganizationApiKeysResponse; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/projects': {
       $get:
         | { input: {}; output: Projects; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
       $post:
         | {
             input: {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
+                metadata?: { [key: string]: unknown } | null
                 retention: number
               }
             }
@@ -4638,11 +4403,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
+                metadata?: { [key: string]: unknown } | null
                 retention: number
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
@@ -4650,11 +4415,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
+                metadata?: { [key: string]: unknown } | null
                 retention: number
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
@@ -4662,11 +4427,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
+                metadata?: { [key: string]: unknown } | null
                 retention: number
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
@@ -4674,11 +4439,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
+                metadata?: { [key: string]: unknown } | null
                 retention: number
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
@@ -4686,11 +4451,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
+                metadata?: { [key: string]: unknown } | null
                 retention: number
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4702,8 +4467,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { projectId: string } } & {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
-                retention?: (number | null) | undefined
+                metadata?: { [key: string]: unknown } | null
+                retention?: number | null
               }
             }
             output: Project
@@ -4714,11 +4479,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { projectId: string } } & {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
-                retention?: (number | null) | undefined
+                metadata?: { [key: string]: unknown } | null
+                retention?: number | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
@@ -4726,11 +4491,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { projectId: string } } & {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
-                retention?: (number | null) | undefined
+                metadata?: { [key: string]: unknown } | null
+                retention?: number | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
@@ -4738,11 +4503,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { projectId: string } } & {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
-                retention?: (number | null) | undefined
+                metadata?: { [key: string]: unknown } | null
+                retention?: number | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
@@ -4750,11 +4515,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { projectId: string } } & {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
-                retention?: (number | null) | undefined
+                metadata?: { [key: string]: unknown } | null
+                retention?: number | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
@@ -4762,11 +4527,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { projectId: string } } & {
               json: {
                 name: string
-                metadata?: ({ [x: string]: unknown } | null) | undefined
-                retention?: (number | null) | undefined
+                metadata?: { [key: string]: unknown } | null
+                retention?: number | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4779,31 +4544,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4819,31 +4584,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { projectId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4851,11 +4616,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { projectId: string } } & {
               json: {
-                name?: (string | null) | undefined
-                note?: (string | null) | undefined
-                expiresAt?: (string | null) | undefined
-                publicKey?: (string | null) | undefined
-                secretKey?: (string | null) | undefined
+                name?: string | null
+                note?: string | null
+                expiresAt?: string | null
+                publicKey?: string | null
+                secretKey?: string | null
               }
             }
             output: ApiKeyResponse
@@ -4865,70 +4630,70 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { projectId: string } } & {
               json: {
-                name?: (string | null) | undefined
-                note?: (string | null) | undefined
-                expiresAt?: (string | null) | undefined
-                publicKey?: (string | null) | undefined
-                secretKey?: (string | null) | undefined
+                name?: string | null
+                note?: string | null
+                expiresAt?: string | null
+                publicKey?: string | null
+                secretKey?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { projectId: string } } & {
               json: {
-                name?: (string | null) | undefined
-                note?: (string | null) | undefined
-                expiresAt?: (string | null) | undefined
-                publicKey?: (string | null) | undefined
-                secretKey?: (string | null) | undefined
+                name?: string | null
+                note?: string | null
+                expiresAt?: string | null
+                publicKey?: string | null
+                secretKey?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { projectId: string } } & {
               json: {
-                name?: (string | null) | undefined
-                note?: (string | null) | undefined
-                expiresAt?: (string | null) | undefined
-                publicKey?: (string | null) | undefined
-                secretKey?: (string | null) | undefined
+                name?: string | null
+                note?: string | null
+                expiresAt?: string | null
+                publicKey?: string | null
+                secretKey?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { projectId: string } } & {
               json: {
-                name?: (string | null) | undefined
-                note?: (string | null) | undefined
-                expiresAt?: (string | null) | undefined
-                publicKey?: (string | null) | undefined
-                secretKey?: (string | null) | undefined
+                name?: string | null
+                note?: string | null
+                expiresAt?: string | null
+                publicKey?: string | null
+                secretKey?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { projectId: string } } & {
               json: {
-                name?: (string | null) | undefined
-                note?: (string | null) | undefined
-                expiresAt?: (string | null) | undefined
-                publicKey?: (string | null) | undefined
-                secretKey?: (string | null) | undefined
+                name?: string | null
+                note?: string | null
+                expiresAt?: string | null
+                publicKey?: string | null
+                secretKey?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4944,31 +4709,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { projectId: string; apiKeyId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { projectId: string; apiKeyId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { projectId: string; apiKeyId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { projectId: string; apiKeyId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { projectId: string; apiKeyId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -4977,68 +4742,50 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/v2/prompts/:name/versions/:version': {
       $patch:
         | {
-            input: { param: { name: string; version: number } } & {
-              json: {
-                newLabels?: (string[] | null) | undefined
-                removeLabels?: (string[] | null) | undefined
-              }
+            input: { param: { name: string; version: unknown } } & {
+              json: { newLabels?: string[] | null; removeLabels?: string[] | null }
             }
             output: Prompt
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { name: string; version: number } } & {
-              json: {
-                newLabels?: (string[] | null) | undefined
-                removeLabels?: (string[] | null) | undefined
-              }
+            input: { param: { name: string; version: unknown } } & {
+              json: { newLabels?: string[] | null; removeLabels?: string[] | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { name: string; version: number } } & {
-              json: {
-                newLabels?: (string[] | null) | undefined
-                removeLabels?: (string[] | null) | undefined
-              }
+            input: { param: { name: string; version: unknown } } & {
+              json: { newLabels?: string[] | null; removeLabels?: string[] | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { name: string; version: number } } & {
-              json: {
-                newLabels?: (string[] | null) | undefined
-                removeLabels?: (string[] | null) | undefined
-              }
+            input: { param: { name: string; version: unknown } } & {
+              json: { newLabels?: string[] | null; removeLabels?: string[] | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { name: string; version: number } } & {
-              json: {
-                newLabels?: (string[] | null) | undefined
-                removeLabels?: (string[] | null) | undefined
-              }
+            input: { param: { name: string; version: unknown } } & {
+              json: { newLabels?: string[] | null; removeLabels?: string[] | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { name: string; version: number } } & {
-              json: {
-                newLabels?: (string[] | null) | undefined
-                removeLabels?: (string[] | null) | undefined
-              }
+            input: { param: { name: string; version: unknown } } & {
+              json: { newLabels?: string[] | null; removeLabels?: string[] | null }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -5048,11 +4795,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { promptName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                resolve?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; resolve?: unknown }
             }
             output: Prompt
             outputFormat: 'json'
@@ -5060,68 +4803,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { promptName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                resolve?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; resolve?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { promptName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                resolve?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; resolve?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { promptName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                resolve?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; resolve?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { promptName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                resolve?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; resolve?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { promptName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                resolve?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; resolve?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $delete:
         | {
             input: { param: { promptName: string } } & {
-              query: { label?: (string | null) | undefined; version?: (number | null) | undefined }
+              query: { label?: string | null; version?: unknown }
             }
             output: {}
             outputFormat: string
@@ -5129,41 +4852,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { promptName: string } } & {
-              query: { label?: (string | null) | undefined; version?: (number | null) | undefined }
+              query: { label?: string | null; version?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { promptName: string } } & {
-              query: { label?: (string | null) | undefined; version?: (number | null) | undefined }
+              query: { label?: string | null; version?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { promptName: string } } & {
-              query: { label?: (string | null) | undefined; version?: (number | null) | undefined }
+              query: { label?: string | null; version?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { promptName: string } } & {
-              query: { label?: (string | null) | undefined; version?: (number | null) | undefined }
+              query: { label?: string | null; version?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { promptName: string } } & {
-              query: { label?: (string | null) | undefined; version?: (number | null) | undefined }
+              query: { label?: string | null; version?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -5174,14 +4897,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                label?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                name?: string | null
+                label?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
+                filter?: string | null
               }
             }
             output: PromptMetaListResponse
@@ -5191,122 +4914,122 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                label?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                name?: string | null
+                label?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                label?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                name?: string | null
+                label?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                label?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                name?: string | null
+                label?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                label?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                name?: string | null
+                label?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                label?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
-                filter?: (string | null) | undefined
+                name?: string | null
+                label?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
+                filter?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $post:
         | {
-            input: { json: CreatePromptRequest }
+            input: { json: CreatePromptRequestInput }
             output: Prompt
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreatePromptRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreatePromptRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreatePromptRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreatePromptRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreatePromptRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreatePromptRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreatePromptRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreatePromptRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreatePromptRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreatePromptRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -5315,104 +5038,68 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/scim/ServiceProviderConfig': {
       $get:
         | { input: {}; output: ServiceProviderConfig; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/scim/ResourceTypes': {
       $get:
         | { input: {}; output: ResourceTypesResponse; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/scim/Schemas': {
       $get:
         | { input: {}; output: SchemasResponse; outputFormat: 'json'; status: 200 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 400 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 401 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 403 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 404 }
-        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 405 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 400 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 401 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 403 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 404 }
+        | { input: {}; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/scim/Users': {
       $get:
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                startIndex?: (number | null) | undefined
-                count?: (number | null) | undefined
-              }
-            }
+            input: { query: { filter?: string | null; startIndex?: unknown; count?: unknown } }
             output: ScimUsersListResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                startIndex?: (number | null) | undefined
-                count?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; startIndex?: unknown; count?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                startIndex?: (number | null) | undefined
-                count?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; startIndex?: unknown; count?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                startIndex?: (number | null) | undefined
-                count?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; startIndex?: unknown; count?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                startIndex?: (number | null) | undefined
-                count?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; startIndex?: unknown; count?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                startIndex?: (number | null) | undefined
-                count?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; startIndex?: unknown; count?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -5421,10 +5108,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 userName: string
-                name: ScimName
-                emails?: (ScimEmail[] | null) | undefined
-                active?: (boolean | null) | undefined
-                password?: (string | null) | undefined
+                name: ScimNameInput
+                emails?: ScimEmailInput[] | null
+                active?: boolean | null
+                password?: string | null
               }
             }
             output: ScimUser
@@ -5435,13 +5122,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 userName: string
-                name: ScimName
-                emails?: (ScimEmail[] | null) | undefined
-                active?: (boolean | null) | undefined
-                password?: (string | null) | undefined
+                name: ScimNameInput
+                emails?: ScimEmailInput[] | null
+                active?: boolean | null
+                password?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
@@ -5449,13 +5136,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 userName: string
-                name: ScimName
-                emails?: (ScimEmail[] | null) | undefined
-                active?: (boolean | null) | undefined
-                password?: (string | null) | undefined
+                name: ScimNameInput
+                emails?: ScimEmailInput[] | null
+                active?: boolean | null
+                password?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
@@ -5463,13 +5150,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 userName: string
-                name: ScimName
-                emails?: (ScimEmail[] | null) | undefined
-                active?: (boolean | null) | undefined
-                password?: (string | null) | undefined
+                name: ScimNameInput
+                emails?: ScimEmailInput[] | null
+                active?: boolean | null
+                password?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
@@ -5477,13 +5164,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 userName: string
-                name: ScimName
-                emails?: (ScimEmail[] | null) | undefined
-                active?: (boolean | null) | undefined
-                password?: (string | null) | undefined
+                name: ScimNameInput
+                emails?: ScimEmailInput[] | null
+                active?: boolean | null
+                password?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
@@ -5491,13 +5178,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 userName: string
-                name: ScimName
-                emails?: (ScimEmail[] | null) | undefined
-                active?: (boolean | null) | undefined
-                password?: (string | null) | undefined
+                name: ScimNameInput
+                emails?: ScimEmailInput[] | null
+                active?: boolean | null
+                password?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -5511,36 +5198,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 405 }
       $delete:
         | {
             input: { param: { userId: string } }
@@ -5548,122 +5210,85 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { userId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { userId: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/score-configs': {
       $post:
         | {
-            input: { json: CreateScoreConfigRequest }
+            input: { json: CreateScoreConfigRequestInput }
             output: ScoreConfig
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $get:
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: ScoreConfigs
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -5677,70 +5302,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { configId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { configId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { configId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { configId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { configId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { configId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { configId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { configId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { configId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { configId: string } }; output: any; outputFormat: 'json'; status: 405 }
       $patch:
         | {
-            input: { param: { configId: string } } & { json: UpdateScoreConfigRequest }
+            input: { param: { configId: string } } & { json: UpdateScoreConfigRequestInput }
             output: ScoreConfig
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { configId: string } } & { json: UpdateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { param: { configId: string } } & { json: UpdateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { configId: string } } & { json: UpdateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { param: { configId: string } } & { json: UpdateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { configId: string } } & { json: UpdateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { param: { configId: string } } & { json: UpdateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { configId: string } } & { json: UpdateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { param: { configId: string } } & { json: UpdateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { configId: string } } & { json: UpdateScoreConfigRequest }
-            output: { [x: string]: unknown }
+            input: { param: { configId: string } } & { json: UpdateScoreConfigRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -5749,38 +5349,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/scores': {
       $post:
         | {
-            input: { json: CreateScoresRequest }
+            input: { json: CreateScoresRequestInput }
             output: CreateScoresResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: CreateScoresRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoresRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateScoresRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoresRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateScoresRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoresRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateScoresRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoresRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateScoresRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateScoresRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -5789,36 +5389,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/scores/:scoreId': {
       $delete:
         | { input: { param: { scoreId: string } }; output: {}; outputFormat: string; status: 204 }
-        | {
-            input: { param: { scoreId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { scoreId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { scoreId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { scoreId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { scoreId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { scoreId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { scoreId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { scoreId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { scoreId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { scoreId: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/v3/scores': {
@@ -5826,26 +5401,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                fields?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                source?: (string | null) | undefined
-                dataType?: (string | null) | undefined
-                environment?: (string | null) | undefined
-                configId?: (string | null) | undefined
-                queueId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
-                value?: (string | null) | undefined
-                valueMin?: (number | null) | undefined
-                valueMax?: (number | null) | undefined
-                traceId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                observationId?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
+                limit?: unknown
+                cursor?: string | null
+                fields?: string | null
+                id?: string | null
+                name?: string | null
+                source?: string | null
+                dataType?: string | null
+                environment?: string | null
+                configId?: string | null
+                queueId?: string | null
+                authorUserId?: string | null
+                value?: string | null
+                valueMin?: unknown
+                valueMax?: unknown
+                traceId?: string | null
+                sessionId?: string | null
+                observationId?: string | null
+                experimentId?: string | null
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
               }
             }
             output: GetScoresV3Response
@@ -5855,145 +5430,145 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                fields?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                source?: (string | null) | undefined
-                dataType?: (string | null) | undefined
-                environment?: (string | null) | undefined
-                configId?: (string | null) | undefined
-                queueId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
-                value?: (string | null) | undefined
-                valueMin?: (number | null) | undefined
-                valueMax?: (number | null) | undefined
-                traceId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                observationId?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
+                limit?: unknown
+                cursor?: string | null
+                fields?: string | null
+                id?: string | null
+                name?: string | null
+                source?: string | null
+                dataType?: string | null
+                environment?: string | null
+                configId?: string | null
+                queueId?: string | null
+                authorUserId?: string | null
+                value?: string | null
+                valueMin?: unknown
+                valueMax?: unknown
+                traceId?: string | null
+                sessionId?: string | null
+                observationId?: string | null
+                experimentId?: string | null
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                fields?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                source?: (string | null) | undefined
-                dataType?: (string | null) | undefined
-                environment?: (string | null) | undefined
-                configId?: (string | null) | undefined
-                queueId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
-                value?: (string | null) | undefined
-                valueMin?: (number | null) | undefined
-                valueMax?: (number | null) | undefined
-                traceId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                observationId?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
+                limit?: unknown
+                cursor?: string | null
+                fields?: string | null
+                id?: string | null
+                name?: string | null
+                source?: string | null
+                dataType?: string | null
+                environment?: string | null
+                configId?: string | null
+                queueId?: string | null
+                authorUserId?: string | null
+                value?: string | null
+                valueMin?: unknown
+                valueMax?: unknown
+                traceId?: string | null
+                sessionId?: string | null
+                observationId?: string | null
+                experimentId?: string | null
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                fields?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                source?: (string | null) | undefined
-                dataType?: (string | null) | undefined
-                environment?: (string | null) | undefined
-                configId?: (string | null) | undefined
-                queueId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
-                value?: (string | null) | undefined
-                valueMin?: (number | null) | undefined
-                valueMax?: (number | null) | undefined
-                traceId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                observationId?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
+                limit?: unknown
+                cursor?: string | null
+                fields?: string | null
+                id?: string | null
+                name?: string | null
+                source?: string | null
+                dataType?: string | null
+                environment?: string | null
+                configId?: string | null
+                queueId?: string | null
+                authorUserId?: string | null
+                value?: string | null
+                valueMin?: unknown
+                valueMax?: unknown
+                traceId?: string | null
+                sessionId?: string | null
+                observationId?: string | null
+                experimentId?: string | null
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                fields?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                source?: (string | null) | undefined
-                dataType?: (string | null) | undefined
-                environment?: (string | null) | undefined
-                configId?: (string | null) | undefined
-                queueId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
-                value?: (string | null) | undefined
-                valueMin?: (number | null) | undefined
-                valueMax?: (number | null) | undefined
-                traceId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                observationId?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
+                limit?: unknown
+                cursor?: string | null
+                fields?: string | null
+                id?: string | null
+                name?: string | null
+                source?: string | null
+                dataType?: string | null
+                environment?: string | null
+                configId?: string | null
+                queueId?: string | null
+                authorUserId?: string | null
+                value?: string | null
+                valueMin?: unknown
+                valueMax?: unknown
+                traceId?: string | null
+                sessionId?: string | null
+                observationId?: string | null
+                experimentId?: string | null
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
-                fields?: (string | null) | undefined
-                id?: (string | null) | undefined
-                name?: (string | null) | undefined
-                source?: (string | null) | undefined
-                dataType?: (string | null) | undefined
-                environment?: (string | null) | undefined
-                configId?: (string | null) | undefined
-                queueId?: (string | null) | undefined
-                authorUserId?: (string | null) | undefined
-                value?: (string | null) | undefined
-                valueMin?: (number | null) | undefined
-                valueMax?: (number | null) | undefined
-                traceId?: (string | null) | undefined
-                sessionId?: (string | null) | undefined
-                observationId?: (string | null) | undefined
-                experimentId?: (string | null) | undefined
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
+                limit?: unknown
+                cursor?: string | null
+                fields?: string | null
+                id?: string | null
+                name?: string | null
+                source?: string | null
+                dataType?: string | null
+                environment?: string | null
+                configId?: string | null
+                queueId?: string | null
+                authorUserId?: string | null
+                value?: string | null
+                valueMin?: unknown
+                valueMax?: unknown
+                traceId?: string | null
+                sessionId?: string | null
+                observationId?: string | null
+                experimentId?: string | null
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -6004,13 +5579,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                search?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
+                name?: string | null
+                search?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
               }
             }
             output: SkillMetaListResponse
@@ -6020,117 +5595,117 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                search?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
+                name?: string | null
+                search?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                search?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
+                name?: string | null
+                search?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                search?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
+                name?: string | null
+                search?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                search?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
+                name?: string | null
+                search?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                name?: (string | null) | undefined
-                search?: (string | null) | undefined
-                tag?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-                fromUpdatedAt?: (string | null) | undefined
-                toUpdatedAt?: (string | null) | undefined
+                name?: string | null
+                search?: string | null
+                tag?: string | null
+                page?: unknown
+                limit?: unknown
+                fromUpdatedAt?: unknown
+                toUpdatedAt?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $post:
         | {
-            input: { json: CreateSkillVersionRequest }
+            input: { json: CreateSkillVersionRequestInput }
             output: SkillVersion
             outputFormat: 'json'
             status: 201
           }
         | {
-            input: { json: CreateSkillVersionRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateSkillVersionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: CreateSkillVersionRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateSkillVersionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: CreateSkillVersionRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateSkillVersionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: CreateSkillVersionRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateSkillVersionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: CreateSkillVersionRequest }
-            output: { [x: string]: unknown }
+            input: { json: CreateSkillVersionRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -6140,11 +5715,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { skillName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                includeContent?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; includeContent?: unknown }
             }
             output: SkillVersion
             outputFormat: 'json'
@@ -6152,98 +5723,78 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { skillName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                includeContent?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; includeContent?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { skillName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                includeContent?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; includeContent?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { skillName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                includeContent?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; includeContent?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { skillName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                includeContent?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; includeContent?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { skillName: string } } & {
-              query: {
-                version?: (number | null) | undefined
-                label?: (string | null) | undefined
-                includeContent?: (boolean | null) | undefined
-              }
+              query: { version?: unknown; label?: string | null; includeContent?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $patch:
         | {
-            input: { param: { skillName: string } } & { json: UpdateSkillRequest }
+            input: { param: { skillName: string } } & { json: UpdateSkillRequestInput }
             output: SkillVersion
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { skillName: string } } & { json: UpdateSkillRequest }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string } } & { json: UpdateSkillRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { skillName: string } } & { json: UpdateSkillRequest }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string } } & { json: UpdateSkillRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { skillName: string } } & { json: UpdateSkillRequest }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string } } & { json: UpdateSkillRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { skillName: string } } & { json: UpdateSkillRequest }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string } } & { json: UpdateSkillRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { skillName: string } } & { json: UpdateSkillRequest }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string } } & { json: UpdateSkillRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -6259,31 +5810,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { sha256Hashes: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { query: { sha256Hashes: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { query: { sha256Hashes: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { query: { sha256Hashes: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { query: { sha256Hashes: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -6292,87 +5843,87 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/skills/:skillName/versions/:skillVersion': {
       $patch:
         | {
-            input: { param: { skillName: string; skillVersion: number } } & {
-              json: UpdateSkillLabelsRequest
+            input: { param: { skillName: string; skillVersion: unknown } } & {
+              json: UpdateSkillLabelsRequestInput
             }
             output: SkillVersion
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } } & {
-              json: UpdateSkillLabelsRequest
+            input: { param: { skillName: string; skillVersion: unknown } } & {
+              json: UpdateSkillLabelsRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } } & {
-              json: UpdateSkillLabelsRequest
+            input: { param: { skillName: string; skillVersion: unknown } } & {
+              json: UpdateSkillLabelsRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } } & {
-              json: UpdateSkillLabelsRequest
+            input: { param: { skillName: string; skillVersion: unknown } } & {
+              json: UpdateSkillLabelsRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } } & {
-              json: UpdateSkillLabelsRequest
+            input: { param: { skillName: string; skillVersion: unknown } } & {
+              json: UpdateSkillLabelsRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } } & {
-              json: UpdateSkillLabelsRequest
+            input: { param: { skillName: string; skillVersion: unknown } } & {
+              json: UpdateSkillLabelsRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
       $delete:
         | {
-            input: { param: { skillName: string; skillVersion: number } }
+            input: { param: { skillName: string; skillVersion: unknown } }
             output: DeleteSkillVersionResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string; skillVersion: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string; skillVersion: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string; skillVersion: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string; skillVersion: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { skillName: string; skillVersion: number } }
-            output: { [x: string]: unknown }
+            input: { param: { skillName: string; skillVersion: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -6386,36 +5937,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { traceId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { traceId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { traceId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { traceId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { traceId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { traceId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { traceId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { traceId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { traceId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { traceId: string } }; output: any; outputFormat: 'json'; status: 405 }
     }
   } & {
     '/api/public/traces': {
@@ -6428,31 +5954,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { json: { traceIds: string[] } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { json: { traceIds: string[] } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { json: { traceIds: string[] } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { json: { traceIds: string[] } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { json: { traceIds: string[] } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -6461,97 +5987,49 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/unstable/organizations/billable-units': {
       $get:
         | {
-            input: {
-              query: {
-                fromTimestamp: string
-                toTimestamp: string
-                granularity?: UnstableBillableUnitsGranularity | undefined
-              }
-            }
+            input: { query: { fromTimestamp: string; toTimestamp: string; granularity?: unknown } }
             output: UnstableBillableUnitsResponse
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                fromTimestamp: string
-                toTimestamp: string
-                granularity?: UnstableBillableUnitsGranularity | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { fromTimestamp: string; toTimestamp: string; granularity?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                fromTimestamp: string
-                toTimestamp: string
-                granularity?: UnstableBillableUnitsGranularity | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { fromTimestamp: string; toTimestamp: string; granularity?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                fromTimestamp: string
-                toTimestamp: string
-                granularity?: UnstableBillableUnitsGranularity | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { fromTimestamp: string; toTimestamp: string; granularity?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: {
-                fromTimestamp: string
-                toTimestamp: string
-                granularity?: UnstableBillableUnitsGranularity | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { fromTimestamp: string; toTimestamp: string; granularity?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: {
-                fromTimestamp: string
-                toTimestamp: string
-                granularity?: UnstableBillableUnitsGranularity | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { fromTimestamp: string; toTimestamp: string; granularity?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: {
-              query: {
-                fromTimestamp: string
-                toTimestamp: string
-                granularity?: UnstableBillableUnitsGranularity | undefined
-              }
-            }
+            input: { query: { fromTimestamp: string; toTimestamp: string; granularity?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: {
-              query: {
-                fromTimestamp: string
-                toTimestamp: string
-                granularity?: UnstableBillableUnitsGranularity | undefined
-              }
-            }
+            input: { query: { fromTimestamp: string; toTimestamp: string; granularity?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
@@ -6561,114 +6039,98 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/unstable/dashboard-widgets': {
       $get:
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: UnstableDashboardWidgetList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
           }
       $post:
         | {
-            input: { json: UnstableCreateDashboardWidgetRequest }
+            input: { json: UnstableCreateDashboardWidgetRequestInput }
             output: UnstableDashboardWidget
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: UnstableCreateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardWidgetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: UnstableCreateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardWidgetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: UnstableCreateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardWidgetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: UnstableCreateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardWidgetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: UnstableCreateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardWidgetRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { json: UnstableCreateDashboardWidgetRequest }
+            input: { json: UnstableCreateDashboardWidgetRequestInput }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { json: UnstableCreateDashboardWidgetRequest }
+            input: { json: UnstableCreateDashboardWidgetRequestInput }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
@@ -6683,36 +6145,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 405 }
         | {
             input: { param: { widgetId: string } }
             output: UnstablePublicApiError
@@ -6727,49 +6164,65 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { widgetId: string } } & { json: UnstableUpdateDashboardWidgetRequest }
+            input: { param: { widgetId: string } } & {
+              json: UnstableUpdateDashboardWidgetRequestInput
+            }
             output: UnstableDashboardWidget
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { widgetId: string } } & { json: UnstableUpdateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { param: { widgetId: string } } & {
+              json: UnstableUpdateDashboardWidgetRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { widgetId: string } } & { json: UnstableUpdateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { param: { widgetId: string } } & {
+              json: UnstableUpdateDashboardWidgetRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { widgetId: string } } & { json: UnstableUpdateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { param: { widgetId: string } } & {
+              json: UnstableUpdateDashboardWidgetRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { widgetId: string } } & { json: UnstableUpdateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { param: { widgetId: string } } & {
+              json: UnstableUpdateDashboardWidgetRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { widgetId: string } } & { json: UnstableUpdateDashboardWidgetRequest }
-            output: { [x: string]: unknown }
+            input: { param: { widgetId: string } } & {
+              json: UnstableUpdateDashboardWidgetRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { param: { widgetId: string } } & { json: UnstableUpdateDashboardWidgetRequest }
+            input: { param: { widgetId: string } } & {
+              json: UnstableUpdateDashboardWidgetRequestInput
+            }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { widgetId: string } } & { json: UnstableUpdateDashboardWidgetRequest }
+            input: { param: { widgetId: string } } & {
+              json: UnstableUpdateDashboardWidgetRequestInput
+            }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
@@ -6781,36 +6234,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { widgetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { widgetId: string } }; output: any; outputFormat: 'json'; status: 405 }
         | {
             input: { param: { widgetId: string } }
             output: UnstablePublicApiError
@@ -6834,114 +6262,98 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/unstable/dashboards': {
       $get:
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: UnstableDashboardList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: {
-              query: { page?: (number | null) | undefined; limit?: (number | null) | undefined }
-            }
+            input: { query: { page?: unknown; limit?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
           }
       $post:
         | {
-            input: { json: UnstableCreateDashboardRequest }
+            input: { json: UnstableCreateDashboardRequestInput }
             output: UnstableDashboard
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: UnstableCreateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardRequestInput }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { json: UnstableCreateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardRequestInput }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { json: UnstableCreateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardRequestInput }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { json: UnstableCreateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardRequestInput }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { json: UnstableCreateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { json: UnstableCreateDashboardRequestInput }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { json: UnstableCreateDashboardRequest }
+            input: { json: UnstableCreateDashboardRequestInput }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { json: UnstableCreateDashboardRequest }
+            input: { json: UnstableCreateDashboardRequestInput }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
@@ -6958,31 +6370,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -7000,49 +6412,65 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $patch:
         | {
-            input: { param: { dashboardId: string } } & { json: UnstableUpdateDashboardRequest }
+            input: { param: { dashboardId: string } } & {
+              json: UnstableUpdateDashboardRequestInput
+            }
             output: UnstableDashboard
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { dashboardId: string } } & { json: UnstableUpdateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { param: { dashboardId: string } } & {
+              json: UnstableUpdateDashboardRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { dashboardId: string } } & { json: UnstableUpdateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { param: { dashboardId: string } } & {
+              json: UnstableUpdateDashboardRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { dashboardId: string } } & { json: UnstableUpdateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { param: { dashboardId: string } } & {
+              json: UnstableUpdateDashboardRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { dashboardId: string } } & { json: UnstableUpdateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { param: { dashboardId: string } } & {
+              json: UnstableUpdateDashboardRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { dashboardId: string } } & { json: UnstableUpdateDashboardRequest }
-            output: { [x: string]: unknown }
+            input: { param: { dashboardId: string } } & {
+              json: UnstableUpdateDashboardRequestInput
+            }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { param: { dashboardId: string } } & { json: UnstableUpdateDashboardRequest }
+            input: { param: { dashboardId: string } } & {
+              json: UnstableUpdateDashboardRequestInput
+            }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { dashboardId: string } } & { json: UnstableUpdateDashboardRequest }
+            input: { param: { dashboardId: string } } & {
+              json: UnstableUpdateDashboardRequestInput
+            }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
@@ -7056,31 +6484,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { dashboardId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -7102,7 +6530,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
             output: UnstableDashboardPlacement
             outputFormat: 'json'
@@ -7110,47 +6538,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
             output: UnstablePublicApiError
             outputFormat: 'json'
@@ -7158,7 +6586,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
             output: UnstablePublicApiError
             outputFormat: 'json'
@@ -7166,7 +6594,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { dashboardId: string } } & {
-              json: UnstableCreateDashboardPlacementRequest
+              json: UnstableCreateDashboardPlacementRequestInput
             }
             output: UnstablePublicApiError
             outputFormat: 'json'
@@ -7178,7 +6606,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $patch:
         | {
             input: { param: { dashboardId: string; placementId: string } } & {
-              json: UnstableUpdateDashboardPlacementRequest
+              json: UnstableUpdateDashboardPlacementRequestInput
             }
             output: UnstableDashboardPlacement
             outputFormat: 'json'
@@ -7186,47 +6614,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { dashboardId: string; placementId: string } } & {
-              json: UnstableUpdateDashboardPlacementRequest
+              json: UnstableUpdateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { dashboardId: string; placementId: string } } & {
-              json: UnstableUpdateDashboardPlacementRequest
+              json: UnstableUpdateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { dashboardId: string; placementId: string } } & {
-              json: UnstableUpdateDashboardPlacementRequest
+              json: UnstableUpdateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { dashboardId: string; placementId: string } } & {
-              json: UnstableUpdateDashboardPlacementRequest
+              json: UnstableUpdateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { dashboardId: string; placementId: string } } & {
-              json: UnstableUpdateDashboardPlacementRequest
+              json: UnstableUpdateDashboardPlacementRequestInput
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
             input: { param: { dashboardId: string; placementId: string } } & {
-              json: UnstableUpdateDashboardPlacementRequest
+              json: UnstableUpdateDashboardPlacementRequestInput
             }
             output: UnstablePublicApiError
             outputFormat: 'json'
@@ -7234,7 +6662,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { dashboardId: string; placementId: string } } & {
-              json: UnstableUpdateDashboardPlacementRequest
+              json: UnstableUpdateDashboardPlacementRequestInput
             }
             output: UnstablePublicApiError
             outputFormat: 'json'
@@ -7249,31 +6677,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { dashboardId: string; placementId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: { param: { dashboardId: string; placementId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: { param: { dashboardId: string; placementId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: { param: { dashboardId: string; placementId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: { param: { dashboardId: string; placementId: string } }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
@@ -7294,97 +6722,49 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/unstable/topic-facets': {
       $get:
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
             output: UnstableTopicFacetList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
@@ -7399,36 +6779,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { facetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { facetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { facetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { facetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { facetId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { facetId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { facetId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { facetId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { facetId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { facetId: string } }; output: any; outputFormat: 'json'; status: 405 }
         | {
             input: { param: { facetId: string } }
             output: UnstablePublicApiError
@@ -7448,12 +6803,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicsOrderBy | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
             output: UnstableTopicList
@@ -7463,87 +6818,87 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicsOrderBy | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicsOrderBy | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicsOrderBy | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicsOrderBy | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicsOrderBy | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicsOrderBy | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
             output: UnstablePublicApiError
@@ -7553,12 +6908,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicsOrderBy | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                page?: unknown
+                limit?: unknown
               }
             }
             output: UnstablePublicApiError
@@ -7567,91 +6922,67 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/api/public/unstable/topics/:topicId': {
+    '/api/public/unstable/topics/:topicStableId': {
       $get:
         | {
-            input: { param: { topicId: string } } & {
-              query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-              }
+            input: { param: { topicStableId: string } } & {
+              query: { fromTimestamp?: unknown; toTimestamp?: unknown }
             }
             output: UnstableTopicWithStatus
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { topicId: string } } & {
-              query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-              }
+            input: { param: { topicStableId: string } } & {
+              query: { fromTimestamp?: unknown; toTimestamp?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: { param: { topicId: string } } & {
-              query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-              }
+            input: { param: { topicStableId: string } } & {
+              query: { fromTimestamp?: unknown; toTimestamp?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: { param: { topicId: string } } & {
-              query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-              }
+            input: { param: { topicStableId: string } } & {
+              query: { fromTimestamp?: unknown; toTimestamp?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: { param: { topicId: string } } & {
-              query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-              }
+            input: { param: { topicStableId: string } } & {
+              query: { fromTimestamp?: unknown; toTimestamp?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: { param: { topicId: string } } & {
-              query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-              }
+            input: { param: { topicStableId: string } } & {
+              query: { fromTimestamp?: unknown; toTimestamp?: unknown }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: { param: { topicId: string } } & {
-              query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-              }
+            input: { param: { topicStableId: string } } & {
+              query: { fromTimestamp?: unknown; toTimestamp?: unknown }
             }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: { param: { topicId: string } } & {
-              query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-              }
+            input: { param: { topicStableId: string } } & {
+              query: { fromTimestamp?: unknown; toTimestamp?: unknown }
             }
             output: UnstablePublicApiError
             outputFormat: 'json'
@@ -7662,97 +6993,49 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/api/public/unstable/topic-rules': {
       $get:
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
             output: UnstableTopicRuleList
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
-            output: { [x: string]: unknown }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 429
           }
         | {
-            input: {
-              query: {
-                filter?: (string | null) | undefined
-                page?: (number | null) | undefined
-                limit?: (number | null) | undefined
-              }
-            }
+            input: { query: { filter?: string | null; page?: unknown; limit?: unknown } }
             output: UnstablePublicApiError
             outputFormat: 'json'
             status: 500
@@ -7767,36 +7050,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-        | {
-            input: { param: { ruleId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 400
-          }
-        | {
-            input: { param: { ruleId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 401
-          }
-        | {
-            input: { param: { ruleId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 403
-          }
-        | {
-            input: { param: { ruleId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 404
-          }
-        | {
-            input: { param: { ruleId: string } }
-            output: { [x: string]: unknown }
-            outputFormat: 'json'
-            status: 405
-          }
+        | { input: { param: { ruleId: string } }; output: any; outputFormat: 'json'; status: 400 }
+        | { input: { param: { ruleId: string } }; output: any; outputFormat: 'json'; status: 401 }
+        | { input: { param: { ruleId: string } }; output: any; outputFormat: 'json'; status: 403 }
+        | { input: { param: { ruleId: string } }; output: any; outputFormat: 'json'; status: 404 }
+        | { input: { param: { ruleId: string } }; output: any; outputFormat: 'json'; status: 405 }
         | {
             input: { param: { ruleId: string } }
             output: UnstablePublicApiError
@@ -7816,13 +7074,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                truncateSummaries?: (boolean | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                truncateSummaries?: unknown
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
             output: UnstableTopicSummaryList
@@ -7832,93 +7090,93 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                truncateSummaries?: (boolean | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                truncateSummaries?: unknown
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                truncateSummaries?: (boolean | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                truncateSummaries?: unknown
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                truncateSummaries?: (boolean | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                truncateSummaries?: unknown
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                truncateSummaries?: (boolean | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                truncateSummaries?: unknown
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                truncateSummaries?: (boolean | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                truncateSummaries?: unknown
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                truncateSummaries?: (boolean | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                truncateSummaries?: unknown
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
             output: UnstablePublicApiError
@@ -7928,13 +7186,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                truncateSummaries?: (boolean | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                truncateSummaries?: unknown
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
             output: UnstablePublicApiError
@@ -7948,12 +7206,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
             output: UnstableTopicAssignmentList
@@ -7963,87 +7221,87 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 400
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 401
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 403
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 404
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
-            output: { [x: string]: unknown }
+            output: any
             outputFormat: 'json'
             status: 405
           }
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
             output: UnstablePublicApiError
@@ -8053,12 +7311,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               query: {
-                fromTimestamp?: (string | null) | undefined
-                toTimestamp?: (string | null) | undefined
-                filter?: (string | null) | undefined
-                orderBy?: UnstableTopicResultsOrderBy | undefined
-                limit?: (number | null) | undefined
-                cursor?: (string | null) | undefined
+                fromTimestamp?: unknown
+                toTimestamp?: unknown
+                filter?: string | null
+                orderBy?: unknown
+                limit?: unknown
+                cursor?: string | null
               }
             }
             output: UnstablePublicApiError
